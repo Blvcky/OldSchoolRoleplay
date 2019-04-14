@@ -35,14 +35,13 @@
 #include <a_http>
 #include <a_mysql>
 #include <foreach>
+#include <progress2>
 #include <sscanf2>
 #include <streamer>
 #include <selection>
-#include <mSelection>
 #include <tp>
 #include <Pawn.CMD>
 #include <easyDialog>
-#include <DialogCenter>
 #include <youtube_stream>
 #include <dof2>
 // --------------------------------------
@@ -60,6 +59,7 @@
 #define TABLE_USERS         "`users`" //to be moved all tables.
 // ---------------------------------------
 #define COLOR_WHITE 		0xFFFFFFFF
+#define COLOR_SAMP     		0xAAC4E5FF
 #define COLOR_YELLOW    	0xFFD200FF
 #define COLOR_YELLOW2       0xF5DEB3FF
 #define COLOR_YELLOW3       0xFFFF90FF
@@ -145,13 +145,10 @@
 #define MAX_ATMS                    50
 #define MAX_GRAFFITI_POINTS         200
 #define MAX_LANDGRAFFITI_POINTS     200
-#define MAX_WEAPON_RACKS 			500
 #define MAX_GANGTAGS 				100
 #define MAX_GATES 					4000
 #define	MAX_WEP						43
 #define MAX_BOOTHS 					8
-#define MAX_WEAPON_RACKS            500
-#define MAX_SPEED_CAMERAS           100
 #define MAX_IMPOUND_LOTS            100
 #define MAX_CRIMINAL_RECORDS        50
 #define MAX_IMPOUNDPOINTS			20
@@ -507,7 +504,7 @@ new PollN;
 
 new g_BoothUsed[MAX_BOOTHS];
 new g_BoothObject[MAX_BOOTHS] = {-1, ...};
-
+new gWeights[MAX_PLAYERS][2];
 new ElevatorState,
 	ElevatorFloor;
 
@@ -914,7 +911,12 @@ enum
 	DEPLOY_BARREL,
 	DEPLOY_FLARE
 };
-
+enum
+{
+	WORKOUT_NONE,
+	WORKOUT_DUMBELLS,
+	WORKOUT_TREADMILL
+};
 enum
 {
  	BUSINESS_STORE,
@@ -1105,10 +1107,18 @@ enum e_Payphones {
 	phObject,
 	Text3D:phText
 };
-
+enum e_Timers
+{
+	tFooter,
+	tWorkout,
+	tHospital,
+	tRefuel,
+	tRepair
+};
 enum pEnum
 {
-	PlayerText:pText[10],
+	PlayerText:pText[103],
+	PlayerBar:pBars[2],
  	pPassword[129],
 	pUsername[MAX_PLAYER_NAME],
 	pID,
@@ -1132,7 +1142,15 @@ enum pEnum
 	pBank,
  	pPaycheck,
  	pvLock,
+	pWorkout,
+	pWeight,
+	pReps,
+	pSpeedLevel,
+	pDistanceRan,
+	pWorkoutTime,
 	pLevel,
+	pFitness,
+	pGymMembership,
 	pBugFix,
 	pInTurf,
     pCompany,
@@ -1159,7 +1177,7 @@ enum pEnum
 	pIllegalTruckJob3,
 	pTruckingLevel,
 	pTruckingXP,
-	Text3D:pNameTag,
+
     pEditRack,
 	pPVIPVoucher,
 	pPhoneRingTone[132],
@@ -2205,6 +2223,7 @@ new CreateQuiz = -1;
 new EventInfo[eventEnum];
 new RobberyInfo[robberyEnum];
 new MarkedPositions[MAX_PLAYERS][3][mEnum];
+new Timers[MAX_PLAYERS][e_Timers];
 new PlayerData[MAX_PLAYERS+1][pEnum];
 new Payphones[MAX_PAYPHONES][e_Payphones];
 new PlayerText:LoginTD[ MAX_PLAYERS ][ 14 ];
@@ -3522,7 +3541,7 @@ new const bizInteriors[][bizInt] =
     {"Supermarket", 		  1800000, 6, -27.4377, -57.6114, 1003.5469, 0.0000},
 	{"Gun Shop",    		  2400000, 6,  316.2873, -169.6470, 999.6010, 0.0000},
 	{"Clothes Shop",    	  2250000, 14, 204.3860, -168.4586, 1000.5234, 0.0000},
-	{"Gym",         		  1800000, 7,  773.7802, -78.2581, 1000.6619, 0.0000},
+	{"Gym",         		  1800000, 5,  772.4077, -4.7408, 1000.7291, 0.0000},
 	{"Restaurant",  		  2500000, 10, 363.3276, -74.6505, 1001.5078, 315.0000},
 	{"Advertisement Agency",  2025000, 3,  834.1517, 7.4096, 1004.1870, 90.0000},
 	{"Club/Bar",              1425000, 11, 501.8694, -68.0046, 998.7578, 179.6117},
@@ -8120,6 +8139,39 @@ Streamer_SetExtraFloat(objectid, type, Float:value)
 	setproperty(.id = objectid, .value = type, .string = string);
 	return 1;
 }
+Dialog:Treadmill(playerid, response, listitem, inputtext[])
+{
+	if ((response) && IsPlayerInRangeOfPoint(playerid, 3.0, 773.5131, -2.1218, 1000.8479))
+	{
+		PlayerData[playerid][pSpeedLevel] = listitem + 1;
+		Timers[playerid][tWorkout] = SetTimerEx("DecreasePower", 150, true, "i", playerid);
+
+		ApplyAnimation(playerid, "GYMNASIUM", "gym_tread_geton", 4.1, 0, 0, 0, 1, 0, 1);
+		SetTimerEx("BeginWorkout", 2000, false, "ii", playerid, WORKOUT_TREADMILL);
+	}
+	else
+	{
+		SetCameraBehindPlayer(playerid);
+	}
+	return 1;
+}
+
+Dialog:LiftWeights(playerid, response, listitem, inputtext[])
+{
+	if ((response) && IsPlayerInRangeOfPoint(playerid, 3.0, 771.7793, 5.4092, 1000.7802))
+	{
+		PlayerData[playerid][pWeight] = (listitem + 2) * 10;
+		Timers[playerid][tWorkout] = SetTimerEx("DecreasePower", 200, true, "i", playerid);
+
+		ApplyAnimation(playerid, "Freeweights", "gym_free_pickup", 4.1, 0, 0, 0, 0, 0, 1);
+		SetTimerEx("BeginWorkout", 2500, false, "ii", playerid, WORKOUT_DUMBELLS);
+	}
+	else
+	{
+		SetCameraBehindPlayer(playerid);
+	}
+	return 1;
+}
 Dialog:CarPrice(playerid, response, listitem, inputtext[])
 {
 	new
@@ -9777,6 +9829,75 @@ public OnLoadDealershipCars()
 	    DealershipCars[i][dcPrice] = cache_get_field_content_int(i, "Price");
 	}
 }
+forward BeginWorkout(playerid, type);
+public BeginWorkout(playerid, type)
+{
+	PlayerTextDrawSetString(playerid, PlayerData[playerid][pText][60], "0");
+	PlayerTextDrawSetString(playerid, PlayerData[playerid][pText][62], "0");
+
+	switch (type)
+	{
+		case WORKOUT_DUMBELLS:
+		{
+			PlayerTextDrawSetString(playerid, PlayerData[playerid][pText][59], "Reps");
+			ShowPlayerTextDraws(playerid, 58, 60);
+
+			gWeights[playerid][0] = SetAttachedObject(playerid, 3072, 5, 0.0, 0.0, 0.0);
+			gWeights[playerid][1] = SetAttachedObject(playerid, 3071, 6, 0.0, 0.0, 0.0);
+
+			ShowPlayerProgressBar(playerid, PlayerData[playerid][pBars][0]);
+			SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], 0.0);
+		}
+		case WORKOUT_TREADMILL:
+		{
+			PlayerTextDrawSetString(playerid, PlayerData[playerid][pText][59], "Level");
+			PlayerTextDrawFormatString(playerid, PlayerData[playerid][pText][60], "%i", PlayerData[playerid][pSpeedLevel]);
+
+			ShowPlayerProgressBar(playerid, PlayerData[playerid][pBars][0]);
+			SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], 50.0);
+
+			PlayerPlaySound(playerid, 17801, 0.0, 0.0, 0.0);
+			ShowPlayerTextDraws(playerid, 58, 62);
+		}
+	}
+	PlayerData[playerid][pWorkout] = type;
+	PlayerData[playerid][pDistanceRan] = 0;
+	PlayerData[playerid][pReps] = 0;
+
+	return TogglePlayerControllable(playerid, 0);
+}
+
+forward DecreasePower(playerid);
+public DecreasePower(playerid)
+{
+	new
+		Float:value = GetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0]);
+
+	switch (PlayerData[playerid][pWorkout])
+	{
+		case WORKOUT_DUMBELLS:
+		{
+			if (value > 0.0)
+			{
+				SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value - 3.0);
+			}
+		}
+		case WORKOUT_TREADMILL:
+		{
+			if (value > 0.0)
+			{
+				SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value - (PlayerData[playerid][pSpeedLevel] + 8));
+			}
+			else
+			{
+				StopWorkout(playerid);
+				ApplyAnimation(playerid, "GYMNASIUM", "gym_tread_falloff", 4.1, 0, 0, 0, 0, 0, 1);
+			}
+		}
+	}
+}
+
+
 forward AnimationCameraView(playerid, viewid, bool:play);
 public AnimationCameraView(playerid, viewid,bool:play) {
 	if(play) {
@@ -10780,6 +10901,48 @@ func CreateLSPDMap()
 stock CreatePlayerTextDraws( playerid )
 {
 
+	PlayerData[playerid][pText][58] = CreatePlayerTextDraw(playerid, 484.000000, 123.000000, "Power");
+	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][58], 255);
+	PlayerTextDrawFont(playerid, PlayerData[playerid][pText][58], 2);
+	PlayerTextDrawLetterSize(playerid, PlayerData[playerid][pText][58], 0.360000, 1.700000);
+	PlayerTextDrawColor(playerid, PlayerData[playerid][pText][58], -1429936641);
+	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][58], 1);
+	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][58], 1);
+
+	PlayerData[playerid][pText][59] = CreatePlayerTextDraw(playerid, 497.000000, 139.000000, "Reps");
+	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][59], 255);
+	PlayerTextDrawFont(playerid, PlayerData[playerid][pText][59], 2);
+	PlayerTextDrawLetterSize(playerid, PlayerData[playerid][pText][59], 0.360000, 1.700000);
+	PlayerTextDrawColor(playerid, PlayerData[playerid][pText][59], -1429936641);
+	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][59], 1);
+	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][59], 1);
+
+	PlayerData[playerid][pText][60] = CreatePlayerTextDraw(playerid, 608.000000, 139.000000, "0");
+	PlayerTextDrawAlignment(playerid, PlayerData[playerid][pText][60], 3);
+	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][60], 255);
+	PlayerTextDrawFont(playerid, PlayerData[playerid][pText][60], 2);
+	PlayerTextDrawLetterSize(playerid, PlayerData[playerid][pText][60], 0.360000, 1.700000);
+	PlayerTextDrawColor(playerid, PlayerData[playerid][pText][60], -1429936641);
+	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][60], 1);
+	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][60], 1);
+
+	PlayerData[playerid][pText][61] = CreatePlayerTextDraw(playerid, 469.000000, 156.000000, "Distance");
+	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][61], 255);
+	PlayerTextDrawFont(playerid, PlayerData[playerid][pText][61], 2);
+	PlayerTextDrawLetterSize(playerid, PlayerData[playerid][pText][61], 0.360000, 1.700000);
+	PlayerTextDrawColor(playerid, PlayerData[playerid][pText][61], -1429936641);
+	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][61], 1);
+	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][61], 1);
+
+	PlayerData[playerid][pText][62] = CreatePlayerTextDraw(playerid, 608.000000, 156.000000, "0");
+	PlayerTextDrawAlignment(playerid, PlayerData[playerid][pText][62], 3);
+	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][62], 255);
+	PlayerTextDrawFont(playerid, PlayerData[playerid][pText][62], 2);
+	PlayerTextDrawLetterSize(playerid, PlayerData[playerid][pText][62], 0.360000, 1.700000);
+	PlayerTextDrawColor(playerid, PlayerData[playerid][pText][62], -1429936641);
+	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][62], 1);
+	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][62], 1);
+
 
 	playerfooter[playerid] = CreatePlayerTextDraw(playerid, 327.333190, 432.417785, ".");
 	PlayerTextDrawLetterSize(playerid, playerfooter[playerid], 0.220000, 1.276443);
@@ -11618,36 +11781,7 @@ stock PlayerPlaySoundEx(playerid, sound)
 	}
 	return 1;
 }
-ResetNameTag(playerid)
-{
-    foreach (new i : Player) {
-		ShowPlayerNameTagForPlayer(i, playerid, 1);
-	}
-	if (IsValidDynamic3DTextLabel(PlayerData[playerid][pNameTag]))
-	    DestroyDynamic3DTextLabel(PlayerData[playerid][pNameTag]);
 
-    PlayerData[playerid][pNameTag] = Text3D:INVALID_3DTEXT_ID;
-    return 1;
-}
-
-ReturnWeaponName(weaponid)
-{
-	new
-		name[24];
-
-	if (weaponid == 0)
-		name = "No Weapon";
-	else if (weaponid == 18)
-		name = "Molotov Cocktail";
-	else if (weaponid == 44)
-		name = "Nightvision Goggles";
-	else if (weaponid == 45)
-		name = "Infrared Goggles";
-	else
-		GetWeaponName(weaponid, name, sizeof(name));
-
-	return name;
-}
 
 stock GetPlayerNameExt(playerid)
 {
@@ -11795,6 +11929,279 @@ GetVehicleFromPlate(const plate[])
 	}
 	return -1;
 }
+StopWorkout(playerid)
+{
+	if (PlayerData[playerid][pWorkout] != WORKOUT_NONE)
+	{
+		HidePlayerProgressBar(playerid, PlayerData[playerid][pBars][0]);
+		HidePlayerTextDraws(playerid, 58, 62);
+
+		SetCameraBehindPlayer(playerid);
+		TogglePlayerControllable(playerid, 1);
+
+		KillTimer(Timers[playerid][tWorkout]);
+
+		switch (PlayerData[playerid][pWorkout])
+		{
+			case WORKOUT_DUMBELLS:
+			{
+				PlayerData[playerid][pWeight] = 0;
+				PlayerData[playerid][pReps] = 0;
+
+				PlayerPlaySound(playerid, 17807, 0.0, 0.0, 0.0);
+
+				RemovePlayerAttachedObject(playerid, gWeights[playerid][0]);
+				RemovePlayerAttachedObject(playerid, gWeights[playerid][1]);
+			}
+			case WORKOUT_TREADMILL:
+			{
+				PlayerData[playerid][pSpeedLevel] = 0;
+				PlayerData[playerid][pDistanceRan] = 0;
+
+				PlayerPlaySound(playerid, 17808, 0.0, 0.0, 0.0);
+			}
+		}
+		PlayerData[playerid][pWorkout] = WORKOUT_NONE;
+	}
+	return 1;
+}
+AddFitnessForPlayer(playerid)
+{
+	if (PlayerData[playerid][pFitness] < 100)
+	{
+		PlayerData[playerid][pFitness]++;
+	}
+}
+WorkoutUpdate(playerid)
+{
+	if (PlayerData[playerid][pWorkout] != WORKOUT_NONE)
+	{
+		new
+			Float:value = GetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0]);
+
+		switch (PlayerData[playerid][pWorkout])
+		{
+			case WORKOUT_DUMBELLS:
+			{
+				switch (PlayerData[playerid][pWeight])
+				{
+					case 20..60:
+					{
+						ApplyAnimation(playerid, "Freeweights", "gym_free_A", 4.1, 0, 0, 0, 0, 0, 1);
+					}
+					case 70..110:
+					{
+						ApplyAnimation(playerid, "Freeweights", "gym_free_B", 4.1, 0, 0, 0, 0, 0, 1);
+					}
+				}
+				if (value < 90.0)
+				{
+					AddPowerToMeter(playerid);
+				}
+				else
+				{
+					PlayerData[playerid][pReps]++;
+
+
+					if (PlayerData[playerid][pFitness] < 100 && (PlayerData[playerid][pReps] % ((120 - PlayerData[playerid][pWeight]) / 5)) == 0)
+					{
+						AddFitnessForPlayer(playerid);
+					}
+					SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], 0.0);
+					PlayerTextDrawFormatString(playerid, PlayerData[playerid][pText][60], "%i", PlayerData[playerid][pReps]);
+
+					ApplyAnimation(playerid, "Freeweights", "gym_free_down", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation(playerid, "Freeweights", "gym_free_down", 4.1, 0, 0, 0, 0, 0, 1);
+
+					if (PlayerData[playerid][pReps] == 50 && !PlayerData[playerid][pGymMembership])
+					{
+						PlayerData[playerid][pWorkoutTime] = gettime() + 43200;
+						StopWorkout(playerid);
+
+						SendInfoMessage(playerid, "You have reached your limit for today!");
+						ApplyAnimation(playerid, "Freeweights", "gym_free_putdown", 4.1, 0, 0, 0, 0, 0, 1);
+					}
+				}
+			}
+			case WORKOUT_TREADMILL:
+			{
+				PlayerData[playerid][pDistanceRan] = PlayerData[playerid][pDistanceRan] + 1;
+
+
+				SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + (PlayerData[playerid][pSpeedLevel] + 12));
+				PlayerTextDrawFormatString(playerid, PlayerData[playerid][pText][62], "%i", PlayerData[playerid][pDistanceRan]);
+
+				if (PlayerData[playerid][pFitness] < 100 && (PlayerData[playerid][pDistanceRan] % 100) == 0)
+				{
+					AddFitnessForPlayer(playerid);
+				}
+				if (PlayerData[playerid][pDistanceRan] == 200 && !PlayerData[playerid][pGymMembership])
+				{
+					PlayerData[playerid][pWorkoutTime] = gettime() + 43200;
+					StopWorkout(playerid);
+
+					SendInfoMessage(playerid, "You have reached your limit for today!");
+					ApplyAnimation(playerid, "GYMNASIUM", "gym_tread_getoff", 4.1, 0, 0, 0, 0, 0, 1);
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+AddPowerToMeter(playerid)
+{
+	new
+		Float:value = GetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0]);
+
+	switch (PlayerData[playerid][pWeight])
+	{
+		case 20: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 22.0);
+		case 30: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 20.5);
+		case 40: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 19.0);
+		case 50: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 18.0);
+		case 60: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 16.0);
+		case 70: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 14.0);
+		case 80: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 12.0);
+		case 90: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 10.0);
+		case 100: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 8.0);
+		case 110: SetPlayerProgressBarValue(playerid, PlayerData[playerid][pBars][0], value + 6.0);
+	}
+}
+IsWeightsInUse(playerid)
+{
+	foreach (new i : Player)
+	{
+		if (PlayerData[i][pWorkout] == WORKOUT_DUMBELLS && IsPlayerInRangeOfPlayer(i, playerid, 10.0))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+IsPlayerNearGymEquipment(playerid)
+{
+	return (IsPlayerInRangeOfPoint(playerid, 2.0, 771.7793, 5.4092, 1000.7802) || IsPlayerInRangeOfPoint(playerid, 2.0, 773.5131, -2.1218, 1000.8479));
+}
+
+GymCheck(playerid)
+{
+	new company = GetInsideBusiness(playerid);
+
+	if (company == -1 || BusinessInfo[company][bType] != BUSINESS_GYM)
+	{
+		return 0;
+	}
+	else if (IsPlayerInRangeOfPoint(playerid, 2.0, 771.7793, 5.4092, 1000.7802))
+	{
+		if (!PlayerData[playerid][pWorkout])
+		{
+			if (PlayerData[playerid][pWorkoutTime] > gettime())
+			{
+				SendErrorMessage(playerid, "You have reached your limit for the day.");
+			}
+			else if (IsWeightsInUse(playerid))
+			{
+				SendErrorMessage(playerid, "The weights are already being used.");
+			}
+			else if (PlayerData[playerid][pWeight])
+			{
+				SendErrorMessage(playerid, "Please wait before using this command.");
+			}
+			else
+			{
+				SetPlayerPos(playerid, 771.7793, 5.4092, 1000.7802);
+				SetPlayerFacingAngle(playerid, 270.0000);
+
+				SetPlayerCameraPos(playerid, 775.425048, 5.364191, 1001.295227);
+				SetPlayerCameraLookAt(playerid, 772.279235, 5.403525, 1000.780212);
+
+				Dialog_Show(playerid, LiftWeights, DIALOG_STYLE_LIST, "{FFFFFF}Select weight", "20 lbs\n30 lbs\n40 lbs\n50 lbs\n60 lbs\n70 lbs\n80 lbs\n90 lbs\n100 lbs\n110 lbs", "Begin", "Cancel");
+			}
+		}
+		else
+		{
+			StopWorkout(playerid);
+			ApplyAnimation(playerid, "Freeweights", "gym_free_putdown", 4.1, 0, 0, 0, 0, 0, 1);
+		}
+		return 1;
+	}
+	else if (IsPlayerInRangeOfPoint(playerid, 2.0, 773.5131, -2.1218, 1000.8479))
+	{
+		if (!PlayerData[playerid][pWorkout])
+		{
+			if (PlayerData[playerid][pWorkoutTime] > gettime())
+			{
+				SendErrorMessage(playerid, "You have reached your limit for the day.");
+			}
+			else if (IsTreadmillInUse(playerid))
+			{
+				SendErrorMessage(playerid, "The treadmill is already being used.");
+			}
+			else if (PlayerData[playerid][pSpeedLevel])
+			{
+				SendErrorMessage(playerid, "Please wait before using this command.");
+			}
+			else
+			{
+				SetPlayerPos(playerid, 773.4777, -1.3239, 1000.7260);
+				SetPlayerFacingAngle(playerid, 180.0000);
+
+				SetPlayerCameraPos(playerid, 774.571166, -6.172124, 1001.582763);
+				SetPlayerCameraLookAt(playerid, 773.482116, -3.338384, 1000.847900);
+
+				Dialog_Show(playerid, Treadmill, DIALOG_STYLE_LIST, "{FFFFFF}Select level", "Level 1 (slowest)\nLevel 2\nLevel 3\nLevel 4\nLevel 5\nLevel 6\nLevel 7\nLevel 8\nLevel 9\nLevel 10 (fastest)", "Begin", "Cancel");
+			}
+		}
+		else
+		{
+			StopWorkout(playerid);
+			ApplyAnimation(playerid, "GYMNASIUM", "gym_tread_getoff", 4.1, 0, 0, 0, 0, 0, 1);
+		}
+		return 1;
+	}
+	return 0;
+}
+IsTreadmillInUse(playerid)
+{
+	foreach (new i : Player)
+	{
+		if (PlayerData[i][pWorkout] == WORKOUT_TREADMILL && IsPlayerInRangeOfPlayer(i, playerid, 10.0))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+ShowPlayerTextDraws(playerid, start, end)
+{
+	for (new i = start; i < end + 1; i ++)
+	{
+		PlayerTextDrawShow(playerid, PlayerData[playerid][pText][i]);
+	}
+}
+
+HidePlayerTextDraws(playerid, start, end)
+{
+	for (new i = start; i < end + 1; i ++)
+	{
+		PlayerTextDrawHide(playerid, PlayerData[playerid][pText][i]);
+	}
+}
+SetAttachedObject(playerid, modelid, bone, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0, Float:sx = 1.0, Float:sy = 1.0, Float:sz = 1.0, materialcolor1 = 0, materialcolor2 = 0)
+{
+	for (new i = 0; i < MAX_PLAYER_ATTACHED_OBJECTS; i ++)
+	{
+		if (!IsPlayerAttachedObjectSlotUsed(playerid, i))
+		{
+			SetPlayerAttachedObject(playerid, i, modelid, bone, x, y, z, rx, ry, rz, sx, sy, sz, materialcolor1, materialcolor2);
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 stock strmatch(const string1[], const string2[])
 {
     if ((strcmp(string1, string2, true, strlen(string2)) == 0) && (strlen(string2) == strlen(string1)))
@@ -11931,12 +12338,6 @@ AddVehicleToDealership(company, model, price)
 	return id;
 }
 
-
-ResetEditing(playerid)
-{
- 	PlayerData[playerid][pEditRack] = -1;
-	return 1;
-}
 stock IsEngineVehicle(vehicleid)
 {
 	static const g_aEngineStatus[] = {
@@ -15746,7 +16147,10 @@ ResetPlayer(playerid)
 	    PlayerData[playerid][pHospital] = 0;
 	    PlayerData[playerid][pHospitalTime] = 0;
 	}
-
+	if (PlayerData[playerid][pWorkout] != WORKOUT_NONE)
+	{
+		StopWorkout(playerid);
+	}
 	if(PlayerData[playerid][pMiningTime] > 0)
 	{
 	    ClearAnimations(playerid, 1);
@@ -15799,12 +16203,15 @@ ResetPlayer(playerid)
 	        PlayerData[i][pDraggedBy] = INVALID_PLAYER_ID;
 		}
 	}
+	PlayerData[playerid][pWeight] = 0;
+	PlayerData[playerid][pReps] = 0;
+	PlayerData[playerid][pSpeedLevel] = 0;
+	PlayerData[playerid][pDistanceRan] = 0;
 	if (PlayerData[playerid][pRangeBooth] != -1)
 		Booth_Leave(playerid);
 	PlayerData[playerid][pInTurf] = -1;
 	InsideShamal[playerid]= INVALID_VEHICLE_ID;
 	PlayerData[playerid][pMaskOn] = 0;
-	ResetNameTag(playerid);
 	PlayerData[playerid][pInjured] = 0;
 	PlayerData[playerid][pAcceptedHelp] = 0;
 	PlayerData[playerid][pMiningTime] = 0;
@@ -18962,15 +19369,7 @@ IsPlayerAtFoodPlace(playerid)
 	return 0;
 }
 
-IsAtChopPlace(playerid)
-{
-    if(IsPlayerInRangeOfPoint(playerid, 12.0, 2348.6545,-683.6923,133.6480) || IsPlayerInRangeOfPoint(playerid, 12.0, 2329.5427,-724.5271,130.9375) || IsPlayerInRangeOfPoint(playerid, 12.0, 2331.0425,-739.7442,131.4731) || IsPlayerInRangeOfPoint(playerid, 12.0, 2311.9338,-745.9619,131.2116)) {
-        return 1;
-	} else if(IsPlayerInRangeOfPoint(playerid, 12.0, 2324.7158,-752.8650,131.4028) || IsPlayerInRangeOfPoint(playerid, 12.0, 2341.4116,-751.3868,130.6202)) {
-	    return 1;
-	}
-	return 0;
-}
+
 IsAtDealership(playerid)
 {
 	if(IsPlayerInRangeOfPoint(playerid, 3.0, 542.0433, -1293.5909, 17.2422) || IsPlayerInRangeOfPoint(playerid, 3.0, 1985.7753,-2068.1091,13.3803) || IsPlayerInRangeOfPoint(playerid, 3.0, 2131.8059,-1150.8885,24.1078))
@@ -19279,6 +19678,46 @@ SendSplitMessage(playerid, color, const text[], {Float, _}:...)
 		#emit SCTRL 4
 
 		SendPlayerSplitMessage(playerid, color, str);
+
+		#emit RETN
+	}
+	return 1;
+}
+PlayerTextDrawFormatString(playerid, PlayerText:playertextid, text[], {Float, _}:...)
+{
+	static
+		args,
+		str[192];
+
+	/*
+	 *  Custom function that uses #emit to format variables into a string.
+	 *  This code is very fragile; touching any code here will cause crashing!
+	*/
+	if ((args = numargs()) <= 3)
+	{
+		PlayerTextDrawSetString(playerid, playertextid, text);
+	}
+	else
+	{
+		while (--args >= 3)
+		{
+			#emit LCTRL 5
+			#emit LOAD.alt args
+			#emit SHL.C.alt 2
+			#emit ADD.C 12
+			#emit ADD
+			#emit LOAD.I
+			#emit PUSH.pri
+		}
+		#emit PUSH.S text
+		#emit PUSH.C 192
+		#emit PUSH.C str
+		#emit PUSH.S 8
+		#emit SYSREQ.C format
+		#emit LCTRL 5
+		#emit SCTRL 4
+
+		PlayerTextDrawSetString(playerid, playertextid, str);
 
 		#emit RETN
 	}
@@ -27096,7 +27535,11 @@ func hidemotd(playerid)
 public OnGameModeInit()
 {
 	// InGame textdraw's! //
-
+	CreateDynamic3DTextLabel("Press Y to use weights", COLOR_GREY, 772.4859, 5.3462, 999.9802, 10.0);
+	CreateDynamic3DTextLabel("Press Y to use treadmill", COLOR_GREY, 773.5106, -2.8392, 1000.1479, 10.0);
+	// Gym objects
+	CreateDynamicObject(2916, 772.496765, 5.770771, 999.879760, 0.000000, 0.000000, -90.000000);
+	CreateDynamicObject(2916, 772.527404, 5.051626, 999.879760, 0.000000, 0.000000, -90.000000);
 
 	mdc_LoadTextdraws();
 
@@ -34386,6 +34829,8 @@ public OnPlayerConnect(playerid)
 		format(formato, sizeof formato, "www.shroomery.org/ythan/proxycheck.php?ip=%s", GetPlayerIP(playerid));
 		HTTP(playerid, HTTP_GET, formato, "", "HTTP_ProxyCheck");
 	}
+	PlayerData[playerid][pBars][0] = CreatePlayerProgressBar(playerid, 556.000000, 130.000000, 57.000000, 4.699999, COLOR_SAMP, 100.0000, 0);
+
     PlayerData[playerid][pMask] = 0;
     SetPVarInt(playerid, "EventToken", 0);
     PlayerData[playerid][pShowFooter] = 0;
@@ -34752,6 +35197,10 @@ public OnPlayerConnect(playerid)
 	PlayerData[playerid][pBank] = 0;
 	PlayerData[playerid][pPaycheck] = 0;
 	PlayerData[playerid][pLevel] = 1;
+	PlayerData[playerid][pWeight] = 0;
+	PlayerData[playerid][pReps] = 0;
+	PlayerData[playerid][pSpeedLevel] = 0;
+	PlayerData[playerid][pDistanceRan] = 0;
 	PlayerData[playerid][pGraphic] = 0;
 	PlayerData[playerid][pPasswordChanged] = 0;
 	PlayerData[playerid][pEXP] = 0;
@@ -37751,6 +38200,38 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 
 	if(!PlayerData[playerid][pLogged])
 		return 1;
+	new index = GetPlayerAnimationIndex(playerid);
+	switch (PlayerData[playerid][pWorkout])
+	{
+		case WORKOUT_DUMBELLS:
+		{
+			if (index < 570 || index > 577)
+			{
+				ApplyAnimation(playerid, "Freeweights", "gym_free_loop", 4.1, 1, 0, 0, 0, 0, 1);
+			}
+		}
+		case WORKOUT_TREADMILL:
+		{
+			if (index < 662 || index > 665)
+			{
+				switch (PlayerData[playerid][pSpeedLevel])
+				{
+					case 1..3:
+					{
+						ApplyAnimation(playerid, "GYMNASIUM", "gym_tread_walk", 4.1, 1, 0, 0, 0, 0, 1);
+					}
+					case 4..6:
+					{
+						ApplyAnimation(playerid, "GYMNASIUM", "gym_tread_jog", 4.1, 1, 0, 0, 0, 0, 1);
+					}
+					case 7..10:
+					{
+						ApplyAnimation(playerid, "GYMNASIUM", "gym_tread_sprint", 4.1, 1, 0, 0, 0, 0, 1);
+					}
+				}
+			}
+		}
+	}
 	if(GetPlayerWeapon(playerid)  == 38 ) // when they sync something which they should not!!!
 	{
 	    RemovePlayerWeapon(playerid, 38);
@@ -37814,7 +38295,7 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 		}
 	}
 
-	new vehicleid = GetPlayerVehicleID(playerid), keys, string[128], index = GetPlayerAnimationIndex(playerid), drunkLevel = GetPlayerDrunkLevel(playerid);
+	new vehicleid = GetPlayerVehicleID(playerid), keys, string[128], drunkLevel = GetPlayerDrunkLevel(playerid);
 	if(PlayerData[playerid][pCurrentWeapon] != GetPlayerWeapon(playerid))
 	{
 	    PlayerData[playerid][pCurrentWeapon] = GetPlayerWeapon(playerid);
@@ -39048,30 +39529,16 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    SetPlayerFacingAngle(playerid, Degree[playerid] - 90.0);
 		}
 	}
-
-	if(!PlayerData[playerid][pPaintball] && !PlayerData[playerid][pJoinedEvent] && CBTogged == 1 && (GetPlayerState(playerid) != PLAYER_STATE_DRIVER))
+	if (newkeys & KEY_SPRINT)
 	{
-		if(GetPlayerWeapon(playerid) == 24 || GetPlayerWeapon(playerid) == 23 || GetPlayerWeapon(playerid) == 25 || GetPlayerWeapon(playerid) == 27 || GetPlayerWeapon(playerid) == 29 || GetPlayerWeapon(playerid) == 30 || GetPlayerWeapon(playerid) == 33 || GetPlayerWeapon(playerid) == 34)
+		if (PlayerData[playerid][pAnimation])
 		{
-			if(RELEASED(KEY_FIRE))
-			{
-				if(CSWarned[playerid] == 0)
-				{
-					SetTimerEx("CBugCheck",500,0,"i",playerid);
-					CSWarned[playerid] = 1;
-				}
-			}
-			if(PRESSED(KEY_CROUCH))
-			{
-				if(CSWarned[playerid] == 1)
-				{
-					ApplyAnimationEx(playerid, "RIOT", "RIOT_ANGRY", 4.1, 0, 0, 0, 0, 0);
-
-					Dialog_Show(playerid, DIALOG_CBUG, DIALOG_STYLE_MSGBOX, "Warning", "Father, please forgive me for abusing C-bug, I will not do it again.", "Sorry", "");
-				}
-			}
+			PlayerData[playerid][pAnimation] = 0;
+			ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
 		}
+		WorkoutUpdate(playerid);
 	}
+
 	if(PlayerData[playerid][pSkating] && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 	{
 	    //static bool:act;
@@ -39164,8 +39631,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					DoorCheck(playerid);
 					//GateCheck(playerid);
 				}
+				if (IsPlayerNearGymEquipment(playerid)) GymCheck(playerid);
 			}
-
+             
 			PlayerData[playerid][pLastPress] = time; // Prevents spamming. Sometimes keys get messed up and register twice.
 		}
 		else if(newkeys & KEY_NO)
