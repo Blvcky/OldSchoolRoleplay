@@ -886,21 +886,7 @@ enum
 	STASH_CAPACITY_WEAPONS
 };
 
-enum crateInfo
-{
-	crActive,
-	crObject,
-	crInt,
-	crVW,
-	crPlacedBy[MAX_PLAYER_NAME],
-	Float: crX,
-	Float: crY,
-	Float: crZ,
-	GunQuantity,
-	InVehicle,
-	Text3D: crLabel,
-}
-new CrateInfo[20][crateInfo];
+
 enum
 {
  	E_OBJECT_TYPE,
@@ -5825,52 +5811,6 @@ new const achievementInfo[][achievementEnum] =
 	{"You're a hooker", "Make a Blowjob"}
 */
 };
-
-enum dealerEnum
-{
-	carCategory[16],
-	carModel,
-	carPrice
-};
-enum airDealerEnum
-{
-	carCategory[16],
-	carModel,
-	carPrice
-};
-new const airArray[][airDealerEnum] =
-{
-	{"Aircraft",		487, 250000},
-	{"Aircraft",		469, 300000},
-	{"Aircraft",		593, 325000},
-	{"Aircraft",		512, 350000},
-	{"Aircraft",		513, 375000},
-	{"Aircraft",		417, 400000},
-	{"Aircraft",		460, 425000},
-	{"Aircraft",		548, 500000},
-	{"Aircraft",		519, 600000},
-	{"Aircraft",		511, 750000},
-	{"Aircraft",		553, 1000000}
-};
-enum boatDealerEnum
-{
-	carCategory[16],
-	carModel,
-	carPrice
-};
-new const boatArray[][boatDealerEnum] =
-{
-	{"Boats",			473, 20000},
-	{"Boats",			472, 100000},
-	{"Boats",			446, 150000},
-	{"Boats",			493, 175000},
-	{"Boats",			452, 200000},
-	{"Boats",			484, 225000},
-	{"Boats",			595, 225000},
-	{"Boats",			453, 250000},
-	{"Boats",			454, 300000}
-};
-
 
 enum bizInts
 {
@@ -11395,43 +11335,12 @@ stock Create3DandP( text[], Float:vXU, Float:vYU, Float:vZU, vInt, vVW, pickupid
 	CreateDynamicPickup(pickupid, 1, vXU, vYU, vZU, vVW, vInt);
 }
 
-GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
-{
-    new Float:a;
-    GetPlayerPos(playerid, x, y, a);
-    GetPlayerFacingAngle(playerid, a);
-    if (GetPlayerVehicleID(playerid))
-    {
-      GetVehicleZAngle(GetPlayerVehicleID(playerid), a);
-    }
-    x += (distance * floatsin(-a, degrees));
-    y += (distance * floatcos(-a, degrees));
-}
-
-stock CountCrates()
-{
-	new count;
-	for(new i = 0; i < sizeof(CrateInfo); i++)
-	{
-	    if(CrateInfo[i][crActive]) count++;
-	}
-	return count;
-}
 stock IsPlayerInRangeOfVehicle(playerid, vehicleid, Float:Range)
 {
     new Float:Pos[3];
 	GetVehiclePos(vehicleid, Pos[0], Pos[1], Pos[2]);
 	return IsPlayerInRangeOfPoint(playerid, Range, Pos[0], Pos[1], Pos[2]);
 }
-
-
-IsInRangeOfPoint(Float: fPosX, Float: fPosY, Float: fPosZ, Float: fPosX2, Float: fPosY2, Float: fPosZ2, Float: fDist) {
-    fPosX -= fPosX2;
-	fPosY -= fPosY2;
-    fPosZ -= fPosZ2;
-    return ((fPosX * fPosX) + (fPosY * fPosY) + (fPosZ * fPosZ)) < (fDist * fDist);
-}
-
 
 stock Float:GetPlayerSpeed(playerid)
 {
@@ -22865,114 +22774,6 @@ public OnPlayerAttemptBuyVehicleEx(playerid, offeredby, vehicleid, price)
 	}
 }
 
-forward OnPlayerAttemptBuyAir(playerid, index);
-public OnPlayerAttemptBuyAir(playerid, index)
-{
-	new count = cache_get_row_int(0, 0);
-
-	if(count >= GetPlayerAssetLimit(playerid, LIMIT_VEHICLES))
-	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You currently own %i/%i vehicles. You can't own anymore unless you upgrade your asset perk.", count, GetPlayerAssetLimit(playerid, LIMIT_VEHICLES));
-	}
-	else
-	{
-	    new string[20];
-
-        if(PlayerData[playerid][pCash] < airArray[index][carPrice])
-        {
-            SendClientMessage(playerid, COLOR_GREY, "You can't afford to purchase this vehicle.");
-        }
-        else if(GetSpawnedVehicles(playerid) >= MAX_SPAWNED_VEHICLES)
-	    {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You can't have more than %i vehicles spawned at a time.", MAX_SPAWNED_VEHICLES);
-	    }
-		else
-		{
-		    new
-				Float:x,
-				Float:y,
-				Float:z,
-				Float:angle;
-
-		    switch(random(3))
-		    {
-				//
-        	    case 0: x = 1876.9777, y = -2290.0088, z = 13.5469, angle = 0.0;
-            	case 1: x = 1876.9777, y = -2290.0088, z = 13.5469, angle = 0.0;
-            	case 2: x = 1876.9777, y = -2290.0088, z = 13.5469, angle = 0.0;
-			}
-
-			AwardAchievement(playerid, "First wheels");
-
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO vehicles (ownerid, owner, modelid, price, pos_x, pos_y, pos_z, pos_a) VALUES(%i, '%s', %i, %i, '%f', '%f', '%f', '%f')", PlayerData[playerid][pID], GetPlayerNameEx(playerid), airArray[index][carModel], airArray[index][carPrice], x, y, z, angle);
-   			mysql_tquery(connectionID, queryBuffer);
-
-	        AddPointMoney(POINT_AUTOEXPORT, percent(airArray[index][carPrice], 3));
-    	    GivePlayerCash(playerid, -airArray[index][carPrice]);
-
-	        format(string, sizeof(string), "~r~-$%i", airArray[index][carPrice]);
-    	    GameTextForPlayer(playerid, string, 5000, 1);
-
-	        SendClientMessageEx(playerid, COLOR_GREEN, "%s purchased for $%i. /carstorage to spawn this vehicle.", vehicleNames[airArray[index][carModel] - 400], airArray[index][carPrice]);
-    	    Log_Write("log_property", "%s (uid: %i) purchased a %s for $%i.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], vehicleNames[airArray[index][carModel] - 400], airArray[index][carPrice]);
-		}
-	}
-}
-
-forward OnPlayerAttemptBuyBoat(playerid, index);
-public OnPlayerAttemptBuyBoat(playerid, index)
-{
-	new count = cache_get_row_int(0, 0);
-
-	if(count >= GetPlayerAssetLimit(playerid, LIMIT_VEHICLES))
-	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You currently own %i/%i vehicles. You can't own anymore unless you upgrade your asset perk.", count, GetPlayerAssetLimit(playerid, LIMIT_VEHICLES));
-	}
-	else
-	{
-	    new string[20];
-
-        if(PlayerData[playerid][pCash] < boatArray[index][carPrice])
-        {
-            SendClientMessage(playerid, COLOR_GREY, "You can't afford to purchase this vehicle.");
-        }
-        else if(GetSpawnedVehicles(playerid) >= MAX_SPAWNED_VEHICLES)
-	    {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You can't have more than %i vehicles spawned at a time.", MAX_SPAWNED_VEHICLES);
-	    }
-		else
-		{
-		    new
-				Float:x,
-				Float:y,
-				Float:z,
-				Float:angle;
-
-		    switch(random(3))
-		    {
-
-        	    case 0: x = 229.896, y = -1910.615, z = -0.537, angle = 181.646987;
-            	case 1: x = 229.896, y = -1910.615, z = -0.537, angle = 181.646987;
-            	case 2: x = 229.896, y = -1910.615, z = -0.537, angle = 181.646987;
-			}
-
-
-			AwardAchievement(playerid, "First wheels");
-
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO vehicles (ownerid, owner, modelid, price, pos_x, pos_y, pos_z, pos_a) VALUES(%i, '%s', %i, %i, '%f', '%f', '%f', '%f')", PlayerData[playerid][pID], GetPlayerNameEx(playerid), boatArray[index][carModel], boatArray[index][carPrice], x, y, z, angle);
-   			mysql_tquery(connectionID, queryBuffer);
-
-	        AddPointMoney(POINT_AUTOEXPORT, percent(boatArray[index][carPrice], 3));
-    	    GivePlayerCash(playerid, -boatArray[index][carPrice]);
-
-	        format(string, sizeof(string), "~r~-$%i", boatArray[index][carPrice]);
-    	    GameTextForPlayer(playerid, string, 5000, 1);
-
-	        SendClientMessageEx(playerid, COLOR_GREEN, "%s purchased for $%i. /carstorage to spawn this vehicle.", vehicleNames[boatArray[index][carModel] - 400], boatArray[index][carPrice]);
-    	    Log_Write("log_property", "%s (uid: %i) purchased a %s for $%i.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], vehicleNames[boatArray[index][carModel] - 400], boatArray[index][carPrice]);
-		}
-	}
-}
 forward OnPlayerAttemptBuyVehicle(playerid, index);
 public OnPlayerAttemptBuyVehicle(playerid, index)
 {
@@ -43061,93 +42862,7 @@ Dialog:DIALOG_ADNEW(playerid, response, listitem, inputtext[])
 	return 1;
 }
 
-Dialog:CRATE_GUNMENU(playerid, response, listitem, inputtext[])
-{
-    if(response)
-    {
-        if(PlayerData[playerid][pHours] < 1 || PlayerData[playerid][pWeaponRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this as you are currently restricted from possessing weapons!");
-		new CrateID = GetPVarInt(playerid, "CrateGuns_CID");
-		new string[128];
-		switch(listitem)
-		{ //Desert Eagle\nSPAS-12\nMP5\nM4A1\nAK-47\nSniper Rifle\nShotgun
-		    /*
-		    Deagle - 4
-			Spas - 8
-			AK-47 - 5
-			M4    - 6
-			Sniper Rifle - 5
-			MP5 - 5
-		    */
-		    case 0: // CRATE GUNS
-			{
-			    if(CrateInfo[CrateID][GunQuantity] >= 4)
-			    {
-					GivePlayerWeaponEx(playerid, 24); // deagle
-					CrateInfo[CrateID][GunQuantity] -= 4;
-				}
-			}
-			case 1: // CRATE GUNS
-			{
-				if(CrateInfo[CrateID][GunQuantity] >= 8)
-			    {
-					GivePlayerWeaponEx(playerid, 27); //spas
-					CrateInfo[CrateID][GunQuantity] -= 8;
-				}
-			}
-			case 2: // CRATE GUNS
-			{
-				if(CrateInfo[CrateID][GunQuantity] >= 5)
-			    {
-					GivePlayerWeaponEx(playerid, 29);//mp5
-					CrateInfo[CrateID][GunQuantity] -= 5;
-				}
-			}
-			case 3: // CRATE GUNS
-			{
-				if(CrateInfo[CrateID][GunQuantity] >= 6)
-			    {
-					GivePlayerWeaponEx(playerid, 31); //m4
-					CrateInfo[CrateID][GunQuantity] -= 6;
-				}
-			}
-			case 4: // CRATE GUNS
-			{
-				if(CrateInfo[CrateID][GunQuantity] >= 5)
-			    {
-					GivePlayerWeaponEx(playerid, 30); //ak47
-					CrateInfo[CrateID][GunQuantity] -= 5;
-				}
-			}
-			case 5: // CRATE GUNS
-			{
-				if(CrateInfo[CrateID][GunQuantity] >= 5)
-			    {
-					GivePlayerWeaponEx(playerid, 34);//sniper
-					CrateInfo[CrateID][GunQuantity] -= 5;
-				}
-			}
-			case 6: // CRATE GUNS
-			{
-				if(CrateInfo[CrateID][GunQuantity] >= 3)
-			    {
-					GivePlayerWeaponEx(playerid, 25);//shotgun
-					CrateInfo[CrateID][GunQuantity] -= 3;
-				}
-			}
-			case 7: // CRATE GUNS
-			{
-				if(CrateInfo[CrateID][GunQuantity] >= 1)
-			    {
-					GivePlayerWeaponEx(playerid, 22);//shotgun
-					CrateInfo[CrateID][GunQuantity] -= 1;
-				}
-			}
-		}
-		format(string, sizeof(string), "Serial Number: #%d\n High Grade Materials: %d/50\n (( Dropped by: %s ))", CrateID, CrateInfo[CrateID][GunQuantity], CrateInfo[CrateID][crPlacedBy]);
-		UpdateDynamic3DTextLabelText(CrateInfo[CrateID][crLabel], COLOR_ORANGE, string);
-    }
-    return 1;
-}
+
 Dialog:MPSPAYTICKETS(playerid, response, listitem, inputtext[])
 {
     if(response)
