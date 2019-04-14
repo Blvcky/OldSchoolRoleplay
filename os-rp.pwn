@@ -1,4 +1,35 @@
+/*				     **********************************************************************
+				     **********************************************************************
+				     **********************************************************************
+							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOO                  OOOO    SSSSSS
+							OOOO			      OOOO    SSSSSS
+							OOOO    ooooooooo	  OOOO    SSSSSS
+							OOOO    o       o     OOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOO    o   o   o     OOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOO    o 		o     OOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOO    ooooooooo     OOOO    		          SSSSSS
+							OOOO  		          OOOO     		          SSSSSS
+							OOOO.		          OOOO                    SSSSSS
+			   				OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
+							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
+                    				____ ______    ____ ___  _    ____ _   _
+				                    |__/ |  | |    |___ |__] |    |__|  \_/
+				                    |  \ |__| |___ |___ |    |___ |  |   |
 
+                     **********************************************************************
+				     **********************************************************************
+				     **********************************************************************
+											Copyright (c) 2018 - 2019
+											
+											 	Old School Roleplay
+
+												Pedro & Hernandez
+
+*/
 #include <a_samp>
 #include <crashdetect>
 #include <a_http>
@@ -25,6 +56,8 @@
 #define SERVER_NAME      "Old School Roleplay"
 #define SERVER_REVISION  "OS:RP v0.1"
 #define SERVER_ANTICHEAT "The server"
+// ---------------------------------------
+#define TABLE_USERS         "`users`" //to be moved all tables.
 // ---------------------------------------
 #define COLOR_WHITE 		0xFFFFFFFF
 #define COLOR_YELLOW    	0xFFD200FF
@@ -7123,7 +7156,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pCourierSkill]++;
 
-	    	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET courierskill = courierskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+	    	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET courierskill = courierskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7135,7 +7168,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pFishingSkill]++;
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fishingskill = fishingskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingskill = fishingskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7147,7 +7180,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pGuardSkill]++;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET guardskill = guardskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET guardskill = guardskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7159,7 +7192,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pWeaponSkill]++;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weaponskill = weaponskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weaponskill = weaponskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7171,7 +7204,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pMechanicSkill]++;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET mechanicskill = mechanicskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET mechanicskill = mechanicskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7183,7 +7216,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pSmugglerSkill]++;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET smugglerskill = smugglerskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET smugglerskill = smugglerskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7195,7 +7228,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pLawyerSkill]++;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET lawyerskill = lawyerskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET lawyerskill = lawyerskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7207,7 +7240,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pDetectiveSkill]++;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET detectiveskill = detectiveskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET detectiveskill = detectiveskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7220,7 +7253,7 @@ GiveJobSkill(playerid, jobid)
 		{
 		    PlayerData[playerid][pThiefSkill]++;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET thiefskill = thiefskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET thiefskill = thiefskill + 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			if(GetJobLevel(playerid, jobid) != level)
@@ -7625,10 +7658,10 @@ HandleContract(playerid, killerid)
 	    PlayerData[playerid][pContracted] = 0;
 	    PlayerData[playerid][pContractBy] = 0;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET contracted = 0, contractby = 'Nobody' WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET contracted = 0, contractby = 'Nobody' WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET completedhits = %i WHERE uid = %i", PlayerData[killerid][pCompletedHits], PlayerData[killerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET completedhits = %i WHERE uid = %i", PlayerData[killerid][pCompletedHits], PlayerData[killerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
         foreach(new i : Player)
@@ -7657,10 +7690,10 @@ HandleContract(playerid, killerid)
 	    PlayerData[killerid][pContracted] = 0;
 	    PlayerData[killerid][pContractBy] = 0;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET contracted = 0, contractby = 'Nobody' WHERE uid = %i", PlayerData[killerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET contracted = 0, contractby = 'Nobody' WHERE uid = %i", PlayerData[killerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET failedhits = %i WHERE uid = %i", PlayerData[playerid][pFailedHits], PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET failedhits = %i WHERE uid = %i", PlayerData[playerid][pFailedHits], PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
         foreach(new i : Player)
@@ -9189,7 +9222,7 @@ public SetScriptSkin(playerid, skinid)
     SetPlayerSkin(playerid, skinid);
     PlayerData[playerid][pSkin] = skinid;
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET skin = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
     mysql_tquery(connectionID, queryBuffer);
 }
 
@@ -9852,7 +9885,7 @@ public AddToPaycheck(playerid, amount)
 
 		if(!PlayerData[playerid][pAdminDuty])
 	    {
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET paycheck = paycheck + %i WHERE uid = %i", amount, PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET paycheck = paycheck + %i WHERE uid = %i", amount, PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 			AddToTaxVault(-amount);
 		}
@@ -12735,22 +12768,22 @@ public GivePlayerCash(playerid, amount)
 		PlayerData[playerid][pCash] = PlayerData[playerid][pCash] + amount;
 		if(amount < 0)
 		{
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET money_spent = money_spent + %i WHERE uid = %i", -amount, PlayerData[playerid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET money_spent = money_spent + %i WHERE uid = %i", -amount, PlayerData[playerid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE uid = %i AND money_spent >= 500000", PlayerData[playerid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE uid = %i AND money_spent >= 500000", PlayerData[playerid][pID]);
 		    mysql_tquery(connectionID, queryBuffer, "OnPlayerCheckMoney", "is", playerid, "I'm rich!");
 		}
 		else if(amount > 0)
 		{
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET money_earned = money_earned + %i WHERE uid = %i", amount, PlayerData[playerid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET money_earned = money_earned + %i WHERE uid = %i", amount, PlayerData[playerid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE uid = %i AND money_earned >= 500000", PlayerData[playerid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE uid = %i AND money_earned >= 500000", PlayerData[playerid][pID]);
 		    mysql_tquery(connectionID, queryBuffer, "OnPlayerCheckMoney", "is", playerid, "High roller");
 		}
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cash = cash + %i WHERE uid = %i", amount, PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cash = cash + %i WHERE uid = %i", amount, PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	return 1;
@@ -14200,17 +14233,17 @@ public SavePlayerVariables(playerid)
 	        PlayerData[playerid][pWorld] = GetPlayerVirtualWorld(playerid);
 		}
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET camera_x = '%f', camera_y = '%f', camera_z = '%f', pos_x = '%f', pos_y = '%f', pos_z = '%f', pos_a = '%f', interior = %i, world = %i, health = '%f', armor = '%f', minutes = %i, warnings = %i, injured = %i, hospital = %i, upgradepoints = %i, spawnhealth = '%f', spawnarmor = '%f', jailtype = %i, jailtime = %i WHERE uid = %i", PlayerData[playerid][pCameraX], PlayerData[playerid][pCameraY],
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET camera_x = '%f', camera_y = '%f', camera_z = '%f', pos_x = '%f', pos_y = '%f', pos_z = '%f', pos_a = '%f', interior = %i, world = %i, health = '%f', armor = '%f', minutes = %i, warnings = %i, injured = %i, hospital = %i, upgradepoints = %i, spawnhealth = '%f', spawnarmor = '%f', jailtype = %i, jailtime = %i WHERE uid = %i", PlayerData[playerid][pCameraX], PlayerData[playerid][pCameraY],
 			PlayerData[playerid][pCameraZ], PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ], PlayerData[playerid][pPosA], PlayerData[playerid][pInterior], PlayerData[playerid][pWorld], PlayerData[playerid][pHealth], PlayerData[playerid][pArmor], PlayerData[playerid][pMinutes], PlayerData[playerid][pWarnings], PlayerData[playerid][pInjured], PlayerData[playerid][pHospital], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pSpawnHealth],
 			PlayerData[playerid][pSpawnArmor], PlayerData[playerid][pJailType], PlayerData[playerid][pJailTime], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET newbiemuted = %i, helpmuted = %i, admuted = %i, livemuted = %i, globalmuted = %i, reportmuted = %i, reportwarns = %i, fightstyle = %i, cookies = %i, toggletextdraws = %i, toggleooc = %i, togglephone = %i, toggleadmin = %i, togglehelper = %i, togglenewbie = %i, togglewt = %i, togglevip = %i WHERE uid = %i", PlayerData[playerid][pNewbieMuted], PlayerData[playerid][pHelpMuted], PlayerData[playerid][pAdMuted],
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET newbiemuted = %i, helpmuted = %i, admuted = %i, livemuted = %i, globalmuted = %i, reportmuted = %i, reportwarns = %i, fightstyle = %i, cookies = %i, toggletextdraws = %i, toggleooc = %i, togglephone = %i, toggleadmin = %i, togglehelper = %i, togglenewbie = %i, togglewt = %i, togglevip = %i WHERE uid = %i", PlayerData[playerid][pNewbieMuted], PlayerData[playerid][pHelpMuted], PlayerData[playerid][pAdMuted],
 			PlayerData[playerid][pLiveMuted], PlayerData[playerid][pGlobalMuted], PlayerData[playerid][pReportMuted], PlayerData[playerid][pReportWarns], PlayerData[playerid][pFightStyle], PlayerData[playerid][pCookies], PlayerData[playerid][pToggleTextdraws], PlayerData[playerid][pToggleOOC], PlayerData[playerid][pTogglePhone], PlayerData[playerid][pToggleAdmin], PlayerData[playerid][pToggleHelper], PlayerData[playerid][pToggleNewbie], PlayerData[playerid][pToggleWT],
 			PlayerData[playerid][pToggleVIP], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET toggleradio = %i,\
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET toggleradio = %i,\
 		togglepoint = %i, toggleturfs = %i, togglepm = %i, togglemusic = %i, togglefaction = %i, togglenews = %i,\
 	    toggleglobal = %i, togglecam = %i, togglehud = %i, weedtime = %i, weedgrams = %i, showturfs = %i, showlands = %i, \
 		watchon = %i, gpson = %i, couriercooldown = %i, pizzacooldown = %i, detectivecooldown = %i, thiefcooldown = %i, \
@@ -14222,18 +14255,18 @@ public SavePlayerVariables(playerid)
 			PlayerData[playerid][pDetectiveCooldown], PlayerData[playerid][pThiefCooldown], PlayerData[playerid][pCocaineCooldown], PlayerData[playerid][pDuty], PlayerData[playerid][pBandana], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET togglereports = %i, togglewhisper = %i, togglebug = %i, newbiemutetime = %i, reportmutetime = %i, globalmutetime = %i, adminhide = %i, totalpatients = %i, totalfires = %i, scanneron = %i, rarecooldown = %i WHERE uid = %i",
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET togglereports = %i, togglewhisper = %i, togglebug = %i, newbiemutetime = %i, reportmutetime = %i, globalmutetime = %i, adminhide = %i, totalpatients = %i, totalfires = %i, scanneron = %i, rarecooldown = %i WHERE uid = %i",
 		    PlayerData[playerid][pToggleReports], PlayerData[playerid][pToggleWhisper], PlayerData[playerid][pToggleBug], PlayerData[playerid][pNewbieMuteTime], PlayerData[playerid][pReportMuteTime], PlayerData[playerid][pGlobalMuteTime], PlayerData[playerid][pAdminHide], PlayerData[playerid][pTotalPatients], PlayerData[playerid][pTotalFires], PlayerData[playerid][pScannerOn], PlayerData[playerid][pRareTime], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %d, cocaine = %d, meth = %d, materials = %d, rope = %d, spraycans = %d WHERE uid = %i",
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %d, cocaine = %d, meth = %d, materials = %d, rope = %d, spraycans = %d WHERE uid = %i",
 			PlayerData[playerid][pWeed], PlayerData[playerid][pCocaine], PlayerData[playerid][pMeth], PlayerData[playerid][pMaterials], PlayerData[playerid][pRope], PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET togglevehicle = %d WHERE uid = %d", PlayerData[playerid][pToggleVehCam], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET togglevehicle = %d WHERE uid = %d", PlayerData[playerid][pToggleVehCam], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gunlicense = %d, housealarm = %i where uid = %d", PlayerData[playerid][pGunLicense], PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gunlicense = %d, housealarm = %i where uid = %d", PlayerData[playerid][pGunLicense], PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 	}
@@ -14244,7 +14277,7 @@ SavePlayerWeapons(playerid)
 	if(PlayerData[playerid][pLogged] && !PlayerData[playerid][pJoinedEvent] && PlayerData[playerid][pPaintball] == 0 && PlayerData[playerid][pDueling] == INVALID_PLAYER_ID)
 	{
 		// Saving weapons.
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET \
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET \
 																					`weapon_0` = %i, \
 																					`weapon_1` = %i, \
 																					`weapon_2` = %i, \
@@ -14274,7 +14307,7 @@ SavePlayerWeapons(playerid)
 																					PlayerData[playerid][pWeapons][12],
 																					PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ammo_0 = %i, ammo_1 = %i, ammo_2 = %i, ammo_3 = %i, ammo_4 = %i, ammo_5 = %i, ammo_6 = %i, ammo_7 = %i, ammo_8 = %i, ammo_9 = %i, ammo_10 = %i, ammo_11 = %i, ammo_12 = %i WHERE uid = %i",
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ammo_0 = %i, ammo_1 = %i, ammo_2 = %i, ammo_3 = %i, ammo_4 = %i, ammo_5 = %i, ammo_6 = %i, ammo_7 = %i, ammo_8 = %i, ammo_9 = %i, ammo_10 = %i, ammo_11 = %i, ammo_12 = %i WHERE uid = %i",
 			PlayerData[playerid][pAmmo][0], PlayerData[playerid][pAmmo][1], PlayerData[playerid][pAmmo][2], PlayerData[playerid][pAmmo][3], PlayerData[playerid][pAmmo][4], PlayerData[playerid][pAmmo][5], PlayerData[playerid][pAmmo][6], PlayerData[playerid][pAmmo][7], PlayerData[playerid][pAmmo][8], PlayerData[playerid][pAmmo][9], PlayerData[playerid][pAmmo][10], PlayerData[playerid][pAmmo][11], PlayerData[playerid][pGunsAmmo][12], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
@@ -14385,7 +14418,7 @@ SendPaycheck(playerid)
 	Dialog_Show(playerid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "Paycheck", str, "Okay", "");
 	if(rent == -1)
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rentinghouse = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rentinghouse = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		PlayerData[playerid][pRentingHouse] = 0;
@@ -14557,7 +14590,7 @@ SendPaycheck(playerid)
 	    AwardAchievement(playerid, "Addicted");
 	}
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET minutes = 0, hours = hours + 1, exp = %i, bank = %i, paycheck = 0, weaponrestricted = %i, doublexp = %i WHERE uid = %i", PlayerData[playerid][pEXP], PlayerData[playerid][pBank], PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pDoubleXP], PlayerData[playerid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET minutes = 0, hours = hours + 1, exp = %i, bank = %i, paycheck = 0, weaponrestricted = %i, doublexp = %i WHERE uid = %i", PlayerData[playerid][pEXP], PlayerData[playerid][pBank], PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pDoubleXP], PlayerData[playerid][pID]);
     mysql_tquery(connectionID, queryBuffer);
 
     gTotalHours++;
@@ -15858,7 +15891,7 @@ CancelActiveCheckpoint(playerid)
 
 ReferralCheck(playerid)
 {
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, ip FROM users WHERE uid = %i", PlayerData[playerid][pReferralUID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, ip FROM "#TABLE_USERS" WHERE uid = %i", PlayerData[playerid][pReferralUID]);
 	mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_REWARD_REFERRER, playerid);
 }
 
@@ -16015,7 +16048,7 @@ SellWeapon(playerid, targetid, weaponid, price = 0)
     {
 		PlayerData[playerid][pMaterials] -= cost;
     	PlayerData[playerid][pLastSell] = gettime();
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		if(targetid == playerid)
@@ -16112,7 +16145,7 @@ Namechange(playerid, oldname[], newname[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE lands SET owner = '%s' WHERE owner = '%s'", newname, oldname);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET username = '%s' WHERE uid = %i", newname, PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET username = '%s' WHERE uid = %i", newname, PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 		strcpy(PlayerData[playerid][pUsername], newname, MAX_PLAYER_NAME);
@@ -16334,7 +16367,7 @@ RemoveFaction(factionid)
     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM factionlockers WHERE factionid = %i", factionid);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET faction = -1, factionrank = 0, factionleader = 0, division = -1 WHERE faction = %i", factionid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET faction = -1, factionrank = 0, factionleader = 0, division = -1 WHERE faction = %i", factionid);
 	mysql_tquery(connectionID, queryBuffer);
 }
 
@@ -16404,7 +16437,7 @@ SetPlayerFaction(playerid, factionid, rank = 0, leader = 0)
 	    PlayerData[playerid][pFactionLeader] = leader;
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET faction = %i, factionrank = %i, division = %i, factionleader = %i WHERE uid = %i", PlayerData[playerid][pFaction], PlayerData[playerid][pFactionRank], PlayerData[playerid][pDivision], PlayerData[playerid][pFactionLeader], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET faction = %i, factionrank = %i, division = %i, factionleader = %i WHERE uid = %i", PlayerData[playerid][pFaction], PlayerData[playerid][pFactionRank], PlayerData[playerid][pDivision], PlayerData[playerid][pFactionLeader], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 }
 
@@ -16858,7 +16891,7 @@ RemoveGang(gangid)
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE turfs SET capturedgang = -1 WHERE capturedgang = %i", gangid);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gang = -1, gangrank = 0 WHERE gang = %i", gangid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = -1, gangrank = 0 WHERE gang = %i", gangid);
 	mysql_tquery(connectionID, queryBuffer);
 }
 
@@ -19093,7 +19126,7 @@ DestroyWeedPlant(playerid)
 	{
 	    DestroyDynamicObject(PlayerData[playerid][pWeedObject]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weedplanted = 0, weedtime = 0, weedgrams = 0, weed_x = 0.0, weed_y = 0.0, weed_z = 0.0, weed_a = 0.0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weedplanted = 0, weedtime = 0, weedgrams = 0, weed_x = 0.0, weed_y = 0.0, weed_z = 0.0, weed_a = 0.0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    PlayerData[playerid][pWeedPlanted] = 0;
@@ -20197,7 +20230,7 @@ public TutorialTimer(playerid, stage)
 			    StopAudioStreamForPlayer(playerid);
 			    TogglePlayerControllable(playerid, 1);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET setup = 0, gender = %i, age = %i, skin = %i WHERE uid = %i", PlayerData[playerid][pGender], PlayerData[playerid][pAge], PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET setup = 0, gender = %i, age = %i, skin = %i WHERE uid = %i", PlayerData[playerid][pGender], PlayerData[playerid][pAge], PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessage(playerid, COLOR_WHITE, "Welcome to {00aa00}Old School Roleplay{FFFFFF}. Make sure to visit os-rp.net for news and updates.");
@@ -20734,14 +20767,14 @@ public SecondTimer()
 			    PlayerData[i][pVIPTime] = 0;
 			    PlayerData[i][pSecondJob] = -1;
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET vippackage = 0, viptime = 0, secondjob = -1 WHERE uid = %i", PlayerData[i][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = 0, viptime = 0, secondjob = -1 WHERE uid = %i", PlayerData[i][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessage(i, COLOR_LIGHTRED, "Your VIP subscription has expired. You are no longer a VIP.");
 			}
 			if(PlayerData[i][pVIPPackage] < 2 && PlayerData[i][pSecondJob] != JOB_NONE)
 			{
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET secondjob = -1 WHERE uid = %i", PlayerData[i][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET secondjob = -1 WHERE uid = %i", PlayerData[i][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    PlayerData[i][pSecondJob] = JOB_NONE;
@@ -20873,7 +20906,7 @@ public SecondTimer()
 	    		        SendClientMessageEx(i, COLOR_AQUA, "You reeled in your line and caught a fish weighing %i kg!", weight);
 						PlayerData[i][pFishWeight] += weight;
 
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fishweight = %i WHERE uid = %i", PlayerData[i][pFishWeight], PlayerData[i][pID]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishweight = %i WHERE uid = %i", PlayerData[i][pFishWeight], PlayerData[i][pID]);
 						mysql_tquery(connectionID, queryBuffer);
 
 						IncreaseJobSkill(i, JOB_FISHERMAN);
@@ -21353,7 +21386,7 @@ public SecondTimer()
 					{
 					    PlayerData[i][pWeed] += PlayerData[planterid][pWeedGrams];
 
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[i][pWeed], PlayerData[i][pID]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[i][pWeed], PlayerData[i][pID]);
 						mysql_tquery(connectionID, queryBuffer);
 
 						SendClientMessageEx(i, COLOR_AQUA, "You have harvested %i grams of weed from this plant.", PlayerData[planterid][pWeedGrams]);
@@ -21398,7 +21431,7 @@ public SecondTimer()
 						    PlayerData[i][pMuriaticAcid]--;
 						}
 
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = %i, meth = %i, muriaticacid = %i WHERE uid = %i", PlayerData[i][pEphedrine], PlayerData[i][pMeth], PlayerData[i][pMuriaticAcid], PlayerData[i][pID]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i, meth = %i, muriaticacid = %i WHERE uid = %i", PlayerData[i][pEphedrine], PlayerData[i][pMeth], PlayerData[i][pMuriaticAcid], PlayerData[i][pID]);
 						mysql_tquery(connectionID, queryBuffer);
 
 						if(!PlayerData[i][pEphedrine])
@@ -22374,7 +22407,7 @@ public MDC_ClearCharges(playerid)
     	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM charges WHERE uid = %i", id);
         mysql_tquery(connectionID, queryBuffer);
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = 0 WHERE uid = %i", id);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = 0 WHERE uid = %i", id);
         mysql_tquery(connectionID, queryBuffer);
 
         foreach(new i : Player)
@@ -22602,7 +22635,7 @@ public OnPlayerAttemptResetUpgrades(playerid)
 	    PlayerData[playerid][pSpawnHealth] = 50.0;
 	    PlayerData[playerid][pSpawnArmor] = 0.0;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET upgradepoints = %i, inventoryupgrade = 0, addictupgrade = 0, traderupgrade = 0, assetupgrade = 0, laborupgrade = 0, spawnhealth = '50.0', spawnarmor = '0.0' WHERE uid = %i", PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET upgradepoints = %i, inventoryupgrade = 0, addictupgrade = 0, traderupgrade = 0, assetupgrade = 0, laborupgrade = 0, spawnhealth = '50.0', spawnarmor = '0.0' WHERE uid = %i", PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendClientMessageEx(playerid, COLOR_GREEN, "You have reset your upgrade points. You now have %i upgrade points available.", PlayerData[playerid][pUpgradePoints]);
@@ -22718,7 +22751,7 @@ public OnPlayerChangeNumber(playerid, number)
 	    PlayerData[playerid][pCookies] -= 75;
 	    PlayerData[playerid][pPhone] = number;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cookies = %i, phone = %i WHERE uid = %i", PlayerData[playerid][pCookies], PlayerData[playerid][pPhone], PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cookies = %i, phone = %i WHERE uid = %i", PlayerData[playerid][pCookies], PlayerData[playerid][pPhone], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have redeemed 75 cookies for a {00AA00}number change{33CCFF} to %i.", number);
@@ -23035,7 +23068,7 @@ public OnPlayerOfflineKickFaction(playerid, username[])
 
 		Log_Write("log_faction", "%s (uid: %i) offline kicked %s (uid: %i) from %s (id: %i) as rank %s (%i).", GetPlayerNameEx(playerid), PlayerData[playerid][pID], username, uid, FactionInfo[factionid][fName], factionid, FactionRanks[factionid][rankid], rankid);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET faction = -1, factionrank = 0, factionleader = 0, division = -1 WHERE uid = %i", uid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET faction = -1, factionrank = 0, factionleader = 0, division = -1 WHERE uid = %i", uid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have offline kicked %s from your faction.", username);
@@ -23063,7 +23096,7 @@ public OnPlayerOfflineKickGang(playerid, username[])
 
 		Log_Write("log_gang", "%s (uid: %i)  offlinekicked %s (uid: %i) from %s (id: %i) as rank %s (%i).", GetPlayerNameEx(playerid), PlayerData[playerid][pID], username, uid, GangInfo[gangid][gName], gangid, GangRanks[gangid][rankid], rankid);
         //("log_gang", PlayerData[playerid][pGang], "%s (uid: %i)  offlinekicked %s (uid: %i) from %s (id: %i) as rank %s (%i).", GetPlayerNameEx(playerid), PlayerData[playerid][pID], username, uid, GangInfo[gangid][gName], gangid, GangRanks[gangid][rankid], rankid);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gang = -1, gangrank = 0 WHERE uid = %i", uid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = -1, gangrank = 0 WHERE uid = %i", uid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have offline kicked %s from your gang.", username);
@@ -23151,7 +23184,7 @@ public OnPlayerBuyPhoneNumber(playerid, number)
 	{
 	    PlayerData[playerid][pPhone] = number;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET phone = %i WHERE uid = %i", number, PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phone = %i WHERE uid = %i", number, PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    GivePlayerCash(playerid, -10000);
@@ -23361,7 +23394,7 @@ public OnPlayerRentHouse(playerid, houseid)
 	{
 	 //   Dialog_Show(HouseInfo[houseid][hOwner], DIALOG_HOUSERENT, DIALOG_STYLE_MSGBOX, "House Rent", "%s is trying to rent a room in your house, do you accept it?", "Accept", "Decline");
 	//	SendClientMessage(playerid, COLOR_GREY, "Your renting deal has been sent to the owner, please wait.");
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rentinghouse = %i WHERE uid = %i", HouseInfo[houseid][hID], PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rentinghouse = %i WHERE uid = %i", HouseInfo[houseid][hID], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		PlayerData[playerid][pRentingHouse] = HouseInfo[houseid][hID];
@@ -23387,7 +23420,7 @@ public OnPlayerEvict(playerid, username[])
 	        }
 	    }
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rentinghouse = 0 WHERE username = '%e'", username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rentinghouse = 0 WHERE username = '%e'", username);
 	    mysql_tquery(connectionID, queryBuffer);
 
         SendClientMessageEx(playerid, COLOR_WHITE, "You have evicted %s from your property.", username);
@@ -23478,7 +23511,7 @@ public OnAdminSetPhoneNumber(playerid, targetid, number)
 	    PlayerData[targetid][pPhone] = number;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's phone number to %i.", GetRPName(targetid), number);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET phone = %i WHERE uid = %i", number, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phone = %i WHERE uid = %i", number, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    Log_Write("log_admin", "%s (uid: %i) set %s's (uid: %i) phone number to %i", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], number);
@@ -23499,7 +23532,7 @@ public OnAdminChangePassword(playerid, username[], password[])
 
 	    WP_Hash(hashed, sizeof(hashed), password);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET password = '%s' WHERE username = '%e'", hashed, username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET password = '%s' WHERE username = '%e'", hashed, username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has changed %s's account password.",GetAdmCmdRank(playerid), GetRPName(playerid), username);
@@ -23583,7 +23616,7 @@ public OnAdminOfflineDM(playerid, username[])
 
 			if(warns < 3)
 			{
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET jailtype = 2, jailtime = %i, dmwarnings = %i, weaponrestricted = %i, prisonedby = '%s', prisonreason = 'DM' WHERE uid = %i", warns * 3600, warns, warns * 4, GetPlayerNameEx(playerid), id);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET jailtype = 2, jailtime = %i, dmwarnings = %i, weaponrestricted = %i, prisonedby = '%s', prisonreason = 'DM' WHERE uid = %i", warns * 3600, warns, warns * 4, GetPlayerNameEx(playerid), id);
 			    mysql_tquery(connectionID, queryBuffer);
 
 				Log_Write("log_punishments", "%s (uid: %i) offline prisoned %s (uid: %i) for %i minutes, reason: DM [/dm]", GetPlayerNameEx(playerid), PlayerData[playerid][pID], username, id, warns * 60);
@@ -23594,7 +23627,7 @@ public OnAdminOfflineDM(playerid, username[])
 			    cache_get_field_content(0, "ip", ip);
 			    AddBan(username, ip, GetPlayerNameEx(playerid), "DM (3/3 warnings)");
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET dmwarnings = 0 WHERE uid = %i", id);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET dmwarnings = 0 WHERE uid = %i", id);
 			    mysql_tquery(connectionID, queryBuffer);
 
 		        Log_Write("log_punishments", "%s (uid: %i) offline banned %s (uid: %i), reason: DM (3/3 warnings)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], username, id);
@@ -24012,7 +24045,7 @@ public OnAdminSetHelperLevel(playerid, username[], level)
 	}
 	else
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET helperlevel = %i WHERE username = '%e'", level, username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET helperlevel = %i WHERE username = '%e'", level, username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendStaffMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has offline set %s's helper level to %i.",GetAdmCmdRank(playerid), GetRPName(playerid), username, level);
@@ -24033,12 +24066,12 @@ public OnAdminSetAdminLevel(playerid, username[], level)
 	}
 	else
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET adminlevel = %i WHERE username = '%e'", level, username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET adminlevel = %i WHERE username = '%e'", level, username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(level == 0)
 	    {
-   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET scripter = 0, gangmod = 0, banappealer = 0, factionmod = 0, helpermanager = 0, webdev = 0, dynamicadmin = 0, adminpersonnel = 0 WHERE username = '%e'", username);
+   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET scripter = 0, gangmod = 0, banappealer = 0, factionmod = 0, helpermanager = 0, webdev = 0, dynamicadmin = 0, adminpersonnel = 0 WHERE username = '%e'", username);
 			mysql_tquery(connectionID, queryBuffer);
 	    }
 
@@ -24279,7 +24312,7 @@ public OnAdminDeleteAccount(playerid, username[])
 	}
 	else
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM users WHERE username = '%e'", username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has deleted %s's account.", GetAdmCmdRank(playerid), GetPlayerNameEx(playerid), username);
@@ -24480,7 +24513,7 @@ public OnAdminLockAccount(playerid, username[])
 	}
 	else
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET locked = 1 WHERE username = '%e'", username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET locked = 1 WHERE username = '%e'", username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has locked %s's account.",GetAdmCmdRank(playerid), GetRPName(playerid), username);
@@ -24497,7 +24530,7 @@ public OnAdminUnlockAccount(playerid, username[])
 	}
 	else
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET locked = 0 WHERE username = '%e'", username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET locked = 0 WHERE username = '%e'", username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has unlocked %s's account.",GetAdmCmdRank(playerid), GetRPName(playerid), username);
@@ -24568,7 +24601,7 @@ public OnAdminOfflinePrison(playerid, username[], minutes, reason[])
 			return SendClientMessage(playerid, COLOR_GREY, "The player specified has a higher admin level than you. They cannot be prisoned.");
 		}
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET jailtype = 2, jailtime = %i, prisonedby = '%e', prisonreason = '%e' WHERE username = '%e'", minutes * 60, GetPlayerNameEx(playerid), reason, username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET jailtype = 2, jailtime = %i, prisonedby = '%e', prisonreason = '%e' WHERE username = '%e'", minutes * 60, GetPlayerNameEx(playerid), reason, username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s was offline prisoned for %i minutes by %s %s, reason: %s", username, minutes, GetAdmCmdRank(playerid), GetRPName(playerid), reason);
@@ -24592,7 +24625,7 @@ public OnAdminOfflineFine(playerid, username[], amount, reason[])
 			return SendClientMessage(playerid, COLOR_GREY, "The player specified has a higher admin level than you. They cannot be fined.");
 		}
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cash = cash - %i WHERE username = '%e'", amount, username);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cash = cash - %i WHERE username = '%e'", amount, username);
 	    mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s was offline fined for %s by %s %s, reason: %s", username, FormatNumber(amount), GetAdmCmdRank(playerid),GetRPName(playerid), reason);
@@ -24661,7 +24694,7 @@ public OnQueryFinished(threadid, extraid)
 	        }
 	        else
 	        {
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%s'", GetPlayerNameEx(extraid));
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%s'", GetPlayerNameEx(extraid));
 				mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_LOOKUP_ACCOUNT, extraid);
 	        }
 		}
@@ -24690,10 +24723,10 @@ public OnQueryFinished(threadid, extraid)
 
 			//if(id)
 	        //{
-	        	/*mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM users WHERE uid = %i", id);
+	        	/*mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM "#TABLE_USERS" WHERE uid = %i", id);
 	        	mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_PROCESS_LOGIN, extraid);*/
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM users WHERE uid = %i", id);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM "#TABLE_USERS" WHERE uid = %i", id);
 			mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_PROCESS_LOGIN, extraid);
 			//ShowDialogToPlayer(extraid, DIALOG_RULES);
 	        //}
@@ -24987,7 +25020,7 @@ public OnQueryFinished(threadid, extraid)
 
 				if(PlayerData[extraid][pMarriedTo] != -1)
 				{
-					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username FROM users WHERE uid = %i", PlayerData[extraid][pMarriedTo]);
+					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username FROM "#TABLE_USERS" WHERE uid = %i", PlayerData[extraid][pMarriedTo]);
     				mysql_tquery(connectionID, queryBuffer, "OnUpdatePartner", "i", extraid);
 				}
 				else
@@ -25013,7 +25046,7 @@ public OnQueryFinished(threadid, extraid)
 
 				    SendClientMessageEx(extraid, COLOR_GREEN, "%i players who you've referred reached level 3. Therefore you received %i cookies!", count, count * 10);
 
-				    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET refercount = 0 WHERE uid = %i", PlayerData[extraid][pID]);
+				    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET refercount = 0 WHERE uid = %i", PlayerData[extraid][pID]);
 				    mysql_tquery(connectionID, queryBuffer);
 				}
 
@@ -25043,7 +25076,7 @@ public OnQueryFinished(threadid, extraid)
 
 					if(!PlayerData[extraid][pAdminDuty])
 					{
-					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET lastlogin = NOW(), ip = '%s' WHERE uid = %i", GetPlayerIP(extraid), PlayerData[extraid][pID]);
+					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET lastlogin = NOW(), ip = '%s' WHERE uid = %i", GetPlayerIP(extraid), PlayerData[extraid][pID]);
 					    mysql_tquery(connectionID, queryBuffer);
 
 					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT id FROM flags WHERE uid = %i", PlayerData[extraid][pID]);
@@ -25138,7 +25171,7 @@ public OnQueryFinished(threadid, extraid)
 					    PlayerData[extraid][pGang] = -1;
 					    PlayerData[extraid][pGangRank] = 0;
 
-					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gang = -1, gangrank = 0 WHERE uid = %i", PlayerData[extraid][pID]);
+					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = -1, gangrank = 0 WHERE uid = %i", PlayerData[extraid][pID]);
 					    mysql_tquery(connectionID, queryBuffer);
 					}
 					if(PlayerData[extraid][pPasswordChanged] == 0)
@@ -26443,7 +26476,7 @@ public OnQueryFinished(threadid, extraid)
 		        else
 		        {
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET referral_uid = %i WHERE uid = %i", cache_get_field_content_int(0, "uid"), PlayerData[extraid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET referral_uid = %i WHERE uid = %i", cache_get_field_content_int(0, "uid"), PlayerData[extraid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 			    	PlayerData[extraid][pTutorial] = 0;
@@ -26458,7 +26491,7 @@ public OnQueryFinished(threadid, extraid)
 				    StopAudioStreamForPlayer(extraid);
 			    	TogglePlayerControllable(extraid, 1);
 
-					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET setup = 0, gender = %i, age = %i, skin = %i WHERE uid = %i", PlayerData[extraid][pGender], PlayerData[extraid][pAge], PlayerData[extraid][pSkin], PlayerData[extraid][pID]);
+					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET setup = 0, gender = %i, age = %i, skin = %i WHERE uid = %i", PlayerData[extraid][pGender], PlayerData[extraid][pAge], PlayerData[extraid][pSkin], PlayerData[extraid][pID]);
 					mysql_tquery(connectionID, queryBuffer);
 
 					SendClientMessage(extraid, COLOR_WHITE, "Welcome to {00aa00}Old School Roleplay{FFFFFF}. Make sure to visit os-rp.net for news and updates.");
@@ -26512,18 +26545,18 @@ public OnQueryFinished(threadid, extraid)
 			        SendClientMessage(referralid, COLOR_GREEN, "A player who you've referred reached level 3. Therefore you received 10 cookies!");
 			        SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s (IP: %s) earned 10 cookies for referring %s (IP: %s).", GetRPName(referralid), GetPlayerIP(referralid), GetRPName(extraid), GetPlayerIP(extraid));
 
-			  		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cookies = cookies + 10 WHERE uid = %i AND ip != '%s'", PlayerData[extraid][pReferralUID], GetPlayerIP(extraid));
+			  		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cookies = cookies + 10 WHERE uid = %i AND ip != '%s'", PlayerData[extraid][pReferralUID], GetPlayerIP(extraid));
 					mysql_tquery(connectionID, queryBuffer);
 				}
 				else
 				{
 				    // Referrer is offline. Let's give them their cookies and increment refercount which sends them an alert on login!
-				    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cookies = cookies + 10, refercount = refercount + 1 WHERE uid = %i AND ip != '%s'", PlayerData[extraid][pReferralUID], GetPlayerIP(extraid));
+				    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cookies = cookies + 10, refercount = refercount + 1 WHERE uid = %i AND ip != '%s'", PlayerData[extraid][pReferralUID], GetPlayerIP(extraid));
 					mysql_tquery(connectionID, queryBuffer);
 				}
 
 				// Finally, remove the player's link to the referrer as the prize has been given.
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET referral_uid = 0 WHERE uid = %i", PlayerData[extraid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET referral_uid = 0 WHERE uid = %i", PlayerData[extraid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 			}
 		}
@@ -30563,7 +30596,7 @@ public OnGameModeInit()
 //	mysql_tquery(connectionID, "SELECT * FROM `landgraffiti`", "LandGraffiti_Load", "");
 	mysql_tquery(connectionID, "SELECT * FROM `gunracks`", "Rack_Load", "");
 	mysql_tquery(connectionID, "SELECT * FROM rp_dealercars", "OnLoadDealershipCars");
-    mysql_tquery(connectionID, "UPDATE users SET vippackage = 0, viptime = 0 WHERE viptime < UNIX_TIMESTAMP()", "OnQueryFinished", "ii", THREAD_REMOVE_VIP, 0);
+    mysql_tquery(connectionID, "UPDATE "#TABLE_USERS" SET vippackage = 0, viptime = 0 WHERE viptime < UNIX_TIMESTAMP()", "OnQueryFinished", "ii", THREAD_REMOVE_VIP, 0);
 	print("Saving server information on mysql...");
 	SaveMysqlInformation();
 
@@ -35618,7 +35651,7 @@ public OnPlayerDisconnect(playerid, reason)
 	    	SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s left the server while tazed or cuffed.", GetRPName(playerid));
         	ResetPlayerWeaponsEx(playerid);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET jailtype = 2, jailtime = 1200, prisonedby = 'Server', prisonreason = 'Logging to avoid arrest' WHERE uid = %i", PlayerData[playerid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET jailtype = 2, jailtime = 1200, prisonedby = 'Server', prisonreason = 'Logging to avoid arrest' WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -36336,7 +36369,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			        GivePlayerCash(playerid, -500);
 			        PlayerData[playerid][pCarLicense] = 1;
 
-			        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET carlicense = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+			        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET carlicense = 1 WHERE uid = %i", PlayerData[playerid][pID]);
 			        mysql_tquery(connectionID, queryBuffer);
 			    }
 
@@ -36376,7 +36409,7 @@ public OnPlayerEnterCheckpoint(playerid)
 						SendClientMessage(playerid, COLOR_WHITE, "BINGO!, It's a freakin' diamond, we're going to be damn rich!");
 						SendClientMessage(playerid, COLOR_WHITE, "Boss: You know what? since you found it, you should get to keep it.");
 						PlayerData[playerid][pDiamonds] ++;
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET diamonds = %i WHERE uid = %i", PlayerData[playerid][pDiamonds], PlayerData[playerid][pID]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET diamonds = %i WHERE uid = %i", PlayerData[playerid][pDiamonds], PlayerData[playerid][pID]);
 						mysql_tquery(connectionID, queryBuffer);
 					}
 				    case 401..552:
@@ -36485,7 +36518,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			    //SendClientMessage(playerid, COLOR_AQUA, "You have dropped off your load and collected 250 materials from the depot.");
 		    	DisablePlayerCheckpoint(playerid);
 
-		    	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		    	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		    	mysql_tquery(connectionID, queryBuffer);
 			}
 	    }
@@ -36729,7 +36762,7 @@ public OnPlayerEnterCheckpoint(playerid)
 
 					PlayerData[playerid][pCP] = CHECKPOINT_NONE;
 
-	   				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cash = %i WHERE uid = %i", PlayerData[playerid][pCash], PlayerData[playerid][pID]);
+	   				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cash = %i WHERE uid = %i", PlayerData[playerid][pCash], PlayerData[playerid][pID]);
 					mysql_tquery(connectionID, queryBuffer);
 				}
 			}
@@ -36923,7 +36956,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			PlayerData[playerid][pWantedLevel]++;
 			PlayerData[playerid][pCrimes]++;
 			PlayerData[playerid][pBugFix] = 0;
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = %i, crimes = %i WHERE uid = %i", PlayerData[playerid][pWantedLevel], PlayerData[playerid][pCrimes], PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = %i, crimes = %i WHERE uid = %i", PlayerData[playerid][pWantedLevel], PlayerData[playerid][pCrimes], PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 		}
 		case CHECKPOINT_TRUCKDELIVERY:
@@ -36994,7 +37027,7 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 			GivePlayerCash(playerid, PlayerData[playerid][pPaycheck]);
 			PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET paycheck = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET paycheck = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			PlayerData[playerid][pPaycheck] = 0;
@@ -37212,7 +37245,7 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO charges VALUES(null, %i, 'The State', NOW(), 'Bank Robbery')", PlayerData[RobberyInfo[rRobbers][i]][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = 6, crimes = crimes + 1 WHERE uid = %i", PlayerData[RobberyInfo[rRobbers][i]][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = 6, crimes = crimes + 1 WHERE uid = %i", PlayerData[RobberyInfo[rRobbers][i]][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 			}
 		}
@@ -40552,7 +40585,7 @@ Dialog:DIALOG_NEWUPGRADEONE(playerid, response, listitem, inputtext[])
 				PlayerData[playerid][pInventoryUpgrade]++;
 				PlayerData[playerid][pUpgradePoints]--;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET inventoryupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pInventoryUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET inventoryupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pInventoryUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_GREEN, "You upgraded your inventory skill to %i/5. Your inventory capacity was increased.", PlayerData[playerid][pInventoryUpgrade]);
@@ -40567,7 +40600,7 @@ Dialog:DIALOG_NEWUPGRADEONE(playerid, response, listitem, inputtext[])
 				PlayerData[playerid][pAddictUpgrade]++;
 				PlayerData[playerid][pUpgradePoints]--;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET addictupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pAddictUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET addictupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pAddictUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_GREEN, "You upgraded your addict skill to level %i/3. You now gain %.1f more health & armor when using drugs.", PlayerData[playerid][pAddictUpgrade], PlayerData[playerid][pAddictUpgrade] * 5.0);
@@ -40582,7 +40615,7 @@ Dialog:DIALOG_NEWUPGRADEONE(playerid, response, listitem, inputtext[])
 				PlayerData[playerid][pTraderUpgrade]++;
 				PlayerData[playerid][pUpgradePoints]--;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET traderupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pTraderUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET traderupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pTraderUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_GREEN, "You upgraded your trader skill to level %i/3. You now pay %i percent less for items in shops.", PlayerData[playerid][pTraderUpgrade], PlayerData[playerid][pTraderUpgrade] * 10);
@@ -40598,7 +40631,7 @@ Dialog:DIALOG_NEWUPGRADEONE(playerid, response, listitem, inputtext[])
 				PlayerData[playerid][pAssetUpgrade]++;
 				PlayerData[playerid][pUpgradePoints]--;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET assetupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pAssetUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET assetupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pAssetUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_GREEN, "You upgraded your asset skill to level %i/4. You can now own %i/%i houses and garages and %i/%i businesses and vehicles.", PlayerData[playerid][pAssetUpgrade], GetPlayerAssetLimit(playerid, LIMIT_HOUSES), GetPlayerAssetLimit(playerid, LIMIT_GARAGES), GetPlayerAssetLimit(playerid, LIMIT_BUSINESSES), GetPlayerAssetLimit(playerid, LIMIT_VEHICLES));
@@ -40614,7 +40647,7 @@ Dialog:DIALOG_NEWUPGRADEONE(playerid, response, listitem, inputtext[])
 				PlayerData[playerid][pLaborUpgrade]++;
 				PlayerData[playerid][pUpgradePoints]--;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET laborupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pLaborUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET laborupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pLaborUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_GREEN, "You upgraded your labor skill to level %i/5. You now earn %i percent more extra cash when you work.", PlayerData[playerid][pLaborUpgrade], PlayerData[playerid][pLaborUpgrade] * 2);
@@ -42340,7 +42373,7 @@ Dialog:DIALOG_CONFIRMPASS(playerid, response, listitem, inputtext[])
 		    gTotalRegistered++;
 		    SaveServerInfo();
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO users (username, password, regdate, lastlogin, ip, passwordchanged) VALUES('%s', '%s', NOW(), NOW(), '%s', 1)", GetPlayerNameEx(playerid), password, GetPlayerIP(playerid));
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO "#TABLE_USERS" (username, password, regdate, lastlogin, ip, passwordchanged) VALUES('%s', '%s', NOW(), NOW(), '%s', 1)", GetPlayerNameEx(playerid), password, GetPlayerIP(playerid));
             mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_ACCOUNT_REGISTER, playerid);
 		}
 		else
@@ -42375,7 +42408,7 @@ Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
 
 		WP_Hash(password, sizeof(password), inputtext);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT *, DATE_FORMAT(lastlogin, '%s') AS login_date FROM users WHERE username = '%s' AND password = '%s'", specifiers, GetPlayerNameEx(playerid), password);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT *, DATE_FORMAT(lastlogin, '%s') AS login_date FROM "#TABLE_USERS" WHERE username = '%s' AND password = '%s'", specifiers, GetPlayerNameEx(playerid), password);
     	mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_PROCESS_LOGIN, playerid);
     }
     else
@@ -42452,7 +42485,7 @@ Dialog:DIALOG_REFERRAL(playerid, response, listitem, inputtext[])
 		    return ShowDialogToPlayer(playerid, DIALOG_REFERRAL);
 		}
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, ip, uid FROM users WHERE username = '%e'", inputtext);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, ip, uid FROM "#TABLE_USERS" WHERE username = '%e'", inputtext);
 		mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_CHECK_REFERRAL, playerid);
     }
     else
@@ -42577,7 +42610,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET phone = %i WHERE uid = %i", PlayerData[playerid][pPhone], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phone = %i WHERE uid = %i", PlayerData[playerid][pPhone], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a mobile phone.", GetRPName(playerid), price);
@@ -42611,7 +42644,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET walkietalkie = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET walkietalkie = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a walkie talkie.", GetRPName(playerid), price);
@@ -42645,7 +42678,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a pack of cigars.", GetRPName(playerid), price);
@@ -42679,7 +42712,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 10 spraycans.", GetRPName(playerid), price);
@@ -42713,7 +42746,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET phonebook = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phonebook = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a phonebook.", GetRPName(playerid), price);
@@ -42774,7 +42807,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET mp3player = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET mp3player = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received an MP3 player.", GetRPName(playerid), price);
@@ -42808,7 +42841,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fishingrod = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingrod = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a fishing rod.", GetRPName(playerid), price);
@@ -42842,7 +42875,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fishingbait = %i WHERE uid = %i", PlayerData[playerid][pFishingBait], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingbait = %i WHERE uid = %i", PlayerData[playerid][pFishingBait], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received fish bait.", GetRPName(playerid), price);
@@ -42876,7 +42909,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET muriaticacid = %i WHERE uid = %i", PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET muriaticacid = %i WHERE uid = %i", PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottle of muriatic acid.", GetRPName(playerid), price);
@@ -42910,7 +42943,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bakingsoda = %i WHERE uid = %i", PlayerData[playerid][pBakingSoda], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bakingsoda = %i WHERE uid = %i", PlayerData[playerid][pBakingSoda], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottle of baking soda.", GetRPName(playerid), price);
@@ -42944,7 +42977,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET watch = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET watch = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a pocket watch.", GetRPName(playerid), price);
@@ -42978,7 +43011,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gps = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gps = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a GPS.", GetRPName(playerid), price);
@@ -43012,7 +43045,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 5 liters of gasoline.", GetRPName(playerid), price);
@@ -43046,7 +43079,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rope = %i WHERE uid = %i", PlayerData[playerid][pRope], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rope = %i WHERE uid = %i", PlayerData[playerid][pRope], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 2 ropes.", GetRPName(playerid), price);
@@ -43080,7 +43113,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET boombox = %i WHERE uid = %i", PlayerData[playerid][pBoombox], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET boombox = %i WHERE uid = %i", PlayerData[playerid][pBoombox], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a boombox.", GetRPName(playerid), price);
@@ -43114,7 +43147,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET blindfold = %i WHERE uid = %i", PlayerData[playerid][pBlindfold], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET blindfold = %i WHERE uid = %i", PlayerData[playerid][pBlindfold], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 2 blindfolds.", GetRPName(playerid), price);
@@ -43316,7 +43349,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     PlayerData[playerid][pFightStyle] = FIGHT_STYLE_NORMAL;
                     SetPlayerFightingStyle(playerid, PlayerData[playerid][pFightStyle]);
 
-					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
+					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     SendClientMessage(playerid, COLOR_WHITE, "You have chosen the normal fighting style.");
@@ -43349,7 +43382,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased the Boxing fighting style for $%i.", price);
@@ -43382,7 +43415,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased the Kung-Fu fighting style for $%i.", price);
@@ -43415,7 +43448,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased the Kneehead fighting style for $%i.", price);
@@ -43448,7 +43481,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased the Grabkick fighting style for $%i.", price);
@@ -43481,7 +43514,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
+                    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[playerid][pFightStyle], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased the Elbow fighting style for $%i.", price);
@@ -43884,7 +43917,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            PlayerData[playerid][pFirstAid]++;
 		            PlayerData[playerid][pMaterials] -= 1000;
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET firstaid = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pFirstAid], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET firstaid = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pFirstAid], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            BusinessInfo[businessid][bMaterials] += 1000;
@@ -43910,7 +43943,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            PlayerData[playerid][pBodykits]++;
 		            PlayerData[playerid][pMaterials] -= 10000;
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bodykits = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pBodykits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bodykits = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pBodykits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            BusinessInfo[businessid][bMaterials] += 10000;
@@ -43936,7 +43969,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            PlayerData[playerid][pPoliceScanner] = 1;
 		            PlayerData[playerid][pMaterials] -= 5000;
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET policescanner = 1, materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET policescanner = 1, materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            BusinessInfo[businessid][bMaterials] += 5000;
@@ -43962,7 +43995,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            PlayerData[playerid][pRimkits]++;
 		            PlayerData[playerid][pMaterials] -= 4000;
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rimkits = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rimkits = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            BusinessInfo[businessid][bMaterials] += 4000;
@@ -43980,7 +44013,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 				        return SendClientMessage(playerid, COLOR_GREY, "You dont have enough money to purchase");
 					PlayerData[playerid][pHelmet] = 1;
 					GivePlayerCash(playerid, -500);
-					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET helmet = %d WHERE uid = %i", PlayerData[playerid][pHelmet], PlayerData[playerid][pID]);
+					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET helmet = %d WHERE uid = %i", PlayerData[playerid][pHelmet], PlayerData[playerid][pID]);
 					mysql_tquery(connectionID, queryBuffer);
 			        SendClientMessage(playerid, COLOR_GREEN, "Helmet purchased. /helmet to use it.");
 
@@ -43998,7 +44031,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            PlayerData[playerid][pHouseAlarm]++;
 		            PlayerData[playerid][pMaterials] -= 2500;
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET housealarm = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET housealarm = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            BusinessInfo[businessid][bMaterials] += 2500;
@@ -44023,7 +44056,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            PlayerData[playerid][pVehicleCMD] = 1;
 		            PlayerData[playerid][pMaterials] -= 4500;
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET vehiclecmd = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vehiclecmd = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            BusinessInfo[businessid][bMaterials] += 4500;
@@ -44048,7 +44081,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            PlayerData[playerid][pCrowbar] = 1;
 		            PlayerData[playerid][pMaterials] -= 2500;
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET crowbar = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET crowbar = %i, materials = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            BusinessInfo[businessid][bMaterials] += 2500;
@@ -44181,7 +44214,7 @@ Dialog:DIALOG_ATMDEPOSIT(playerid, response, listitem, inputtext[])
            // AddToTaxVault(fee);
         }
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
         mysql_tquery(connectionID, queryBuffer);
 
         ShowActionBubble(playerid, "** %s presses a button and deposits some cash into the ATM.", GetRPName(playerid));
@@ -44232,7 +44265,7 @@ Dialog:DIALOG_ATMWITHDRAW(playerid, response, listitem, inputtext[])
             PlayerData[playerid][pBank] -= fee;
         }
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
         mysql_tquery(connectionID, queryBuffer);
 
         ShowActionBubble(playerid, "** %s presses a button and withdraws some cash from the ATM.", GetRPName(playerid));
@@ -44264,7 +44297,7 @@ Dialog:DIALOG_CHANGEPASS(playerid, response, listitem, inputtext[])
 
 		WP_Hash(password, sizeof(password), inputtext);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET password = '%s', passwordchanged = '1' WHERE uid = %i", password, PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET password = '%s', passwordchanged = '1' WHERE uid = %i", password, PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessage(playerid, COLOR_WHITE, "Your account password was changed successfully.");
@@ -44617,7 +44650,7 @@ Dialog:DIALOG_FACTIONLOCKER(playerid, response, listitem, inputtext[])
 					    PlayerData[playerid][pSkin] = PlayerData[playerid][pClothes];
 					    PlayerData[playerid][pClothes] = -1;
 
-					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET skin = %i, clothes = -1 WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
+					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = -1 WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
 					    mysql_tquery(connectionID, queryBuffer);
 
 					    SetPlayerSkin(playerid, PlayerData[playerid][pSkin]);
@@ -44663,7 +44696,7 @@ Dialog:DIALOG_FACTIONLOCKER(playerid, response, listitem, inputtext[])
 					    PlayerData[playerid][pSkin] = PlayerData[playerid][pClothes];
 					    PlayerData[playerid][pClothes] = -1;
 
-					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET skin = %i, clothes = -1 WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
+					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = -1 WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
 					    mysql_tquery(connectionID, queryBuffer);
 
 					    ShowActionBubble(playerid, "** %s switches back to their old outfit.", GetRPName(playerid));
@@ -44785,7 +44818,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			            PlayerData[playerid][pPainkillers] = 5;
 			            ShowActionBubble(playerid, "** %s grabs a five pack of painkillers from the locker.", GetRPName(playerid));
 
-			            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+			            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			            mysql_tquery(connectionID, queryBuffer);
 			        }
 				}
@@ -45018,7 +45051,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			            PlayerData[playerid][pBombs]++;
 			            GivePlayerCash(playerid, -15000);
 
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
 						mysql_tquery(connectionID, queryBuffer);
 
 			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a bomb for $15,000. /plantbomb to place the bomb.");
@@ -45253,7 +45286,7 @@ Dialog:DIALOG_FACTIONSKINS(playerid, response, listitem, inputtext[])
             PlayerData[playerid][pSkin] = GetPlayerSkin(playerid);
             PlayerData[playerid][pSkinSelected] = -1;
 
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET skin = %i, clothes = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pClothes], PlayerData[playerid][pID]);
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pClothes], PlayerData[playerid][pID]);
             mysql_tquery(connectionID, queryBuffer);
 
             ShowActionBubble(playerid, "** %s takes a uniform out of the locker and puts it on.", GetRPName(playerid));
@@ -45946,7 +45979,7 @@ Dialog:DIALOG_LANDPERMS(playerid, response, listitem, inputtext[])
 
             SendClientMessageEx(targetid, COLOR_AQUA, "%s has removed your access to their land's objects.", GetRPName(playerid));
 			SendClientMessageEx(playerid, COLOR_AQUA, "You have removed %s's access to your land's objects.", GetRPName(targetid));
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET landkeys = %i WHERE uid = %i", LandInfo[landid][lID], PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET landkeys = %i WHERE uid = %i", LandInfo[landid][lID], PlayerData[targetid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(PlayerData[targetid][pLandPerms] == -1)
@@ -45955,7 +45988,7 @@ Dialog:DIALOG_LANDPERMS(playerid, response, listitem, inputtext[])
 
             SendClientMessageEx(targetid, COLOR_AQUA, "%s has granted you access to their land's objects.", GetRPName(playerid));
 			SendClientMessageEx(playerid, COLOR_AQUA, "You have granted %s access to your land's objects.", GetRPName(targetid));
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET landkeys = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET landkeys = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 		}
 		else
@@ -47134,7 +47167,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gWeed], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s withdraws some weed from the gang stash.", GetRPName(playerid));
@@ -47160,7 +47193,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCocaine], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s withdraws some cocaine from the gang stash.", GetRPName(playerid));
@@ -47186,7 +47219,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET meth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMeth], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s withdraws some meth from the gang stash.", GetRPName(playerid));
@@ -47212,7 +47245,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET painkillers = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPainkillers], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s withdraws some painkillers from the gang stash.", GetRPName(playerid));
@@ -47238,7 +47271,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s withdraws some materials from the gang stash.", GetRPName(playerid));
@@ -47314,7 +47347,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gWeed], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s deposits some weed in the gang stash.", GetRPName(playerid));
@@ -47340,7 +47373,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCocaine], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s deposits some cocaine in the gang stash.", GetRPName(playerid));
@@ -47366,7 +47399,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET meth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMeth], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s deposits some meth in the gang stash.", GetRPName(playerid));
@@ -47392,7 +47425,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET painkillers = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPainkillers], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s deposits some painkillers in the gang stash.", GetRPName(playerid));
@@ -47418,7 +47451,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s deposits some materials in the gang stash.", GetRPName(playerid));
@@ -48446,7 +48479,7 @@ Dialog:GangStashDepositMats(playerid, response, listitem, inputtext[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gArmsMaterials], PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %i materials in your arms dealer NPC.", amount);
@@ -48482,7 +48515,7 @@ Dialog:GangStashWithdrawMats(playerid, response, listitem, inputtext[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gArmsMaterials], PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %i materials from your arms dealer NPC.", amount);
@@ -48585,7 +48618,7 @@ Dialog:DIALOG_GANGDRUGBUY(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugweed = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gDrugWeed], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s paid $%i to the drug dealer and received %i grams of weed.", GetRPName(playerid), cost, amount);
@@ -48624,7 +48657,7 @@ Dialog:DIALOG_GANGDRUGBUY(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugcocaine = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gDrugCocaine], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s paid $%i to the drug dealer and received %i grams of cocaine.", GetRPName(playerid), cost, amount);
@@ -48663,7 +48696,7 @@ Dialog:DIALOG_GANGDRUGBUY(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugmeth = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gDrugMeth], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s paid $%i to the drug dealer and received %i grams of meth.", GetRPName(playerid), cost, amount);
@@ -48824,7 +48857,7 @@ Dialog:DIALOG_GANGDRUGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugweed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugWeed], PlayerData[playerid][pDealerGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %i grams of {00AA00}weed{33CCFF} in your drug dealer NPC.", amount);
@@ -48847,7 +48880,7 @@ Dialog:DIALOG_GANGDRUGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugcocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], PlayerData[playerid][pDealerGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %i grams of {00AA00}cocaine{33CCFF} in your drug dealer NPC.", amount);
@@ -48870,7 +48903,7 @@ Dialog:DIALOG_GANGDRUGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugmeth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugMeth], PlayerData[playerid][pDealerGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %i grams of {00AA00}meth{33CCFF} in your drug dealer NPC.", amount);
@@ -48917,7 +48950,7 @@ Dialog:DIALOG_GANGDRUGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugweed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugWeed], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %i grams of {00AA00}weed{33CCFF} from your drug dealer NPC.", amount);
@@ -48945,7 +48978,7 @@ Dialog:DIALOG_GANGDRUGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugcocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %i grams of {00AA00}cocaine{33CCFF} from your drug dealer NPC.", amount);
@@ -48973,7 +49006,7 @@ Dialog:DIALOG_GANGDRUGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugmeth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugMeth], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %i grams of {00AA00}meth{33CCFF} from your drug dealer NPC.", amount);
@@ -49016,7 +49049,7 @@ Dialog:DIALOG_FREENAMECHANGE(playerid, response, listitem, inputtext[])
 
         PlayerData[playerid][pFreeNamechange] = 1;
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", inputtext);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", inputtext);
         mysql_tquery(connectionID, queryBuffer, "OnPlayerAttemptNameChange", "is", playerid, inputtext);
     }
     else
@@ -49037,7 +49070,7 @@ Dialog:DIALOG_FREENAMECHANGE(playerid, response, listitem, inputtext[])
 			SetPlayerInJail(playerid);
 			GameTextForPlayer(playerid, "~w~Welcome to~n~~r~admin jail", 5000, 3);
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET prisonedby = 'Server', prisonreason = 'failing to change their name' WHERE uid = %i", PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET prisonedby = 'Server', prisonreason = 'failing to change their name' WHERE uid = %i", PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			strins(PlayerData[playerid][pPrisonedBy], "Server", 0);
@@ -49240,7 +49273,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET weed = %i WHERE id = %i", VehicleInfo[vehicleid][vWeed], VehicleInfo[vehicleid][vID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
   			ShowActionBubble(playerid, "** %s steals %i grams of weed from the trunk.", GetRPName(playerid), amount);
@@ -49259,7 +49292,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET cocaine = %i WHERE id = %i", VehicleInfo[vehicleid][vCocaine], VehicleInfo[vehicleid][vID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
   			ShowActionBubble(playerid, "** %s steals %i grams of cocaine from the trunk.", GetRPName(playerid), amount);
@@ -49278,7 +49311,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET meth = %i WHERE id = %i", VehicleInfo[vehicleid][vMeth], VehicleInfo[vehicleid][vID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
   			ShowActionBubble(playerid, "** %s steals %i grams of meth from the trunk.", GetRPName(playerid), amount);
@@ -49297,7 +49330,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET painkillers = %i WHERE id = %i", VehicleInfo[vehicleid][vPainkillers], VehicleInfo[vehicleid][vID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
   			ShowActionBubble(playerid, "** %s steals %i painkillers from the trunk.", GetRPName(playerid), amount);
@@ -49316,7 +49349,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET materials = %i WHERE id = %i", VehicleInfo[vehicleid][vMaterials], VehicleInfo[vehicleid][vID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
   			ShowActionBubble(playerid, "** %s steals %i materials from the trunk.", GetRPName(playerid), amount);
@@ -49329,7 +49362,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET cash = %i WHERE id = %i", VehicleInfo[vehicleid][vCash], VehicleInfo[vehicleid][vID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cash = %i WHERE uid = %i", PlayerData[playerid][pCash], PlayerData[playerid][pID]);
+  			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cash = %i WHERE uid = %i", PlayerData[playerid][pCash], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
   			ShowActionBubble(playerid, "** %s steals %s worth of cash from the trunk.", GetRPName(playerid), FormatNumber(amount));
@@ -49455,7 +49488,7 @@ Dialog:DIALOG_USERIMKIT(playerid, response, listitem, inputtext[])
 			AddVehicleComponent(vehicleid, componentid);
 			SaveVehicleModifications(vehicleid);
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rimkits = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rimkits = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 
 			PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
@@ -50280,7 +50313,7 @@ stock GetWeaponModel(weaponid)
 
 		SendClientMessage(playerid, COLOR_NAVYBLUE, "Welcome back, master.");
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET adminlevel = %i WHERE uid = %i", level, PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET adminlevel = %i WHERE uid = %i", level, PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	    return 1;
 	}
@@ -50851,7 +50884,7 @@ CMD:buylevel(playerid, params[])
 	format(string, sizeof(string), "~g~Level Up~n~~w~You are now level %i", PlayerData[playerid][pLevel]);
 	GameTextForPlayer(playerid, string, 5000, 1);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET exp = exp - %i, cash = cash - %i, level = level + 1, upgradepoints = upgradepoints + 2 WHERE uid = %i", exp, cost, PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET exp = exp - %i, cash = cash - %i, level = level + 1, upgradepoints = upgradepoints + 2 WHERE uid = %i", exp, cost, PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_GREEN, "You have moved up to level %i. This costed you %s.", PlayerData[playerid][pLevel], FormatNumber(cost));
@@ -53141,7 +53174,7 @@ CMD:removegunlicense(playerid, params[])
 		    return SendClientMessage(playerid, COLOR_GREY, "The player specified is disconnected or out of range.");
 		}
 		PlayerData[targetid][pGunLicense] = 0;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gunlicense = %d WHERE uid = %i", PlayerData[targetid][pGunLicense], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gunlicense = %d WHERE uid = %i", PlayerData[targetid][pGunLicense], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You've set %s's gun license to %d", GetRPName(targetid), PlayerData[targetid][pGunLicense]);
 		SendClientMessageEx(targetid, COLOR_AQUA, "Officer %s has revoked your gun license", GetRPName(playerid));
@@ -53165,7 +53198,7 @@ CMD:givegunlicense(playerid, params[])
 		    return SendClientMessage(playerid, COLOR_GREY, "The player specified is disconnected or out of range.");
 		}
 		PlayerData[targetid][pGunLicense] = 1;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gunlicense = %d WHERE uid = %i", PlayerData[targetid][pGunLicense], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gunlicense = %d WHERE uid = %i", PlayerData[targetid][pGunLicense], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You've set %s's gun license to %d", GetRPName(targetid), PlayerData[targetid][pGunLicense]);
 		SendClientMessageEx(targetid, COLOR_AQUA, "Officer %s has approved your gun license request", GetRPName(playerid));
@@ -53796,7 +53829,7 @@ CMD:arrest(playerid, params[])
 			SetPlayerInJail(targetid);
 			GivePlayerCash(targetid, -fine);
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = 0, arrested = %i WHERE uid = %i", PlayerData[targetid][pArrested], PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = 0, arrested = %i WHERE uid = %i", PlayerData[targetid][pArrested], PlayerData[targetid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE `criminals` SET `served` = 1 WHERE `player` = '%e';", GetPlayerNameEx(targetid));
 			mysql_tquery(connectionID, queryBuffer);
@@ -54030,7 +54063,7 @@ CMD:editimpound(playerid, params[])
 CMD:listmasks(playerid, params[]) {
 	if(PlayerData[playerid][pAdmin] > 3) {
 		new string[128];
-		SendClientMessageEx(playerid, COLOR_GREEN,"Listing active users using a mask...");
+		SendClientMessageEx(playerid, COLOR_GREEN,"Listing active "#TABLE_USERS" using a mask...");
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 		for(new i; i < MAX_PLAYERS; i++) {
 			if(GetPVarInt(i, "MASK_USED")) {
@@ -54631,7 +54664,7 @@ CMD:nanswer(playerid, params[])
 			    {
 					format(string, sizeof(string), "Answer: %s: %s", GetRPName(playerid), answer);
 					PlayerData[playerid][pNewbies] ++;
-					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET newbies = %i WHERE uid = %i", PlayerData[playerid][pNewbies], PlayerData[playerid][pID]);
+					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET newbies = %i WHERE uid = %i", PlayerData[playerid][pNewbies], PlayerData[playerid][pID]);
 					mysql_tquery(connectionID, queryBuffer);
 				}
 				if(PlayerData[playerid][pHelper] >= 2 && PlayerData[playerid][pAdmin] < 1) format(string, sizeof(string), "Answer: %s: %s", GetRPName(playerid), answer);
@@ -54930,10 +54963,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pMaterials] -= amount;
 		PlayerData[targetid][pMaterials] += amount;
 		
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[targetid][pMaterials], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[targetid][pMaterials], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i materials.", GetRPName(playerid), amount);
@@ -54959,10 +54992,10 @@ CMD:give(playerid, params[])
 
 		PlayerData[playerid][pWeed] -= amount;
 		PlayerData[targetid][pWeed] += amount;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[targetid][pWeed], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[targetid][pWeed], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of weed.", GetRPName(playerid), amount);
@@ -54988,10 +55021,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pCocaine] -= amount;
 		PlayerData[targetid][pCocaine] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[targetid][pCocaine], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[targetid][pCocaine], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of cocaine.", GetRPName(playerid), amount);
@@ -55017,10 +55050,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pMeth] -= amount;
 		PlayerData[targetid][pMeth] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[targetid][pMeth], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[targetid][pMeth], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of meth.", GetRPName(playerid), amount);
@@ -55047,10 +55080,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pPainkillers] -= amount;
 		PlayerData[targetid][pPainkillers] += amount;
 		
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[targetid][pPainkillers], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[targetid][pPainkillers], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i painkillers.", GetRPName(playerid), amount);
@@ -55073,10 +55106,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pCigars] -= amount;
 		PlayerData[targetid][pCigars] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cigars = %i WHERE uid = %i", PlayerData[targetid][pCigars], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = %i WHERE uid = %i", PlayerData[targetid][pCigars], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i cigars.", GetRPName(playerid), amount);
@@ -55099,10 +55132,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pSpraycans] -= amount;
 		PlayerData[targetid][pSpraycans] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", PlayerData[targetid][pSpraycans], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[targetid][pSpraycans], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i spraycans.", GetRPName(playerid), amount);
@@ -55125,10 +55158,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pGasCan] -= amount;
 		PlayerData[targetid][pGasCan] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gascan = %i WHERE uid = %i", PlayerData[targetid][pGasCan], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gascan = %i WHERE uid = %i", PlayerData[targetid][pGasCan], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i liters of gasoline.", GetRPName(playerid), amount);
@@ -55155,10 +55188,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pSeeds] -= amount;
 		PlayerData[targetid][pSeeds] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = %i WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = %i WHERE uid = %i", PlayerData[targetid][pSeeds], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i WHERE uid = %i", PlayerData[targetid][pSeeds], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i seeds.", GetRPName(playerid), amount);
@@ -55185,10 +55218,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pEphedrine] -= amount;
 		PlayerData[targetid][pEphedrine] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = %i WHERE uid = %i", PlayerData[playerid][pEphedrine], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i WHERE uid = %i", PlayerData[playerid][pEphedrine], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = %i WHERE uid = %i", PlayerData[targetid][pEphedrine], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i WHERE uid = %i", PlayerData[targetid][pEphedrine], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of ephedrine.", GetRPName(playerid), amount);
@@ -55215,10 +55248,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pFirstAid] -= amount;
 		PlayerData[targetid][pFirstAid] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET firstaid = %i WHERE uid = %i", PlayerData[playerid][pFirstAid], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET firstaid = %i WHERE uid = %i", PlayerData[playerid][pFirstAid], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET firstaid = %i WHERE uid = %i", PlayerData[targetid][pFirstAid], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET firstaid = %i WHERE uid = %i", PlayerData[targetid][pFirstAid], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i first aid kits.", GetRPName(playerid), amount);
@@ -55245,10 +55278,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pBodykits] -= amount;
 		PlayerData[targetid][pBodykits] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bodykits = %i WHERE uid = %i", PlayerData[playerid][pBodykits], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bodykits = %i WHERE uid = %i", PlayerData[playerid][pBodykits], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bodykits = %i WHERE uid = %i", PlayerData[targetid][pBodykits], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bodykits = %i WHERE uid = %i", PlayerData[targetid][pBodykits], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i bodywork kits.", GetRPName(playerid), amount);
@@ -55275,10 +55308,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pRimkits] -= amount;
 		PlayerData[targetid][pRimkits] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rimkits = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rimkits = %i WHERE uid = %i", PlayerData[playerid][pRimkits], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rimkits = %i WHERE uid = %i", PlayerData[targetid][pRimkits], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rimkits = %i WHERE uid = %i", PlayerData[targetid][pRimkits], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i rimkits.", GetRPName(playerid), amount);
@@ -55305,10 +55338,10 @@ CMD:give(playerid, params[])
 		PlayerData[playerid][pDiamonds] -= amount;
 		PlayerData[targetid][pDiamonds] += amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET diamonds = %i WHERE uid = %i", PlayerData[playerid][pDiamonds], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET diamonds = %i WHERE uid = %i", PlayerData[playerid][pDiamonds], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET diamonds = %i WHERE uid = %i", PlayerData[targetid][pDiamonds], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET diamonds = %i WHERE uid = %i", PlayerData[targetid][pDiamonds], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i diamonds.", GetRPName(playerid), amount);
@@ -55580,7 +55613,7 @@ CMD:customaccent(playerid, params[])
 	strcpy(PlayerData[playerid][pAccent], params, 16);
 	SendClientMessageEx(playerid, COLOR_WHITE, "You set your accent to '%s'.", PlayerData[playerid][pAccent]);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET accent = '%e' WHERE uid = %i", PlayerData[playerid][pAccent], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET accent = '%e' WHERE uid = %i", PlayerData[playerid][pAccent], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	return 1;
@@ -55665,7 +55698,7 @@ CMD:accent(playerid, params[])
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "You set your accent to '%s'.", PlayerData[playerid][pAccent]);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET accent = '%e' WHERE uid = %i", PlayerData[playerid][pAccent], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET accent = '%e' WHERE uid = %i", PlayerData[playerid][pAccent], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	return 1;
@@ -56063,7 +56096,7 @@ CMD:accept(playerid, params[])
 	    PlayerData[playerid][pGangRank] = 0;
 	    PlayerData[playerid][pCrew] = -1;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gang = %i, gangrank = 0, crew = -1 WHERE uid = %i", gangid, PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = %i, gangrank = 0, crew = -1 WHERE uid = %i", gangid, PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's gang offer to join {00AA00}%s{33CCFF}.", GetRPName(offeredby), GangInfo[gangid][gName]);
@@ -56279,10 +56312,10 @@ CMD:accept(playerid, params[])
 
 			    PlayerData[playerid][pMaterials] += amount;
 			    PlayerData[offeredby][pMaterials] -= amount;
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[offeredby][pMaterials], PlayerData[offeredby][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[offeredby][pMaterials], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i materials from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
@@ -56312,10 +56345,10 @@ CMD:accept(playerid, params[])
 
 			    PlayerData[playerid][pWeed] += amount;
 			    PlayerData[offeredby][pWeed] -= amount;
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[offeredby][pWeed], PlayerData[offeredby][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[offeredby][pWeed], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of weed from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
@@ -56346,10 +56379,10 @@ CMD:accept(playerid, params[])
 			    PlayerData[playerid][pCocaine] += amount;
 			    PlayerData[offeredby][pCocaine] -= amount;
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[offeredby][pCocaine], PlayerData[offeredby][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[offeredby][pCocaine], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of cocaine from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
@@ -56380,10 +56413,10 @@ CMD:accept(playerid, params[])
 			    PlayerData[playerid][pMeth] += amount;
 			    PlayerData[offeredby][pMeth] -= amount;
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[offeredby][pMeth], PlayerData[offeredby][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[offeredby][pMeth], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of meth from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
@@ -56414,10 +56447,10 @@ CMD:accept(playerid, params[])
 			    PlayerData[playerid][pPainkillers] += amount;
 			    PlayerData[offeredby][pPainkillers] -= amount;
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[offeredby][pPainkillers], PlayerData[offeredby][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[offeredby][pPainkillers], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i painkillers from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
@@ -56448,10 +56481,10 @@ CMD:accept(playerid, params[])
 			    PlayerData[playerid][pSeeds] += amount;
 			    PlayerData[offeredby][pSeeds] -= amount;
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = %i WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = %i WHERE uid = %i", PlayerData[offeredby][pSeeds], PlayerData[offeredby][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i WHERE uid = %i", PlayerData[offeredby][pSeeds], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i seeds from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
@@ -56482,10 +56515,10 @@ CMD:accept(playerid, params[])
 			    PlayerData[playerid][pEphedrine] += amount;
 			    PlayerData[offeredby][pEphedrine] -= amount;
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = %i WHERE uid = %i", PlayerData[playerid][pEphedrine], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i WHERE uid = %i", PlayerData[playerid][pEphedrine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = %i WHERE uid = %i", PlayerData[offeredby][pEphedrine], PlayerData[offeredby][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i WHERE uid = %i", PlayerData[offeredby][pEphedrine], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of ephedrine from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
@@ -56540,7 +56573,7 @@ CMD:accept(playerid, params[])
 	    GivePlayerCash(playerid, -price);
 	    GivePlayerCash(offeredby, price);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = wantedlevel - 1 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = wantedlevel - 1 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's offer to reduce your wanted level for %s.", GetRPName(offeredby), FormatNumber(price));
@@ -56828,9 +56861,9 @@ CMD:accept(playerid, params[])
 		PlayerData[playerid][pMarriedTo] = PlayerData[offeredby][pID];
 		PlayerData[offeredby][pMarriedTo] = PlayerData[playerid][pID];
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET marriedto = %i WHERE uid = %i", PlayerData[playerid][pMarriedTo], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET marriedto = %i WHERE uid = %i", PlayerData[playerid][pMarriedTo], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET marriedto = %i WHERE uid = %i", PlayerData[offeredby][pMarriedTo], PlayerData[offeredby][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET marriedto = %i WHERE uid = %i", PlayerData[offeredby][pMarriedTo], PlayerData[offeredby][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		strcpy(PlayerData[playerid][pMarriedName], GetPlayerNameEx(offeredby), MAX_PLAYER_NAME);
@@ -56857,9 +56890,9 @@ CMD:accept(playerid, params[])
 		PlayerData[playerid][pMarriedTo] = -1;
 		PlayerData[offeredby][pMarriedTo] = -1;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET marriedto = -1 WHERE uid = %i", PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET marriedto = -1 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET marriedto = -1 WHERE uid = %i", PlayerData[offeredby][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET marriedto = -1 WHERE uid = %i", PlayerData[offeredby][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		strcpy(PlayerData[playerid][pMarriedName], "Nobody", MAX_PLAYER_NAME);
@@ -57106,14 +57139,14 @@ CMD:undercover(playerid, params[])
 			strcpy(name, getRandomRPName());
 			level = random(9) + 1;
 			ar = float(random(50)+50);
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", name);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", name);
 			mysql_tquery(connectionID, queryBuffer, "OnUndercover", "iisiff", playerid, 1, name, level, 100.0, ar);
 		}
 		else if(strfind(name, "_") != -1) {
 		    //format(name, MAX_PLAYER_NAME, params);
 			level = random(9) + 1;
 			ar = float(random(50)+50);
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", name);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", name);
 			mysql_tquery(connectionID, queryBuffer, "OnUndercover", "iisiff", playerid, 1, name, level, 100.0, ar);
 		}
 		else
@@ -57319,7 +57352,7 @@ CMD:ar(playerid, params[])
 
 	PlayerData[playerid][pReports]++;
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET reports = %i WHERE uid = %i", PlayerData[playerid][pReports], PlayerData[playerid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET reports = %i WHERE uid = %i", PlayerData[playerid][pReports], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	return 1;
@@ -57792,7 +57825,7 @@ CMD:oflag(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /oflag [username] [description]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", name);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", name);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminOfflineFlag", "iss", playerid, name, desc);
 	return 1;
 }
@@ -57804,7 +57837,7 @@ CMD:listflagged(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	}
 
-	mysql_tquery(connectionID, "SELECT b.username FROM flags a, users b WHERE a.uid = b.uid ORDER BY b.username", "OnQueryFinished", "ii", THREAD_LIST_FLAGGED, playerid);
+	mysql_tquery(connectionID, "SELECT b.username FROM flags a, "#TABLE_USERS" b WHERE a.uid = b.uid ORDER BY b.username", "OnQueryFinished", "ii", THREAD_LIST_FLAGGED, playerid);
 	return 1;
 }
 
@@ -57821,7 +57854,7 @@ CMD:ocheck(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /ocheck [username]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM users WHERE username = '%e'", name);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM "#TABLE_USERS" WHERE username = '%e'", name);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminOfflineCheck", "is", playerid, name);
 	return 1;
 }
@@ -58367,7 +58400,7 @@ CMD:upgrade(playerid, params[])
 		PlayerData[playerid][pAssetUpgrade]++;
 		PlayerData[playerid][pUpgradePoints]--;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET assetupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pAssetUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET assetupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pAssetUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_GREEN, "You upgraded your asset skill to level %i/4. You can now own %i/%i houses and garages and %i/%i businesses and vehicles.", PlayerData[playerid][pAssetUpgrade], GetPlayerAssetLimit(playerid, LIMIT_HOUSES), GetPlayerAssetLimit(playerid, LIMIT_GARAGES), GetPlayerAssetLimit(playerid, LIMIT_BUSINESSES), GetPlayerAssetLimit(playerid, LIMIT_VEHICLES));
@@ -58382,7 +58415,7 @@ CMD:upgrade(playerid, params[])
 		PlayerData[playerid][pLaborUpgrade]++;
 		PlayerData[playerid][pUpgradePoints]--;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET laborupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pLaborUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET laborupgrade = %i, upgradepoints = %i WHERE uid = %i", PlayerData[playerid][pLaborUpgrade], PlayerData[playerid][pUpgradePoints], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_GREEN, "You upgraded your labor skill to level %i/5. You now earn %i percent more extra cash when you work.", PlayerData[playerid][pLaborUpgrade], PlayerData[playerid][pLaborUpgrade] * 2);
@@ -58614,7 +58647,7 @@ CMD:makedj(playerid, params[])
         	(playerid, COLOR_AQUA, "You've removed %s's DJ rank", GetRPName(targetid));
 			SendClientMessageEx(targetid, COLOR_AQUA, "Your DJ rank was removed by %s", GetRPName(playerid));
 			PlayerData[targetid][pDJ] = 0;
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET dj = %i WHERE uid = %i", PlayerData[targetid][pDJ], PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET dj = %i WHERE uid = %i", PlayerData[targetid][pDJ], PlayerData[targetid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 		}
 		else
@@ -58622,7 +58655,7 @@ CMD:makedj(playerid, params[])
 	        SendClientMessageEx(playerid, COLOR_AQUA, "You have made %s a rank %d DJ", GetRPName(targetid), rank);
 			SendClientMessageEx(targetid, COLOR_AQUA, "You have been made rank %d DJ by %s", rank, GetRPName(playerid));
 			PlayerData[targetid][pDJ] = rank;
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET dj = %i WHERE uid = %i", PlayerData[targetid][pDJ], PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET dj = %i WHERE uid = %i", PlayerData[targetid][pDJ], PlayerData[targetid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -58688,7 +58721,7 @@ CMD:sdm(playerid, params[])
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s was DM Warned & Prisoned for %i minutes by an Admin, reason: DM (%i/3)", GetRPName(targetid), minutes, PlayerData[targetid][pDMWarnings]);
 		GetPlayerName(playerid, PlayerData[targetid][pPrisonedBy], MAX_PLAYER_NAME);
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET prisonedby = '%e', prisonreason = 'DM' WHERE uid = %i", PlayerData[targetid][pPrisonedBy], PlayerData[targetid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET prisonedby = '%e', prisonreason = 'DM' WHERE uid = %i", PlayerData[targetid][pPrisonedBy], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		strcpy(PlayerData[targetid][pPrisonReason], "DM", 128);
@@ -58707,7 +58740,7 @@ CMD:sdm(playerid, params[])
 		SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was banned by an Admin, reason: DM (3/3 warnings)", GetRPName(targetid));
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET jailtype = %i, jailtime = %i, dmwarnings = %i, weaponrestricted = %i WHERE uid = %i", PlayerData[targetid][pJailType], PlayerData[targetid][pJailTime], PlayerData[targetid][pDMWarnings], PlayerData[targetid][pWeaponRestricted], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET jailtype = %i, jailtime = %i, dmwarnings = %i, weaponrestricted = %i WHERE uid = %i", PlayerData[targetid][pJailType], PlayerData[targetid][pJailTime], PlayerData[targetid][pDMWarnings], PlayerData[targetid][pWeaponRestricted], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -58753,7 +58786,7 @@ CMD:dm(playerid, params[])
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s was DM Warned & Prisoned for %i minutes by %s, reason: DM (%i/3)", GetRPName(targetid), minutes, GetRPName(playerid), PlayerData[targetid][pDMWarnings]);
 		GetPlayerName(playerid, PlayerData[targetid][pPrisonedBy], MAX_PLAYER_NAME);
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET prisonedby = '%e', prisonreason = 'DM' WHERE uid = %i", PlayerData[targetid][pPrisonedBy], PlayerData[targetid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET prisonedby = '%e', prisonreason = 'DM' WHERE uid = %i", PlayerData[targetid][pPrisonedBy], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		strcpy(PlayerData[targetid][pPrisonReason], "DM", 128);
@@ -58772,7 +58805,7 @@ CMD:dm(playerid, params[])
 		SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was banned by %s, reason: DM (3/3 warnings)", GetRPName(targetid), GetRPName(playerid));
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET jailtype = %i, jailtime = %i, dmwarnings = %i, weaponrestricted = %i WHERE uid = %i", PlayerData[targetid][pJailType], PlayerData[targetid][pJailTime], PlayerData[targetid][pDMWarnings], PlayerData[targetid][pWeaponRestricted], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET jailtype = %i, jailtime = %i, dmwarnings = %i, weaponrestricted = %i WHERE uid = %i", PlayerData[targetid][pJailType], PlayerData[targetid][pJailTime], PlayerData[targetid][pDMWarnings], PlayerData[targetid][pWeaponRestricted], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -58844,7 +58877,7 @@ CMD:aduty(playerid, params[])
 	    }
 
 		ClearDeathList(playerid);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM users WHERE uid = %i", PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM "#TABLE_USERS" WHERE uid = %i", PlayerData[playerid][pID]);
     	mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_PROCESS_LOGIN, playerid);
 		PlayerData[playerid][pPaycheck] = savecheck;
 	}
@@ -58876,7 +58909,7 @@ CMD:setadminname(playerid, params[])
 	    SetPlayerName(targetid, name);
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET adminname = '%e' WHERE uid = %i", name, PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET adminname = '%e' WHERE uid = %i", name, PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s changed %s's administrator name to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), name);
@@ -58923,7 +58956,7 @@ CMD:ogetip(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /ogetip [username]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, ip FROM users WHERE username = '%e'", name);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, ip FROM "#TABLE_USERS" WHERE username = '%e'", name);
 	mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_OFFLINE_IP, playerid);
 
 	return 1;
@@ -58940,7 +58973,7 @@ CMD:iplookup(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /iplookup [ip address]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin FROM users WHERE ip = '%s' ORDER BY lastlogin DESC", params);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin FROM "#TABLE_USERS" WHERE ip = '%s' ORDER BY lastlogin DESC", params);
 	mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_TRACE_IP, playerid);
 
 	return 1;
@@ -58959,7 +58992,7 @@ CMD:lastactive(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /lastactive [username]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT DATE_FORMAT(lastlogin, '%s') FROM users WHERE username = '%e'", specifiers, username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT DATE_FORMAT(lastlogin, '%s') FROM "#TABLE_USERS" WHERE username = '%e'", specifiers, username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminCheckLastActive", "is", playerid, username);
 
 	return 1;
@@ -60323,7 +60356,7 @@ CMD:odm(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use /dm instead.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid, ip, adminlevel, dmwarnings FROM users WHERE username = '%e'", name);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid, ip, adminlevel, dmwarnings FROM "#TABLE_USERS" WHERE username = '%e'", name);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminOfflineDM", "is", playerid, name);
 	return 1;
 }
@@ -60366,7 +60399,7 @@ CMD:prison(playerid, params[])
 	SetPlayerInJail(targetid);
 	GameTextForPlayer(targetid, "~w~Welcome to~n~~r~admin jail", 5000, 3);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET prisonedby = '%e', prisonreason = '%e' WHERE uid = %i", GetPlayerNameEx(playerid), reason, PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET prisonedby = '%e', prisonreason = '%e' WHERE uid = %i", GetPlayerNameEx(playerid), reason, PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	GetPlayerName(playerid, PlayerData[targetid][pPrisonedBy], MAX_PLAYER_NAME);
@@ -60399,7 +60432,7 @@ CMD:oprison(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use /prison instead.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel, uid FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel, uid FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminOfflinePrison", "isis", playerid, username, minutes, reason);
 	return 1;
 }
@@ -60521,7 +60554,7 @@ CMD:ofine(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use /fine instead.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminOfflineFine", "isis", playerid, username, amount, reason);
 	return 1;
 }
@@ -61461,7 +61494,7 @@ CMD:aclearwanted(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM charges WHERE uid = %i", PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(targetid, COLOR_WHITE, "Your crimes were cleared by %s.", GetRPName(playerid));
@@ -61510,7 +61543,7 @@ CMD:removedm(playerid, params[])
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has reversed %s's DM punishment.", GetRPName(playerid), GetRPName(targetid));
 	Log_Write("log_admin", "%s (uid: %i) reversed %s's (uid: %i) DM punishment.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET jailtype = 0, jailtime = 0, dmwarnings = %i, weaponrestricted = 0 WHERE uid = %i", PlayerData[targetid][pDMWarnings], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET jailtype = 0, jailtime = 0, dmwarnings = %i, weaponrestricted = 0 WHERE uid = %i", PlayerData[targetid][pDMWarnings], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	return 1;
@@ -61961,7 +61994,7 @@ CMD:setname(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "The name specified is not supported by the SA-MP client.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", name);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", name);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminChangeName", "iis", playerid, targetid, name);
 	return 1;
 }
@@ -62408,7 +62441,7 @@ CMD:oban(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use /ban instead.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel, ip, uid FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel, ip, uid FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminOfflineBan", "iss", playerid, username, reason);
 	return 1;
 }
@@ -62531,7 +62564,7 @@ CMD:banhistory(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /banhistory [username]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT a.date, a.description FROM log_bans a, users b WHERE a.uid = b.uid AND b.username = '%e' ORDER BY a.date DESC", name);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT a.date, a.description FROM log_bans a, "#TABLE_USERS" b WHERE a.uid = b.uid AND b.username = '%e' ORDER BY a.date DESC", name);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminCheckBanHistory", "is", playerid, name);
 
 	return 1;
@@ -62619,7 +62652,7 @@ CMD:lockaccount(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /lockaccount [username]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT locked, adminlevel FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT locked, adminlevel FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminLockAccount", "is", playerid, username);
 	return 1;
 }
@@ -62637,7 +62670,7 @@ CMD:unlockaccount(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /unlockaccount [username]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e' AND locked = 1", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e' AND locked = 1", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminUnlockAccount", "is", playerid, username);
 	return 1;
 }
@@ -62809,7 +62842,7 @@ CMD:getboombox(playerid, params[])
 		PlayerData[playerid][pBoombox] = 1;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have earned a free {D909D9}Legendary VIP{FFFFFF} boombox.");
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET boombox = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET boombox = 1 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	return 1;
@@ -62970,7 +63003,7 @@ CMD:setstat(playerid, params[])
 		    PlayerData[targetid][pGender] = 1;
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's gender to Male.", GetRPName(targetid));
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gender = 1 WHERE uid = %i", PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gender = 1 WHERE uid = %i", PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(!strcmp(param, "female", true))
@@ -62978,7 +63011,7 @@ CMD:setstat(playerid, params[])
 		    PlayerData[targetid][pGender] = 2;
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's gender to Female.", GetRPName(targetid));
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gender = 2 WHERE uid = %i", PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gender = 2 WHERE uid = %i", PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(!strcmp(param, "shemale", true))
@@ -62986,7 +63019,7 @@ CMD:setstat(playerid, params[])
 		    PlayerData[targetid][pGender] = 3;
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's gender to Shemale.", GetRPName(targetid));
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gender = 3 WHERE uid = %i", PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gender = 3 WHERE uid = %i", PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -63004,7 +63037,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pMask] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "** You have set %s's mask to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET mask = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET mask = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "age", true))
@@ -63021,7 +63054,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pAge] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's age to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET age = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET age = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "cash", true))
@@ -63034,7 +63067,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pCash] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's cash to $%i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cash = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cash = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "bank", true))
@@ -63047,7 +63080,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pBank] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's bank money to $%i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bank = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "level", true))
@@ -63060,7 +63093,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pLevel] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's level to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET level = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET level = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(option, "respect", true))
@@ -63073,7 +63106,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pEXP] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's respect points to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET exp = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET exp = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "upgradepoints", true))
@@ -63086,7 +63119,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pUpgradePoints] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's upgrade points to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET upgradepoints = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET upgradepoints = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(option, "hours", true))
@@ -63099,7 +63132,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pHours] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's playing hours to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET hours = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET hours = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "warnings", true))
@@ -63116,7 +63149,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pWarnings] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's warnings to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET warnings = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET warnings = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "spawnhealth", true))
@@ -63131,7 +63164,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pSpawnHealth] = amount;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's spawn health to %.1f.", GetRPName(targetid), amount);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spawnhealth = '%f' WHERE uid = %i", amount, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spawnhealth = '%f' WHERE uid = %i", amount, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "spawnarmor", true))
@@ -63146,7 +63179,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pSpawnArmor] = amount;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's spawn armor to %.1f.", GetRPName(targetid), amount);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spawnarmor = '%f' WHERE uid = %i", amount, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spawnarmor = '%f' WHERE uid = %i", amount, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "fightstyle", true))
@@ -63164,7 +63197,7 @@ CMD:setstat(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's fight style to Normal.", GetRPName(targetid));
 		    SetPlayerFightingStyle(targetid, PlayerData[targetid][pFightStyle]);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(!strcmp(param, "boxing", true))
@@ -63174,7 +63207,7 @@ CMD:setstat(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's fight style to Boxing.", GetRPName(targetid));
 		    SetPlayerFightingStyle(targetid, PlayerData[targetid][pFightStyle]);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(!strcmp(param, "kungfu", true))
@@ -63184,7 +63217,7 @@ CMD:setstat(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's fight style to Kung Fu.", GetRPName(targetid));
 		    SetPlayerFightingStyle(targetid, PlayerData[targetid][pFightStyle]);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(!strcmp(param, "kneehead", true))
@@ -63194,7 +63227,7 @@ CMD:setstat(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's fight style to Kneehead.", GetRPName(targetid));
 		    SetPlayerFightingStyle(targetid, PlayerData[targetid][pFightStyle]);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(!strcmp(param, "grabkick", true))
@@ -63204,7 +63237,7 @@ CMD:setstat(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's fight style to Grabkick.", GetRPName(targetid));
 		    SetPlayerFightingStyle(targetid, PlayerData[targetid][pFightStyle]);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(!strcmp(param, "elbow", true))
@@ -63214,7 +63247,7 @@ CMD:setstat(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's fight style to Elbow.", GetRPName(targetid));
 		    SetPlayerFightingStyle(targetid, PlayerData[targetid][pFightStyle]);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fightstyle = %i WHERE uid = %i", PlayerData[targetid][pFightStyle], PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -63230,7 +63263,7 @@ CMD:setstat(playerid, params[])
 		strcpy(PlayerData[targetid][pAccent], accent, 16);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's accent to '%s'.", GetRPName(targetid), accent);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET accent = '%e' WHERE uid = %i", accent, PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET accent = '%e' WHERE uid = %i", accent, PlayerData[targetid][pID]);
   		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "cookies", true))
@@ -63243,7 +63276,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pCookies] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's cookies to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cookies = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cookies = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "phone", true))
@@ -63262,12 +63295,12 @@ CMD:setstat(playerid, params[])
 		    PlayerData[targetid][pPhone] = 0;
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's phone number to 0.", GetRPName(targetid));
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET phone = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phone = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		else
 		{
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE phone = %i", value);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE phone = %i", value);
 			mysql_tquery(connectionID, queryBuffer, "OnAdminSetPhoneNumber", "iii", playerid, targetid, value);
 			return 1;
 		}
@@ -63282,7 +63315,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pCrimes] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's commited crimes to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET crimes = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET crimes = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "arrested", true))
@@ -63295,7 +63328,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pArrested] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's arrested count to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET arrested = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET arrested = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "wantedlevel", true))
@@ -63312,7 +63345,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pWantedLevel] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's wanted level to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "materials", true))
@@ -63325,7 +63358,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pMaterials] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's materials to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "weed", true))
@@ -63338,7 +63371,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pWeed] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's weed to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "cocaine", true))
@@ -63351,7 +63384,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pCocaine] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's cocaine to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "meth", true))
@@ -63364,7 +63397,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pMeth] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's meth to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "painkillers", true))
@@ -63377,7 +63410,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pPainkillers] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's painkillers to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
  	else if(!strcmp(option, "cigars", true))
@@ -63390,7 +63423,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pCigars] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's cigars to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cigars = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "walkietalkie", true))
@@ -63403,7 +63436,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pWalkieTalkie] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's walkie talkie to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET walkietalkie = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET walkietalkie = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "channel", true))
@@ -63416,7 +63449,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pChannel] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's radio channel to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET channel = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET channel = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "spraycans", true))
@@ -63429,7 +63462,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pSpraycans] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's spraycans to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(option, "boombox", true))
@@ -63447,7 +63480,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pBoombox] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's boombox to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET boombox = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET boombox = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "phonebook", true))
@@ -63460,7 +63493,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pPhonebook] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's phonebook to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET phonebook = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phonebook = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "paycheck", true))
@@ -63473,7 +63506,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pPaycheck] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's paycheck to $%i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET paycheck = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET paycheck = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "carlicense", true))
@@ -63486,7 +63519,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pCarLicense] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's car license to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET carlicense = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET carlicense = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "seeds", true))
@@ -63499,7 +63532,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pSeeds] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's seeds to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "ephedrine", true))
@@ -63512,7 +63545,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pEphedrine] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's ephedrine to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "job", true))
@@ -63532,7 +63565,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pJob] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's job to %s.", GetRPName(targetid), GetJobName(value));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET job = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET job = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "inventoryupgrade", true))
@@ -63549,7 +63582,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pInventoryUpgrade] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's inventory upgrade to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET inventoryupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET inventoryupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "addictupgrade", true))
@@ -63566,7 +63599,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pAddictUpgrade] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's addict upgrade to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET addictupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET addictupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "traderupgrade", true))
@@ -63583,7 +63616,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pTraderUpgrade] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's trader upgrade to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET traderupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET traderupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "assetupgrade", true))
@@ -63600,7 +63633,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pAssetUpgrade] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's asset upgrade to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET assetupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET assetupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "laborupgrade", true))
@@ -63617,7 +63650,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pLaborUpgrade] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's labor upgrade to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET laborupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET laborupgrade = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "mp3player", true))
@@ -63630,7 +63663,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pMP3Player] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's MP3 player to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET mp3player = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET mp3player = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "muriaticacid", true))
@@ -63643,7 +63676,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pMuriaticAcid] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's muriatic acid to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET muriaticacid = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET muriaticacid = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "bakingsoda", true))
@@ -63656,7 +63689,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pBakingSoda] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's baking soda to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bakingsoda = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bakingsoda = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "dmwarnings", true))
@@ -63673,7 +63706,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pDMWarnings] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's DM warnings to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET dmwarnings = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET dmwarnings = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "weaponrestricted", true))
@@ -63686,7 +63719,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pWeaponRestricted] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's weapon restriction to %i hours.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weaponrestricted = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weaponrestricted = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "components", true))
@@ -63699,7 +63732,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pComponents] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's components to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(option, "watch", true))
@@ -63712,7 +63745,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pWatch] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's watch to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET watch = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET watch = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "gps", true))
@@ -63725,7 +63758,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pGPS] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's GPS to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gps = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gps = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "gascan", true))
@@ -63738,7 +63771,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pGasCan] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's gas can to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gascan = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gascan = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(option, "smugglerskill", true))
@@ -63751,7 +63784,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pSmugglerSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's courier skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET smugglerskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET smugglerskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(option, "courierskill", true))
@@ -63764,7 +63797,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pCourierSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's courier skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET courierskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET courierskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "fishingskill", true))
@@ -63777,7 +63810,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pFishingSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's fishing skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fishingskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "guardskill", true))
@@ -63790,7 +63823,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pGuardSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's bodyguard skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET guardskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET guardskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "weaponskill", true))
@@ -63803,7 +63836,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pWeaponSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's weapon skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weaponskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weaponskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(option, "mechanicskill", true))
@@ -63816,7 +63849,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pMechanicSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's mechanic skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET mechanicskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET mechanicskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "lawyerskill", true))
@@ -63829,7 +63862,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pLawyerSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's lawyer skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET lawyerskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET lawyerskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "detectiveskill", true))
@@ -63842,7 +63875,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pDetectiveSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's detective skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET detectiveskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET detectiveskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "thiefskill", true))
@@ -63855,7 +63888,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pThiefSkill] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's thief skill to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET thiefskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET thiefskill = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "bombs", true))
@@ -63868,7 +63901,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pBombs] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's bombs to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bombs = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bombs = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "firstaid", true))
@@ -63881,7 +63914,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pFirstAid] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's first aid kits to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET firstaid = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET firstaid = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "policescanner", true))
@@ -63894,7 +63927,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pPoliceScanner] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's police scanner to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET policescanner = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET policescanner = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "bodykits", true))
@@ -63907,7 +63940,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pBodykits] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's bodykits to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bodykits = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bodykits = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "rimkits", true))
@@ -63920,7 +63953,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pRimkits] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's rimkits to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rimkits = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rimkits = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "diamonds", true))
@@ -63933,7 +63966,7 @@ CMD:setstat(playerid, params[])
 		PlayerData[targetid][pDiamonds] = value;
 	    SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's diamonds to %i.", GetRPName(targetid), value);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET diamonds = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET diamonds = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "marriage", true))
@@ -63949,7 +63982,7 @@ CMD:setstat(playerid, params[])
 			strcpy(PlayerData[targetid][pMarriedName], GetPlayerNameEx(value), MAX_PLAYER_NAME);
 	    	SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's marriage to %s.", GetRPName(targetid), GetRPName(value));
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET marriedto = %i WHERE uid = %i", PlayerData[value][pID], PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET marriedto = %i WHERE uid = %i", PlayerData[value][pID], PlayerData[targetid][pID]);
 	    	mysql_tquery(connectionID, queryBuffer);
 		}
 		else if(value == -1)
@@ -63958,7 +63991,7 @@ CMD:setstat(playerid, params[])
 			strcpy(PlayerData[targetid][pMarriedName], "Nobody", MAX_PLAYER_NAME);
 	    	SendClientMessageEx(playerid, COLOR_WHITE, "You have reset %s's marriage.", GetRPName(targetid));
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET marriedto = -1 WHERE uid = %i",  PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET marriedto = -1 WHERE uid = %i",  PlayerData[targetid][pID]);
 	    	mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -63973,7 +64006,7 @@ CMD:setstat(playerid, params[])
 			PlayerData[targetid][pSkates] = value;
 	    	SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's skates to %i.", GetRPName(targetid), value);
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rollerskates = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rollerskates = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
 	    	mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -64120,7 +64153,7 @@ CMD:osetvip(playerid, params[])
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has given a {A028AD}%s{FF6347} VIP package to %s for %i days.", GetRPName(playerid), GetVIPRank(level), username, time);
 		time = gettime() + (time * 86400);
 	}
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET vippackage = %i, viptime = %i, vipcooldown = 0 WHERE username = '%e'", level, time, username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = %i, viptime = %i, vipcooldown = 0 WHERE username = '%e'", level, time, username);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -64178,7 +64211,7 @@ CMD:setvip(playerid, params[])
 	PlayerData[targetid][pVIPTime] = gettime() + (days * 86400);
 	PlayerData[targetid][pVIPCooldown] = 0;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET vippackage = %i, viptime = %i, vipcooldown = 0, weed = %i, cocaine = %i, meth = %i, painkillers = %i, seeds = %i WHERE uid = %i", PlayerData[targetid][pVIPPackage], PlayerData[targetid][pVIPTime], PlayerData[targetid][pWeed], PlayerData[targetid][pCocaine], PlayerData[targetid][pMeth], PlayerData[targetid][pPainkillers], PlayerData[targetid][pSeeds], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = %i, viptime = %i, vipcooldown = 0, weed = %i, cocaine = %i, meth = %i, painkillers = %i, seeds = %i WHERE uid = %i", PlayerData[targetid][pVIPPackage], PlayerData[targetid][pVIPTime], PlayerData[targetid][pWeed], PlayerData[targetid][pCocaine], PlayerData[targetid][pMeth], PlayerData[targetid][pPainkillers], PlayerData[targetid][pSeeds], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	if(days >= 30)
@@ -64232,7 +64265,7 @@ CMD:removevip(playerid, params[])
 	PlayerData[targetid][pVIPColor] = 0;
     PlayerData[targetid][pSecondJob] = JOB_NONE;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET vippackage = 0, viptime = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = 0, viptime = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has revoked %s's VIP subscription.", GetRPName(playerid), GetRPName(targetid));
@@ -64302,7 +64335,7 @@ CMD:setpassword(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. You can't change their password.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminChangePassword", "iss", playerid, username, password);
 	return 1;
 }
@@ -64324,7 +64357,7 @@ CMD:deleteaccount(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. You can't delete their account.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminDeleteAccount", "is", playerid, username);
 	return 1;
 }
@@ -65514,7 +65547,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET materials = %i WHERE id = %i", HouseInfo[houseid][hMaterials], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i materials in your house stash.", value);
@@ -65540,7 +65573,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET weed = %i WHERE id = %i", HouseInfo[houseid][hWeed], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of weed in your house stash.", value);
@@ -65566,7 +65599,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET cocaine = %i WHERE id = %i", HouseInfo[houseid][hCocaine], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of cocaine in your house stash.", value);
@@ -65592,7 +65625,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET meth = %i WHERE id = %i", HouseInfo[houseid][hMeth], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of meth in your house stash.", value);
@@ -65618,7 +65651,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET painkillers = %i WHERE id = %i", HouseInfo[houseid][hPainkillers], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i painkillers in your house stash.", value);
@@ -65713,7 +65746,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET materials = %i WHERE id = %i", HouseInfo[houseid][hMaterials], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i materials from your house stash.", value);
@@ -65739,7 +65772,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET weed = %i WHERE id = %i", HouseInfo[houseid][hWeed], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of weed from your house stash.", value);
@@ -65765,7 +65798,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET cocaine = %i WHERE id = %i", HouseInfo[houseid][hCocaine], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of cocaine from your house stash.", value);
@@ -65791,7 +65824,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET meth = %i WHERE id = %i", HouseInfo[houseid][hMeth], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of meth from your house stash.", value);
@@ -65817,7 +65850,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET painkillers = %i WHERE id = %i", HouseInfo[houseid][hPainkillers], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i painkillers from your house stash.", value);
@@ -66005,7 +66038,7 @@ CMD:houseinfo(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not in range of any house of yours.");
 	}
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT (SELECT COUNT(*) FROM furniture WHERE houseid = %i) AS furnitureCount, (SELECT COUNT(*) FROM users WHERE rentinghouse = %i) AS tenantCount", HouseInfo[houseid][hID], HouseInfo[houseid][hID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT (SELECT COUNT(*) FROM furniture WHERE houseid = %i) AS furnitureCount, (SELECT COUNT(*) FROM "#TABLE_USERS" WHERE rentinghouse = %i) AS tenantCount", HouseInfo[houseid][hID], HouseInfo[houseid][hID]);
     mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_HOUSE_INFORMATION, playerid);
 
 	return 1;
@@ -66054,7 +66087,7 @@ CMD:makeadmin(playerid, params[])
     PlayerData[targetid][pAdmin] = level;
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has made %s a %s (%i).", GetRPName(playerid), GetRPName(targetid), GetAdminRank(targetid), level);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET adminlevel = %i WHERE uid = %i", level, PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET adminlevel = %i WHERE uid = %i", level, PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	if(level == 0)
@@ -66069,7 +66102,7 @@ CMD:makeadmin(playerid, params[])
 		PlayerData[playerid][pHelperManager] = 0;
 		PlayerData[playerid][pDynamicAdmin] = 0;
 		PlayerData[playerid][pAdminPersonnel] = 0;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET scripter = 0, gangmod = 0, banappealer = 0, factionmod = 0, webdev = 0, helpermanager = 0, dynamicadmin = 0, adminpersonnel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET scripter = 0, gangmod = 0, banappealer = 0, factionmod = 0, webdev = 0, helpermanager = 0, dynamicadmin = 0, adminpersonnel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else
@@ -66123,7 +66156,7 @@ CMD:makehelper(playerid, params[])
 	SendStaffMessage(COLOR_LIGHTRED, "AdmCmd: %s has made %s a level %i helper.", GetRPName(playerid), GetRPName(targetid), level);
 	PlayerData[targetid][pHelper] = level;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET helperlevel = %i WHERE uid = %i", level, PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET helperlevel = %i WHERE uid = %i", level, PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have made %s a {00AA00}%s{33CCFF} (%i).", GetRPName(targetid), GetHelperRank(targetid), level);
@@ -66154,7 +66187,7 @@ CMD:omakeadmin(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use /makeadmin instead.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT adminlevel FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminSetAdminLevel", "isi", playerid, username, level);
 	return 1;
 }
@@ -66180,7 +66213,7 @@ CMD:omakehelper(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use /makehelper instead.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT helperlevel FROM users WHERE username = '%e'", username);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT helperlevel FROM "#TABLE_USERS" WHERE username = '%e'", username);
 	mysql_tquery(connectionID, queryBuffer, "OnAdminSetHelperLevel", "isi", playerid, username, level);
 	return 1;
 }
@@ -66270,7 +66303,7 @@ CMD:olisthelpers(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	}
 
-	mysql_tquery(connectionID, "SELECT username, lastlogin, helperlevel FROM users WHERE helperlevel > 0 ORDER BY lastlogin DESC", "OnQueryFinished", "ii", THREAD_LIST_HELPERS, playerid);
+	mysql_tquery(connectionID, "SELECT username, lastlogin, helperlevel FROM "#TABLE_USERS" WHERE helperlevel > 0 ORDER BY lastlogin DESC", "OnQueryFinished", "ii", THREAD_LIST_HELPERS, playerid);
 	return 1;
 }
 CMD:ganglogs(playerid, params[])
@@ -66286,7 +66319,7 @@ CMD:oadmins(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	}
 
-	mysql_tquery(connectionID, "SELECT username, lastlogin, adminlevel FROM users WHERE adminlevel > 0 ORDER BY adminlevel DESC", "OnQueryFinished", "ii", THREAD_LIST_ADMINS, playerid);
+	mysql_tquery(connectionID, "SELECT username, lastlogin, adminlevel FROM "#TABLE_USERS" WHERE adminlevel > 0 ORDER BY adminlevel DESC", "OnQueryFinished", "ii", THREAD_LIST_ADMINS, playerid);
 	return 1;
 }
 
@@ -66297,7 +66330,7 @@ CMD:ovips(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	}
 
-	mysql_tquery(connectionID, "SELECT username, lastlogin, vippackage, viptime FROM users WHERE vippackage > 0 ORDER BY vippackage DESC", "OnQueryFinished", "ii", THREAD_LIST_VIPS, playerid);
+	mysql_tquery(connectionID, "SELECT username, lastlogin, vippackage, viptime FROM "#TABLE_USERS" WHERE vippackage > 0 ORDER BY vippackage DESC", "OnQueryFinished", "ii", THREAD_LIST_VIPS, playerid);
 	return 1;
 }
 
@@ -66526,7 +66559,7 @@ CMD:makeformeradmin(playerid, params[])
 	}
     PlayerData[targetid][pFormerAdmin] = status;
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET FormerAdmin = %i WHERE uid = %i", PlayerData[targetid][pFormerAdmin], PlayerData[targetid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET FormerAdmin = %i WHERE uid = %i", PlayerData[targetid][pFormerAdmin], PlayerData[targetid][pID]);
     mysql_tquery(connectionID, queryBuffer);
 
     if(status)
@@ -66579,7 +66612,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pWebDev] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET webdev = %i WHERE uid = %i", PlayerData[targetid][pWebDev], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET webdev = %i WHERE uid = %i", PlayerData[targetid][pWebDev], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66604,7 +66637,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pFactionMod] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET factionmod = %i WHERE uid = %i", PlayerData[targetid][pFactionMod], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET factionmod = %i WHERE uid = %i", PlayerData[targetid][pFactionMod], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66628,7 +66661,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pGangMod] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gangmod = %i WHERE uid = %i", PlayerData[targetid][pGangMod], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gangmod = %i WHERE uid = %i", PlayerData[targetid][pGangMod], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66652,7 +66685,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pBanAppealer] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET banappealer = %i WHERE uid = %i", PlayerData[targetid][pBanAppealer], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET banappealer = %i WHERE uid = %i", PlayerData[targetid][pBanAppealer], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66677,7 +66710,7 @@ CMD:setstaff(playerid, params[])
 	    if(PlayerData[playerid][pAdmin] < MANAGEMENT) return SendClientMessage(playerid, COLOR_GREY, "You must be server management to set someone as a scripter.");
 	    PlayerData[targetid][pDeveloper] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET scripter = %i WHERE uid = %i", PlayerData[targetid][pDeveloper], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET scripter = %i WHERE uid = %i", PlayerData[targetid][pDeveloper], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66701,7 +66734,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pHelperManager] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET helpermanager = %i WHERE uid = %i", PlayerData[targetid][pHelperManager], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET helpermanager = %i WHERE uid = %i", PlayerData[targetid][pHelperManager], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66725,7 +66758,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pDynamicAdmin] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET dynamicadmin = %i WHERE uid = %i", PlayerData[targetid][pDynamicAdmin], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET dynamicadmin = %i WHERE uid = %i", PlayerData[targetid][pDynamicAdmin], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66750,7 +66783,7 @@ CMD:setstaff(playerid, params[])
 	    if(PlayerData[playerid][pAdmin] < MANAGEMENT) return SendClientMessage(playerid, COLOR_GREY, "You must be server management to set someone as AP.");
 	    PlayerData[targetid][pAdminPersonnel] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET adminpersonnel = %i WHERE uid = %i", PlayerData[targetid][pAdminPersonnel], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET adminpersonnel = %i WHERE uid = %i", PlayerData[targetid][pAdminPersonnel], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66774,7 +66807,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pGameAffairs] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gameaffairs = %i WHERE uid = %i", PlayerData[targetid][pGameAffairs], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gameaffairs = %i WHERE uid = %i", PlayerData[targetid][pGameAffairs], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66798,7 +66831,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pHumanResources] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET humanresources = %i WHERE uid = %i", PlayerData[targetid][pHumanResources], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET humanresources = %i WHERE uid = %i", PlayerData[targetid][pHumanResources], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -66822,7 +66855,7 @@ CMD:setstaff(playerid, params[])
 	{
 	    PlayerData[targetid][pComplaintMod] = status;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET complaintmod = %i WHERE uid = %i", PlayerData[targetid][pComplaintMod], PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET complaintmod = %i WHERE uid = %i", PlayerData[targetid][pComplaintMod], PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    if(status)
@@ -67054,7 +67087,7 @@ CMD:accepthelp(playerid, params[])
 	PlayerData[playerid][pAcceptedHelp] = 1;
 	PlayerData[targetid][pHelpRequest][0] = 0;
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET helprequests = %i WHERE uid = %i", PlayerData[playerid][pHelpRequests], PlayerData[playerid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET helprequests = %i WHERE uid = %i", PlayerData[playerid][pHelpRequests], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
     SendHelperMessage(COLOR_LIGHTRED, "Helper: %s has accepted %s's help request.", GetRPName(playerid), GetRPName(targetid));
@@ -67173,7 +67206,7 @@ CMD:answerhelp(playerid, params[])
 	PlayerData[playerid][pHelpRequests]++;
 	PlayerData[targetid][pHelpRequest][0] = 0;
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET helprequests = %i WHERE uid = %i", PlayerData[playerid][pHelpRequests], PlayerData[playerid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET helprequests = %i WHERE uid = %i", PlayerData[playerid][pHelpRequests], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	if(strlen(msg) > MAX_SPLIT_LENGTH)
@@ -67435,7 +67468,7 @@ CMD:renthouse(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are the owner of this house. You can't rent here.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM users WHERE rentinghouse = %i", HouseInfo[houseid][hID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM "#TABLE_USERS" WHERE rentinghouse = %i", HouseInfo[houseid][hID]);
 	mysql_tquery(connectionID, queryBuffer, "OnPlayerRentHouse", "ii", playerid, houseid);
 
  	return 1;
@@ -67448,7 +67481,7 @@ CMD:unrent(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not renting at any property. You can't use this command.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rentinghouse = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rentinghouse = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	PlayerData[playerid][pRentingHouse] = 0;
@@ -67465,7 +67498,7 @@ CMD:tenants(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not in range of any house of yours.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin FROM users WHERE rentinghouse = %i ORDER BY lastlogin DESC", HouseInfo[houseid][hID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin FROM "#TABLE_USERS" WHERE rentinghouse = %i ORDER BY lastlogin DESC", HouseInfo[houseid][hID]);
 	mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_LIST_TENANTS, playerid);
 	return 1;
 }
@@ -67483,7 +67516,7 @@ CMD:evict(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /evict [username]");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e' AND rentinghouse = %i", username, HouseInfo[houseid][hID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e' AND rentinghouse = %i", username, HouseInfo[houseid][hID]);
 	mysql_tquery(connectionID, queryBuffer, "OnPlayerEvict", "is", playerid, username);
 	return 1;
 }
@@ -67506,7 +67539,7 @@ CMD:evictall(playerid, params[])
         }
     }
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rentinghouse = 0 WHERE rentinghouse = %i", HouseInfo[houseid][hID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rentinghouse = 0 WHERE rentinghouse = %i", HouseInfo[houseid][hID]);
     mysql_tquery(connectionID, queryBuffer);
 
     SendClientMessage(playerid, COLOR_WHITE, "You have evicted all tenants from your home.");
@@ -68735,7 +68768,7 @@ CMD:bwithdrawmats(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %i materials from the business vault. There is now %i remaining.", amount, BusinessInfo[businessid][bMaterials]);
@@ -68769,7 +68802,7 @@ CMD:bdepositmats(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i materials in the business vault. There is now %i available.", amount, BusinessInfo[businessid][bMaterials]);
@@ -68898,7 +68931,7 @@ CMD:installhousealarm(playerid, params[])
 	SendClientMessage(playerid, COLOR_YELLOW, "You've sucessfully installed your house alarm, now it's legal protected by the Police.");
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET alarm = %i WHERE id = %i", HouseInfo[houseid][hAlarm], HouseInfo[houseid][hID]);
 	mysql_tquery(connectionID, queryBuffer);
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET housealarm = %i WHERE uid = %i", PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET housealarm = %i WHERE uid = %i", PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -68923,7 +68956,7 @@ CMD:uninstallhousealarm(playerid, params[])
 	SendClientMessage(playerid, COLOR_YELLOW, "You've sucessfully uninstalled your house alarm, now it's not anymore protected by the Police.");
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET alarm = %i WHERE id = %i", HouseInfo[houseid][hAlarm], HouseInfo[houseid][hID]);
 	mysql_tquery(connectionID, queryBuffer);
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET housealarm = %i WHERE uid = %i", PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET housealarm = %i WHERE uid = %i", PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -69629,7 +69662,7 @@ CMD:join(playerid, params[])
 	        	    {
 	        	        return SendClientMessage(playerid, COLOR_GREY, "You have this job already.");
 	        	    }
-	        	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET secondjob = %i WHERE uid = %i", i, PlayerData[playerid][pID]);
+	        	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET secondjob = %i WHERE uid = %i", i, PlayerData[playerid][pID]);
 					mysql_tquery(connectionID, queryBuffer);
                     ApplyActorAnimation(jobLocations[i][jobActor], "PED", "IDLE_CHAT", 4.1, 1, 1, 1, 1, 1);
 					PlayerData[playerid][pSecondJob] = i;
@@ -69643,7 +69676,7 @@ CMD:join(playerid, params[])
 				return 1;
 			}
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET job = %i WHERE uid = %i", i, PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET job = %i WHERE uid = %i", i, PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
           //  ApplyActorAnimation(jobLocations[i][jobActor], "PED", "IDLE_CHAT", 4.1, 1, 1, 1, 1, 1);
 			PlayerData[playerid][pJob] = i;
@@ -69673,7 +69706,7 @@ CMD:quitjob(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "You don't have a job which you can quit.");
 	    }
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET job = -1 WHERE uid = %i", PlayerData[playerid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET job = -1 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have quit your job as a {00AA00}%s{33CCFF}.", GetJobName(PlayerData[playerid][pJob]));
@@ -69687,7 +69720,7 @@ CMD:quitjob(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "You don't have a job in this slot which you can quit.");
 	    }
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET secondjob = -1 WHERE uid = %i", PlayerData[playerid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET secondjob = -1 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have quit your secondary job as a {00AA00}%s{33CCFF}.", GetJobName(PlayerData[playerid][pSecondJob]));
@@ -70064,7 +70097,7 @@ CMD:fish(playerid, params[])
 	    PlayerData[playerid][pFishingBait]--;
 	    PlayerData[playerid][pUsedBait] = 1;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fishingbait = fishingbait - 1 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingbait = fishingbait - 1 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		//SendClientMessage(playerid, COLOR_AQUA, "** You used one fish bait. Your odds of catching a bigger fish are increased!");
@@ -70105,7 +70138,7 @@ CMD:sellfish(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_AQUA, "** You earned {00AA00}$%i{33CCFF} for selling %i kg of fish.", amount, PlayerData[playerid][pFishWeight]);
 	GivePlayerCash(playerid, amount);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET fishweight = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishweight = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	PlayerData[playerid][pFishWeight] = 0;
@@ -71016,7 +71049,7 @@ CMD:buycomps(playerid, params[])
 		GivePlayerCash(playerid, -price);
 		SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i components for $%i.", amount, price);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 
@@ -71090,7 +71123,7 @@ CMD:repair(playerid, params[])
 		{
 			PlayerData[playerid][pComponents]--;
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
 			PlayerData[playerid][pLastRepair] = gettime();
@@ -71197,7 +71230,7 @@ CMD:refill(playerid, params[])
 	ShowActionBubble(playerid, "** %s pours some gasoline to the vehicle.", GetRPName(playerid));
 	PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
     mysql_tquery(connectionID, queryBuffer);
 
     IncreaseJobSkill(playerid, JOB_MECHANIC);
@@ -71232,7 +71265,7 @@ CMD:nos(playerid, params[])
 		{
 			PlayerData[playerid][pComponents]--;
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
 	    	mysql_tquery(connectionID, queryBuffer);
 		}
 		else
@@ -71276,7 +71309,7 @@ CMD:hyd(playerid, params[])
 	{
 		PlayerData[playerid][pComponents]--;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
     	mysql_tquery(connectionID, queryBuffer);
 	}
 	else
@@ -71429,7 +71462,7 @@ CMD:withdraw(playerid, params[])
 	PlayerData[playerid][pBank] -= amount;
 	GivePlayerCash(playerid, amount);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn {00AA00}%s{33CCFF} from your bank account. Your new balance is %s.", FormatNumber(amount), FormatNumber(PlayerData[playerid][pBank]));
@@ -71460,7 +71493,7 @@ CMD:deposit(playerid, params[])
 	PlayerData[playerid][pBank] += amount;
 	GivePlayerCash(playerid, -amount);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited {00AA00}%s{33CCFF} into your bank account. Your new balance is %s.", FormatNumber(amount), FormatNumber(PlayerData[playerid][pBank]));
@@ -71503,10 +71536,10 @@ CMD:wiretransfer(playerid, params[])
 	PlayerData[targetid][pBank] += amount;
 	PlayerData[playerid][pBank] -= amount;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bank = %i WHERE uid = %i", PlayerData[targetid][pBank], PlayerData[targetid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[targetid][pBank], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have transferred {00AA00}%s{33CCFF} to %s. Your new balance is %s.", FormatNumber(amount), GetRPName(targetid), FormatNumber(PlayerData[playerid][pBank]));
@@ -71649,7 +71682,7 @@ CMD:smsold(playerid, params[])
 		}
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, jailtype, togglephone FROM users WHERE phone = %i", number);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, jailtype, togglephone FROM "#TABLE_USERS" WHERE phone = %i", number);
 	mysql_tquery(connectionID, queryBuffer, "OnPlayerSendTextMessage", "iis", playerid, number, msg);
 	return 1;
 }
@@ -74530,7 +74563,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET materials = %i WHERE id = %i", VehicleInfo[vehicleid][vMaterials], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i materials in your vehicle stash.", value);
@@ -74556,7 +74589,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET weed = %i WHERE id = %i", VehicleInfo[vehicleid][vWeed], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of weed in your vehicle stash.", value);
@@ -74582,7 +74615,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET cocaine = %i WHERE id = %i", VehicleInfo[vehicleid][vCocaine], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of cocaine in your vehicle stash.", value);
@@ -74608,7 +74641,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET meth = %i WHERE id = %i", VehicleInfo[vehicleid][vMeth], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of meth in your vehicle stash.", value);
@@ -74634,7 +74667,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET painkillers = %i WHERE id = %i", VehicleInfo[vehicleid][vPainkillers], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i painkillers in your vehicle stash.", value);
@@ -74732,7 +74765,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET materials = %i WHERE id = %i", VehicleInfo[vehicleid][vMaterials], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i materials from your vehicle stash.", value);
@@ -74758,7 +74791,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET weed = %i WHERE id = %i", VehicleInfo[vehicleid][vWeed], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of weed from your vehicle stash.", value);
@@ -74784,7 +74817,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET cocaine = %i WHERE id = %i", VehicleInfo[vehicleid][vCocaine], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of cocaine from your vehicle stash.", value);
@@ -74810,7 +74843,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET meth = %i WHERE id = %i", VehicleInfo[vehicleid][vMeth], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of meth from your vehicle stash.", value);
@@ -74836,7 +74869,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET painkillers = %i WHERE id = %i", VehicleInfo[vehicleid][vPainkillers], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
 			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i painkillers from your vehicle stash.", value);
@@ -75062,7 +75095,7 @@ CMD:colorcar(playerid, params[])
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		PlayerData[playerid][pSpraycans]--;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 		ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
@@ -75087,7 +75120,7 @@ CMD:colorcar(playerid, params[])
 			    mysql_tquery(connectionID, queryBuffer);
 			}
 			PlayerData[playerid][pSpraycans]--;
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 			ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
 			SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
@@ -75108,7 +75141,7 @@ CMD:colorcar(playerid, params[])
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		PlayerData[playerid][pComponents]--;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 		ShowActionBubble(playerid, "** %s sprays the vehicle to a different color.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i components left.", PlayerData[playerid][pComponents]);
@@ -75160,7 +75193,7 @@ CMD:paintcar(playerid, params[])
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		PlayerData[playerid][pSpraycans]--;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 		ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
@@ -75184,7 +75217,7 @@ CMD:paintcar(playerid, params[])
 			    mysql_tquery(connectionID, queryBuffer);
 			}
 			PlayerData[playerid][pSpraycans]--;
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 			ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
 			SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
@@ -75206,7 +75239,7 @@ CMD:paintcar(playerid, params[])
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 		PlayerData[playerid][pComponents]--;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 		ShowActionBubble(playerid, "** %s sprays the vehicle to a different color.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i components left.", PlayerData[playerid][pComponents]);
@@ -75510,10 +75543,10 @@ CMD:vipinvite(playerid, params[])
 	PlayerData[targetid][pVIPTime] = gettime() + 10800;
 	PlayerData[playerid][pVIPCooldown] = gettime() + 86400;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET vippackage = %i, viptime = %i WHERE uid = %i", PlayerData[targetid][pVIPPackage], PlayerData[targetid][pVIPTime], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = %i, viptime = %i WHERE uid = %i", PlayerData[targetid][pVIPPackage], PlayerData[targetid][pVIPTime], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET vipcooldown = %i WHERE uid = %i", PlayerData[playerid][pVIPCooldown], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vipcooldown = %i WHERE uid = %i", PlayerData[playerid][pVIPCooldown], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has given you a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(playerid), GetVIPRank(PlayerData[targetid][pVIPPackage]));
@@ -75574,7 +75607,7 @@ CMD:vipnumber(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "Invalid number.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE phone = %i", number);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE phone = %i", number);
 	mysql_tquery(connectionID, queryBuffer, "OnPlayerBuyPhoneNumber", "ii", playerid, number);
 	return 1;
 }
@@ -76001,7 +76034,7 @@ CMD:purgefaction(playerid, params[])
 
 	strcpy(FactionInfo[factionid][fLeader], "No-one", MAX_PLAYER_NAME);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET faction = -1, factionrank = 0, division = -1 WHERE faction = %i", factionid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET faction = -1, factionrank = 0, division = -1 WHERE faction = %i", factionid);
 	mysql_tquery(connectionID, queryBuffer);
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET leader = 'No-one' WHERE id = %i", factionid);
@@ -76097,7 +76130,7 @@ CMD:factions(playerid, params[])
 	{
 	    if(FactionInfo[i][fType] != FACTION_NONE)
 	    {
-	        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM users WHERE faction = %i", i);
+	        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM "#TABLE_USERS" WHERE faction = %i", i);
 	        mysql_tquery(connectionID, queryBuffer, "OnPlayerListFactions", "ii", playerid, i);
 	    }
 	}
@@ -76124,7 +76157,7 @@ CMD:setfreq(playerid, params[])
 
 	PlayerData[playerid][pChannel] = channel;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET channel = %i WHERE uid = %i", channel, PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET channel = %i WHERE uid = %i", channel, PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	if(channel == 0)
@@ -76453,7 +76486,7 @@ CMD:radio(playerid, params[])
                 SendProximityMessage(i, 20.0, COLOR_PURPLE, "** %s's police scanner would shoot a spark and short out.", GetRPName(i));
                 SendClientMessage(i, COLOR_GREY2, "Your police scanner shorted out and is now broken.");
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET policescanner = 0, scanneron = 0 WHERE uid = %i", PlayerData[i][pID]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET policescanner = 0, scanneron = 0 WHERE uid = %i", PlayerData[i][pID]);
                 mysql_tquery(connectionID, queryBuffer);
 
             	PlayerData[i][pPoliceScanner] = 0;
@@ -76542,7 +76575,7 @@ CMD:d(playerid, params[])
 		                SendProximityMessage(i, 20.0, COLOR_PURPLE, "** %s's police scanner would shoot a spark and short out.", GetRPName(i));
 		                SendClientMessage(i, COLOR_GREY2, "Your police scanner shorted out and is now broken.");
 
-		                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET policescanner = 0, scanneron = 0 WHERE uid = %i", PlayerData[i][pID]);
+		                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET policescanner = 0, scanneron = 0 WHERE uid = %i", PlayerData[i][pID]);
 		                mysql_tquery(connectionID, queryBuffer);
 
 		            	PlayerData[i][pPoliceScanner] = 0;
@@ -76696,7 +76729,7 @@ CMD:faction(playerid, params[])
 
 		PlayerData[targetid][pFactionRank] = rankid;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET factionrank = %i WHERE uid = %i", rankid, PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET factionrank = %i WHERE uid = %i", rankid, PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has set your rank to {00AA00}%s{33CCFF} (%i).", GetRPName(playerid), FactionRanks[PlayerData[playerid][pFaction]][rankid], rankid);
@@ -76741,12 +76774,12 @@ CMD:faction(playerid, params[])
 	        Log_Write("log_faction", "%s (uid: %i) revoked leadership flags from %s (uid: %i).", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 		}
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET factionleader = %i WHERE uid = %i", PlayerData[targetid][pFactionLeader], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET factionleader = %i WHERE uid = %i", PlayerData[targetid][pFactionLeader], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "roster", true))
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin, factionrank FROM users WHERE faction = %i ORDER BY factionrank DESC", PlayerData[playerid][pFaction]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin, factionrank FROM "#TABLE_USERS" WHERE faction = %i ORDER BY factionrank DESC", PlayerData[playerid][pFaction]);
 		mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_FACTION_ROSTER, playerid);
 	}
 	else if(!strcmp(option, "online", true))
@@ -76782,7 +76815,7 @@ CMD:faction(playerid, params[])
 	    	return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use '/faction kick' instead.");
 		}
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid, faction, factionrank FROM users WHERE username = '%e'", username);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid, faction, factionrank FROM "#TABLE_USERS" WHERE username = '%e'", username);
 		mysql_tquery(connectionID, queryBuffer, "OnPlayerOfflineKickFaction", "is", playerid, username);
 	}
 	else if(!strcmp(option, "respawncars", true))
@@ -76881,7 +76914,7 @@ CMD:division(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM divisions WHERE id = %i AND divisionid = %i", PlayerData[playerid][pFaction], divisionid);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET division = -1 WHERE faction = %i", PlayerData[playerid][pFaction]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET division = -1 WHERE faction = %i", PlayerData[playerid][pFaction]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "list", true))
@@ -76936,7 +76969,7 @@ CMD:division(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has assigned you to the {F7A763}%s{33CCFF} division.", GetRPName(playerid), FactionDivisions[PlayerData[playerid][pFaction]][divisionid]);
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have assigned %s to the {F7A763}%s{33CCFF} division.", GetRPName(targetid), FactionDivisions[PlayerData[playerid][pFaction]][divisionid]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET division = %i WHERE uid = %i", divisionid, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET division = %i WHERE uid = %i", divisionid, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "kick", true))
@@ -76965,7 +76998,7 @@ CMD:division(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has removed you from the {F7A763}%s{33CCFF} division.", GetRPName(playerid), FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[targetid][pDivision]]);
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have removed %s from the {F7A763}%s{33CCFF} division.", GetRPName(targetid), FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[targetid][pDivision]]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET division = -1 WHERE uid = %i", PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET division = -1 WHERE uid = %i", PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
         PlayerData[targetid][pDivision] = -1;
@@ -77044,7 +77077,7 @@ CMD:managecrew(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM crews WHERE id = %i AND crewid = %i", PlayerData[playerid][pGang], crewid);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET crew = -1 WHERE gang = %i", PlayerData[playerid][pGang]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET crew = -1 WHERE gang = %i", PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "list", true))
@@ -77099,7 +77132,7 @@ CMD:managecrew(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has assigned you to the {F7A763}%s{33CCFF} crew.", GetRPName(playerid), GangCrews[PlayerData[playerid][pGang]][crewid]);
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have assigned %s to the {F7A763}%s{33CCFF} crew.", GetRPName(targetid), GangCrews[PlayerData[playerid][pGang]][crewid]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET crew = %i WHERE uid = %i", crewid, PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET crew = %i WHERE uid = %i", crewid, PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "kick", true))
@@ -77128,7 +77161,7 @@ CMD:managecrew(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has removed you from the {F7A763}%s{33CCFF} crew.", GetRPName(playerid), GangCrews[PlayerData[playerid][pGang]][PlayerData[targetid][pCrew]]);
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have removed %s from the {F7A763}%s{33CCFF} crew.", GetRPName(targetid), GangCrews[PlayerData[playerid][pGang]][PlayerData[targetid][pCrew]]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET crew = -1 WHERE uid = %i", PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET crew = -1 WHERE uid = %i", PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
         PlayerData[targetid][pCrew] = -1;
@@ -77653,7 +77686,7 @@ CMD:charge(playerid, params[])
 	PlayerData[targetid][pWantedLevel]++;
 	PlayerData[targetid][pCrimes]++;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = %i, crimes = %i WHERE uid = %i", PlayerData[targetid][pWantedLevel], PlayerData[targetid][pCrimes], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = %i, crimes = %i WHERE uid = %i", PlayerData[targetid][pWantedLevel], PlayerData[targetid][pCrimes], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO charges VALUES(null, %i, '%s', NOW(), '%e')", PlayerData[targetid][pID], GetPlayerNameEx(playerid), reason);
@@ -77888,7 +77921,7 @@ CMD:take(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i grams of weed.", GetRPName(playerid), PlayerData[targetid][pWeed]);
 	    Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i grams of weed.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pWeed]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    PlayerData[targetid][pWeed] = 0;
@@ -77904,7 +77937,7 @@ CMD:take(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i grams of cocaine.", GetRPName(playerid), PlayerData[targetid][pWeed]);
         Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i grams of cocaine.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pCocaine]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    PlayerData[targetid][pCocaine] = 0;
@@ -77920,7 +77953,7 @@ CMD:take(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i grams of meth.", GetRPName(playerid), PlayerData[targetid][pWeed]);
         Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i grams of meth.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pMeth]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    PlayerData[targetid][pMeth] = 0;
@@ -77936,7 +77969,7 @@ CMD:take(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i painkillers.", GetRPName(playerid), PlayerData[targetid][pWeed]);
         Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i painkillers.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pPainkillers]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    PlayerData[targetid][pPainkillers] = 0;
@@ -77952,7 +77985,7 @@ CMD:take(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your drivers license.", GetRPName(playerid));
 	    Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) drivers license.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET carlicense = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET carlicense = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    PlayerData[targetid][pCarLicense] = 0;
@@ -78348,7 +78381,7 @@ CMD:clearwanted(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM charges WHERE uid = %i", PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET wantedlevel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	ShowActionBubble(playerid, "** %s calls in dispatch and asks for a warrant removal of %s.", GetRPName(playerid), GetRPName(targetid));
 	SendClientMessageEx(targetid, COLOR_WHITE, "** Your crimes were cleared by %s.", GetRPName(playerid));
@@ -79309,7 +79342,7 @@ CMD:contract(playerid, params[])
 	PlayerData[targetid][pContracted] += amount;
 	GetPlayerName(playerid, PlayerData[targetid][pContractBy], MAX_PLAYER_NAME);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET contracted = %i, contractby = '%e' WHERE uid = %i", PlayerData[targetid][pContracted], PlayerData[targetid][pContractBy], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET contracted = %i, contractby = '%e' WHERE uid = %i", PlayerData[targetid][pContracted], PlayerData[targetid][pContractBy], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have placed a contract on %s for $%i, reason: %s", GetRPName(targetid), amount, reason);
@@ -79424,7 +79457,7 @@ CMD:denyhit(playerid, params[])
 	PlayerData[targetid][pContracted] = 0;
     strcpy(PlayerData[targetid][pContractBy], "No-one", MAX_PLAYER_NAME);
 
-    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET contracted = 0, contractby = 'No-one' WHERE uid = %i", PlayerData[targetid][pID]);
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET contracted = 0, contractby = 'No-one' WHERE uid = %i", PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -79578,7 +79611,7 @@ CMD:passport(playerid, params[])
 		PlayerData[playerid][pPhone] = PlayerData[playerid][pPassportPhone];
 		PlayerData[playerid][pPassport] = 0;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET passport = 0, passportname = 'None', passportlevel = 0, passportskin = 0, passportphone = 0, level = %i, phone = %i WHERE uid = %i", PlayerData[playerid][pLevel], PlayerData[playerid][pPhone], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET passport = 0, passportname = 'None', passportlevel = 0, passportskin = 0, passportphone = 0, level = %i, phone = %i WHERE uid = %i", PlayerData[playerid][pLevel], PlayerData[playerid][pPhone], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 		return 1;
 	}
@@ -79620,7 +79653,7 @@ CMD:passport(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You have already requested a namechange. Please wait for a response.");
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", name);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", name);
 	mysql_tquery(connectionID, queryBuffer, "OnHitmanPassport", "isii", playerid, name, level, skinid);
 	return 1;
 }
@@ -79655,7 +79688,7 @@ CMD:plantbomb(playerid, params[])
 	PlayerData[playerid][pBombObject] = CreateDynamicObject(19602, PlayerData[playerid][pBombX], PlayerData[playerid][pBombY], PlayerData[playerid][pBombZ] - 1.0, 0.0, 0.0, 0.0);
 	PlayerData[playerid][pBombs]--;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessage(playerid, COLOR_WHITE, "** Bomb has been planted, use /detonate to make it go BOOM!");
@@ -79684,7 +79717,7 @@ CMD:pickupbomb(playerid, params[])
 	PlayerData[playerid][pPlantedBomb] = 0;
 	PlayerData[playerid][pBombs]++;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessage(playerid, COLOR_WHITE, "** You have picked up your bomb.");
@@ -79918,7 +79951,7 @@ CMD:givedoublexp(playerid, params[])
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has given %i hours of double XP to %s.", GetRPName(playerid), hours, GetRPName(targetid));
 	SendClientMessageEx(targetid, COLOR_YELLOW, "%s has given you %i hours of double XP.", GetRPName(playerid), hours);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET doublexp = %i WHERE uid = %i", PlayerData[targetid][pDoubleXP], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET doublexp = %i WHERE uid = %i", PlayerData[targetid][pDoubleXP], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -80198,7 +80231,7 @@ CMD:switchspeedo(playerid, params[])
 		PlayerData[playerid][pSpeedometer] = 1;
 		SendClientMessage(playerid, COLOR_AQUA, "Your speedometer will now display speed as {00AA00}Kilometers per hour{33CCFF}.");
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET speedometer = 1 WHERE uid = %i", PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET speedometer = 1 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(params, "mph", true))
@@ -80206,7 +80239,7 @@ CMD:switchspeedo(playerid, params[])
 		PlayerData[playerid][pSpeedometer] = 2;
 		SendClientMessage(playerid, COLOR_AQUA, "Your speedometer will now display speed as {00AA00}Miles per hour{33CCFF}.");
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET speedometer = 2 WHERE uid = %i", PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET speedometer = 2 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 
@@ -80651,7 +80684,7 @@ CMD:droplandkeys(playerid, params[])
     {
         SendClientMessageEx(playerid, COLOR_AQUA, "You have dropped land %i's keys.", PlayerData[playerid][pLandPerms]);
         PlayerData[playerid][pLandPerms] = -1;
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET landkeys = -1 WHERE uid = %i", PlayerData[playerid][pID]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET landkeys = -1 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
     }
 	else
@@ -80740,7 +80773,7 @@ CMD:changename(playerid, params[])
 
     PlayerData[playerid][pFreeNamechange] = 0;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM users WHERE username = '%e'", params);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid FROM "#TABLE_USERS" WHERE username = '%e'", params);
 	mysql_tquery(connectionID, queryBuffer, "OnPlayerAttemptNameChange", "is", playerid, params);
 	return 1;
 }
@@ -80793,7 +80826,7 @@ CMD:acceptname(playerid, params[])
 			SetPlayerSkin(targetid, PlayerData[targetid][pSkin]);
 			Log_Write("log_faction", "%s (uid: %i) used the /passport command to change their name to %s, level to %i and skin to %i.", GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pNameChange], PlayerData[targetid][pLevel], PlayerData[targetid][pSkin]);
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET level = %i, skin = %i, phone = %i, passport = 1, passportname = '%s', passportlevel = %i, passportskin = %i, passportphone = %i WHERE uid = %i", PlayerData[targetid][pLevel], PlayerData[targetid][pSkin], PlayerData[targetid][pPhone], PlayerData[targetid][pPassportName], PlayerData[targetid][pPassportLevel], PlayerData[targetid][pPassportSkin], PlayerData[targetid][pPassportPhone], PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET level = %i, skin = %i, phone = %i, passport = 1, passportname = '%s', passportlevel = %i, passportskin = %i, passportphone = %i WHERE uid = %i", PlayerData[targetid][pLevel], PlayerData[targetid][pSkin], PlayerData[targetid][pPhone], PlayerData[targetid][pPassportName], PlayerData[targetid][pPassportLevel], PlayerData[targetid][pPassportSkin], PlayerData[targetid][pPassportPhone], PlayerData[targetid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 	    }
 
@@ -81152,7 +81185,7 @@ CMD:buydrug(playerid, params[])
 		GivePlayerCash(playerid, -cost);
 		AddPointMoney(POINT_DRUGDEN, cost);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = %i WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased %i marijuana seeds for {00AA00}$%i{33CCFF}. /planthelp for more help.", amount, cost);
@@ -81186,7 +81219,7 @@ CMD:buydrug(playerid, params[])
 		GivePlayerCash(playerid, -cost);
 		AddPointMoney(POINT_DRUGDEN, cost);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = %i WHERE uid = %i", PlayerData[playerid][pEphedrine], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i WHERE uid = %i", PlayerData[playerid][pEphedrine], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased %i grams of raw ephedrine for {00AA00}$%i{33CCFF}.", amount, cost);
@@ -81220,7 +81253,7 @@ CMD:buydrug(playerid, params[])
 		GivePlayerCash(playerid, -cost);
         AddPointMoney(POINT_CRACKHOUSE, cost);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased %i grams of cocaine for {00AA00}$%i{33CCFF}.", amount, cost);
@@ -81253,7 +81286,7 @@ CMD:plantweed(playerid, params[])
 	PlayerData[playerid][pWeedGrams] = 0;
 	PlayerData[playerid][pWeedObject] = CreateDynamicObject(3409, PlayerData[playerid][pWeedX], PlayerData[playerid][pWeedY], PlayerData[playerid][pWeedZ] - 1.8, 0.0, 0.0, PlayerData[playerid][pWeedA]);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = %i, weedplanted = 1, weedtime = %i, weedgrams = %i, weed_x = '%f', weed_y = '%f', weed_z = '%f', weed_a = '%f' WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pWeedTime], PlayerData[playerid][pWeedGrams], PlayerData[playerid][pWeedX], PlayerData[playerid][pWeedY], PlayerData[playerid][pWeedZ], PlayerData[playerid][pWeedA], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i, weedplanted = 1, weedtime = %i, weedgrams = %i, weed_x = '%f', weed_y = '%f', weed_z = '%f', weed_a = '%f' WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pWeedTime], PlayerData[playerid][pWeedGrams], PlayerData[playerid][pWeedX], PlayerData[playerid][pWeedY], PlayerData[playerid][pWeedZ], PlayerData[playerid][pWeedA], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	ShowActionBubble(playerid, "** %s plants some seeds into the ground.", GetRPName(playerid));
@@ -81398,7 +81431,7 @@ CMD:usecigar(playerid, params[])
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_SMOKE_CIGGY);
 	ShowActionBubble(playerid, "** %s lights up a cigar and starts to smoke it.", GetRPName(playerid));
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 	return 1;
 }
@@ -81458,7 +81491,7 @@ CMD:usedrug(playerid, params[])
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
 		ShowActionBubble(playerid, "** %s smokes two grams of weed.", GetRPName(playerid));
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(params, "cocaine", true))
@@ -81489,7 +81522,7 @@ CMD:usedrug(playerid, params[])
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
 		ShowActionBubble(playerid, "** %s snorts two grams of cocaine.", GetRPName(playerid));
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(params, "meth", true))
@@ -81521,7 +81554,7 @@ CMD:usedrug(playerid, params[])
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
 		ShowActionBubble(playerid, "** %s smokes two grams of meth.", GetRPName(playerid));
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
     else if(!strcmp(params, "painkillers", true))
@@ -81553,7 +81586,7 @@ CMD:usedrug(playerid, params[])
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
 		ShowActionBubble(playerid, "** %s pops a painkiller in their mouth.", GetRPName(playerid));
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 
@@ -81634,7 +81667,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pMaterials] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their materials.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET materials = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "weed", true))
@@ -81651,7 +81684,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pWeed] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their weed.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET weed = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "cocaine", true))
@@ -81668,7 +81701,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pCocaine] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their cocaine.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cocaine = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "meth", true))
@@ -81685,7 +81718,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pMeth] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their meth.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET meth = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "painkillers", true))
@@ -81702,7 +81735,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pPainkillers] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their painkillers.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET painkillers = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "cigars", true))
@@ -81719,7 +81752,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pCigars] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their cigars.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET cigars = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "spraycans", true))
@@ -81736,7 +81769,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pSpraycans] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their spraycanss.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET spraycans = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "seeds", true))
@@ -81753,7 +81786,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pSeeds] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their seeds.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET seeds = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "ephedrine", true))
@@ -81770,7 +81803,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pEphedrine] = 0;
 	    ShowActionBubble(playerid, "** %s throws away their ephedrine.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET ephedrine = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "carlicense", true))
@@ -81787,7 +81820,7 @@ CMD:drop(playerid, params[])
 	    PlayerData[playerid][pCarLicense] = 0;
 	    ShowActionBubble(playerid, "** %s rips up their drivers license.", GetRPName(playerid));
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET carlicense = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET carlicense = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
 
@@ -82123,7 +82156,7 @@ CMD:settitle(playerid, params[])
 
 		strcpy(PlayerData[targetid][pCustomTitle], param, 64);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET customtitle = '%e' WHERE uid = %i", param, PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET customtitle = '%e' WHERE uid = %i", param, PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the customtitle of %s to '%s'.", GetRPName(playerid), GetRPName(targetid), param);
@@ -82139,7 +82172,7 @@ CMD:settitle(playerid, params[])
 
 		PlayerData[targetid][pCustomTColor] = color & ~0xff;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET customcolor = %i WHERE uid = %i", PlayerData[targetid][pCustomTColor], PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET customcolor = %i WHERE uid = %i", PlayerData[targetid][pCustomTColor], PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the {%06x}color{FF6347} of %s's title.", GetRPName(playerid), color >>> 8, GetRPName(targetid));
@@ -82182,7 +82215,7 @@ CMD:adminstrike(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /adminstrike [playerid] [reason]");
 	}
 	PlayerData[targetid][pAdminStrike]++;
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET adminstrikes = %i WHERE uid = %i", PlayerData[targetid][pAdminStrike], targetid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET adminstrikes = %i WHERE uid = %i", PlayerData[targetid][pAdminStrike], targetid);
 	mysql_tquery(connectionID, queryBuffer);
 	Log_Write("log_strike", "%s (uid: %i) has admin striked player %s (id: %i).", GetRPName(playerid), PlayerData[playerid][pID], GetRPName(targetid), targetid);
 	switch(PlayerData[targetid][pAdminStrike])
@@ -82195,7 +82228,7 @@ CMD:adminstrike(playerid, params[])
 		    PlayerData[targetid][pAdminStrike] = 0;
 		    SendClientMessage(targetid, COLOR_GREY, "The admin strike system works perfectly fine");
 		    GameTextForPlayer(targetid, "~r~DEMOTED", 5000, 1);
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET adminlevel = %i, adminstrikes = %i WHERE uid = %i", PlayerData[targetid][pAdmin], PlayerData[targetid][pAdminStrike], PlayerData[targetid][pID]);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET adminlevel = %i, adminstrikes = %i WHERE uid = %i", PlayerData[targetid][pAdmin], PlayerData[targetid][pAdminStrike], PlayerData[targetid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
 			SendAdminMessage(COLOR_WHITE, "(( Admin News: %s{FFFFFF} has received their 3rd strike, reason: %s ))", GetRPName(targetid), reason);
 		}
@@ -82308,7 +82341,7 @@ CMD:switchgang(playerid, params[])
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has made %s a %s in %s.", GetRPName(playerid), GetRPName(targetid), GangRanks[gangid][rankid], GangInfo[gangid][gName]);
 	}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gang = %i, gangrank = %i, crew = -1 WHERE uid = %i", gangid, rankid, PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = %i, gangrank = %i, crew = -1 WHERE uid = %i", gangid, rankid, PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	return 1;
@@ -82331,7 +82364,7 @@ CMD:gangs(playerid, params[])
 		{
 		    if(GangInfo[i][gSetup])
 		    {
-		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM users WHERE gang = %i", i);
+		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM "#TABLE_USERS" WHERE gang = %i", i);
 		        mysql_tquery(connectionID, queryBuffer, "OnPlayerListGangs", "ii", playerid, i);
 		    }
 		}
@@ -82666,7 +82699,7 @@ CMD:gang(playerid, params[])
   		{
   		    return SendClientMessage(playerid, COLOR_GREY, "You cannot invite members that are in LSFMD, GOV, ARMY, or LSPD.");
   		}
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM users WHERE gang = %i", PlayerData[playerid][pGang]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM "#TABLE_USERS" WHERE gang = %i", PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer, "OnPlayerAttemptInviteGang", "ii", playerid, targetid);
 	}
 	else if(!strcmp(option, "kick", true))
@@ -82698,7 +82731,7 @@ CMD:gang(playerid, params[])
 		PlayerData[targetid][pGangRank] = 0;
         DestroyDynamic3DTextLabel(fRepfamtext[targetid]);
         fRepfamtext[targetid] = Text3D:INVALID_3DTEXT_ID;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gang = -1, gangrank = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = -1, gangrank = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has kicked you from the gang.", GetRPName(playerid));
@@ -82735,7 +82768,7 @@ CMD:gang(playerid, params[])
 
 		PlayerData[targetid][pGangRank] = rankid;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gangrank = %i WHERE uid = %i", rankid, PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gangrank = %i WHERE uid = %i", rankid, PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has set your rank to {00AA00}%s{33CCFF} (%i).", GetRPName(playerid), GangRanks[PlayerData[playerid][pGang]][rankid], rankid);
@@ -82775,12 +82808,12 @@ CMD:gang(playerid, params[])
 	}
 	else if(!strcmp(option, "stats", true))
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM users WHERE gang = %i", PlayerData[playerid][pGang]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM "#TABLE_USERS" WHERE gang = %i", PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_GANG_INFORMATION, playerid);
 	}
 	else if(!strcmp(option, "roster", true))
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin, gangrank FROM users WHERE gang = %i ORDER BY gangrank DESC", PlayerData[playerid][pGang]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT username, lastlogin, gangrank FROM "#TABLE_USERS" WHERE gang = %i ORDER BY gangrank DESC", PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_GANG_ROSTER, playerid);
 	}
 	else if(!strcmp(option, "online", true))
@@ -82802,7 +82835,7 @@ CMD:gang(playerid, params[])
 		PlayerData[playerid][pGangRank] = 0;
         DestroyDynamic3DTextLabel(fRepfamtext[playerid]);
         fRepfamtext[playerid] = Text3D:INVALID_3DTEXT_ID;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gang = -1, gangrank = 0 WHERE uid = %i", PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = -1, gangrank = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else if(!strcmp(option, "offlinekick", true))
@@ -82822,7 +82855,7 @@ CMD:gang(playerid, params[])
 	    	return SendClientMessage(playerid, COLOR_GREY, "That player is already online and logged in. Use '/gang kick' instead.");
 		}
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid, gang, gangrank FROM users WHERE username = '%e'", username);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT uid, gang, gangrank FROM "#TABLE_USERS" WHERE username = '%e'", username);
 		mysql_tquery(connectionID, queryBuffer, "OnPlayerOfflineKickGang", "is", playerid, username);
 	}
 	else if(!strcmp(option, "motd", true))
@@ -85060,7 +85093,7 @@ CMD:gascan(playerid, params[])
 	PlayerData[playerid][pGasCan] -= amount;
 	vehicleFuel[vehicleid] += amount;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	ShowActionBubble(playerid, "** %s refills the %s's gas tank with %i liters of gasoline.", GetRPName(playerid), GetVehicleName(vehicleid), amount);
@@ -86217,7 +86250,7 @@ CMD:buyinsurance(playerid, params[])
 	        GameTextForPlayer(playerid, "~r~-$2000", 5000, 1);
 	        SendClientMessage(playerid, COLOR_AQUA, "You paid $2000 for insurance at {FF8282}County General{33CCFF}. You will now spawn here after death.");
 
-	        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET insurance = %i WHERE uid = %i", HOSPITAL_COUNTY, PlayerData[playerid][pID]);
+	        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET insurance = %i WHERE uid = %i", HOSPITAL_COUNTY, PlayerData[playerid][pID]);
 	        mysql_tquery(connectionID, queryBuffer);
 
 	        PlayerData[playerid][pInsurance] = HOSPITAL_COUNTY;
@@ -86233,7 +86266,7 @@ CMD:buyinsurance(playerid, params[])
 	        GameTextForPlayer(playerid, "~r~-$2000", 5000, 1);
 	        SendClientMessage(playerid, COLOR_AQUA, "You paid $2000 for insurance at {FF8282}All Saints Hospital{33CCFF}. You will now spawn here after death.");
 
-	        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET insurance = %i WHERE uid = %i", HOSPITAL_ALLSAINTS, PlayerData[playerid][pID]);
+	        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET insurance = %i WHERE uid = %i", HOSPITAL_ALLSAINTS, PlayerData[playerid][pID]);
 	        mysql_tquery(connectionID, queryBuffer);
 
 	        PlayerData[playerid][pInsurance] = HOSPITAL_ALLSAINTS;
@@ -86290,7 +86323,7 @@ CMD:tie(playerid, params[])
 
 	PlayerData[playerid][pRope]--;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET rope = %i WHERE uid = %i", PlayerData[playerid][pRope], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rope = %i WHERE uid = %i", PlayerData[playerid][pRope], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	GameTextForPlayer(targetid, "~r~Tied", 3000, 3);
@@ -86336,7 +86369,7 @@ CMD:blindfold(playerid, params[])
 
 	PlayerData[playerid][pBlindfold]--;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET blindfold = %i WHERE uid = %i", PlayerData[playerid][pBlindfold], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET blindfold = %i WHERE uid = %i", PlayerData[playerid][pBlindfold], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	TextDrawShowForPlayer(targetid, Blind);
@@ -86840,7 +86873,7 @@ CMD:firstaid(playerid, params[])
 	PlayerData[playerid][pFirstAid]--;
 	PlayerData[playerid][pReceivingAid] = 1;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET firstaid = %i WHERE uid = %i", PlayerData[playerid][pFirstAid], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET firstaid = %i WHERE uid = %i", PlayerData[playerid][pFirstAid], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	ShowActionBubble(playerid, "** %s administers first aid to their self.", GetRPName(playerid));
@@ -86888,7 +86921,7 @@ CMD:bodykit(playerid, params[])
     PlayerData[playerid][pBodykits]--;
     PlayerData[playerid][pLastRepair] = gettime();
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE users SET bodykits = %i WHERE uid = %i", PlayerData[playerid][pBodykits], PlayerData[playerid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bodykits = %i WHERE uid = %i", PlayerData[playerid][pBodykits], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
