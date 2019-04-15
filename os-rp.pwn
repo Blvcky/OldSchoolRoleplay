@@ -57,6 +57,7 @@
 #define SERVER_ANTICHEAT "The server"
 // ---------------------------------------
 #define TABLE_USERS         "`users`" //to be moved all tables.
+#define TABLE_FURNITURE		"`rp_furniture`"
 // ---------------------------------------
 #define COLOR_WHITE 		0xFFFFFFFF
 #define COLOR_SAMP     		0xAAC4E5FF
@@ -154,6 +155,7 @@
 #define MAX_IMPOUNDPOINTS			20
 #define MAX_PAYPHONES         		100
 #define MAX_DEALERSHIP_CARS  		1000
+#define MAX_FURNITURE       		7500
 //----------------------------------------
 new
 	Iterator:House<MAX_HOUSES>,
@@ -256,6 +258,7 @@ new
 
 
 #define SCM 				SendClientMessage
+#define MaterialRes Dialog_Show(playerid, TextureResources, DIALOG_STYLE_LIST, "Texture Category:", "Material Colors\nPrinted Fabrics\nWooden\nTiles\nBuilding\nMetals\nPaintings\nWallpapers\nMisc", "Select", "Exit");
 
 #define IPI                 INVALID_PLAYER_ID
 #define SendInfoMessage(%0,%1)   SendClientMessageEx((%0), COLOR_WHITE, ""%1)
@@ -486,7 +489,7 @@ new g_BoothObject[MAX_BOOTHS] = {-1, ...};
 new gWeights[MAX_PLAYERS][2];
 new ElevatorState,
 	ElevatorFloor;
-
+new gPreviewFurniture[MAX_PLAYERS] = {-1, ...};
 new PlayerText:LoadingObjects0[MAX_PLAYERS];
 new PlayerText:LoadingObjects1[MAX_PLAYERS];
 new PlayerText:LoadingObjects2[MAX_PLAYERS];
@@ -584,9 +587,7 @@ enum
 	DIALOG_NEON,
 	DIALOG_NEWBIE,
 	DIALOG_STAFFVEH,
-	DIALOG_BUYFURNITURETYPE,
-	DIALOG_BUYFURNITURE1,
-	DIALOG_BUYFURNITURE2,
+
 	DIALOG_BUY,
 	DIALOG_BUYCLOTHES,
 	DIALOG_PICKLOAD,
@@ -673,16 +674,7 @@ enum
  	DIALOG_GANGARMSPRICE,
  	GangStashDepositMats,
 	GangStashWithdrawMats,
-	DIALOG_GANGDRUGDEALER,
-	DIALOG_GANGDRUGSHOP,
-	DIALOG_GANGDRUGEDIT,
-	DIALOG_GANGDRUGPRICES,
-	DIALOG_GANGDRUGPRICE,
-	DIALOG_GANGDRUGBUY,
-	DIALOG_GANGDRUGDEPOSITS,
-	DIALOG_GANGDRUGDEPOSIT,
-	DIALOG_GANGDRUGWITHDRAWS,
-	DIALOG_GANGDRUGWITHDRAW,
+
 	DIALOG_FREENAMECHANGE,
 	DIALOG_REMOVEFLAG,
 	DIALOG_NEWBIEUNMUTE,
@@ -856,7 +848,7 @@ enum
 enum
 {
 	EDIT_FURNITURE_PREVIEW = 1,
-	EDIT_FURNITURE,
+	EDIT_TYPE_FURNITURE,
 	EDIT_CLOTHING_PREVIEW,
 	EDIT_CLOTHING,
 	EDIT_LAND_OBJECT_PREVIEW,
@@ -1111,6 +1103,7 @@ enum pEnum
 	pDistanceRan,
 	pWorkoutTime,
 	pLevel,
+	pHouse,
 	pFitness,
 	pGymMembership,
 	pBugFix,
@@ -3510,13 +3503,1368 @@ new const bizInteriors[][bizInt] =
 	{"Tool Shop",             1575000, 6, -2240.6992, 128.3009, 1035.4141, 270.0000},
 	{"Dealership",            15000000, 3,  1494.4321, 1304.0353, 1093.2891, 0.0000}
 };
-
-enum furnitureEnum
+enum matLIST
 {
-	fCategory[24],
-    fName[32],
-    fModel,
-    fPrice
+	Name[128],
+	ModelID,
+	TxdName[64],
+	TextureName[64],
+	Resource[32]
+};
+
+new MaterialIDs[][matLIST] =
+{
+	{"{6EF83C}Reset Material", 			0, 				"none", 				"none", 						"None"},
+	#define PCOLORS "Material Colors"
+	{"Purple",							8839,		 	"vgsecarshow",		 	"lightpurple2_32",				PCOLORS},
+	{"Blue",							5774,		 	"garag3_lawn",		 	"bluestucco1",					PCOLORS},
+	{"Bright Blue",						8839,		 	"vgsecarshow",		 	"lightblue2_32",				PCOLORS},
+	{"Bright Green", 					8839,		 	"vgsecarshow",		 	"lightgreen2_32",				PCOLORS},
+	{"Green",							19271, 			"MapMarkers", 			"green-2",						PCOLORS},
+	{"Lime Green",						18749, 			"MatTextures",			"lime",							PCOLORS},
+	{"Yellow",							5168,		 	"lashops6_las2",		"yellow2_128",					PCOLORS},
+	{"Brighter Yellow",					18245,		 	"cw_junkyardmachin",	"Was_scrpyd_light_yellow",		PCOLORS},
+	{"Orange",							18250,		 	"cw_junkbuildcs_t",		"Was_scrpyd_baler_locker",		PCOLORS},
+	{"Orange 2",     					18749, 			"MatTextures", 			"SAMPOrange",					PCOLORS},
+	{"Pink", 							3267,		 	"milbase",		 		"lightred2_32",					PCOLORS},
+	{"Red",								18856,		 	"MatTextures",		 	"SAMPRed",						PCOLORS},
+	{"Darker Red",     					19184, 			"MapMarkers", 			"red-2",						PCOLORS},
+	{"Deep Red", 						5142,		 	"lashops1b_las2",		"snpdwhit2",					PCOLORS},
+	{"Pitch Black",						13816,		 	"lahills_safe1",		"black16",						PCOLORS},
+	{"Smoky Black",						11088,		 	"crackfactdem_sfs",		"ws_altz_wall7_top_burn",		PCOLORS},
+	{"Light Gray",						8839,		 	"vgsecarshow",		 	"lightblue_64",					PCOLORS},
+	{"Happy Gray",						16109,		 	"des_se1",		 		"parking2plain",				PCOLORS},
+	{"Eggshell",						8675,		 	"wddngchpl02",		 	"vgschapelwall01_64",			PCOLORS},
+	{"White",							4833,		 	"airprtrunway_las",		"white",						PCOLORS},
+
+	#define PFABRICS "Printed Fabrics"
+	{"Varied Green Stripes",						17511, 			"stadium_lae2",			"stadt_banner1", 		PFABRICS},
+	{"Varied Purple and Green Stripes",				17511, 			"stadium_lae2",			"stadt_banner2", 		PFABRICS},
+	{"Varied White, Brown and Green Stripes",		17511, 			"stadium_lae2",			"stadt_banner3", 		PFABRICS},
+	{"Blue, White and Red Stripes",					9583, 			"bigshap_sfw",			"boatfunnel1_128", 		PFABRICS},
+	{"Blue and White Stripes",						12850, 			"cunte_block1",			"ablusrip", 			PFABRICS},
+	{"Blue, Green, White and Yellow Stripes",		5142, 			"lashops1b_las2",		"sanpedshpito", 		PFABRICS},
+	{"Red And White Stripes",						3039, 			"ct_salx",				"ct_stall1", 			PFABRICS},
+	{"Black, Gray, Yellow, Red",					3990, 			"lanroad",				"lakerbcol", 			PFABRICS},
+
+	{"Red and Green Tartan",			3060, 			"paracx",				"parachute_e", 			PFABRICS},
+	{"Multi-colored Squares",			3922, 			"bistro",				"Tablecloth", 			PFABRICS},
+	{"Spongy Red",						10412, 			"hotel1",				"carpet_red_256", 		PFABRICS},
+	{"Spongy Maroon",					14808, 			"lee_strip2",			"WH_carpet1", 			PFABRICS},
+	{"Spongy Blue",						5392, 			"eastshops1_lae",		"blueshop2_LAe", 		PFABRICS},
+	{"Yellow Tartan",					13003, 			"ce_racestart",			"CJ_TARTAN", 			PFABRICS},
+	{"Blue Camouflage",					10631, 			"queensammo_sfs",		"ammu_camo1", 			PFABRICS},
+	{"Blue Patterns",					10226, 			"sfeship1",				"CJ_CUSHION2", 			PFABRICS},
+	{"Blue Patterns 2",					19447,			"all_walls",			"vgsn_scrollsgn256", 	PFABRICS},
+	{"Brown Flower Pattern",			15034, 			"genhotelsave",			"cj_cushion1", 			PFABRICS},
+	{"Brown Sheets",					16150, 			"ufo_bar",				"Gen_Sacki", 			PFABRICS},
+	{"Floral Print",					2680, 			"cj_chris",				"CJ_Floral", 			PFABRICS},
+
+	{"White and Blue Mattress",			12954, 			"sw_furniture",			"CJ_MATRESS2", 			PFABRICS},
+	{"Used Mattress", 					1637, 			"od_beachstuff",		"lounger_matress", 		PFABRICS},
+	{"Plain Matress",					2575,			"cj_hotel_poor",		"CJ_mattress",			PFABRICS},
+
+	{"Rainbow Stripes",					3853, 			"gay_xref",				"ws_gayflag1", 			PFABRICS},
+	{"American Flag",					12853, 			"cunte_gas01",			"starspangban1_256", 	PFABRICS},
+	{"American Flag 2",					14782, 			"intring_gymint3",		"star_spang", 			PFABRICS},
+	{"Confederate Flag",				12853, 			"cunte_gas01",			"cj_flag2", 			PFABRICS},
+	{"Italian Flag",					5111, 			"ground2_las2",			"sanpedpawn1a", 		PFABRICS},
+
+	{"Black Carpet",					17946, 			"carter_mainmap",		"mp_carter_carpet", 	PFABRICS},
+	{"Gray Carpet",						14475, 			"ganghoos",				"mp_burn_carpet", 		PFABRICS},
+	{"Red Carpet",						14506, 			"imy_motel",			"mp_motel_carpet1", 	PFABRICS},
+	{"Red Carpet 2",					8463, 			"vgseland",				"triadcarpet2", 		PFABRICS},
+	{"Black Carpet 2", 					14700, 			"vgshs2int2",			"carpet-tile", 			PFABRICS},
+	{"Dark Carpet", 					14838, 			"lee_stripclub",		"cl_floornew_256", 		PFABRICS},
+	{"Worn Gray Carpet", 				14701, 			"lahss2int2",			"HS1_carpet1", 			PFABRICS},
+	{"Blue Rug",						11704, 			"bdupsnew",				"Bdup2_carpet", 		PFABRICS},
+	{"Light Blue Fabric",				14707, 			"labig3int2",			"HS2_3Wall10", 			PFABRICS},
+	{"Light Purple Fabric",				14707, 			"labig3int2",			"HS2_3Wall7", 			PFABRICS},
+	{"Pink Fabric",						14707, 			"labig3int2",			"HS2_3Wall9", 			PFABRICS},
+	{"Old White Fabric",				14756, 			"smallsfhs",			"wall6", 				PFABRICS},
+	{"White Carpet",					14672, 			"genintintsex",			"mp_cop_floor2", 		PFABRICS},
+	{"Black Carpet 3",					14808, 			"lee_strip2",			"strip_carpet2", 		PFABRICS},
+	{"Yellow Carpet",					14590, 			"mafcastopfoor",		"ab_carpet01", 			PFABRICS},
+	{"Old Black Carpet",				18028, 			"cj_bar2",				"GB_nastybar10", 		PFABRICS},
+	{"Dark Carpet 2",					14431, 			"dr_gsnew",				"mp_gs_carpet", 		PFABRICS},
+	{"Light Carpet",					14581, 			"ab_mafiasuitea", 		"carp01S", 				PFABRICS},
+
+	{"Zebra Stripes", 					14838, 			"lee_stripclub",		"zebra_skin", 			PFABRICS},
+	{"Light Blue Carpet", 				14708, 			"labig1int2",			"GB_rug01", 			PFABRICS},
+	{"Fancy Rug",						11704, 			"bdupsnew",				"Bdup2_Rug", 			PFABRICS},
+
+	{"Pink Curtain",					11707, 			"cuntcuts",				"AH_pinkcurtain", 		PFABRICS},
+	{"Brown Curtain",					14710, 			"vgshm3int2",			"ah_curtains1", 		PFABRICS},
+	{"Blue Curtain",					14701, 			"lahss2int2",			"HS2_Curt1", 			PFABRICS},
+	{"Light Blue Curtain",				14702, 			"masmall3int2",			"HS2_Curt2", 			PFABRICS},
+	{"Light Blue Curtain 2",			2559, 			"hospital",				"CJ_H_CURTAIN1", 		PFABRICS},
+	{"Orange Curtain",					14701, 			"lahss2int2",			"HS2_Curt4", 			PFABRICS},
+	{"Purple Curtain",					14701, 			"lahss2int2",			"HS2_Curt5", 			PFABRICS},
+	{"Red Curtain",						14808, 			"lee_strip2",			"Strip_curtain", 		PFABRICS},
+
+	#define WOODS "Wood"
+	{"The Standard",					19400, 			"all_walls", 					"mp_diner_woodwall", 		WOODS},
+	{"Classy Wood",						16150, 			"ufo_bar", 						"sa_wood08_128", 			WOODS},
+	{"Brown Wood", 						14581, 			"ab_mafiasuitea", 				"walp45S",					WOODS},
+	{"Red Wood",						13681, 			"lahillshilhs1e", 				"woodboards2", 				WOODS},
+	{"Reclaimed Wood",					6094, 			"canalsg_law", 					"ws_sheetwood_clean", 		WOODS},
+	{"Light Wood 1",					3881, 			"apsecurity_sfxrf", 			"CJ_WOOD1", 				WOODS},
+	{"Light Wood 2",					13003, 			"ce_racestart", 				"sa_wood07_128", 			WOODS},
+	{"Light Wood 3",					16377, 			"des_byofficeint", 				"CJ_LIGHTWOOD", 			WOODS},
+	{"Dark Wood 1",						1515, 			"dsfs", 						"CJ_WOOD6", 				WOODS},
+	{"Dark Wood 2",						11631, 			"mp_ranchcut", 					"mpCJ_WOOD_DARK", 			WOODS},
+	{"Dark, Ugly Wood",					18250, 			"cw_junkbuildcs_t", 			"Was_scrpyd_shack_wall", 	WOODS},
+	{"Dull, Dark Wood",					17925, 			"lae2fake_int", 				"ab_wood1", 				WOODS},
+	{"Rotting Painted Wood 1",			17566, 			"contachou1_lae2",				"comptwall26", 				WOODS},
+	{"Rotting Painted Wood 2",			3193, 			"cxref_desert", 				"des_bywall1", 				WOODS},
+	{"Rotting Painted Wood 3",			3355, 			"cxref_savhus", 				"des_bywall2", 				WOODS},
+	{"Rotting Painted Wood 4",			14700, 			"vgshs2int2", 					"ah_CRAKPLNK", 				WOODS},
+	{"Very Old Wood",					12976, 			"sw_diner1", 					"telepole128", 				WOODS},
+	{"Tatty Wood",						5149, 			"lasground2_las2", 				"tatty_wood_1", 			WOODS},
+	{"'Fence' Wood",					5122, 			"ground3_las2", 				"fence1", 					WOODS},
+	{"Fancy Diner Flooring",			3919, 			"librest", 						"DinerFloor", 				WOODS},
+	{"Sleek Wood Flooring",				14771, 			"int_brothelint3", 				"GB_nastybar12", 			WOODS},
+	{"Cheap Wood Flooring",				14825, 			"genintint2_gym", 				"gym_floor5", 				WOODS},
+	{"Cheap, Scratched Flooring",		14709, 			"lamidint2", 					"mp_apt1_floor", 			WOODS},
+	{"Fine Parquet",					14581, 			"ab_mafiasuitea", 				"wood02S",					WOODS},
+	{"Wooden Mosaic",					4004, 			"civic07_lan", 					"cityhallroof", 			WOODS},
+	{"Wood Square Panels",				13007, 			"sw_bankint", 					"woodfloor1", 				WOODS},
+
+	{"Wood Planks",						16322, 			"a51_stores", 					"des_ghotwood1", 			WOODS},
+	{"Aged Planks",						1219, 			"woodpanels", 					"planks01", 				WOODS},
+	{"White Planks",					10152, 			"sfvictorian2", 				"pier69_ground1", 			WOODS},
+	{"White Planks 2",					12960, 			"sw_church", 					"ws_vic_wood1", 			WOODS},
+	{"White Planks 3",					12911, 			"sw_farm1", 					"sw_barnwood1", 			WOODS},
+	{"Old White Planks",				12911, 			"sw_farm1", 					"sw_barnwood2", 			WOODS},
+	{"Old White Planks 2",				4849, 			"ground3_las", 					"pierboards_la", 			WOODS},
+	{"Gray Planks",						3310, 			"sw_poorhouse", 				"GB_nastybar08", 			WOODS},
+	{"Old Gray Planks",					4820, 			"ground4_las", 					"adet", 					WOODS},
+	{"Boardwalk",						13809, 			"lahillsground4", 				"boardwalk_la"	, 			WOODS},
+	{"Wood Boards",						5134, 			"wasteland_las2", 				"floorboard256128" , 		WOODS},
+	{"Light Wood Pattern",				3306, 			"cunte_house1", 				"des_ntwnwall1", 			WOODS},
+	{"Dark Brown Planks",				17298, 			"weefarmcuntw", 				"sjmbigold2", 				WOODS},
+	{"Creepy Planks",					12937, 			"sw_oldshack", 					"sw_cabinwall01", 			WOODS},
+	{"Blue Planks",						5766, 			"capitol_lawn", 				"lasjmscruffwall3", 		WOODS},
+	{"Bright Blue Planks",				5135, 			"groundb_las2", 				"sanpedock8", 				WOODS},
+	{"Bright Yellow Planks",			5113, 			"lasground_las2", 				"sanpedpawn1", 				WOODS},
+	{"White and Red Wood",				4830, 			"airport2", 					"sw_shedwall02", 			WOODS},
+	{"White and Blue Wood",				12925, 			"sw_sheds", 					"sw_shedwall03", 			WOODS},
+
+	{"Dull Wood Logs",					17067, 			"cw2_logcabins", 				"cw2_logwall", 				WOODS},
+	{"Light Wood Logs",					11490, 			"des_ranch", 					"des_logwall", 				WOODS},
+	{"Flat Logs",						13711, 			"mullho03_lahills", 			"des_flatlogs", 			WOODS},
+	{"Wood Slats",						11501, 			"des_farmstuff", 				"des_woodslats1", 			WOODS},
+
+	{"Walnut 1", 						14581, 			"ab_mafiasuitea", 				"ab_walnut",				WOODS},
+	{"Walnut 2", 						14581, 			"ab_mafiasuitea", 				"ab_walnutLite",			WOODS},
+	{"Brown Wood Paneling",				9583, 			"bigshap_sfw", 					"bridge_walls2_sfw", 		WOODS},
+	{"Tiki Reed",						8536, 			"tikisign",  					"tikireed01_128", 			WOODS},
+	{"Bamboo",							3595, 			"dingbat01_la", 				"bambowal1_LA", 			WOODS},
+	{"Old Barn",						16146, 			"des_ufoinn", 					"shackdoor01", 				WOODS},
+	{"Bloody wood", 					12937, 			"sw_oldshack", 					"sw_woodflloorsplat", 		WOODS},
+
+	#define TILES "Tiles"
+	{"Shiny White",						10023,			"bigwhitesfe",					"recessed_light_SF",			TILES},
+	{"White and Blue",					12841,			"cos_pizzaplace",				"swimpoolside1_128",			TILES},
+	{"Yellow and Blue",					5408,			"tempstuff_lae",				"examball1_LAe",				TILES},
+	{"Blue Pool Tiles",					13675,			"lahillsgrounds",				"bevpool",						TILES},
+	{"Better Times",					4004,			"civic07_lan",					"Bow_sub_wallshine",			TILES},
+	{"Small White Tiles",				12853,			"cunte_gas01",					"sw_floor1",					TILES},
+	{"Thin Wall Tiles",					17049,			"cuntwf",						"sw_walltile",					TILES},
+	{"Thick Wall Tiles",				4558,			"lanlacmab_lan2",				"sl_gallerywall1",				TILES},
+	{"Dirty Wall Tiles",				14700,			"vgshs2int2",					"ah_whitiles",					TILES},
+
+	{"The Classic",						3961,			"lee_kitch",					"dinerfloor01_128",				TILES},
+	{"The Classic 2",					14771,			"int_brothelint3",				"bwtilebroth",					TILES},
+	{"The Classic 3", 					18082, 			"cj_barb", 						"CJ_TILES_5", 					TILES},
+	{"Aged Classic",					13724,			"docg01_lahills",				"marbletile8b",					TILES},
+	{"Classy Blue",						10871,			"blacksky_sfse",				"ws_slatetiles",				TILES},
+	{"Dark Blue",						6351,			"rodeo02_law2",					"helmutwall1_LAw",				TILES},
+	{"Classic White",					3904,			"libertyfar",					"subplat",						TILES},
+	{"Aged Fancy Tiles",				5772,			"stationtunnel",				"mp_apt1_bathfloor1",			TILES},
+	{"Fancy Black Tiles", 				14388, 			"dr_gsnew", 					"mp_gs_kitchfloor", 			TILES},
+	{"Modern White Tiles",				10932,			"station_sfse",					"ws_stationfloor",				TILES},
+	{"Modern Yellow Tiles",				10973,			"mall_sfse",					"mallfloor3",					TILES},
+	{"Blue And Yellow Tiles",			1594,			"chairsntable",					"mallfloor6",					TILES},
+	{"Tile Stone",						1677,			"wshxrefhse2",					"tilestone256",					TILES},
+	{"Dirty Tiles",						11389,			"hubint1_sfse",					"ab_ceiling1",					TILES},
+	{"Stone Tiles",						16639,			"a51_labs",						"dam_terazzo"	,				TILES},
+	{"Old Black Tiles",					5815,			"lawngrnd",						"man_cellarfloor128",			TILES},
+	{"Dark Tiles",						14700,			"vgshs2int2",					"AH_rykitiles",					TILES},
+	{"Terra Cotta Tile",				18020,			"genintintfastb2",				"ws_terratiles",				TILES},
+	{"Gray Tiles",						14706,			"labig2int2",					"ab_tile1",						TILES},
+	{"Brown/Olive Green Bricks",		14756,			"smallsfhs",					"mp_carter_tilewall",			TILES},
+	{"Brown Tiles",						14709,			"lamidint2",					"mp_apt1_kitchfloor",			TILES},
+	{"Brown Tiles 2", 					18029, 			"genintintsmallrest", 			"GB_restaursmll06", 			TILES},
+	{"Light Green Tiles", 				18029, 			"genintintsmallrest", 			"GB_restaursmll07", 			TILES},
+	{"Dull Red Tiles", 					14388, 			"dr_gsnew", 					"AH_flroortile12", 				TILES},
+
+	{"Red Stones",						13675,			"lahillsgrounds",				"sjmlahus29",					TILES},
+	{"Blue Mosaic",						17562,			"coast_apts",					"otb_floor1",					TILES},
+	{"Green Mosaic",					3595,			"dingbat01_la",					"mosaic1_LAwn",					TILES},
+	{"Hexagon Tile Pattern",			14506,			"imy_motel",					"ab_tilehex2",					TILES},
+	{"Green Formica",					11704,			"cj_kitchen",					"FORMICA2",						TILES},
+
+	#define MARB "Building"
+	{"Black Marble", 					3922, 			"bistro", 				"Marble", 							MARB},
+	{"Black Marble 2",					10969, 			"scum_sfse", 			"Was_scrpyd_floor_hangar", 			MARB},
+	{"Gray Marble",						4830, 			"airport2", 			"LASLACMA96", 						MARB},
+	{"White Marble",					3922, 			"bistro", 				"Marble2", 							MARB},
+	{"Yellow Marble",					3922, 			"bistro", 				"rest_wall4", 						MARB},
+	{"White Marble Block",				16023, 			"des_trainstuff", 		"ws_stoneblock", 					MARB},
+
+	{"Stone Wall 1",					18202, 			"w_towncs_t", 			"hatwall256hi", 					MARB},
+	{"Stone Wall 2",					13724, 			"docg01_lahills", 		"des_ranchwall1", 					MARB},
+	{"Stone Wall 3",					8839, 			"vgsecarshow", 			"sw_wallbrick_06", 					MARB},
+	{"Stone Wall 4",					8565, 			"vgsebuild01", 			"ws_stonewall", 					MARB},
+	{"Stone Wall 5",					6056, 			"venice_law", 			"stonewall_la", 					MARB},
+	{"Stone Wall 6",					6057, 			"venicegb02_law", 		"stonewall3_la", 					MARB},
+	{"Fancy Stones",					5113, 			"lasground_las2", 		"adeta", 							MARB},
+	{"Dark Stones", 					18029, 			"genintintsmallrest", 	"GB_restaursmll05",					MARB},
+	{"Yellow Stones",					16136,			"des_telescopestuff",	"stoneclad1",						MARB},
+
+	{"White Brick Wall",				8399, 			"vgs_shops", 			"vgsclubwall05_128", 				MARB},
+	{"Gray Stone Wall",					8645, 			"vegashsetx", 			"badhousewall01_128", 				MARB},
+	{"Concrete Pattern",				4849, 			"ground3_las", 			"ws_bigstones", 					MARB},
+	{"Gray Brick Wall",					13823, 			"lahillsground4cye", 	"GB_nastybar03", 					MARB},
+	{"Fancy White Bricks",				13675, 			"lahillsgrounds", 		"bevr03b_law", 						MARB},
+	{"Red Brick Wall",					8531, 			"officeground", 		"ws_redbrickold", 					MARB},
+	{"Old Red Brick Wall",				5180, 			"lashops93_las2", 		"ws_oldredbrick", 					MARB},
+	{"Old Red Brick Wall 2",			10864, 			"bridgeland_sfse", 		"ws_altz_wall1", 					MARB},
+
+	{"Brick Wall 1",					8839, 			"vgsecarshow", 			"sw_brewbrick01", 					MARB},
+	{"Brick Wall 2",					8390, 			"vegasemulticar", 		"ws_mixedbrick", 					MARB},
+	{"Brick Wall 3",					13015, 			"sw_genstore", 			"sw_wallbrick_03", 					MARB},
+	{"Brick Wall 4",					12959, 			"sw_library", 			"sw_brick05", 						MARB},
+	{"Brick Wall 5",					17049, 			"cuntwf", 				"sw_brick04", 						MARB},
+	{"Brick Wall 6",					12853, 			"cunte_gas01", 			"sw_brick03", 						MARB},
+	{"Brick Wall 7",					4552, 			"ammu_lan2", 			"sl_lavicdtwall1", 					MARB},
+	{"Brick Wall 8",					10769, 			"docks2_sfse", 			"ws_sandstone1", 					MARB},
+	{"Brick Wall 9",					9683, 			"goldengate_sfw", 		"stonesandkb2_128", 				MARB},
+	{"Brick Wall 10",					5418, 			"idlewood3_lae", 		"ws_sandstone2", 					MARB},
+	{"Brick Wall 11",					12988, 			"sw_fact02", 			"ws_sandstone2b", 					MARB},
+	{"Brick Wall 12", 					18018, 			"genintintbarb", 		"GB_midbar01", 						MARB},
+
+	{"Black Concrete",					3975, 			"lanbloke", 			"p_floor3", 						MARB},
+	{"Black Concrete 2", 				14771, 			"int_brothelint3", 		"GB_midbar15", 						MARB},
+	{"Dark Stone Wall",					17545, 			"burnsground", 			"newall1-1128", 					MARB},
+	{"White Concrete",					11089, 			"cf_metals_sfse", 		"ws_altz_wall8_top", 				MARB},
+	{"Gray Concrete",					6052, 			"law_doontoon", 		"carpark_256128", 					MARB},
+	{"Gray Concrete 2", 				14783, 			"intgarage2aint3", 		"Bow_Abattoir_Conc2", 				MARB},
+	{"Concrete Block",					1214,			"metal",				"BLOCK2low",						MARB},
+	{"Cracked Yellow Concrete", 		14700, 			"vgshs2int2", 			"ah_yelbadwall", 					MARB},
+	{"Metal Pattern",					12984, 			"sw_block11", 			"sw_stairs1", 						MARB},
+	{"Rusted Concrete",					10375,			"subshops_sfs",			"ws_rooftarmac1",					MARB},
+
+	#define METALS "Metals"
+	{"Silver Metal",					1560,			"7_11_door",			"cj_sheetmetal2",			METALS},
+	{"Red Metal",						2130,			"cj_kitchen",			"CJ_RED",					METALS},
+	{"Scratched Metal",					16640,			"a51",					"scratchedmetal",			METALS},
+	{"Blue Paneling",					16067,			"des_stownmots1",		"corugwall1",				METALS},
+	{"Red Paneling",					16067,			"des_stownmots1",		"corugwallnew6_128",		METALS},
+	{"Yellow Paneling",					18265,			"w_town3cs_t",			"corugwall_sandy",			METALS},
+	{"Old Purple Metal",				5126,			"imrancomp_las2",		"ws_oldpaintedblue",		METALS},
+	{"Old Gray Metal",					12858,			"wiresnshit",			"ws_oldpainted",			METALS},
+	{"Old White Metal",					10820,			"roadbridge_sfse",		"ws_oldpainted2",			METALS},
+	{"Rusty White Metal",				10820,			"roadbridge_sfse",		"ws_oldpainted2rusty",		METALS},
+	{"Dull Green Metal",				1257,			"bustopm",				"CJ_GREENMETAL",			METALS},
+	{"Green Metal",						10770,			"carrier_sfse",			"ws_floor2",				METALS},
+	{"Gray Metal",						10770,			"carrier_sfse",			"ws_shipmetal1",			METALS},
+	{"Black Metal",						10770,			"carrier_sfse",			"ws_shipmetal3",			METALS},
+	{"White Metal",						10770,			"carrier_sfse",			"ws_shipmetal4",			METALS},
+	{"Light Blue Metal",				11145,			"carrierint_sfs",		"ws_shipmetal5",			METALS},
+	{"White Metal Tiles",				3262,			"privatesign",			"ws_metalpanel1",			METALS},
+	{"Black Metal Tiles",				9362,			"sfn_byofficeint",		"CJ_Black_metal",			METALS},
+	{"Dark Metal",						970,			"fences",				"blackmetal",				METALS},
+	{"Light Metal Banding",				12960,			"sw_church",			"banding3_64HV",			METALS},
+	{"Brown Metal Banding",				5408,			"tempstuff_lae",		"sl_metalbndrust1",			METALS},
+	{"Scratched Metal 2",				3961,			"lee_kitch",			"metal5",					METALS},
+	{"Scratched Metal 3",				3961,			"lee_kitch",			"metal6",					METALS},
+	{"Clean Metal Plate",				9361,			"sfn_office",			"des_facmetal",				METALS},
+	{"Silver Metal 2",					1214,			"metal",				"CJ_FRAME_Glass",			METALS},
+	{"Sleek Metal", 					14581, 			"ab_mafiasuitea", 		"barbersmir1", 				METALS},
+	{"Metal Door", 						13022, 			"sw_block11a", 			"Bow_abbmetaldoor", 		METALS},
+	{"Metal Door 2", 					12980, 			"sw_block10", 			"Was_scrpyd_door_dbl_grey", METALS},
+	{"Bolted White Metal Panel",		10820,			"roadbridge_sfse",		"banding9_64HV",			METALS},
+	{"Bolted Yellow Metal Panel",		5126,			"imrancomp_las2",		"banding5_64HV",			METALS},
+	{"Bolted Brown Metal Panel",		3080,			"adjumpx",				"rustyboltpanel",			METALS},
+	{"Bolted Black Metal",				16322,			"a51_stores",			"girder2_grey_64HV",		METALS},
+	{"Bolted Red Metal",				5126,			"imrancomp_las2",		"girder2_red_64HV",			METALS},
+	{"New Bolted White Metal Panel",	16322,			"a51_stores",			"dish_panel_a",				METALS},
+	{"Metal Plate",						915,			"airconext",			"CJ_plating",				METALS},
+
+	{"Gray Metal 2",					4833,			"airprtrunway_las",		"cj_sheetmetal",			METALS},
+	{"Old Red Metal",					5123,			"chemgrnd_las2",		"redmetal",					METALS},
+	{"Old Dark Red Metal",				946,			"bskball_standext",		"drkbrownmetal",			METALS},
+	{"Old Brown Metal",					11145,			"carrierint_sfs",		"Metalox64",				METALS},
+	{"Brown Rust",						12937,			"sw_oldshack",			"rustc256128",				METALS},
+	{"Orange Rust", 					11395,		 	"corvinsign_sfse",		"rustb256128",				METALS},
+	{"Red Rust 1",						18247,			"cw_junkyarddigcs_t",	"Was_scrpyd_rustmetal",		METALS},
+	{"Red Rust 2",						10844,			"genwhse_sfse",			"Gen_Gantry_Rust",			METALS},
+	{"Rusty Sheet",						10140,			"frieghter2sfe",		"sw_olddrum1",				METALS},
+	{"Old Light Blue Metal",			4821,			"union_las",			"bluemetal03",				METALS},
+	{"Old Dark Blue Metal",		 		5126,			"imrancomp_las2",		"bluemetal02",				METALS},
+	{"Old Gray Metal 2",				9029,			"vgetrainfnce",			"Metal1_128",				METALS},
+	{"Rusty Gray Metal",				17001,			"factorycuntw",			"Gen_Metal",				METALS},
+
+	{"Corrugated Sheet",				3246,			"cxref_oldwest",		"corr_roof1",				METALS},
+	{"Corrugated Sheet 2",				3925,			"weemap",				"corrRoof_64HV",			METALS},
+	{"Old Corrugated Sheet",			5775,			"sunset01_lawn",		"ws_corr_metal2",			METALS},
+	{"Rusty Corrugated Sheet",			9680,			"tramstatsfw",			"ws_corr_metal1",			METALS},
+	{"Tin Roof Pattern",				16071,			"des_quarrybelts",		"des_oldtinroof",			METALS},
+
+	{"Strange Metal Pattern",			16322,			"a51_stores",			"a51_metal1",				METALS},
+	{"Rusty Metal Pattern",				16322,			"a51_stores",			"Gen_Freight",				METALS},
+	{"Rusty Metal Pattern 2",			10281,			"michgar",				"Metal2_256128",			METALS},
+	{"White and Blue Metal",			3961,			"lee_kitch",			"metal2",					METALS},
+
+	{"Metal Walkway Pattern",			16640,			"a51",					"sl_metalwalk",				METALS},
+	{"Perforated Metal Plate",			8954,			"vgsespras",			"sf_spray_floor2",			METALS},
+	{"Checker Plate",					9583,			"bigshap_sfw",			"shipfloor_sfw",			METALS},
+	{"Checker Plate 2",					5138,			"ground_las2",			"metpat64"	,				METALS},
+	{"Checker Plate 3",					964, 			"cj_crate_will",		"CJ_FLIGHT_CASE", 			METALS},
+
+	#define POSTERS "Paintings"
+	{"The Discharger",					13761,			"lahills_whisky",			"discharger",			POSTERS},
+	{"Slam It In",						4833,			"airprtrunway_las",			"bobo_2",				POSTERS},
+	{"MC Club",							5733,			"melrose08_lawn",			"base5_1",				POSTERS},
+	{"Mad Dog",							6357,			"sunstrans_law2",			"dogbill01",			POSTERS},
+	{"Love Fist Poster",				6354,			"sunset03_law2",			"billLA01",				POSTERS},
+	{"Dandell Poster",					6354,			"sunset03_law2",			"billLA02",				POSTERS},
+	{"Map of San Andreas",   			16644,			"a51_detailstuff",			"a51_map",				POSTERS},
+	{"Candy Suxxx",						6357,			"sunstrans_law2",			"SunBillB05",			POSTERS},
+	{"Candy Suxxx 2",					2254,			"picture_frame_clip",		"CJ_PAINTING9",			POSTERS},
+	{"Inquisitive Man",					1583,			"targets",					"target1",				POSTERS},
+	{"Inquisitive Woman",				1583,			"targets",					"target2",				POSTERS},
+	{"Inquisitive Woman 2",				1583,			"targets",					"target3",				POSTERS},
+	{"Summer Sky",						3925,			"weemap",					"skyclouds",			POSTERS},
+	{"Jesus Saves",						17700,			"gangblok1_lae2",			"mural01_LA",			POSTERS},
+	{"Gant Bridge",						10434,			"hashblock2b_sfs",			"ws_mural2",			POSTERS},
+	{"San Fierro Skyline",				10439,			"hashblock3_sfs",			"ws_mural1",			POSTERS},
+	{"Black And White Mural",			5142,			"lashops1b_las2",			"mural03_LA",			POSTERS},
+	{"Colored Mural",					5134,			"wasteland_las2",			"mural05_LA",			POSTERS},
+	{"Gant Bridge 2",					2254,			"picture_frame_clip",		"CJ_PAINTING24",		POSTERS},
+	{"SF Pointy Building",				11631,			"mp_ranchcut",				"CJ_PAINTING20",		POSTERS},
+	{"Santa Maria Lifeguard",			2254,			"picture_frame_clip",		"CJ_PAINTING12",		POSTERS},
+	{"Seaside Painting",				11631,			"mp_ranchcut",				"CJ_PAINTING6",			POSTERS},
+	{"Bone County",						2254,			"picture_frame_clip",		"CJ_PAINTING26",		POSTERS},
+	{"Aircraft Photos",					16407,			"des_airfieldhus",			"plane_photos1",		POSTERS},
+	{"Yellow Car",						2254,			"picture_frame_clip",		"CJ_PAINTING2",			POSTERS},
+	{"Los Santos",						2254,			"picture_frame_clip",		"CJ_PAINTING3",			POSTERS},
+	{"Pier Lights",						2254,			"picture_frame_clip",		"CJ_PAINTING4",			POSTERS},
+	{"San Fierro",						2267,			"picture_frame",			"CJ_PAINTING14",		POSTERS},
+	{"Sunset Bridge",					2267,			"picture_frame",			"CJ_PAINTING30",		POSTERS},
+	{"San Fierro Bridge",				2267,			"picture_frame",			"CJ_PAINTING28",		POSTERS},
+	{"Landscape 1",						2267,			"picture_frame",			"CJ_PAINTING11",		POSTERS},
+	{"Landscape 2",						2267,			"picture_frame",			"CJ_PAINTING23",		POSTERS},
+	{"Landscape 3",						2267,			"picture_frame",			"CJ_PAINTING35",		POSTERS},
+	{"Landscape 4",						2267,			"picture_frame",			"CJ_PAINTING37",		POSTERS},
+	{"Palms",							2254,			"picture_frame_clip",		"CJ_PAINTING8",			POSTERS},
+	{"Bowling",							2254,			"picture_frame_clip",		"CJ_PAINTING27",		POSTERS},
+	{"Sailships",						2267,			"picture_frame",			"CJ_PAINTING34",		POSTERS},
+	{"Ship",							2267,			"picture_frame",			"CJ_PAINTING19",		POSTERS},
+	{"Ship 2",							2267,			"picture_frame",			"CJ_PAINTING36",		POSTERS},
+	{"Beach Sunset",					14803,			"BDupsNew",					"Bdup2_poster",			POSTERS},
+	{"Tropical 1",						11707,			"cuntcuts",					"GB_canvas17",			POSTERS},
+	{"Tropical 2",						11707,			"cuntcuts",					"GB_canvas18",			POSTERS},
+	{"Water Droplet",					14708,			"labig1int2",				"GB_restaursmll53",		POSTERS},
+	{"College Friends",					14708,			"labig1int2",				"GB_photo01",			POSTERS},
+	{"Casually Dressed Woman",			14708,			"labig1int2",				"GB_photo02",			POSTERS},
+	{"Cat 1",							2267,			"picture_frame",			"CJ_PAINTING1",			POSTERS},
+	{"Cat 2",							2267,			"picture_frame",			"CJ_PAINTING7",			POSTERS},
+	{"Flowers 1",						2267,			"picture_frame",			"CJ_PAINTING18",		POSTERS},
+	{"Flowers 2",						2267,			"picture_frame",			"CJ_PAINTING29",		POSTERS},
+	{"Leafs",							2267,			"picture_frame",			"CJ_PAINTING21",		POSTERS},
+	{"Strange Mosaic Art",				2267,			"picture_frame",			"CJ_PAINTING16",		POSTERS},
+	{"Modern Art",						2254,			"picture_frame_clip",		"CJ_PAINTING15",		POSTERS},
+	{"Modern Art 2",					14708,			"labig1int2",				"HS_art",				POSTERS},
+	{"Unknown Text",					11631,			"mp_ranchcut",				"CJ_PAINTING22",		POSTERS},
+
+	#define WALLPAPERS "Wallpapers"
+	{"Purple Wallpaper",					17925,			"lae2fake_int",			"burglry_wall4",			WALLPAPERS},
+	{"Turquoise Wallpaper",					5706,			"ci_studio5",			"tw@t_wall1",				WALLPAPERS},
+	{"White Wall With Blue Border",			8391,			"ballys01",				"ballywall01_64",			WALLPAPERS},
+	{"Dirty White Wall",					5135,			"groundb_las2",			"snpedwar2",				WALLPAPERS},
+	{"Yellow and Orange Wall",				8639,			"chinatownmall",		"ctmall15_128",				WALLPAPERS},
+	{"Cheap Blue Paint",					5787,			"melrose02_lawn",		"LAbluewall",				WALLPAPERS},
+	{"Cheap Green Paint",					5787,			"melrose02_lawn",		"LAgreenwall",				WALLPAPERS},
+	{"Cheap Red Paint",						5787,			"melrose02_lawn",		"LAredwall",				WALLPAPERS},
+	{"White Concrete Wall",					8675,			"wddngchpl02",			"vgschapelwall01_64",		WALLPAPERS},
+	{"Pink Concrete wall",					8401,			"vgshpground",			"vegaspawnwall_128",		WALLPAPERS},
+	{"Brown Concrete wall",					16150,			"ufo_bar",				"brwall_128",				WALLPAPERS},
+	{"Grey Concrete wall",					6286,			"santamonhus1",			"studwalltop_law",			WALLPAPERS},
+	{"Light Gray Concrete Wall",			4981,			"wiresetc2_las",		"lasunion7",				WALLPAPERS},
+	{"Peeling Paint 1",						11389,			"hubint1_sfse",			"ws_peeling_ceiling1_BIG",	WALLPAPERS},
+	{"Peeling Paint 2", 					17566,			"contachou1_lae2",		"comptwall27",				WALLPAPERS},
+	{"Peeling Paint 3",						17566,			"contachou1_lae2",		"ws_peeling2",				WALLPAPERS},
+	{"Peeling Paint 4",						11092,			"burgalrystore_sfse",	"ws_peeling_ceiling2",		WALLPAPERS},
+	{"Painted Concrete 1",					14783,			"intgarage2aint3",		"comptwall3",				WALLPAPERS},
+	{"Painted Concrete 2",					14700,			"vgshs2int2",			"ah_BADCEIL",				WALLPAPERS},
+	{"Painted Concrete 3",					14700,			"vgshs2int2",			"ah_RFPLSTR",				WALLPAPERS},
+	{"Painted Concrete 4",					14700,			"vgshs2int2",			"ah_grnplstr",				WALLPAPERS},
+
+	{"Painted Tiles",						14701,			"lahss2int2",			"HS1_Kwall2",				WALLPAPERS},
+	{"Low Wood Paneling",					14708,			"labig1int2",			"GB_restaursmll32",			WALLPAPERS},
+	{"Low Green Tile Paneling",				14709,			"lamidint2",			"mp_apt1_bathtiles",		WALLPAPERS},
+	{"Wood Paneling 1",						14709,			"lamidint2",			"mp_apt1_roomwall",			WALLPAPERS},
+	{"Wood Paneling 2",						14709,			"lamidint2",			"mp_apt1_woodpanel",		WALLPAPERS},
+	{"Wood Paneling 3",						14777,			"int_casinoint3",		"GB_midbar09",				WALLPAPERS},
+	{"Wood Paneling 4", 					18029, 			"genintintsmallrest", 	"GB_restaursmll09",			WALLPAPERS},
+	{"Crosses w/ Wood Border",				18018,			"genintintbarb",		"GB_midbar07",				WALLPAPERS},
+	{"Fancy Paneling",						14431,			"dr_gsnew",				"mp_gs_wall",				WALLPAPERS},
+	{"Painted Concrete 5",					14388, 			"dr_gsnew", 			"mp_gs_wall1",				WALLPAPERS},
+	{"Dark Bordered Wallpaper",				14388, 			"dr_gsnew", 			"mp_gs_libwall",			WALLPAPERS},
+
+	{"Orange Wallaper", 					14710,			"vgshm3int2",			"HSV_2carpet1",				WALLPAPERS},
+	{"Red Wallpaper", 						14703,			"vghsb3int2",			"HS2_3Carpet1",				WALLPAPERS},
+	{"Bright Artex Pattern",				11704,			"bdupsnew",				"Bdup2_Artex",				WALLPAPERS},
+	{"Fancy Red Dragon Design",				3533,			"triadprops_lvs",		"walpaper_dragn",			WALLPAPERS},
+	{"Slight Purple Artex Pattern",			14710,			"vgshm3int2",			"HS2_Artex2",				WALLPAPERS},
+	{"Green Artex Pattern",					14701,			"lahss2int2",			"HS2_Artex6",				WALLPAPERS},
+	{"White Artex Pattern",					14701,			"lahss2int2",			"HS2_Artex3",				WALLPAPERS},
+	{"Green Stripes",						1675,			"wshxrefhse",			"washdecowall3256",			WALLPAPERS},
+
+	{"Wallpaper 1",						11704,			"bdupsnew",				"Bdup2_wallpaper", 			WALLPAPERS},
+	{"Wallpaper 2",						11704,			"bdupsnew",				"Bdup2_wallpaperB",			WALLPAPERS},
+	{"Wallpaper 3",						11707,			"cuntcuts",				"GB_tile01",				WALLPAPERS},
+	{"Wallpaper 4",						14710,			"vgshm3int2",			"HSV_3wall3",				WALLPAPERS},
+	{"Wallpaper 5",						14701,			"lahss2int2",			"HS1_wall2",				WALLPAPERS},
+	{"Wallpaper 6",						14701,			"lahss2int2",			"HS1_wall3",				WALLPAPERS},
+	{"Wallpaper 7",						14701,			"lahss2int2",			"HS1_wall4",				WALLPAPERS},
+	{"Wallpaper 8",						14712,			"lahss2bint2",			"HS3_wall2",				WALLPAPERS},
+	{"Wallpaper 9",						14712,			"lahss2bint2",			"HS1_2Wall2",				WALLPAPERS},
+	{"Wallpaper 10",					14702,			"masmall3int2",			"HS3_wall3",				WALLPAPERS},
+	{"Wallpaper 11",					14702,			"masmall3int2",			"HS3_wall5",				WALLPAPERS},
+	{"Wallpaper 12",					14702,			"masmall3int2",			"HS3_wall6",				WALLPAPERS},
+	{"Wallpaper 13",					14703,			"vghsb3int2",			"HS2_2Wall2",				WALLPAPERS},
+	{"Wallpaper 14",					14703,			"vghsb3int2",			"HS2_3Wall1",				WALLPAPERS},
+	{"Wallpaper 15",					14703,			"vghsb3int2",			"HS4_Wall7",				WALLPAPERS},
+	{"Wallpaper 16",					14709,			"lamidint2",			"mp_apt1_kitchwallpaper",	WALLPAPERS},
+	{"Wallpaper 17",					14707,			"labig3int2",			"WH_walls",					WALLPAPERS},
+	{"Wallpaper 18",					14711,			"vgshm2int2",			"HS2_4wall1",				WALLPAPERS},
+	{"Wallpaper 19",					15034,			"genhotelsave",			"HS2_2Wall4",				WALLPAPERS},
+	{"Wallpaper 20",					14590,			"mafcastopfoor",		"donut_wall1",				WALLPAPERS},
+	{"Wallpaper 21",					5727,			"sunrise04_lawn",		"fredwall2_LAwN",			WALLPAPERS},
+	{"Wallpaper 22",					14702,			"masmall3int2",			"HS3_wall4",				WALLPAPERS},
+
+	#define MISC "Misc"
+	{"Graffiti",						18200, 			"w_town2cs_t", 			"Bow_door_graffiti_128", 	MISC},
+	{"Chinese paint",					5716, 			"sunrise02_lawn", 		"manndoor_law",  			MISC},
+	{"Phone Sign",						1229, 			"signs",				"phonesign_128",  			MISC},
+	{"Parking Sign",					1229, 			"signs", 				"NoParking2_128",  			MISC},
+	{"Pro Laps",						6351, 			"rodeo02_law2", 		"prolsign01_LA",  			MISC},
+	{"SPAVCEY", 						5771, 			"melrose11_lawn", 		"melrsign08_LA", 			MISC},
+	{"US Flag", 						9593, 			"hosbibalsfw", 			"dt_cops_US_flag", 			MISC},
+	{"Presidio", 						9259, 			"presidio01_sfn", 		"stainwin_law", 			MISC},
+	{"Fading Yellow",					9494,			"chinatownsfe",			"chtown4_sf",				MISC},
+	{"Fading Blue", 					9494,			"chinatownsfe",			"chtown6_sf",				MISC},
+	{"Fading Green",					9494,			"chinatownsfe",			"chtown8_sf",				MISC},
+	{"Hay",								12911,			"sw_farm1",				"forestfloorbranch256",		MISC},
+	{"Hay and Wood",					12911,			"sw_farm1",				"sw_barnfloor1",			MISC},
+	{"Garage Door",						5138,			"ground_las2",			"alleydoor8",				MISC},
+	{"Flamingos",						8488,			"flamingo1",			"flmngo01_256",				MISC},
+	{"Wood Framed Windows",				14771,			"int_brothelint3",		"GB_nastybar13",			MISC},
+	{"White Framed Windows",			14710,			"vgshm3int2",			"kit_windo_12",				MISC},
+	{"Creepy Old Window",				14700,			"vgshs2int2",			"ah_FLKWIN",				MISC},
+	{"Fancy Window",					14710,			"vgshm3int2",			"windo_blinds",				MISC},
+	{"Blue Material",					14770,			"genintgenintint3",		"GB_midbar04",				MISC},
+	{"Blue Material 2",					14771,			"int_brothelint3",		"GB_midbar10",				MISC},
+	{"Black Material",					15046, 			"svcunthoose",			"csGarageTrolley01psd",		MISC},
+	{"Bordered Black Material",			15046,			"svcunthoose",			"csheistbox01",				MISC},
+	{"Red Cushions",					14838,			"lee_stripclub",		"Strip_bar_wall1",			MISC},
+	{"Funky 1",							14808,			"lee_strip2",			"strip_neon_Curtain",		MISC},
+	{"Funky 2",							14808,			"lee_strip2",			"strip_neon_flat",			MISC},
+	{"Glass Wall 1",					16639,			"a51_labs",				"ws_trainstationwin1",		MISC},
+	{"Glass Wall 2",					10973,			"mall_sfse",			"ws_trainstationwin2",		MISC},
+	{"Glass 1",							1649,			"wglass",				"carshowwin2",				MISC},
+	{"Glass 2",							5722,			"sunrise01_lawn",		"plainglass",				MISC},
+	{"Water",							3947,			"rczero_track",			"waterclear256",			MISC},
+	{"Snow",							3914,			"snow",					"mp_snow",					MISC},
+	{"Blank",							1337,			"none",					"none",						MISC},
+
+	{"Classic Window",     				15048,  		 "labigsave", "AH_windows",					MISC},
+	{"Wood Framed Simple Window",   	14661,   		"int_tatoo", "mp_shop_window",		MISC},
+	{"Metal Framed Window",      		14495,   		"sweetshall", "mcstraps_window",		MISC},
+	{"Metal Framed Black Windows",   	14736,   		"whorerooms", "AH_cheapwindow",	MISC},
+	{"Door 'Males Only'",      			18008,   		"intclothesa", "CJ_VICT_DOOR",			MISC},
+	{"Door 'Females Only'",      		18008,   		"intclothesa", "CJ_VICT_DOOR2",		MISC},
+	{"Gold",            				14707,   		"labig3int2", "gold128",						MISC},
+	{"Gold 2",         					14607, "triad_main", "buddha_gold",						MISC},
+	{"Booger Green ",     				19527,   "Cauldron1", "AlienLiquid1",					MISC},
+	{"Fading Dark Blue",      			14639,   "traidman", "ab_aquarium",					MISC},
+	{"Glass 3",         				14755,   "sfhss2", "CJ_FRAME_Glass",						MISC},
+	{"Glass 4",        					1978,   "kbroul1", "shelf_glas",							MISC},
+	{"Dirty Glass",         			914,   "industrialext", "CJ_GEN_GLASS2",				MISC},
+	{"Dirty Glass 2",    				10713,   "gayclub_sfs", "CJ_GEN_GLASS2",				MISC},
+	{"Black Rubber",         			18018,   "genintintbarb", "CJ_BLACK_RUB2",			MISC},
+	{"White Formica",      				1770,   "cj_tables", "FORMICA1",						MISC},
+	{"Water 2",         				18742, "MatTextures", "waterclear256",					MISC},
+	{"Water 3",         				19841, "vegaswaterfall", "newaterfal1_256",				MISC},
+	{"Unnamed Mesh",         			3280, "country_breakable", "ws_castironwalk",		MISC},
+	{"Camouflage Net",     				2068, "cj_ammo_net", "CJ_cammonet",					MISC},
+	{"Fading Yellow Glass" ,     		19197,"EnExMarkers", "enex",						MISC},
+	{"Basket Pattern 1",   				8534, "tikimotel", "sa_wood01_128",					MISC},
+	{"Basket Pattern 2",   				8534, "tikimotel", "sa_wood03_128",					MISC},
+	{"Basket Pattern 3",   				8534, "tikimotel", "sa_wood04_128",					MISC},
+	{"Transperancy",         			18888, "ForceFields", "white",						MISC},
+
+
+	{"Unnamed Ceiling 1",      11312,   "carshow_sfse", "ws_officy_ceiling",			MISC},
+	{"Unnamed Ceiling 2",      18007,   "int_cutbar3", "ceilingtile1_128",			MISC},
+	{"Unnamed Ceiling 3",      18026,   "scummy", "ceiling_256",				MISC},
+	{"Unnamed Ceiling 4",      18038,   "vegas_munation", "gun_ceiling1",			MISC},
+	{"Unnamed Ceiling 5",      18038,   "vegas_munation", "gun_ceiling2",			MISC},
+	{"Unnamed Ceiling 6",      18038,   "vegas_munation", "gun_ceiling3",			MISC},
+	{"Unnamed Ceiling 7",      14534,   "ab_wooziea", "dt_office_roof",			MISC},
+	{"Unnamed Ceiling 8",      14526, "sweetsmain", "ah_whitpanelceil",			MISC},
+	{"Unnamed Ceiling 9",      15042,   "svsfsm", "AH_walltile2",				MISC},
+	{"Unnamed Ceiling 10",      18045,   "gen_munation", "mp_diner_ceilingdirt",		MISC},
+	{"Dark Wood Border",      14431,   "dr_gsnew", "mp_gs_border",				MISC},
+	{"Light Wood Border",      14431,   "dr_gsnew", "mp_gs_border1",				MISC},
+	{"Old Wood Panel",      14700,   "vgshs2int2", "AH_oldwdpan",				MISC},
+	{"Wood Panel",         14431,   "dr_gsnew", "mp_gs_woodpanel",				MISC},
+	{"Wood Panel 2",         14750,   "sfhsm2", "ah_pnwainscot3",				MISC},
+	{"Wood Panel 3",         15048,   "labigsave", "AH_barpanelM",				MISC},
+	{"Wood Panel 4",         14748,   "sfhsm1", "ah_pnwainscot",				MISC},
+	{"Wood Panel 5",         14735,   "newcrak", "AH_wdpanscum",				MISC},
+	{"Wood Panel 6",         14853,   "gen_pol_vegas", "mp_cop_panel",			MISC},
+	{"Wood Panel 7",         14789,   "ab_sfgymmain", "ab_panelWall1",			MISC},
+	{"Wood Panel 8",         14789,   "ab_sfgymmain", "ab_panelWall2",			MISC},
+	{"Perforated Wood",      18026, "scummy", "CJ_BACK_BOARD",				MISC},
+	{"Funky 3",         14832,   "lee_stripclub", "mirror_ref1",				MISC},
+	{"Unnamed something 2",      1389, "cranes_dyn2", "ws_sheetsteel",			MISC},
+	{"Unnamed something 3",      1824,   "gamingtble", "crapside_128",			MISC},
+	{"Unnamed Something 4",      2788,   "pizza_furn", "CJ_CORD",				MISC},
+	{"Black Leather",      1753,   "cj_sofa", "CJ-COUCHL2",					MISC},
+	{"Brown Leather",      1753,   "cj_sofa", "CJ-COUCHL1",					MISC},
+	{"Red Leather",         1770,   "cj_tables", "CJ_RED_LEATHER",				MISC},
+	{"Pink 'Leather'",      2487,   "rc_shop_hanger", "CJ_kite2",				MISC},
+	{"Blue 'Leather'",      2487,   "rc_shop_hanger", "CJ_kite3",				MISC},
+	{"Unnamed Concrete Wall 1",   17925,   "lae2fake_int", "ab_wall3",			MISC},
+	{"Unnamed Concrete Wall 2",   18060,   "mp_diner2", "mp_diner_wall",			MISC},
+	{"Unnamed Material",      13594, "kickstart", "ah_bluBADWL",				MISC},
+	{"Red Square",         1898, "kb_wheel1", "wheel_o_2",					MISC},
+	{"Green Square",         1898, "kb_wheel1", "wheel_o_2f",				MISC},
+	{"Light Green Square",      1898, "kb_wheel1", "wheel_o_2b",				MISC},
+	{"Blue Square",         1898, "kb_wheel1", "wheel_o_2c",					MISC},
+	{"Light Blue Square",      1898, "kb_wheel1", "wheel_o_2d",				MISC},
+	{"Yellow Square",      1898, "kb_wheel1", "wheel_o_2e",					MISC},
+	{"Unnamed Asian Wall",      14620, "triad_bar", "triad_decor1",				MISC},
+	{"Unnamed Red Something",   6989, "vgnfremnt1", "casinolights4_128",			MISC},
+	{"Unnamed Blue Something",   6989, "vgnfremnt1", "casinolightsblu_128",			MISC},
+	{"Unnamed Yellow Something",   6989, "vgnfremnt1", "casinolightsyel_128",		MISC},
+	{"Funky Red Tiles",      6989, "vgnfremnt1", "casinolights9_256",			MISC},
+	{"Unnamed PC Screen 1",      9822, "ship_brijsfw", "ship_screen1sfw",			MISC},
+	{"Unnamed PC Screen 2",      9822, "ship_brijsfw", "ship_greenscreen1",			MISC},
+	{"TV Screen",         1781, "cj_tv", "CJ_TV_SCREEN",					MISC},
+	{"TV Noise",         14640, "chinese_furn", "ab_tv_noise",				MISC},
+	{"Empty Golden Frame", 6989, "vgnfremnt1", "goldframe_256",				MISC},
+	{"Blood",         19836, "particle", "bloodpool_64",					MISC},
+	{"Blood 2",         18067, "intclothes_acc", "mp_cloth_vicrug",				MISC},
+	{"Unnamed Creepy Concrete",   14888, "gf6", "mp_gimp_basewall",				MISC},
+	{"Seeing Eye",         14839, "lee_strippriv", "Strip_Sign12",				MISC},
+	{"Unnamed Glass 1",      2176, "casino_props", "flameOptic",				MISC},
+	{"Unnamed Glass 2",      2176, "casino_props", "tubelite",				MISC}
+};
+enum MAT_COLORS
+{
+	ColorHex,
+	ColorName[32]
+};
+new const MaterialColors[][MAT_COLORS] =
+{
+	{0, "none"},
+	{0xFFF0F8FF, "Alice Blue"},
+	{0xFFFAEBD7, "Antique White"},
+	{0xFF00FFFF, "Aqua"},
+	{0xFF7FFFD4, "Aquamarine"},
+	{0xFFF0FFFF, "Azure"},
+	{0xFFF5F5DC, "Beige"},
+	{0xFFFFE4C4, "Bisque"},
+	{0xFF000000, "Black"},
+	{0xFFFFEBCD, "Blanched Almond"},
+	{0xFF0000FF, "Blue"},
+	{0xFF8A2BE2, "Blue Violet"},
+	{0xFFA52A2A, "Brown"},
+	{0xFFDEB887, "Burly Wood"},
+	{0xFF5F9EA0, "Cadet Blue"},
+	{0xFF7FFF00, "Chartreuse"},
+	{0xFFD2691E, "Chocolate"},
+	{0xFFFF7F50, "Coral"},
+	{0xFF6495ED, "Cornflower Blue"},
+	{0xFFFFF8DC, "Cornsilk"},
+	{0xFFDC143C, "Crimson"},
+	{0xFF00FFFF, "Cyan"},
+	{0xFF00008B, "Dark Blue"},
+	{0xFF008B8B, "Dark Cyan"},
+	{0xFFB8860B, "Dark Goldenrod"},
+	{0xFFA9A9A9, "Dark Gray"},
+	{0xFF006400, "Dark Green"},
+	{0xFFBDB76B, "Dark Khaki"},
+	{0xFF8B008B, "Dark Magenta"},
+	{0xFF556B2F, "Dark Olive Green"},
+	{0xFFFF8C00, "Dark Orange"},
+	{0xFF9932CC, "Dark Orchid"},
+	{0xFF8B0000, "Dark Red"},
+	{0xFFE9967A, "Dark Salmon"},
+	{0xFF8FBC8F, "Dark Sea Green"},
+	{0xFF483D8B, "Dark Slate Blue"},
+	{0xFF2F4F4F, "Dark Slate Gray"},
+	{0xFF00CED1, "Dark Turquoise"},
+	{0xFF9400D3, "Dark Violet"},
+	{0xFFFF1493, "Deep Pink"},
+	{0xFF00BFFF, "Deep Sky Blue"},
+	{0xFF696969, "Dim Gray"},
+	{0xFF1E90FF, "Dodger Blue"},
+	{0xFFB22222, "Firebrick"},
+	{0xFFFFFAF0, "Floral White"},
+	{0xFF228B22, "Forest Green"},
+	{0xFFFF00FF, "Fuchsia"},
+	{0xFFDCDCDC, "Gainsboro"},
+	{0xFFF8F8FF, "Ghost White"},
+	{0xFFFFD700, "Gold"},
+	{0xFFDAA520, "Goldenrod"},
+	{0xFF808080, "Gray"},
+	{0xFF008000, "Green"},
+	{0xFFADFF2F, "Green Yellow"},
+	{0xFFF0FFF0, "Honeydew"},
+	{0xFFFF69B4, "Hot Pink"},
+	{0xFFCD5C5C, "Indian Red"},
+	{0xFF4B0082, "Indigo"},
+	{0xFFFFFFF0, "Ivory"},
+	{0xFFF0E68C, "Khaki"},
+	{0xFFE6E6FA, "Lavender"},
+	{0xFFFFF0F5, "Lavender Blush"},
+	{0xFF7CFC00, "Lawn Green"},
+	{0xFFFFFACD, "Lemon Chiffon"},
+	{0xFFADD8E6, "Light Blue"},
+	{0xFFF08080, "Light Coral"},
+	{0xFFE0FFFF, "Light Cyan"},
+	{0xFFFAFAD2, "Light Goldenrod Yellow"},
+	{0xFFD3D3D3, "Light Gray"},
+	{0xFF90EE90, "Light Green"},
+	{0xFFFFB6C1, "Light Pink"},
+	{0xFFFFA07A, "Light Salmon"},
+	{0xFF20B2AA, "Light Sea Green"},
+	{0xFF87CEFA, "Light Sky Blue"},
+	{0xFF778899, "Light Slate Gray"},
+	{0xFFB0C4DE, "Light Steel Blue"},
+	{0xFFFFFFE0, "Light Yellow"},
+	{0xFF00FF00, "Lime"},
+	{0xFF32CD32, "Lime Green"},
+	{0xFFFAF0E6, "Linen"},
+	{0xFFFF00FF, "Magenta"},
+	{0xFF800000, "Maroon"},
+	{0xFF66CDAA, "Medium Aquamarine"},
+	{0xFF0000CD, "Medium Blue"},
+	{0xFFBA55D3, "Medium Orchid"},
+	{0xFF9370DB, "Medium Purple"},
+	{0xFF3CB371, "Medium Sea Green"},
+	{0xFF7B68EE, "Medium Slate Blue"},
+	{0xFF00FA9A, "Medium Spring Green"},
+	{0xFF48D1CC, "Medium Turquoise"},
+	{0xFFC71585, "Medium Violet Red"},
+	{0xFF191970, "Midnight Blue"},
+	{0xFFF5FFFA, "Mint Cream"},
+	{0xFFFFE4E1, "Misty Rose"},
+	{0xFFFFE4B5, "Moccasin"},
+	{0xFFFFDEAD, "Navajo White"},
+	{0xFF000080, "Navy"},
+	{0xFFFDF5E6, "Old Lace"},
+	{0xFF808000, "Olive"},
+	{0xFF6B8E23, "Olive Drab"},
+	{0xFFFFA500, "Orange"},
+	{0xFFFF4500, "Orange Red"},
+	{0xFFDA70D6, "Orchid"},
+	{0xFFEEE8AA, "Pale Goldenrod"},
+	{0xFF98FB98, "Pale Green"},
+	{0xFFAFEEEE, "Pale Turquoise"},
+	{0xFFDB7093, "Pale Violet Red"},
+	{0xFFFFEFD5, "Papaya Whip"},
+	{0xFFFFDAB9, "Peach Puff"},
+	{0xFFCD853F, "Peru"},
+	{0xFFFFC0CB, "Pink"},
+	{0xFFDDA0DD, "Plum"},
+	{0xFFB0E0E6, "Powder Blue"},
+	{0xFF800080, "Purple"},
+	{0xFFFF0000, "Red"},
+	{0xFFBC8F8F, "Rosy Brown"},
+	{0xFF4169E1, "Royal Blue"},
+	{0xFF8B4513, "Saddle Brown"},
+	{0xFFFA8072, "Salmon"},
+	{0xFFF4A460, "Sandy Brown"},
+	{0xFF2E8B57, "Sea Green"},
+	{0xFFFFF5EE, "SeaShell"},
+	{0xFFA0522D, "Sienna"},
+	{0xFFC0C0C0, "Silver"},
+	{0xFF87CEEB, "Sky Blue"},
+	{0xFF6A5ACD, "Slate Blue"},
+	{0xFF708090, "Slate Gray"},
+	{0xFFFFFAFA, "Snow"},
+	{0xFF00FF7F, "Spring Green"},
+	{0xFF4682B4, "Steel Blue"},
+	{0xFFD2B48C, "Tan"},
+	{0xFF008080, "Teal"},
+	{0xFFD8BFD8, "Thistle"},
+	{0xFFFF6347, "Tomato"},
+	{0xFF40E0D0, "Turquoise"},
+	{0xFFEE82EE, "Violet"},
+	{0xFFF5DEB3, "Wheat"},
+	{0xFFFFFFFF, "White"},
+	{0xFFF5F5F5, "White Smoke"},
+	{0xFFFFFF00, "Yellow"},
+	{0xFF9ACD32, "Yellow Green"}
+};
+new const g_FurnitureTypes[][] = {
+	"Kitchen",
+	"Tables",
+	"Chairs/Couches",
+	"Shelves",
+	"Bathroom",
+	"Bedroom",
+	"Cabinets",
+	"Electronics",
+	"Plants",
+	"Trashcans",
+	"Doors",
+	"Carpets",
+	"Frames",
+	"Miscellaneous",
+	"Wall",
+	"Special"
+};
+enum e_Furniture
+{
+	fID,
+	fExists,
+	fHouseID,
+	fModel,
+	Float:fSpawn[6],
+	fInterior,
+	fWorld,
+	fCode, // Safe code
+	fMoney, // Safe money
+	fSafeOpen,
+	fDoorOpen,
+	fObject,
+	fEdit,
+	Text3D:fText,
+	fMaterial[3],
+	fMatColour[3],
+};
+enum e_FurnitureList
+{
+	e_ModelCategory,
+	e_ModelName[32],
+	e_ModelID,
+	e_ModelPrice
+};
+new Furniture[MAX_FURNITURE][e_Furniture];
+enum {
+	FURNITURE_KITCHEN,
+	FURNITURE_TABLES,
+	FURNITURE_CHAIRS,
+	FURNITURE_SHELVES,
+	FURNITURE_BATHROOM,
+	FURNITURE_BEDROOM,
+	FURNITURE_CABINETS,
+	FURNITURE_ELECTRIC,
+	FURNITURE_PLANTS,
+	FURNITURE_TRASH,
+	FURNITURE_DOORS,
+	FURNITURE_CARPETS,
+	FURNITURE_FRAMES,
+	FURNITURE_MISC,
+	FURNITURE_WALL,
+	FURNITURE_SPECIAL,
+	FURNITURE_EFFECT
+};
+new const g_FurnitureList[][e_FurnitureList] =
+{
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_FRIDGE",     2147,  2000},
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_COOKER",     2170,  1000},
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_SINK",       2336,  550},
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_WASHER",     2337,  400},
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_L",          2158,  550},
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_M",          2334,  550},
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_R",          2335,  550},
+	{FURNITURE_KITCHEN,  "CJ_KITCH1_CORNER",     2338,  550},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_FRIDGE",     2131,  450},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_SINK",       2132,  550},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_COOKER",     2339,  1000},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_WASHER",     2340,  400},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_L",          2141,  1000},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_M",          2134,  1000},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_R",          2133,  1000},
+	{FURNITURE_KITCHEN,  "CJ_KITCH2_CORNER",     2341,  550},
+	{FURNITURE_KITCHEN,  "CJ_K3_COOKER",         2135,  2000},
+	{FURNITURE_KITCHEN,  "CJ_K3_SINK",           2136,  450},
+	{FURNITURE_KITCHEN,  "CJ_K3_LOW_UNIT1",      2138,  1000},
+	{FURNITURE_KITCHEN,  "CJ_K3_LOW_UNIT2",      2139,  1000},
+	{FURNITURE_KITCHEN,  "CJ_K3_LOW_UNIT3",      2137,  1000},
+	{FURNITURE_KITCHEN,  "CJ_K3_TALL_UNIT1",     2140,  400},
+	{FURNITURE_KITCHEN,  "CJ_K3_C_UNIT",         2305,  400},
+	{FURNITURE_KITCHEN,  "CJ_K3_WASH_MAC",       2303,  550},
+	{FURNITURE_KITCHEN,  "CJ_K3_UNIT06",         2145,  450},
+	{FURNITURE_KITCHEN,  "CJ_K1_FRIDGE_UNIT",    2127,  400},
+	{FURNITURE_KITCHEN,  "CJ_K1_SINK",           2130,  1000},
+	{FURNITURE_KITCHEN,  "CJ_K1_TALL_UNIT",      2128,  1000},
+	{FURNITURE_KITCHEN,  "CJ_K1_LOW_UNIT",       2129,  550},
+	{FURNITURE_KITCHEN,  "CJ_K1_LOW_CORNER",     2304,  550},
+	{FURNITURE_KITCHEN,  "CJ_THIN_FRIGE",        1780,  550},
+	{FURNITURE_KITCHEN,  "CJ_FF_CONTER_5",       2446,  600},
+	{FURNITURE_KITCHEN,  "CJ_FF_CONTER_5c",      2447,  600},
+	{FURNITURE_KITCHEN,  "CJ_FF_CONTER_5d",      2448,  600},
+	{FURNITURE_KITCHEN,  "CJ_FF_CONTER_5e",      2449,  2000},
+	{FURNITURE_KITCHEN,  "CJ_FF_CONTER_5b",      2450,  450},
+	{FURNITURE_KITCHEN,  "CJ_FF_CONTER_8b",      2454,  400},
+	{FURNITURE_KITCHEN,  "CJ_FF_CONTER_8c",      2457,  400},
+	{FURNITURE_KITCHEN,  "CJ_FF_COFFEE",         2500,  250},
+	{FURNITURE_KITCHEN,  "CJ_FF_FRYER",          2415,  550},
+	{FURNITURE_KITCHEN,  "CJ_FF_COOKER",         2417,  550},
+	{FURNITURE_KITCHEN,  "CJ_FF_MICROW",         2421,  250},
+	{FURNITURE_KITCHEN,  "CJ_MICROWAVE1",        2149,  800},
+	{FURNITURE_KITCHEN,  "CJ_FF_PIZZA_OVEN",     2426,  1500},
+	{FURNITURE_KITCHEN,  "CJ_FF_FRIDGE2",        2452,  400},
+	{FURNITURE_KITCHEN,  "CJ_FF_DISP",           2416,  9000},
+	{FURNITURE_KITCHEN,  "CJ_FF_JUICE_L",        2427,  550},
+	{FURNITURE_KITCHEN,  "CJ_FF_CUP_DISP",       2429,  2000},
+	{FURNITURE_KITCHEN,  "CJ_OFF2_LIC_2_R",      2530,  550},
+	{FURNITURE_KITCHEN,  "CJ_OFF2_LIC_1_R",      2532,  550},
+	{FURNITURE_KITCHEN,  "MarcosFryingPan1",     19581, 500},
+	{FURNITURE_KITCHEN,  "MarcosSteak1",     	 19582, 500},
+	{FURNITURE_KITCHEN,  "MarcosKnife1",     	 19583, 500},
+	{FURNITURE_KITCHEN,  "MarcosSaucepan1",      19584, 500},
+	{FURNITURE_KITCHEN,  "MarcosPan1",     		 19585, 500},
+	{FURNITURE_KITCHEN,  "MarcosSpatula1",     	 19586, 500},
+	{FURNITURE_TABLES,   "parktable1",           1281,  600},
+	{FURNITURE_TABLES,   "DYN_TABLE_1",          1433,  600},
+	{FURNITURE_TABLES,   "DYN_TABLE_2",          1432,  7500},
+	{FURNITURE_TABLES,   "craps_table",          1824,  9000},
+	{FURNITURE_TABLES,   "wheel_table",          1896,  6500},
+	{FURNITURE_TABLES,   "k_pooltablesm",        2964,  2000},
+	{FURNITURE_TABLES,   "pokertable01",         19474, 400},
+	{FURNITURE_TABLES,   "officedesk1l",         1998,  2000},
+	{FURNITURE_TABLES,   "officedesk2",          1999,  400},
+	{FURNITURE_TABLES,   "officedesk1",          2008,  4500},
+	{FURNITURE_TABLES,   "officedesk2l",         2009,  2000},
+	{FURNITURE_TABLES,   "MED_OFFICE_DESK_1",    2165,  400},
+	{FURNITURE_TABLES,   "MED_OFFICE_DESK_2",    2166,  4500},
+	{FURNITURE_TABLES,   "MED_OFFICE_DESK_3",    2173,  400},
+	{FURNITURE_TABLES,   "MED_OFFICE2_DESK_1",   2172,  400},
+	{FURNITURE_TABLES,   "MED_OFFICE3_DESK_1",   2169,  1000},
+	{FURNITURE_TABLES,   "MED_OFFICE4_DESK_1",   2171,  4500},
+	{FURNITURE_TABLES,   "MED_OFFICE4_DESK_2",   2174,  400},
+	{FURNITURE_TABLES,   "MED_OFFICE4_DESK_3",   2175,  400},
+	{FURNITURE_TABLES,   "MED_OFFICE5_DESK_3",   2180,  2500},
+	{FURNITURE_TABLES,   "MED_OFFICE5_DESK_2",   2181,  550},
+	{FURNITURE_TABLES,   "MED_OFFICE5_DESK_1",   2182,  400},
+	{FURNITURE_TABLES,   "MED_OFFICE3_DESK_09",  2183,  6000},
+	{FURNITURE_TABLES,   "MED_OFFICE6_DESK_2",   2184,  6500},
+	{FURNITURE_TABLES,   "MED_OFFICE6_DESK_1",   2185,  2000},
+	{FURNITURE_TABLES,   "MED_OFFICE2_DESK_2",   2193,  7000},
+	{FURNITURE_TABLES,   "MED_OFFICE2_DESK_3",   2198,  2000},
+	{FURNITURE_TABLES,   "MED_OFFICE8_DESK_1",   2205,  550},
+	{FURNITURE_TABLES,   "MED_OFFICE8_DESK_02",  2206,  2500},
+	{FURNITURE_TABLES,   "MED_OFFICE7_DESK_1",   2207,  550},
+	{FURNITURE_TABLES,   "MED_OFFICE9_DESK_1",   2209,  5500},
+	{FURNITURE_TABLES,   "MED_OFFICE4_DESK_4",   2308,  6000},
+	{FURNITURE_TABLES,   "CJ_FF_WORKTOP",        2418,  400},
+	{FURNITURE_TABLES,   "CJ_FF_WORKTOP_2",      2419,  400},
+	{FURNITURE_TABLES,   "CJ_FF_WORKTOP_3",      2451,  2000},
+	{FURNITURE_TABLES,   "CJ_DF_WORKTOP_2",      936,   1000},
+	{FURNITURE_TABLES,   "CJ_DF_WORKTOP",        937,   400},
+	{FURNITURE_TABLES,   "CJ_DF_WORKTOP_3",      941,   1000},
+	{FURNITURE_TABLES,   "CJ_TV_TABLE2",         2311,  2000},
+	{FURNITURE_TABLES,   "CJ_TV_TABLE1",         2313,  2500},
+	{FURNITURE_TABLES,   "CJ_TV_TABLE3",         2314,  550},
+	{FURNITURE_TABLES,   "CJ_TV_TABLE4",         2315,  550},
+	{FURNITURE_TABLES,   "CJ_TV_TABLE5",         2319,  2500},
+	{FURNITURE_TABLES,   "CJ_TV_TABLE6",         2321,  2000},
+	{FURNITURE_TABLES,   "CJ_HIFI_TABLE",        2346,  2500},
+	{FURNITURE_TABLES,   "Shop_set_1_Table",     2370,  1000},
+	{FURNITURE_TABLES,   "POLCE_DESK1",          2605,  1500},
+	{FURNITURE_TABLES,   "POLCE_DESK2",          2607,  2000},
+	{FURNITURE_TABLES,   "CJ_PIZZA_TABLE",       2635,  2500},
+	{FURNITURE_TABLES,   "CJ_PIZZA_TABLE2",      2637,  2500},
+	{FURNITURE_TABLES,   "CJ_BURG_TABLE",        2644,  2500},
+	{FURNITURE_TABLES,   "CJ_donut_TABLE",       2747,  2000},
+	{FURNITURE_TABLES,   "CJ_CHICK_TABLE",       2762,  2000},
+	{FURNITURE_TABLES,   "CJ_CHICK_TABLE_2",     2763,  2000},
+	{FURNITURE_TABLES,   "CJ_PIZZA_TABLE03",     2764,  2500},
+	{FURNITURE_TABLES,   "MED_DINNING_6",        2119,  2500},
+	{FURNITURE_TABLES,   "SWANK_DINNING_6",      2118,  2000},
+	{FURNITURE_TABLES,   "SWANK_DINNING_5",      2117,  2500},
+	{FURNITURE_TABLES,   "LOW_DINNING_6",        2116,  1500},
+	{FURNITURE_TABLES,   "LOW_DINNING_1",        2115,  1500},
+	{FURNITURE_TABLES,   "castable1",            2802,  400},
+	{FURNITURE_TABLES,   "a51_labtable1_",       3383,  2000},
+	{FURNITURE_CHAIRS,   "Stonebench1",          1256,  2000},
+	{FURNITURE_CHAIRS,   "parkbench1",           1280,  2500},
+	{FURNITURE_CHAIRS,   "CJ_BLOCKER_BENCH",     1368,  2500},
+	{FURNITURE_CHAIRS,   "swivelchair_B",        1663,  1500},
+	{FURNITURE_CHAIRS,   "swivelchair_A",        1671,  1500},
+	{FURNITURE_CHAIRS,   "kb_swivelchair1",      1714,  1500},
+	{FURNITURE_CHAIRS,   "kb_swivelchair2",      1715,  1500},
+	{FURNITURE_CHAIRS,   "kb_slot_stool",        1716,  1000},
+	{FURNITURE_CHAIRS,   "est_chair1",           1721,  1000},
+	{FURNITURE_CHAIRS,   "kb_chair03",           1704,  2000},
+	{FURNITURE_CHAIRS,   "kb_chair04",           1705,  2000},
+	{FURNITURE_CHAIRS,   "kb_chair02",           1708,  2000},
+	{FURNITURE_CHAIRS,   "kb_chair01",           1711,  2000},
+	{FURNITURE_CHAIRS,   "mrk_seating1",         1723,  550},
+	{FURNITURE_CHAIRS,   "mrk_seating1b",        1724,  200},
+	{FURNITURE_CHAIRS,   "mrk_seating2",         1726,  550},
+	{FURNITURE_CHAIRS,   "mrk_seating2b",        1727,  2000},
+	{FURNITURE_CHAIRS,   "mrk_seating3",         1728,  1000},
+	{FURNITURE_CHAIRS,   "mrk_seating3b",        1729,  2500},
+	{FURNITURE_CHAIRS,   "CJ_EASYCHAIR1",        1735,  2000},
+	{FURNITURE_CHAIRS,   "SWANK_DIN_CHAIR_5",    1739,  1000},
+	{FURNITURE_CHAIRS,   "SWANK_1_FootStool",    1746,  500},
+	{FURNITURE_CHAIRS,   "CJ_BARSTOOL",          1805,  1000},
+	{FURNITURE_CHAIRS,   "MED_OFFICE_CHAIR",     1806,  2500},
+	{FURNITURE_CHAIRS,   "CJ_FOLDCHAIR",         1810,  500},
+	{FURNITURE_CHAIRS,   "MED_DIN_CHAIR_5",      1811,  1500},
+	{FURNITURE_CHAIRS,   "SWANK_DIN_CHAIR_2",    2079,  1000},
+	{FURNITURE_CHAIRS,   "MED_DIN_CHAIR_4",      2120,  1500},
+	{FURNITURE_CHAIRS,   "LOW_DIN_CHAIR_2",      2121,  500},
+	{FURNITURE_CHAIRS,   "SWANK_DIN_CHAIR_4",    2123,  1000},
+	{FURNITURE_CHAIRS,   "SWANK_DIN_CHAIR_1",    2124,  1500},
+	{FURNITURE_CHAIRS,   "MED_DIN_CHAIR_1",      2125,  500},
+	{FURNITURE_CHAIRS,   "MED_OFFICE_CHAIR2",    2309,  1000},
+	{FURNITURE_CHAIRS,   "CJ_PIZZA_CHAIR2",      2638,  400},
+	{FURNITURE_CHAIRS,   "CJ_PIZZA_CHAIR3",      2639,  550},
+	{FURNITURE_CHAIRS,   "LEE_stripCHAIR2",      2776,  1000},
+	{FURNITURE_CHAIRS,   "CJ_BURG_CHAIR",        2788,  1000},
+	{FURNITURE_CHAIRS,   "SWK_COUCH_1",          2290,  400},
+	{FURNITURE_CHAIRS,   "LOW_COUCH_3",          1768,  400},
+	{FURNITURE_CHAIRS,   "MED_COUCH_1",          1766,  400},
+	{FURNITURE_CHAIRS,   "LOW_COUCH_2",          1764,  400},
+	{FURNITURE_CHAIRS,   "LOW_COUCH_1",          1763,  400},
+	{FURNITURE_CHAIRS,   "SWANK_COUCH_2",        1761,  400},
+	{FURNITURE_CHAIRS,   "MED_COUCH_2",          1760,  400},
+	{FURNITURE_CHAIRS,   "LOW_COUCH_5",          1757,  400},
+	{FURNITURE_CHAIRS,   "LOW_COUCH_4",          1756,  400},
+	{FURNITURE_CHAIRS,   "SWANK_COUCH_1",        1753,  2000},
+	{FURNITURE_CHAIRS,   "kb_couch04",           1713,  400},
+	{FURNITURE_CHAIRS,   "kb_couch05",           1712,  400},
+	{FURNITURE_CHAIRS,   "kb_couch07",           1710,  6000},
+	{FURNITURE_CHAIRS,   "kb_couch08",           1709,  8000},
+	{FURNITURE_CHAIRS,   "kb_couch01",           1707,  400},
+	{FURNITURE_CHAIRS,   "kb_couch03",           1706,  400},
+	{FURNITURE_CHAIRS,   "kb_couch02",           1703,  400},
+	{FURNITURE_CHAIRS,   "kb_couch06",           1702,  400},
+	{FURNITURE_SHELVES,  "CJ_BEDROOM1", 		 2323,  2000},
+	{FURNITURE_SHELVES,  "CJ_BEDROOM1_W", 		 2330,  6000},
+	{FURNITURE_SHELVES,  "mrk_wrobe_tmp", 		 2025,  5500},
+	{FURNITURE_SHELVES,  "MED_SHELF", 			 1744,  1500},
+	{FURNITURE_SHELVES,  "DYN_CUPBOARD", 		 1417,  1000},
+	{FURNITURE_SHELVES,  "MED_OFFICE_UNIT_4", 	 2161,  400},
+	{FURNITURE_SHELVES,  "MED_OFFICE_UNIT_1", 	 2162,  400},
+	{FURNITURE_SHELVES,  "MED_OFFICE_UNIT_2", 	 2163,  4500},
+	{FURNITURE_SHELVES,  "MED_OFFICE_UNIT_5", 	 2164,  400},
+	{FURNITURE_SHELVES,  "MED_OFFICE_UNIT_7",	 2167,  400},
+	{FURNITURE_SHELVES,  "MED_OFFICE6_MC_1", 	 2199,  2500},
+	{FURNITURE_SHELVES,  "CJ_HOBBY_SHELF", 		 2462,  550},
+	{FURNITURE_SHELVES,  "CJ_HOBBY_SHELF_2", 	 2463,  550},
+	{FURNITURE_SHELVES,  "CJ_HOBBY_SHELF_3", 	 2475,  1000},
+	{FURNITURE_SHELVES,  "CJ_HOBBY_SHELF_4", 	 2482,  400},
+	{FURNITURE_SHELVES,  "CJ_HOBBY_SHELF_5", 	 2502,  550},
+	{FURNITURE_SHELVES,  "CJ_HOBBY_SHELF_6", 	 2509,  550},
+	{FURNITURE_SHELVES,  "Med_BOOKSHELF", 		 1742,  2500},
+	{FURNITURE_SHELVES,  "CJ_M_FILEING1", 		 2065,  1000},
+	{FURNITURE_SHELVES,  "CJ_M_FILEING2", 		 2066,  1000},
+	{FURNITURE_SHELVES,  "CJ_M_FILEING3", 		 2067,  1000},
+	{FURNITURE_BATHROOM, "CJ_TOILET_BS", 		 2738,  2000},
+	{FURNITURE_BATHROOM, "CJ_TOILET1", 			 2514,  2000},
+	{FURNITURE_BATHROOM, "CJ_TOILET2", 			 2521,  2500},
+	{FURNITURE_BATHROOM, "CJ_TOILET3", 			 2528,  2000},
+	{FURNITURE_BATHROOM, "CJ_TOILET4",           2525,  550},
+	{FURNITURE_BATHROOM, "CJ_SHOWER1",           2517,  1000},
+	{FURNITURE_BATHROOM, "CJ_SHOWER2",           2520,  550},
+	{FURNITURE_BATHROOM, "CJ_SHOWER4",           2527,  550},
+	{FURNITURE_BATHROOM, "CJ_BATH1",             2516,  550},
+	{FURNITURE_BATHROOM, "CJ_BATH2",        	 2519,  2500},
+	{FURNITURE_BATHROOM, "CJ_BATH3",             2522,  400},
+	{FURNITURE_BATHROOM, "CJ_BATH4",             2526,  550},
+	{FURNITURE_BATHROOM, "CJ_BATH5",             2097,  2000},
+	{FURNITURE_BATHROOM, "CJ_B_SINK1",           2739,  2000},
+	{FURNITURE_BATHROOM, "CJ_B_SINK2",           2518,  2000},
+	{FURNITURE_BATHROOM, "CJ_B_SINK3",           2523,  550},
+	{FURNITURE_BATHROOM, "CJ_B_SINK4",           2524,  2500},
+	{FURNITURE_BEDROOM,  "kb_bed_test1", 	 	 1700,  550},
+	{FURNITURE_BEDROOM,  "kb_bed_test2", 		 1701,  550},
+	{FURNITURE_BEDROOM,  "MED_BED_3", 			 1745,  550},
+	{FURNITURE_BEDROOM,  "LOW_BED_2", 			 1793,  550},
+	{FURNITURE_BEDROOM,  "LOW_BED_3", 			 1794,  550},
+	{FURNITURE_BEDROOM,  "SWANK_BED_2", 		 1795,  550},
+	{FURNITURE_BEDROOM,  "LOW_BED_4", 			 1796,  550},
+	{FURNITURE_BEDROOM,  "SWANK_BED_3", 		 1797,  550},
+	{FURNITURE_BEDROOM,  "SWANK_BED_1", 		 1798,  550},
+	{FURNITURE_BEDROOM,  "MED_BED_4", 			 1799,  550},
+	{FURNITURE_BEDROOM,  "LOW_BED_1", 			 1800,  550},
+	{FURNITURE_BEDROOM,  "SWANK_BED_4", 		 1801,  550},
+	{FURNITURE_BEDROOM,  "MED_BED_2", 			 1802,  550},
+	{FURNITURE_BEDROOM,  "LOW_BED_5", 			 1812,  550},
+	{FURNITURE_BEDROOM,  "SWANK_BED_5", 		 2090,  550},
+	{FURNITURE_BEDROOM,  "SWANK_BED_7", 		 2298,  550},
+	{FURNITURE_BEDROOM,  "SWANK_BED_6", 		 2299,  550},
+	{FURNITURE_BEDROOM,  "MED_BED_8", 			 2300,  550},
+	{FURNITURE_BEDROOM,  "MED_BED_9", 			 2301,  550},
+	{FURNITURE_BEDROOM,  "LOW_BED_06",		 	 2302,  550},
+	{FURNITURE_CABINETS, "SWANK_CABINET_3",      1730,  550},
+	{FURNITURE_CABINETS, "LOW_CABINET_3",        1740,  1000},
+	{FURNITURE_CABINETS, "LOW_CABINET_1",        1741,  1000},
+	{FURNITURE_CABINETS, "MED_CABINET_3",        1743,  550},
+	{FURNITURE_CABINETS, "SWANK_CABINET_1",      2078,  550},
+	{FURNITURE_CABINETS, "MED_CABINET_1",        2084,  2000},
+	{FURNITURE_CABINETS, "MED_CABINET_2",        2087,  2500},
+	{FURNITURE_CABINETS, "LOW_CABINET_4",        2088,  550},
+	{FURNITURE_CABINETS, "SWANK_CABINET_2",      2089,  400},
+	{FURNITURE_CABINETS, "SWANK_CABINET_4",      2094,  1000},
+	{FURNITURE_CABINETS, "LOW_CABINET_2",        2095,  550},
+	{FURNITURE_CABINETS, "MED_OFFICE8_CABINET",  2204,  1000},
+	{FURNITURE_CABINETS, "SWANK_CABINET_4D",     2306,  550},
+	{FURNITURE_CABINETS, "SWANK_CABINET_4b",     2307,  550},
+	{FURNITURE_CABINETS, "LOW_CABINET_1_S",      2328,  550},
+	{FURNITURE_CABINETS, "LOW_CABINET_1_L",      2329,  400},
+	{FURNITURE_CABINETS, "ZEROWARDROBE",         14556, 2000},
+	{FURNITURE_ELECTRIC, "LCDTVBig1",            19786, 10000},
+	{FURNITURE_ELECTRIC, "LCDTV1",               19787, 8000},
+	{FURNITURE_ELECTRIC, "Telephone1",           19807, 500},
+	{FURNITURE_ELECTRIC, "Keyboard1",            19808, 500},
+	{FURNITURE_ELECTRIC, "TV_WARD_Low", 		 2093,  6000},
+	{FURNITURE_ELECTRIC, "TV_UNIT_1", 			 2296,  5500},
+	{FURNITURE_ELECTRIC, "TV_UNIT_1", 			 2297,  2000},
+	{FURNITURE_ELECTRIC, "tv_stand_driv",    	 14532, 550},
+	{FURNITURE_ELECTRIC, "DYN_TV", 				 1429,  550},
+	{FURNITURE_ELECTRIC, "LOW_TV_2", 			 1747,  550},
+	{FURNITURE_ELECTRIC, "LOW_TV_3", 			 1748,  550},
+	{FURNITURE_ELECTRIC, "MED_TV_3", 			 1749,  550},
+	{FURNITURE_ELECTRIC, "MED_TV_2", 			 1750,  550},
+	{FURNITURE_ELECTRIC, "MED_TV_4", 			 1751,  550},
+	{FURNITURE_ELECTRIC, "SWANK_TV_3", 			 1752,  550},
+	{FURNITURE_ELECTRIC, "SWANK_TV_4", 			 1786,  550},
+	{FURNITURE_ELECTRIC, "CJ_Sphere_TV", 		 2224,  550},
+	{FURNITURE_ELECTRIC, "PHOTOCOPIER_1",        2186,  2000},
+	{FURNITURE_ELECTRIC, "PHOTOCOPIER_2",        2202,  4500},
+	{FURNITURE_ELECTRIC, "DYN_FF_TILL",          1514,  400},
+	{FURNITURE_ELECTRIC, "CJ_FF_TILL",           2422,  4500},
+	{FURNITURE_ELECTRIC, "PC_1",                 2190,  550},
+	{FURNITURE_ELECTRIC, "CJ_WATERCOOLER2",      1808,  400},
+	{FURNITURE_ELECTRIC, "water_coolnu",         2002,  1000},
+	{FURNITURE_ELECTRIC, "washer",               1208,  550},
+	{FURNITURE_ELECTRIC, "DYN_BAR_B_Q",          1481,  400},
+	{FURNITURE_ELECTRIC, "gym_treadmill",        2627,  12000},
+	{FURNITURE_ELECTRIC, "gym_bench2",           2628,  400},
+	{FURNITURE_ELECTRIC, "gym_bench1",           2629,  400},
+	{FURNITURE_ELECTRIC, "gym_bike",             2630,  400},
+	{FURNITURE_ELECTRIC, "snesish", 			 1718,  2000},
+	{FURNITURE_ELECTRIC, "LOW_CONSOLE",			 1719,  2000},
+	{FURNITURE_ELECTRIC, "SWANK_CONSOLE", 		 2028,  550},
+	{FURNITURE_ELECTRIC, "MED_VIDEO_2", 		 1782,  1000},
+	{FURNITURE_ELECTRIC, "SWANK_VIDEO_2", 		 1783,  1000},
+	{FURNITURE_ELECTRIC, "LOW_VIDEO_1", 		 1785,  1000},
+	{FURNITURE_ELECTRIC, "SWANK_VIDEO_1", 		 1788,  1000},
+	{FURNITURE_ELECTRIC, "SWANK_VIDEO_3", 		 1790,  1000},
+	{FURNITURE_ELECTRIC, "LOW_HI_FI_2", 		 2102,  550},
+	{FURNITURE_ELECTRIC, "LOW_HI_FI_1",			 2103,  550},
+	{FURNITURE_ELECTRIC, "LOW_HI_FI_3", 		 2226,  2500},
+	{FURNITURE_ELECTRIC, "MED_HI_FI_1", 		 2099,  400},
+	{FURNITURE_ELECTRIC, "MED_HI_FI_2", 		 2100,  400},
+	{FURNITURE_ELECTRIC, "MED_HI_FI_3", 		 2101,  400},
+	{FURNITURE_ELECTRIC, "SWANK_SPEAKER", 		 2229,  4500},
+	{FURNITURE_ELECTRIC, "SWANK_SPEAKER_2", 	 2230,  400},
+	{FURNITURE_ELECTRIC, "SWANK_SPEAKER_3", 	 2231,  400},
+	{FURNITURE_ELECTRIC, "MED_SPEAKER_4", 		 2232,  400},
+	{FURNITURE_PLANTS,   "veg_palmkb1",          625,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb2",          626,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb3",          627,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb4",          628,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb8",          630,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb9",          631,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb7",          632,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb10",         633,   2000},
+	{FURNITURE_PLANTS,   "kb_planter+bush",      638,   2000},
+	{FURNITURE_PLANTS,   "pot_02",               644,   2000},
+	{FURNITURE_PLANTS,   "veg_palmkb14",         646,   2000},
+	{FURNITURE_PLANTS,   "Plant_Pot_10",         948,   2000},
+	{FURNITURE_PLANTS,   "Plant_Pot_4",          949,   2000},
+	{FURNITURE_PLANTS,   "Plant_Pot_12",         950,   2000},
+	{FURNITURE_PLANTS,   "CJ_BUSH_PROP3",        1360,  2000},
+	{FURNITURE_PLANTS,   "CJ_BUSH_PROP2",        1361,  2000},
+	{FURNITURE_PLANTS,   "CJ_BUSH_PROP",         1364,  2000},
+	{FURNITURE_PLANTS,   "nu_plant_ofc",         2001,  200},
+	{FURNITURE_PLANTS,   "nu_plant3_ofc",        2010,  200},
+	{FURNITURE_PLANTS,   "nu_plant2_ofc",        2011,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_2",          2194,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_3",          2195,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_1",          2203,  100},
+	{FURNITURE_PLANTS,   "Plant_Pot_8",          2240,  500},
+	{FURNITURE_PLANTS,   "Plant_Pot_5",          2241,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_7",          2242,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_9",          2244,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_11",         2245,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_14",         2246,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_16",         2248,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_21",         2252,  200},
+	{FURNITURE_PLANTS,   "Plant_Pot_22",         2253,  2000},
+	{FURNITURE_PLANTS,   "GB_romanpot01",        2811,  2000},
+	{FURNITURE_PLANTS,   "sfx_plant03",          3802,  2000},
+	{FURNITURE_PLANTS,   "sfx_winplant07",       3806,  2000},
+	{FURNITURE_PLANTS,   "sfx_plant04",          3810,  2000},
+	{FURNITURE_TRASH,    "CJ_Dump1_LOW01",       1430,  1500},
+	{FURNITURE_TRASH,    "DYN_DUMPSTER",         1415,  1000},
+	{FURNITURE_TRASH,    "CJ_HIPPO_BIN",         1371,  2000},
+	{FURNITURE_TRASH,    "CJ_BIN1",              1359,  1500},
+	{FURNITURE_TRASH,    "CJ_WASTEBIN",          1347,  500},
+	{FURNITURE_TRASH,    "BinNt09_LA",           1339,  1500},
+	{FURNITURE_TRASH,    "BinNt07_LA",           1337,  1500},
+	{FURNITURE_TRASH,    "bin1",                 1300,  1500},
+	{FURNITURE_TRASH,    "wastebin",             1235,  1000},
+	{FURNITURE_TRASH,    "BinNt14_LA",           1330,  1000},
+	{FURNITURE_TRASH,    "BinNt13_LA",           1329,  1000},
+	{FURNITURE_TRASH,    "BinNt10_LA",           1328,  1500},
+	{FURNITURE_TRASH,    "dump1",                1227,  400},
+	{FURNITURE_TRASH,    "BinNt06_LA",           1336,  2000},
+	{FURNITURE_TRASH,    "BinNt04_LA",           1334,  2000},
+	{FURNITURE_TRASH,    "BinNt03_LA",           1333,  2000},
+	{FURNITURE_TRASH,    "TrashcanChicken",      2770,  2000},
+	{FURNITURE_TRASH,    "CJ_FF_BUCKET",         2420,  2000},
+	{FURNITURE_TRASH,    "gunbox",               1271,  400},
+	{FURNITURE_TRASH,    "k_smashboxes",         2971,  550},
+	{FURNITURE_TRASH,    "temp_cardbox",         2900,  500},
+	{FURNITURE_TRASH,    "cardboardbox4",        1221,  500},
+	{FURNITURE_TRASH,    "cardboardbox2",        1220,  500},
+	{FURNITURE_DOORS,    "GenDoorINT04Static",   19802, 1000},
+	{FURNITURE_DOORS,    "Gen_doorEXT03",        1498,  1600},
+	{FURNITURE_DOORS,    "chinaTgate",           2930,  1400},
+	{FURNITURE_DOORS,    "kmb_petroldoor",       2911,  1600},
+	{FURNITURE_DOORS,    "ad_flatdoor",          3061,  500},
+	{FURNITURE_DOORS,    "Gen_wardrobe",         1567,  600},
+	{FURNITURE_DOORS,    "Gen_doorINT01",        1491,  400},
+	{FURNITURE_DOORS,    "Gen_doorINT02",        1492,  400},
+	{FURNITURE_DOORS,    "Gen_doorSHOP01",       1493,  400},
+	{FURNITURE_DOORS,    "Gen_doorINT03",        1494,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT01",        1495,  400},
+	{FURNITURE_DOORS,    "Gen_doorSHOP02",       1496,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT02",        1497,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT03",        1498,  400},
+	{FURNITURE_DOORS,    "Gen_doorINT05",        1499,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT05",        1500,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT04",        1501,  400},
+	{FURNITURE_DOORS,    "Gen_doorINT04",        1502,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT06",        1504,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT07",        1505,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT08",        1506,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT09",        1507,  400},
+	{FURNITURE_DOORS,    "Gen_doorEXT10",        1523,  400},
+	{FURNITURE_DOORS,    "vgsEspdr01",           8957,  2500},
+	{FURNITURE_DOORS,    "vgwspry1",             7891,  2000},
+	{FURNITURE_DOORS,    "imy_la_door",          3109,  400},
+	{FURNITURE_DOORS,    "ab_casdorLok",         3089,  3000},
+	{FURNITURE_DOORS,    "ad_flatdoor",          3061,  550},
+	{FURNITURE_DOORS,    "warehouse_door2b",     3037,  2000},
+	{FURNITURE_DOORS,    "cr1_door",             3029,  550},
+	{FURNITURE_DOORS,    "dts_bbdoor",           2970,  550},
+	{FURNITURE_DOORS,    "kmb_lockeddoor",       2949,  400},
+	{FURNITURE_DOORS,    "cr_door_02",           2948,  400},
+	{FURNITURE_DOORS,    "cr_door_01",           2947,  400},
+	{FURNITURE_DOORS,    "cr_door_03",           2946,  400},
+	{FURNITURE_DOORS,    "freight_SFW_door",     2944,  550},
+	{FURNITURE_DOORS,    "newtowerdoor1",        977,   550},
+	{FURNITURE_CARPETS,  "man_sdr_rug",          1828,  1000},
+	{FURNITURE_CARPETS,  "gb_livingrug01",       2815,  1000},
+	{FURNITURE_CARPETS,  "gb_bedrug01",          2817,  1000},
+	{FURNITURE_CARPETS,  "gb_bedrug02",          2818,  1000},
+	{FURNITURE_CARPETS,  "gb_livingrug02",       2833,  1000},
+	{FURNITURE_CARPETS,  "gb_livingrug03",       2834,  1000},
+	{FURNITURE_CARPETS,  "gb_livingrug04",       2835,  1000},
+	{FURNITURE_CARPETS,  "gb_livingrug05",       2836,  1000},
+	{FURNITURE_CARPETS,  "gb_bedrug03",          2841,  1000},
+	{FURNITURE_CARPETS,  "gb_bedrug04",          2842,  1000},
+	{FURNITURE_CARPETS,  "gb_bedrug05",          2847,  1000},
+	{FURNITURE_CARPETS,  "gym_mat1",             2631,  1000},
+	{FURNITURE_CARPETS,  "gym_mat02",            2632,  1000},
+	{FURNITURE_FRAMES,   "SAMPPicture1",         19172, 500},
+	{FURNITURE_FRAMES,   "Frame_2",              2289,  1000},
+	{FURNITURE_FRAMES,   "Frame_3",              2288,  1000},
+	{FURNITURE_FRAMES,   "Frame_4",              2287,  1000},
+	{FURNITURE_FRAMES,   "Frame_5",              2286,  1000},
+	{FURNITURE_FRAMES,   "Frame_1",              2285,  1000},
+	{FURNITURE_FRAMES,   "Frame_6",              2284,  1000},
+	{FURNITURE_FRAMES,   "Frame_Thick_3",        2283,  100},
+	{FURNITURE_FRAMES,   "Frame_Thick_4",        2282,  100},
+	{FURNITURE_FRAMES,   "Frame_Thick_5",        2281,  100},
+	{FURNITURE_FRAMES,   "Frame_Thick_1",        2280,  100},
+	{FURNITURE_FRAMES,   "Frame_Thick_6",        2279,  100},
+	{FURNITURE_FRAMES,   "Frame_Thick_2",        2278,  100},
+	{FURNITURE_FRAMES,   "Frame_Fab_2",          2277,  100},
+	{FURNITURE_FRAMES,   "Frame_Fab_3",          2276,  100},
+	{FURNITURE_FRAMES,   "Frame_Fab_4",          2275,  100},
+	{FURNITURE_FRAMES,   "Frame_Fab_6",          2274,  100},
+	{FURNITURE_FRAMES,   "Frame_Fab_1",          2273,  100},
+	{FURNITURE_FRAMES,   "Frame_Fab_5",          2272,  100},
+	{FURNITURE_FRAMES,   "Frame_WOOD_1",         2271,  100},
+	{FURNITURE_FRAMES,   "Frame_WOOD_6",         2270,  100},
+	{FURNITURE_FRAMES,   "Frame_WOOD_4",         2269,  100},
+	{FURNITURE_FRAMES,   "Frame_WOOD_2",         2268,  100},
+	{FURNITURE_FRAMES,   "Frame_WOOD_3",         2267,  100},
+	{FURNITURE_FRAMES,   "Frame_WOOD_5",         2266,  100},
+	{FURNITURE_FRAMES,   "Frame_SLIM_6",         2265,  100},
+	{FURNITURE_FRAMES,   "Frame_SLIM_5",         2264,  100},
+	{FURNITURE_FRAMES,   "Frame_SLIM_4",         2263,  100},
+	{FURNITURE_FRAMES,   "Frame_SLIM_3",         2262,  100},
+	{FURNITURE_FRAMES,   "Frame_SLIM_2",         2261,  100},
+	{FURNITURE_FRAMES,   "Frame_SLIM_1",         2260,  100},
+	{FURNITURE_FRAMES,   "Frame_Clip_6",         2259,  100},
+	{FURNITURE_FRAMES,   "Frame_Clip_5",         2258,  100},
+	{FURNITURE_FRAMES,   "Frame_Clip_4",         2257,  100},
+	{FURNITURE_FRAMES,   "Frame_Clip_3",         2256,  100},
+	{FURNITURE_FRAMES,   "Frame_Clip_2",         2255,  100},
+	{FURNITURE_FRAMES,   "Frame_Clip_1",         2254,  100},
+
+	//Spraytag
+	{FURNITURE_MISC, "Tag [GSF]", 18659, 100},
+	{FURNITURE_MISC, "Tag [SBF]", 18660, 100},
+	{FURNITURE_MISC, "Tag [VLA]", 18661, 100},
+	{FURNITURE_MISC, "Tag [KTB]", 18662, 100},
+	{FURNITURE_MISC, "Tag [SFR]", 18663, 100},
+	{FURNITURE_MISC, "Tag [TBD]", 18664, 100},
+	{FURNITURE_MISC, "Tag [LSV]", 18665, 100},
+	{FURNITURE_MISC, "Tag [FYB]", 18666, 100},
+	{FURNITURE_MISC, "Tag [RHB]", 18667, 100},
+	//
+	{FURNITURE_MISC,     "Wine Glass",  		 19818, 300},
+	{FURNITURE_MISC,     "Cocktail Glass",       19819, 300},
+	{FURNITURE_MISC,     "Propbeer Glass",  	 1666,  300},
+	{FURNITURE_MISC,     "Big Cock",  		 	 19823, 300},
+	{FURNITURE_MISC,     "Red rum",  		     19820, 300},
+	{FURNITURE_MISC,     "Vodka",  		         19821, 300},
+	{FURNITURE_MISC,     "X.O",  		         19824, 300},
+
+	{FURNITURE_MISC,     "Damaged crate",  		 924,   300},
+	{FURNITURE_MISC,     "Top crate",  		     1355,  300},
+	{FURNITURE_MISC,     "Empty crate",  		 19639, 300},
+	{FURNITURE_MISC,     "Paper Messes",  		 2674,  300},
+
+
+	{FURNITURE_MISC,     "Fisinh Rod",  		 18632, 600},
+	{FURNITURE_MISC,     "Rope1",  			 	 19087, 100},
+	{FURNITURE_MISC,     "CJ_FLAG1",  			 2047,  100},
+	{FURNITURE_MISC,     "kmb_packet",           2891,  500},
+	{FURNITURE_MISC,     "craigpackage",         1279,  1000},
+	{FURNITURE_MISC,     "drug_white",           1575,  500},
+	{FURNITURE_MISC,     "drug_orange",          1576,  500},
+	{FURNITURE_MISC,     "drug_yellow",          1577,  500},
+	{FURNITURE_MISC,     "drug_green",           1578,  500},
+	{FURNITURE_MISC,     "drug_blue",            1579,  500},
+	{FURNITURE_MISC,     "drug_red",             1580,  500},
+	{FURNITURE_MISC,     "kmb_marijuana",        2901,  2000},
+	{FURNITURE_MISC,     "grassplant",           3409,  1000},
+	{FURNITURE_MISC,     "DYN_ASHTRY",           1510,  500},
+	{FURNITURE_MISC,     "propashtray1",         1665,  500},
+	{FURNITURE_MISC,     "WoodenStage1",         19608, 2000},
+	{FURNITURE_MISC,     "DrumKit1",      		 19609, 1000},
+	{FURNITURE_MISC,     "Microphone1",          19610, 1000},
+	{FURNITURE_MISC,     "MicrophoneStand1",     19611, 2000},
+	{FURNITURE_MISC,     "GuitarAmp1",           19612, 1000},
+	{FURNITURE_MISC,     "GuitarAmp2",        	 19613, 2000},
+	{FURNITURE_MISC,     "GuitarAmp3",        	 19614, 2000},
+	{FURNITURE_MISC,     "GuitarAmp4",       	 19615, 1000},
+	{FURNITURE_MISC,     "GuitarAmp5",       	 19616, 1000},
+	{FURNITURE_MISC,     "GoldRecord1",          19617, 550},
+	{FURNITURE_MISC,     "CJ_Stags_head",        1736,  2000},
+	{FURNITURE_MISC,     "CJ_Radiator_old",      1738,  1000},
+	{FURNITURE_MISC,     "CJ_MOP_PAIL",          1778,  1000},
+	{FURNITURE_MISC,     "CJ_chambermaid",       1789,  2000},
+	{FURNITURE_MISC,     "cj_bucket",            2713,  1000},
+	{FURNITURE_MISC,     "des_blackbags",        16444, 2000},
+	{FURNITURE_MISC,     "nf_blackboard",        3077,  2000},
+	{FURNITURE_MISC,     "kmb_dumbbell_L",       3072,  1000},
+	{FURNITURE_MISC,     "kmb_dumbbell_R",       3071,  1000},
+	{FURNITURE_MISC,     "portaloo",             2984,  550},
+	{FURNITURE_MISC,     "CJ_TARGET6",           2056,  500},
+	{FURNITURE_MISC,     "CJ_TARGET5",           2055,  500},
+	{FURNITURE_MISC,     "CJ_TARGET4",           2051,  500},
+	{FURNITURE_MISC,     "CJ_TARGET2",           2050,  500},
+	{FURNITURE_MISC,     "CJ_TARGET1",           2049,  500},
+	{FURNITURE_MISC,     "hos_trolley",          1997,  1000},
+	{FURNITURE_MISC,     "shop_sec_cam",     	 1886,  1000},
+	{FURNITURE_MISC,     "nt_firehose_01",       1613,  1000},
+	{FURNITURE_MISC,     "lsmall_window01",      19325, 2000},
+	{FURNITURE_MISC,     "window001",            19466, 550},
+	{FURNITURE_MISC,     "wglasssmash",          1649,  1000},
+	{FURNITURE_MISC,     "Orange1",          	 19574, 500},
+	{FURNITURE_MISC,     "Apple1",     			 19575, 500},
+	{FURNITURE_MISC,     "Apple2",       		 19576, 500},
+	{FURNITURE_MISC,     "Tomato1",      		 19577, 500},
+	{FURNITURE_MISC,     "Banana1",              19578, 500},
+	{FURNITURE_MISC,     "gb_bedclothes01",      2819,  100},
+	{FURNITURE_MISC,     "gb_bedclothes02",      2843,  100},
+	{FURNITURE_MISC,     "gb_bedclothes03",      2844,  100},
+	{FURNITURE_MISC,     "gb_bedclothes04",      2845,  100},
+	{FURNITURE_MISC,     "gb_bedclothes05",      2846,  100},
+	{FURNITURE_MISC,     "GB_platedirty01",      2812,  100},
+	{FURNITURE_MISC,     "GB_kitchplatecln01",   2822,  100},
+	{FURNITURE_MISC,     "GB_platedirty02",      2829,  100},
+	{FURNITURE_MISC,     "GB_platedirty04",      2830,  100},
+	{FURNITURE_MISC,     "GB_platedirty03",      2831,  100},
+	{FURNITURE_MISC,     "GB_platedirty05",      2832,  100},
+	{FURNITURE_MISC,     "GB_kitchplatecln02",   2862,  100},
+	{FURNITURE_MISC,     "GB_kitchplatecln03",   2863,  100},
+	{FURNITURE_MISC,     "GB_kitchplatecln04",   2864,  100},
+	{FURNITURE_MISC,     "GB_kitchplatecln05",   2865,  100},
+	{FURNITURE_MISC,  	 "Angel",      	 		 3935,  5000},
+	{FURNITURE_MISC,  	 "Carter Statue",      	 14467, 5000},
+	{FURNITURE_MISC,  	 "Broken Statue",      	 2743,  5000},
+	{FURNITURE_MISC,  	 "Rocking Horse",      	 11733, 5000},
+	{FURNITURE_MISC,  	 "Clothes Hanger",       2373,  500},
+
+	{FURNITURE_WALL, 	 "wall016", 			 19368, 450},
+	{FURNITURE_WALL, 	 "wall087", 			 19447, 550},
+	{FURNITURE_WALL, 	 "wall015", 			 19367, 450},
+	{FURNITURE_WALL, 	 "wall014", 			 19366, 550},
+	{FURNITURE_WALL, 	 "wall018", 			 19370, 450},
+	{FURNITURE_WALL, 	 "wall010", 			 19362, 550},
+	{FURNITURE_WALL, 	 "wall035", 			 19387, 450},
+	{FURNITURE_WALL, 	 "wall059", 			 19411, 550},
+	{FURNITURE_WALL, 	 "wall017", 			 19369, 450},
+	{FURNITURE_WALL, 	 "wall073", 			 19433, 550},
+	{FURNITURE_WALL, 	 "wall077", 			 19437, 450},
+	{FURNITURE_WALL, 	 "wall040", 			 19392, 550},
+	{FURNITURE_WALL, 	 "wall096", 			 19456, 450},
+	{FURNITURE_WALL, 	 "wall043", 			 19395, 550},
+	{FURNITURE_WALL, 	 "wall037", 			 19389, 450},
+	{FURNITURE_WALL, 	 "wall038", 			 19390, 550},
+	{FURNITURE_WALL, 	 "wall039", 			 19391, 450},
+	{FURNITURE_WALL, 	 "wall041", 			 19393, 550},
+	{FURNITURE_WALL, 	 "wall042", 			 19394, 450},
+	{FURNITURE_WALL, 	 "wall042", 			 19397, 550},
+	{FURNITURE_WALL, 	 "wall044", 			 19396, 450},
+	{FURNITURE_WALL, 	 "wall102", 			 19462, 550},
+	{FURNITURE_WALL, 	 "wall046", 			 19398, 450},
+	{FURNITURE_WALL, 	 "wall024", 			 19376, 550},
+	{FURNITURE_WALL, 	 "wall105", 			 19465, 450},
+	{FURNITURE_WALL, 	 "wall020", 			 19372, 550},
+	{FURNITURE_WALL, 	 "wall104", 			 19464, 450},
+
+	{FURNITURE_SPECIAL,  "Chemistry Dryer",      3287,  1200},
+	{FURNITURE_SPECIAL,  "Centrifuge",      	 19830, 3500},
+	{FURNITURE_SPECIAL,  "Mixer",      			 19585, 2500},
+	{FURNITURE_SPECIAL,  "Reactor",      		 2360,  2000},
+	{FURNITURE_SPECIAL,  "Dehydrater",      	 2002,  900},
+	{FURNITURE_SPECIAL,  "Pickup Pump",      	 1244,  6000},
+	{FURNITURE_SPECIAL,  "Pickup Pump (Small)",  1008,  1000},
+	{FURNITURE_SPECIAL,  "Bike Pedal",      	 2798,  500},
+	{FURNITURE_SPECIAL,  "Long Exhaust",      	 1114,  700},
+
+	{FURNITURE_EFFECT, 	 "Smoke Flare",      	 18728, 3000},
+	{FURNITURE_EFFECT, 	 "Puke",      	 		 18722, 3000},
+	{FURNITURE_EFFECT, 	 "Molotov Fire",      	 18701, 3000},
+	{FURNITURE_EFFECT, 	 "Coke Trail",      	 18676, 3000},
+	{FURNITURE_EFFECT, 	 "Cam Flash (Once)",     18670, 3000},
+	{FURNITURE_EFFECT, 	 "Flasher", 			 345,   3000}
 };
 enum landEnum
 {
@@ -3525,761 +4873,7 @@ enum landEnum
     fModel,
     fPrice
 };
-new const furnitureCategories[][] =
-{
-	{"Appliances"},
-	{"Bathroom"},
-	{"Bedroom"},
-	{"Carpets"},
-	{"Kitchen"},
-	{"Tables"},
-	{"Chairs"},
-	{"Posters/Frames"},
-	{"Storage"},
-	{"Plants"},
-	{"Trash"},
-	{"Doors & Gates"},
-	{"Walls"},
-	{"Decor"},
-	{"Weapons"}
-};
 
-new const furnitureArray[][furnitureEnum] =
-{
-	{"Appliances", 		"Blender", 					 19830,  500},
-	{"Appliances", 		"Coffee machine",            11743,  500},
-	{"Appliances", 		"Grill",     				 19831,  500},
-	{"Appliances", 		"Electrical outlet", 		 19813,  50},
-	{"Appliances", 		"Light switch",      		 19829,  50},
-	{"Appliances", 		"Keyboard",          		 19808,  50},
-	{"Appliances", 		"White telephone",   		 19807,  50},
-	{"Appliances", 		"Black telephone",   		 11705,  50},
-	{"Appliances", 		"Large LCD television",  	 19786,  1000},
-    {"Appliances", 		"Small LCD television",  	 19787,  750},
-    {"Appliances", 		"Round gold TV", 			 2224,   1500},
-    {"Appliances", 		"TV on wheels",  			 14532,  250},
-    {"Appliances", 		"Flat screen TV",        	 1792,   400},
-    {"Appliances",      "Wide screen TV",        	 1786,   400},
-    {"Appliances",      "Surveillance TV",       	 1749,   400},
-    {"Appliances",      "Regular TV",            	 1518,   250},
-    {"Appliances",      "Grey sided TV",         	 2322,   200},
-    {"Appliances",      "Wood sided TV",         	 1429,   200},
-    {"Appliances",      "Microwave",             	 2149,   100},
-    {"Appliances",      "Pizza rack",            	 2453,   50},
-    {"Appliances",      "Wide sprunk fridge",  		 2452,   100},
-    {"Appliances",      "Small sprunk fridge",   	 2533,   50},
-    {"Appliances",      "Duality game",        		 2779,   500},
-    {"Appliances",      "Bee Bee Gone game",   		 2778,   500},
-    {"Appliances",      "Space Monkeys game",    	 2681,   500},
-    {"Appliances",      "Sprunk machine",        	 1775,   1000},
-    {"Appliances",      "Candy machine",         	 1776,   1000},
-    {"Appliances",      "Water machine",         	 1808,   100},
-    {"Appliances",      "Radiator",              	 1738,   50},
-    {"Appliances",      "Metal fridge",          	 1780,   100},
-    {"Appliances",      "Pizza cooker",         	 2426,   50},
-    {"Appliances",      "Deep fryer",            	 2415,   100},
-    {"Appliances",      "Soda dispenser",        	 2427,   100},
-    {"Appliances",      "Aluminum stove",        	 2417,   100},
-    {"Appliances",      "Lamp",                  	 2105,   50},
-    {"Appliances",      "Diagnostic machine",    	 19903,  4000},
-    {"Appliances",      "VHS player",            	 1785,   200},
-    {"Appliances",      "Playstation console",   	 2028,   500},
-    {"Appliances",      "Retro gaming console",  	 1718,   500},
-    {"Appliances",      "Hi-Fi speaker",         	 1839,   250},
-    {"Appliances",      "Black subwoofer",       	 2232,   250},
-    {"Appliances",      "Subwoofer",             	 1840,   250},
-    {"Appliances",      "Small black speaker",   	 2229,   250},
-    {"Appliances",      "Speaker on a stand",    	 2233,   100},
-    {"Appliances",      "Speaker & stereo system",   2099,   500},
-	{"Appliances",      "Surveillance camera",   	 1886,   50},
-	{"Appliances",      "Security camera",       	 1622,   50},
-	{"Appliances",      "Exercise bike",         	 2630,   500},
-	{"Appliances",      "Treadmill",             	 2627,   500},
-	{"Appliances",      "Lift bench",            	 2629,   250},
-    {"Appliances",		"Pull up machine",       	 2628,   500},
-    {"Appliances", 		"White turntable",           1954,   500},
-    {"Appliances",      "Open laptop",               19893,  1000},
-    {"Appliances",      "Closed laptop",             19894,  500},
-    {"Appliances",  	"Drum Kit",      			 19609,  1000},
-    {"Appliances",  	"Microphone",          		 19610,  500},
-    {"Appliances",  	"Microphone Stand",    	 	 19611,  250},
-    {"Appliances",  	"Guitar amp 1",           	 19612,  500},
-    {"Appliances",  	"Guitar amp 2",         	 19613,  500},
-    {"Appliances",  	"Guitar amp 3",       		 19614,  500},
-    {"Appliances",  	"Guitar amp 4",       		 19615,  500},
-    {"Appliances",  	"Guitar amp 5",       		 19616,  500},
-    {"Bathroom",   		"Toilet",                	 2514,   250},
-    {"Bathroom",   		"Bathtub",               	 2519,   500},
-    {"Bathroom",   		"Toilet paper",          	 19873,  50},
-    {"Bathroom",        "Towel rack",                11707,  100},
-    {"Bathroom",   		"Toilet with rug",       	 2528,   500},
-	{"Bathroom",   		"Toilet with rolls",     	 2525,   500},
-	{"Bathroom",   		"Sink top",              	 2515,   100},
-	{"Bathroom",   		"Dual sink top",         	 2150,   200},
-	{"Bathroom",   		"Wood sided bathtub",    	 2526,   500},
-	{"Bathroom",   		"Sprunk bathtub",        	 2097,   1000},
-	{"Bathroom",  		"Shower curtains",       	 14481,  100},
-	{"Bathroom",   		"Metal shower cabin",    	 2520,   500},
-	{"Bathroom",   		"Glass shower cabin",    	 2517,   500},
-	{"Bathroom",   		"Shower with curtains",  	 2527,   500},
-	{"Bathroom",   		"Wall sink",             	 2518,   250},
-	{"Bathroom",   		"Plain sink",            	 2739,   250},
-	{"Bathroom",   		"Sink with extra soap",  	 2524,   250},
-	{"Bathroom",   		"Sink with rug",         	 2523,   250},
-	{"Bathroom",   		"Industrial sink",       	 11709,  500},
-	{"Bedroom",    		"Prison bed",            	 1800,   100},
-	{"Bedroom",   		"Folding bed",           	 1812,   100},
-	{"Bedroom",    		"Red double bed",        	 11720,  500},
-	{"Bedroom",    		"Wood double bed",       	 14866,  500},
-	{"Bedroom",   	 	"Double plaid bed",      	 1794,   500},
-	{"Bedroom",    		"Brown bed",        		 2299,   500},
-	{"Bedroom",    		"Blue striped bed", 		 2302,   500},
-	{"Bedroom",    		"Dark blue striped bed", 	 2298,   500},
-	{"Bedroom",    		"White striped bed",     	 2090,   500},
-	{"Bedroom",    		"Bed with cabinet",      	 2300,   500},
-	{"Bedroom",    		"Pink & blue striped bed", 	 2301,   500},
-	{"Bedroom",    		"Zebra print bed",       	 14446,  500},
-	{"Bedroom",    		"Low striped bed",  		 1795,   500},
-	{"Bedroom",    		"Low dark striped bed",      1798,   500},
-	{"Bedroom",    		"Single plaid bed",      	 1796,   500},
-	{"Bedroom",    		"Plain striped mattress",    1793,   500},
-	{"Bedroom",    		"Silk sheeted bed",          1701,   500},
-	{"Bedroom",    		"Framed striped bed",        1801,   500},
-	{"Bedroom",    		"Framed brown bed",          1802,   500},
-	{"Bedroom",    		"Wooden cabinet",            2330,   250},
-	{"Bedroom",    		"Cabinet with TV",           2296,   500},
-	{"Bedroom",    		"Dresser",               	 1416,   250},
-	{"Bedroom",    		"Small dresser",             2095,   250},
-	{"Bedroom",    		"Medium dresser",            1743,   250},
-	{"Bedroom",    		"Wide dresser",              2087,   250},
-	{"Bedroom",    		"Small wardrobe",            2307,   250},
-	{"Bedroom",    		"Huge open wardrobe",        14556,  500},
-	{"Bedroom",    		"Busted cabinet",            913,    500},
-	{"Bedroom",    		"Busted dresser",            911,    250},
-	{"Bedroom",    		"Dresser with no drawers",   912,    100},
-	{"Carpets",    		"Rockstar carpet",           11737,  250},
-    {"Carpets",    		"Plain red carpet",          2631,   250},
-    {"Carpets",    		"Plain green carpet",        2632,   250},
-    {"Carpets",    		"Patterned carpet",          2842,   250},
-    {"Carpets",    		"Zig-zag patterned carpet",  2836,   250},
-    {"Carpets",    		"Brown red striped carpet",  2847,   250},
-    {"Carpets",    		"Old timer's carpet",        2833,   250},
-    {"Carpets",    		"Red checkered carpet",      2818,   250},
-    {"Carpets",    		"Green circled carpet",      2817,   250},
-    {"Carpets",    		"Plain polkadot carpet",     2834,   250},
-    {"Carpets",    		"Tiger rug",                 1828,   1000},
-    {"Carpets",    		"Plain round rug",           2835,   250},
-    {"Carpets",    		"Round green rug",           2841,   250},
-    {"Kitchen",    		"CJ's kitchen",              14384,  3000},
-    {"Kitchen",    		"Whole kitchen",             14720,  3000},
-    {"Kitchen",    		"White kitchen sink",        2132,   500},
-    {"Kitchen",    		"White kitchen counter",  	 2134,   500},
-    {"Kitchen",    		"White kitchen fridge",      2131,   500},
-    {"Kitchen",    		"White kitchen drawers",     2133,   500},
-    {"Kitchen",    		"White kitchen corner",      2341,   500},
-    {"Kitchen",    		"White kitchen cupboard",    2141,   500},
-    {"Kitchen",    		"Green kitchen sink",        2336,   500},
-    {"Kitchen",    		"Green kitchen counter",     2334,   500},
-    {"Kitchen",    		"Green kitchen fridge",      2147,   500},
-    {"Kitchen",    		"Green kitchen corner",      2338,   500},
-    {"Kitchen",    		"Green kitchen washer",      2337,   500},
-    {"Kitchen",    		"Green kitchen cupboard",    2158,   500},
-    {"Kitchen",    		"Green kitchen stove",       2170,   500},
-    {"Kitchen",    		"Red kitchen sink",          2130,   500},
-    {"Kitchen",    		"Red kitchen fridge",        2127,   500},
-    {"Kitchen",    		"Red kitchen cupboard",      2128,   500},
-    {"Kitchen",    		"Red kitchen corner",        2304,   500},
-    {"Kitchen",    		"Red kitchen counter",       2129,   500},
-    {"Kitchen",    		"Wood kitchen sink",         2136,   500},
-    {"Kitchen",    		"Wood kitchen counter",      2139,   500},
-    {"Kitchen",    		"Wood kitchen cupboard",     2140,   500},
-    {"Kitchen",    		"Wood kitchen washer",       2303,   500},
-    {"Kitchen",    		"Wood kitchen unit",         2138,   500},
-    {"Kitchen",    		"Wood kitchen corner",       2305,   500},
-    {"Kitchen",    		"Wood kitchen stove",        2135,   500},
-    {"Kitchen",    		"Modern stove",              19923,  1000},
-    {"Kitchen",    		"Old timer's stove",         19915,  1000},
-    {"Kitchen",    		"Fork",                      11715,  50},
-    {"Kitchen",    		"Butter knife",              11716,  50},
-    {"Kitchen",    		"Steak knife",               19583,  50},
-    {"Kitchen",    		"Spatula",                   19586,  50},
-    {"Kitchen",    		"Double handled pan",        19585,  100},
-    {"Kitchen",    		"Single handled pan",        19584,  100},
-    {"Kitchen",    		"Frying pan",                19581,  100},
-    {"Kitchen",    		"Tall striped saucepan",     11719,  100},
-    {"Kitchen",    		"Striped saucepan",          11718,  100},
-    {"Kitchen",    		"Cooked steak",              19882,  50},
-    {"Kitchen",    		"Raw steak",                 19582,  50},
-    {"Kitchen",    		"Green apple",               19576,  50},
-    {"Kitchen",    		"Red apple",                 19575,  50},
-    {"Kitchen",    		"Orange",                    19574,  50},
-    {"Kitchen",    		"Banana",                    19578,  50},
-    {"Kitchen",         "Tomato",                    19577,  50},
-    {"Tables",     		"Lab table",                 3383,   2000},
-    {"Tables",     		"Pool table",                2964,   2000},
-    {"Tables",     		"Blackjack table",           2188,   2000},
-    {"Tables",     		"Betting table",             1824,   2000},
-    {"Tables",     		"Roulette table",            1896,   2000},
-    {"Tables",     		"Poker table",               19474,  1000},
-    {"Tables",     		"Burger shot table",         2644,   500},
-    {"Tables",     		"Cluckin' bell table",       2763,   500},
-    {"Tables",     		"Wide cluckin' bell table",  2762,   500},
-    {"Tables",     		"Square coffee table",       2370,   500},
-    {"Tables",     		"Donut shop table",          2747,   500},
-    {"Tables",     		"Pizza table",               2764,   500},
-    {"Tables",     		"Wide coffee table",         2319,   500},
-    {"Tables",     		"Rectangular green table",   11691,  500},
-    {"Tables",     		"Squared green table",       11690,  500},
-    {"Tables",     		"Round glass table",         1827,   500},
-    {"Tables",     		"Round wooden table",        2111,   500},
-    {"Tables",     		"Wide dining table",         2357,   500},
-    {"Tables",     		"Plain wooden table",        2115,   500},
-    {"Tables",     		"Plain brown wooden table",  1516,   500},
-    {"Tables",     		"White polkadot table",      1770,   500},
-    {"Tables",     		"Brown dining table",        1737,   500},
-    {"Tables",     		"Round stone table",         2030,   500},
-    {"Tables",     		"Wooden table with rim",     2699,   500},
-    {"Tables",     		"Low coffee table",          1814,   500},
-    {"Tables",     		"Low brown wooden table",    1433,   500},
-    {"Tables",     		"Bedroom table",             2333,   500},
-    {"Tables",     		"Round table with chairs",   1432,   500},
-    {"Tables",     		"Table with benches",        1281,   500},
-    {"Tables",     		"Checkered table & chairs",  1594,   500},
-    {"Tables",     		"Wooden workshop table",     19922,  500},
-    {"Tables",     		"Hexagon shaped table",      2725,   500},
-    {"Tables",     		"Table with VCR",            2313,   500},
-    {"Tables",     		"Low wooden TV stand",       2314,   500},
-    {"Tables",     		"Low brown TV stand",        2315,   500},
-    {"Tables",     		"Plain brown office desk",   2206,   500},
-    {"Tables",     		"Office desk with computer", 2181,   1000},
-    {"Tables",     		"Plain wooden office desk",  2185,   1000},
-    {"Tables",     		"Computer desk",             2008,   1000},
-    {"Chairs",     		"Blue swivel chair",         2356,   250},
-    {"Chairs",     		"Brown dining chair",        1811,   250},
-    {"Chairs",     		"Red folding chair",         2121,   250},
-    {"Chairs",    		"Upholstered chair",         2748,   1000},
-    {"Chairs",     		"Folding office chair",      1721,   250},
-    {"Chairs",     		"Round black chair",         2776,   250},
-    {"Chairs",     		"Black stool",               1716,   250},
-    {"Chairs",     		"Brown stool",               2350,   250},
-    {"Chairs",     		"Red stool",                 2125,   250},
-    {"Chairs",     		"Tall wooden dining chair",  2124,   250},
-    {"Chairs",     		"Tall brown dining chair",   1739,   250},
-    {"Chairs",     		"Checkered dining chair",    2807,   250},
-    {"Chairs",     		"Plain office chair",        1671,   250},
-    {"Chairs",     		"Brown folding chair",       19996,  250},
-    {"Chairs",     		"Light brown chair",         19994,  250},
-    {"Chairs",     		"Black lounge chair",        1704,   500},
-    {"Chairs",     		"Beige lounge chair",        1705,   500},
-    {"Chairs",     		"Dark blue reclining chair", 1708,   500},
-    {"Chairs",     		"Brown corner chair",  		 11682,  500},
-    {"Chairs",     		"Old timer's lounge chair",  1711,   500},
-    {"Chairs",     		"Old timer's rocking chair", 1735,   500},
-    {"Chairs",     		"Two chairs and a table",    2571,   500},
-    {"Chairs",     		"Dark brown foot stool",     2293,   500},
-    {"Chairs",     		"Rocking chair",             11734,  250},
-    {"Chairs",     		"Plaid sofa",                1764,   750},
-    {"Chairs",     		"Long black sofa",           1723,   750},
-    {"Chairs",     		"Beige sofa",                1702,   750},
-    {"Chairs",     		"Brown couch",               1757,   750},
-    {"Chairs",     		"Old timer's sofa",          1728,   750},
-    {"Chairs",     		"Brown corner couch piece",  2292,   500},
-    {"Chairs",     		"White & grey couch",        1761,   750},
-    {"Chairs",     		"Patterned couch",           1760,   750},
-    {"Chairs",     		"Plaid couch",               1764,   750},
-    {"Chairs",     		"Dark blue couch",           1768,   750},
-    {"Chairs",     		"Wide brown couch",          2290,   750},
-    {"Chairs",     		"Green couch",               1766,   750},
-    {"Chairs",     		"Patterned armrest couch",   1763,   750},
-    {"Chairs",     		"Red couch",                 11717,  750},
-    {"Chairs",     		"Very wide beige couch",     1710,   1500},
-    {"Chairs",     		"Ultra wide beige couch",    1709,   2000},
-    {"Chairs",     		"Red and white couch",       1707,   750},
-    {"Posters/Frames",  "Burger shot poster",        2641,   50},
-    {"Posters/Frames",  "Cluckin' bell poster",      2766,   50},
-    {"Posters/Frames",  "Wash wands poster",         2685,   50},
-    {"Posters/Frames",  "For lease poster",          11289,  50},
-    {"Posters/Frames",  "Monkey juice poster",       19328,  50},
-    {"Posters/Frames",  "Ring donuts poster",        2715,   50},
-    {"Posters/Frames",  "Battered ring posterr",     2716,   50},
-	{"Posters/Frames",  "Pizza poster",         	 2668,   50},
-    {"Posters/Frames",  "T-Shirt poster",            2729,   50},
-    {"Posters/Frames",  "Suburban poster",           2658,   50},
-    {"Posters/Frames",  "Zip poster",                2736,   50},
-    {"Posters/Frames",  "Binco poster",              2722,   50},
-    {"Posters/Frames",  "99c binco poster",          2719,   50},
-    {"Posters/Frames",  "Binco sale poster",         2721,   50},
-    {"Posters/Frames",  "Heat poster",               2661,   50},
-    {"Posters/Frames",  "Eris poster",               2655,   50},
-    {"Posters/Frames",  "Bobo poster",               2662,   50},
-    {"Posters/Frames",  "Base 5 poster",             2691,   50},
-    {"Posters/Frames",  "Base 5 cutout #1",        	 2693,   50},
-    {"Posters/Frames",  "Base 5 cutout #2",        	 2692,   50},
-    {"Posters/Frames",  "Long base 5 poster #1",   	 2695,   50},
-    {"Posters/Frames",  "Long base 5 poster #2",   	 2696, 	 50},
-    {"Posters/Frames",  "White prolaps poster",   	 2697,   50},
-    {"Posters/Frames",  "Black prolaps poster",   	 2656,   50},
-    {"Posters/Frames",  "San Fierro frame",       	 19175,  100},
-    {"Posters/Frames",  "Flint County frame",     	 19174,  100},
-    {"Posters/Frames",  "Gant Bridge frame",      	 19173,  100},
-    {"Posters/Frames",  "Los Santos frame",       	 19172,  100},
-    {"Posters/Frames",  "City View frame",    		 2289,   100},
-    {"Posters/Frames",  "Los Angeles frame",      	 2258,   100},
-	{"Posters/Frames",  "Wooden frame",           	 2288,   100},
-	{"Posters/Frames",  "Sail Boat frame",        	 2287,   100},
-	{"Posters/Frames",  "Ship frame",             	 2286,   100},
-	{"Posters/Frames",  "Water frame",            	 2285,   100},
-	{"Posters/Frames",  "Church frame",           	 2284,   100},
-    {"Posters/Frames",  "Rural frame",        		 2282,   100},
-    {"Posters/Frames",  "Sunset frame",				 2281,   100},
-    {"Posters/Frames",  "Coast frame",        		 2280,   100},
-    {"Posters/Frames",  "Mount chiliad frame",    	 2279,   100},
-    {"Posters/Frames",  "Cargo ship frame",       	 2278,   100},
-    {"Posters/Frames",  "Cat frame",          		 2277,   100},
-    {"Posters/Frames",  "Bridge frame",          	 2276,   100},
-    {"Posters/Frames",  "Fruit Bowl frame",       	 2275,   100},
-    {"Posters/Frames",  "Flower frame",          	 2274,   100},
-    {"Posters/Frames",  "Bouquet frame",          	 2273,   100},
-    {"Posters/Frames",  "Landscape frame",        	 2272,   100},
-    {"Posters/Frames",  "Paper frame",         		 2271,   100},
-    {"Posters/Frames",  "Leaves frame",         	 2270,   100},
-    {"Posters/Frames",  "Lake frame",         		 2269,   100},
-    {"Posters/Frames",  "Black cat frame",        	 2268,   100},
-    {"Posters/Frames",  "Cruise ship frame",      	 2267,   100},
-    {"Posters/Frames",  "Night downtown frame",		 2266,   100},
-    {"Posters/Frames",  "Dseert rocks frame",     	 2265,   100},
-    {"Posters/Frames",  "Beach frame",         		 2264,   100},
-    {"Posters/Frames",  "Dock frame",         		 2263,   100},
-    {"Posters/Frames",  "Downtown frame",         	 2262,   100},
-    {"Posters/Frames",  "Golden gate frame",      	 2261,   100},
-    {"Posters/Frames",  "Old Boat frame",         	 2260,   100},
-    {"Posters/Frames",  "Bowling frame",          	 2259,   100},
-    {"Posters/Frames",  "Pattern frame",        	 2283,   100},
-    {"Posters/Frames",  "Squares frame",          	 2257,   100},
-    {"Posters/Frames",  "Palm trees frame",       	 2256,   100},
-    {"Posters/Frames",  "Erotic frame",         	 2255,   100},
-    {"Posters/Frames",  "Yellow car frame",       	 2254,   10},
-    {"Storage",     	"Book shelf",                1742,   500},
-	{"Storage",     	"Wardrobe",         	     2307,   400},
-	{"Storage",     	"Wooden crate",            	 1217,   150},
-	{"Storage",     	"Metal crate",               964,    150},
-	{"Storage",     	"Wide office cabinet",       2200,   150},
-	{"Storage",    	 	"Yellow cabinet",         	 1730,   150},
-	{"Storage",     	"Open gym locker",        	 11730,  250},
-	{"Storage",     	"Closed gym locker",      	 11729,  250},
-	{"Storage",     	"Toolbox",          		 19921,  500},
-	{"Storage",     	"Chest",                     19918,  100},
-	{"Storage",     	"Dresser",                   2094,   250},
-	{"Storage",     	"Warehouse rack",         	 3761,   150},
-	{"Storage",     	"Barrel rack",           	 925,    250},
-	{"Storage",     	"Sex toy rack",          	 2581,   250},
-	{"Storage",     	"Sex magazine rack #1",      2578,   250},
-	{"Storage",     	"Sex magazine rack #2",      2579,   250},
-	{"Storage",     	"Rack with no shelves",      2509,   250},
-	{"Storage",     	"Rack with 3 shelves",       2482,   250},
-	{"Storage",     	"Rack with 4 shelves",       2475,   250},
-	{"Storage",     	"Small rack",			 	 2463,   250},
-	{"Storage",     	"Wide rack",              	 2462,   250},
-	{"Storage",     	"Dresser with drawers",      1743,   250},
-	{"Storage",     	"Wide dresser",              2087,   250},
-	{"Storage",     	"Tall dresser",              2088,   250},
-	{"Storage",     	"Brown dresser",             2089,   250},
-	{"Storage",     	"Single dresser",            2095,   250},
-	{"Storage",     	"White filing cabinet",   	 2197,   250},
-	{"Storage",     	"Green filing cabinet",   	 2610,   250},
-	{"Storage",     	"Dual filing cabinets",      2007,   250},
-	{"Storage",     	"Black shelf",          	 2078,   250},
-	{"Storage",     	"Brown shelf",               2204,   250},
-	{"Storage",     	"Tool shelf",                19899,  250},
-	{"Storage",    	 	"Tool cabinet",     		 19900,  250},
-	{"Storage",     	"Wall mounted shelf",        19940,  250},
-	{"Storage",     	"Clothes shelf",          	 2708,   250},
-	{"Storage",     	"Gun rack",         		 2046,   250},
-	{"Storage",     	"Shop shelf",             	 19640,  250},
-	{"Storage",     	"Blue office shelf",         2191,   250},
-	{"Storage",     	"Wooden office shelf",       2199,   250},
-	{"Storage",     	"Office book shelf",         2161,   250},
-	{"Storage",     	"Tall office cabinet",       2167,   100},
-	{"Storage",     	"Wide office cabinet",       2163,   100},
-	{"Plants",   		"Palm plant #1",          	 625,    100},
-    {"Plants",   		"Palm plant #2",          	 626,    100},
-    {"Plants",   		"Palm plant #3",          	 627,    100},
-    {"Plants",   		"Palm plant #4",          	 628,  	 100},
-    {"Plants",   		"Palm plant #5",          	 630,    100},
-    {"Plants",   		"Palm plant #6",          	 631,    100},
-    {"Plants",   		"Palm plant #7",          	 632,    100},
-    {"Plants",   		"Palm plant #8",         	 633,    100},
-    {"Plants",  		"Palm plant #9",         	 646,    100},
-    {"Plants",   		"Palm plant #10",            644,    100},
-    {"Plants",   		"Palm plant #11",         	 2001,   100},
-    {"Plants",   		"Palm plant #12",        	 2010,   100},
-    {"Plants",   		"Palm plant #13",        	 2011,   150},
-    {"Plants",   		"Potted plant #1",           948,    150},
-    {"Plants",   		"Potted plant #2",           949,    150},
-    {"Plants",   		"Potted plant #3",           950,  	 150},
-    {"Plants",   		"Potted plant #4",           2194,   150},
-    {"Plants",   		"Potted plant #5",           2195,   150},
-    {"Plants",   		"Potted plant #6",           2203,   150},
-    {"Plants",   		"Potted plant #7",           2240,   150},
-    {"Plants",   		"Potted plant #8",           2241,   150},
-    {"Plants",   		"Potted plant #9",           2242, 	 150},
-    {"Plants",   		"Potted plant #10",          2244, 	 150},
-    {"Plants",   		"Potted plant #11",          2245,   150},
-    {"Plants",   		"Potted plant #12",          2246,   150},
-    {"Plants",   		"Potted plant #13",          2248,   150},
-    {"Plants",   		"Potted plant #14",          2252,   150},
-    {"Plants",   		"Potted plant #15",          2253,   150},
-    {"Plants",   		"Potted plant #16",          2811,   150},
-    {"Plants",   		"Wide plant",      			 638,    250},
-    {"Plants",   		"Single bush plant",         1361,   250},
-    {"Plants",   		"Wide bush plant",           1360,   250},
-    {"Plants",  		"Bush plant and bench",      1364,   500},
-    {"Plants",   		"Window plant #1",           3802,   200},
-    {"Plants",   		"Window plant #2",           3810,   200},
-    {"Trash",           "Wastebin",                  11706,  50},
-    {"Trash",           "Blue trashcan on wheels",   1339,   50},
-	{"Trash",           "Blue trashcan",     		 1430,   50},
-	{"Trash",           "Trashcan with holes",       1359,   50},
-	{"Trash",           "Cluckin' bell trashcan", 	 2770,   50},
-	{"Trash",           "Burger shot trashcan",   	 2420,   50},
-	{"Trash",           "Round bagged trashcan",     1330,   50},
-	{"Trash",           "Round white trashcan",      1329,   50},
-	{"Trash",           "Metal trashcan",            1328, 	 50},
-	{"Trash",           "Full dumpster",          	 1415,   50},
-	{"Trash",           "Closed dumpster",           1227,   50},
-	{"Trash",           "Bottle disposal unit",      1336,   50},
-	{"Trash",           "Blue dumpster",             1334,   50},
-	{"Trash",           "Red dumpster",              1333,   50},
-	{"Trash",           "Hippo trashcan",            1371,   50},
-	{"Trash",           "Poor trashcan",             1347,   50},
-	{"Trash",           "Cement trashcan",           1300,   50},
-	{"Trash",           "Trashcan filled with wood", 1442,   50},
-	{"Trash",           "Two pallets & trash",       1450,   50},
-	{"Trash",           "Single pallet",             1448,   50},
-	{"Trash",           "Garbage bag",               1265,   50},
-	{"Trash",           "Burger shot bag",           2663,   50},
-	{"Trash",           "Pile of boxes",             1440,   50},
-    {"Trash",     		"Cardboard box",             1221,   50},
-    {"Trash",           "Open pizza box",            2860,   50},
-    {"Trash",           "Takeaway trash",         	 2866,   50},
-    {"Trash",           "Burger shot trash",      	 2840,   50},
-	{"Trash",           "Dirty dishes #1",      	 2812,   50},
-    {"Trash",           "Dirty dishes #2",   		 2822,   50},
-    {"Trash",           "Dirty dishes #3",      	 2829,   50},
-    {"Trash",           "Dirty dishes #4",      	 2830,   50},
-    {"Trash",           "Dirty dishes #5",      	 2831,   50},
-    {"Trash",           "Dirty dishes #6",      	 2832,   50},
-    {"Trash",           "Clean dishes #1",   		 2862,   50},
-    {"Trash",           "Clean dishes #2",   		 2863,   50},
-    {"Trash",           "Clean dishes #3",   		 2864,   50},
-    {"Trash",           "Clean dishes #4",   		 2865,   50},
-    {"Trash",           "Assorted trash #1",         2672,   50},
-    {"Trash",           "Assorted trash #2",         2677,   50},
-    {"Trash",           "Assorted trash #3",         2675,   50},
-    {"Trash",           "Assorted trash #4",         2676,   50},
-    {"Trash",           "Assorted trash #5",         2674,   50},
-    {"Trash",           "Assorted trash #6",         2673,   50},
-    {"Trash",           "Assorted trash #7",         2670,   50},
-    {"Doors & Gates",   "Door with bars",            2930,   100},
-    {"Doors & Gates",   "Petrol door",       		 2911,   100},
-    {"Doors & Gates",   "Flat door",          		 3061,   100},
-    {"Doors & Gates",   "Wardrobe door",         	 1567,   100},
-    {"Doors & Gates",   "Green push door",        	 1492,   100},
-    {"Doors & Gates",   "Red windowed door",       	 1493,   100},
-    {"Doors & Gates",   "Black wooden door",         1494,   100},
-    {"Doors & Gates",   "Brown windowed door",       3089,   100},
-    {"Doors & Gates",   "Wooden farm door",        	 1497,   100},
-    {"Doors & Gates",   "White wooden door",         1498,   100},
-    {"Doors & Gates",   "Warehouse door",       	 1499,   100},
-    {"Doors & Gates",   "Red door",        			 1504,   100},
-    {"Doors & Gates",   "Blue door",        		 1505,   100},
-    {"Doors & Gates",   "White door",        		 1506,   100},
-    {"Doors & Gates",   "Yellow door",        		 1507,   100},
-    {"Doors & Gates",   "Kitchen door",        		 1523,   100},
-    {"Doors & Gates",   "Motel door",        		 1535,   100},
-    {"Doors & Gates",   "Blue motel door",           2970,   100},
-    {"Doors & Gates",   "24/7 door",     			 1560,   100},
-    {"Doors & Gates",   "Barred door",          	 3061,   100},
-    {"Doors & Gates",   "Red motel door",            3029,   100},
-    {"Doors & Gates",   "Security door",       		 2949,   100},
-    {"Doors & Gates",   "Tall white door",           2948,   100},
-    {"Doors & Gates",   "Bank door",           		 2946,   100},
-    {"Doors & Gates",   "Ship door",     			 2944,   100},
-    {"Doors & Gates",   "Tower door",        		 977,    100},
-    {"Doors & Gates",   "Maintenance doors",         11714,  100},
-    {"Doors & Gates",   "Dual office door",          19176,  100},
-    {"Doors & Gates",   "Screen door #1",        	 1495,   100},
-    {"Doors & Gates",   "Screen door #2",        	 1500,   100},
-    {"Doors & Gates",   "Screen door #3",        	 1501,   100},
-    {"Doors & Gates",   "Shop door #1",        		 1532,   100},
-    {"Doors & Gates",   "Shop door #2",      		 1496,   100},
-    {"Doors & Gates",   "Shop door #3",        		 1533,   100},
-    {"Doors & Gates",   "Shop door #4",        		 1537,   100},
-    {"Doors & Gates",   "Shop door #5",        		 1538,   100},
-    {"Doors & Gates",   "Office door #1",          	 1566,   100},
-    {"Doors & Gates",   "Office door #2",         	 1569,   100},
-    {"Doors & Gates",   "Office door #3",        	 1536,   100},
-    {"Doors & Gates",   "Office door #4",        	 1557,   100},
-    {"Doors & Gates",   "Office door #5",        	 1556,   100},
-    {"Doors & Gates",   "Wooden push door #1",       1491,   100},
-    {"Doors & Gates",   "Wooden push door #2",       1502,   100},
-    {"Doors & Gates",   "Garage door #1",            8957,   100},
-    {"Doors & Gates",   "Garage door #2",            7891,   100},
-    {"Doors & Gates",   "Garage door #3",     	 	 3037,   100},
-    {"Doors & Gates",   "Garage door #4",            19861,  100},
-    {"Doors & Gates",   "Garage door #5",            19864,  100},
-    {"Doors & Gates",   "Plain metal bar gate",      19912,  1000},
-    {"Doors & Gates",   "Tall metal bar gate",       971,    1000},
-    {"Doors & Gates",   "Long metal bar gate",       975,    1000},
-    {"Doors & Gates",   "Los Santos Airport gate",   980,    1000},
-    {"Doors & Gates",   "Fenced gate",               985,    1000},
-    {"Doors & Gates",   "No parking gate",           19870,  1000},
-    {"Doors & Gates",   "Fenced gate on wheels",     988,    1000},
-    {"Walls",           "wall001",                   19353,  100},
-    {"Walls",           "wall002",                   19354,  100},
-    {"Walls",           "wall003",                   19355,  100},
-    {"Walls",           "wall004",                   19356,  100},
-    {"Walls",           "wall005",                   19357,  100},
-    {"Walls",           "wall006",                   19358,  100},
-    {"Walls",           "wall007",                   19359,  100},
-    {"Walls",           "wall008",                   19360,  100},
-    {"Walls",           "wall009",                   19361,  100},
-    {"Walls",           "wall010",                   19362,  100},
-    {"Walls",           "wall011",                   19363,  100},
-    {"Walls",           "wall012",                   19364,  100},
-    {"Walls",           "wall013",                   19365,  100},
-    {"Walls",           "wall014",                   19366,  100},
-    {"Walls",           "wall015",                   19367,  100},
-    {"Walls",           "wall016",                   19368,  100},
-    {"Walls",           "wall017",                   19369,  100},
-    {"Walls",           "wall018",                   19370,  100},
-    {"Walls",           "wall019",                   19371,  100},
-    {"Walls",           "wall020",                   19372,  100},
-    {"Walls",           "wall021",                   19373,  100},
-    //{"Walls",           "wall022",                   19374,  100},
-    {"Walls",           "wall023",                   19375,  100},
-    {"Walls",           "wall024",                   19376,  100},
-    {"Walls",           "wall025",                   19377,  100},
-    {"Walls",           "wall026",                   19378,  100},
-    {"Walls",           "wall027",                   19379,  100},
-    {"Walls",           "wall028",                   19380,  100},
-    {"Walls",           "wall029",                   19381,  100},
-    //{"Walls",           "wall030",                   19382,  100},
-    {"Walls",           "wall031",                   19383,  100},
-    {"Walls",           "wall032",                   19384,  100},
-    {"Walls",           "wall033",                   19385,  100},
-    {"Walls",           "wall034",                   19386,  100},
-    {"Walls",           "wall035",                   19387,  100},
-    {"Walls",           "wall036",                   19388,  100},
-    {"Walls",           "wall037",                   19389,  100},
-    {"Walls",           "wall038",                   19390,  100},
-    {"Walls",           "wall039",                   19391,  100},
-    {"Walls",           "wall040",                   19392,  100},
-    {"Walls",           "wall041",                   19393,  100},
-    {"Walls",           "wall042",                   19394,  100},
-    {"Walls",           "wall043",                   19395,  100},
-    {"Walls",           "wall044",                   19396,  100},
-    {"Walls",           "wall045",                   19397,  100},
-    {"Walls",           "wall046",                   19398,  100},
-    {"Walls",           "wall047",                   19399,  100},
-    {"Walls",           "wall048",                   19400,  100},
-    {"Walls",           "wall049",                   19401,  100},
-    {"Walls",           "wall050",                   19402,  100},
-    {"Walls",           "wall051",                   19403,  100},
-    {"Walls",           "wall052",                   19404,  100},
-    {"Walls",           "wall053",                   19405,  100},
-    {"Walls",           "wall054",                   19406,  100},
-    {"Walls",           "wall055",                   19407,  100},
-    {"Walls",           "wall056",                   19408,  100},
-    {"Walls",           "wall057",                   19409,  100},
-    {"Walls",           "wall058",                   19410,  100},
-    {"Walls",           "wall059",                   19411,  100},
-    {"Walls",           "wall060",                   19412,  100},
-    {"Walls",           "wall061",                   19413,  100},
-    {"Walls",           "wall062",                   19414,  100},
-    {"Walls",           "wall063",                   19415,  100},
-    {"Walls",           "wall064",                   19416,  100},
-    {"Walls",           "wall065",                   19417,  100},
-    {"Walls",           "wall066",                   19426,  100},
-    {"Walls",           "wall067",                   19427,  100},
-    {"Walls",           "wall068",                   19428,  100},
-    {"Walls",           "wall069",                   19429,  100},
-    {"Walls",           "wall070",                   19430,  100},
-    {"Walls",           "wall071",                   19431,  100},
-    {"Walls",           "wall072",                   19432,  100},
-    {"Walls",           "wall073",                   19433,  100},
-    {"Walls",           "wall074",                   19434,  100},
-    {"Walls",           "wall075",                   19435,  100},
-    {"Walls",           "wall076",                   19436,  100},
-    {"Walls",           "wall077",                   19437,  100},
-    {"Walls",           "wall078",                   19438,  100},
-    {"Walls",           "wall079",                   19439,  100},
-    {"Walls",           "wall080",                   19440,  100},
-    {"Walls",           "wall081",                   19441,  100},
-    {"Walls",           "wall082",                   19442,  100},
-    {"Walls",           "wall083",                   19443,  100},
-    {"Walls",           "wall084",                   19444,  100},
-    {"Walls",           "wall085",                   19445,  100},
-    {"Walls",           "wall086",                   19446,  100},
-    {"Walls",           "wall087",                   19447,  100},
-    {"Walls",           "wall088",                   19448,  100},
-    {"Walls",           "wall089",                   19449,  100},
-    {"Walls",           "wall090",                   19450,  100},
-    {"Walls",           "wall091",                   19451,  100},
-    {"Walls",           "wall092",                   19452,  100},
-    {"Walls",           "wall093",                   19453,  100},
-    {"Walls",           "wall094",                   19454,  100},
-    {"Walls",           "wall095",                   19455,  100},
-    {"Walls",           "wall096",                   19456,  100},
-    {"Walls",           "wall097",                   19457,  100},
-    {"Walls",           "wall098",                   19458,  100},
-    {"Walls",           "wall099",                   19459,  100},
-    {"Walls",           "wall100",                   19460,  100},
-    {"Walls",           "wall101",                   19461,  100},
-    {"Walls",           "wall102",                   19462,  100},
-    {"Walls",           "wall103",                   19463,  100},
-    {"Walls",           "wall104",                   19464,  100},
-    {"Walls",           "wall105",                   19465,  100},
-//    {"Decor",           "Guard tower",               3279,   5000},
-    {"Decor",           "Dance floor",               19128,  1000},
-    {"Decor",           "Tool board",                19815,  50},
-    {"Decor",           "Mailbox",                   19867,  50},
-    {"Decor",           "Single key",                11746,  50},
-    {"Decor",           "Oxygen cylinder",           19816,  50},
-    {"Decor",           "Cauldron",                  19527,  50},
-    {"Decor",           "Valve",                     2983,   50},
-    {"Decor",           "Writing board",             19805,  50},
-    {"Decor",           "Punching bag",              1985,   50},
-    {"Decor",           "Desk fan",           		 2192,   50},
-    {"Decor",           "Satellite dish",            3031,   50},
-    {"Decor",           "Shopping cart",             1349,   50},
-    {"Decor",           "Fireplace logs",			 19632,  50},
-    {"Decor",           "Telescope",                 2600,   50},
-    {"Decor",           "Ladder",                    1428,   50},
-    {"Decor",           "Plank",                     2937,   50},
-    {"Decor",           "Blue curtains",             2558,   50},
-    {"Decor",           "Old curtains",              14443,  50},
-    {"Decor",           "Blinds",                    18084,  50},
-    {"Decor",           "United states flag",        11245,  50},
-    {"Decor",           "Double US flag",            2614,   50},
-    {"Decor",           "Confederate flag",          2048,   50},
-    {"Decor",           "Basketball court",          946,    50},
-    {"Decor",           "Basketball",                2114,   50},
-    {"Decor",           "Fire exit sign",            11710,  50},
-    {"Decor",           "Fire extinguisher",         2690,   50},
-    {"Decor",           "Fire extinguisher panel",   11713,  50},
-    {"Decor",           "Fire alarm",                11713,  50},
-    {"Decor",           "Fire hydrant",              1211,   50},
-	{"Decor",           "Cocaine packet",            2891,   50},
-    {"Decor",           "Drug bundle",         		 1279,   50},
-    {"Decor",           "White package",           	 1575,   50},
-    {"Decor",           "Orange package",          	 1576,   50},
-    {"Decor",           "Yellow package",          	 1577, 	 50},
-    {"Decor",           "Green package",           	 1578, 	 50},
-    {"Decor",           "Blue package",            	 1579,   50},
-    {"Decor",           "Red package",             	 1580,   50},
-    {"Decor",           "Marijuana bundle",     	 2901,   50},
-    {"Decor",           "Marijuana plant",           3409,   50},
-    {"Decor",           "Ashtray",           		 1510, 	 50},
-    {"Decor",           "Ashtray with cigar",        1665,   50},
-    {"Decor",           "Pumpkin",                   19320,  50},
-    {"Decor",           "Christmas tree",            19076,  50},
-    {"Decor",           "Stage",         			 19608,  250},
-    {"Decor",           "Gold record",          	 19617,  100},
-    {"Decor",           "Moose head",        		 1736,   300},
-    {"Decor",           "Cow",                       19833,  500},
-    {"Decor",           "Rocking horse",             11733,  50},
-    {"Decor",			"Deer",						 19315,  50},
-    {"Decor",           "Boot",                      11735,  50},
-    {"Decor",           "Old radiator",      		 1738,   50},
-    {"Decor",           "Radiator",                  11721,  50},
-    {"Decor",           "Round light",               11727,  50},
-    {"Decor",           "Mop & pail",          		 1778,   50},
-    {"Decor",           "Chambermaid",       		 1789,   50},
-    {"Decor",           "Bucket",            		 2713,   50},
-    {"Decor",           "Trolley",                   2994,   50},
-    {"Decor",           "Body bags",        		 16444,  50},
-    {"Decor",           "Beach ball",                1598, 	 50},
-    {"Decor",           "Blackboard",        		 3077,   50},
-    {"Decor",           "Dumbell",       			 3072,   50},
-    {"Decor",           "Sports bag",                11745,  50},
-    {"Decor",           "Portable toilet",           2984,   50},
-    {"Decor",   		"Round burger shot sign", 	 2643,   50},
-    {"Decor",           "Stretcher",          		 1997,   50},
-    {"Decor",           "Hospital bed",              2146,   50},
-    {"Decor",           "Work lamp",                 2196,   50},
-    {"Decor",           "Fire bell",       			 1613,   50},
-    {"Decor",           "Sword",                     19590,  50},
-    {"Decor",           "Wooden bat",                19914,  50},
-    {"Decor",           "Hand fan",                  19591,  50},
-    {"Decor",           "Shop basket",               19592,  50},
-    {"Decor",           "Safe door",                 19619,  50},
-    {"Decor",           "Safe enclosure",            19618,  50},
-    {"Decor",           "Bag of money",              1550,   50},
-    {"Decor",           "Oil can",                   19621,  50},
-    {"Decor",           "Wrench",                    19627,  50},
-    {"Decor",           "Engine",                    19917,  50},
-    {"Decor",           "Broom",                     19622,  50},
-    {"Decor",           "Briefcase",                 19624,  50},
-    {"Decor",           "Cigarette",                 19625,  50},
-    {"Decor",           "Rolled joint",              3027,   50},
-    {"Decor",           "Fire wood",                 19632,  50},
-    {"Decor",           "Compacted trash",           19772,  50},
-    {"Decor",           "Medic kit",                 11738,  50},
-    {"Decor",           "Clip",                      19995,  50},
-    {"Decor",           "Dippo lighter",             19998,  50},
-    {"Decor",           "Briquettes",                19573,  50},
-    {"Decor",           "Meat Sack",                 2805,   50},
-    {"Decor",           "Small meat sack",           2803,   50},
-    {"Decor",           "Stack of magazines",        2855,   50},
-    {"Decor",           "Scattered magazines",       2852,   50},
-    {"Decor",           "Scattered books",           2854,   50},
-    {"Decor",           "Wooden stairs",             3361,   50},
-    {"Decor",           "Long concrete stairs",      14410,  50},
-    {"Decor",           "Short concrete stairs",     14416,  50},
-    {"Decor",           "Short stairs",              14877,  50},
-    {"Decor",           "Big window",      			 19325,  100},
-    {"Decor",           "Small window",           	 19466,  50},
-    {"Decor",           "Breakable window",       	 1649,   75},
-    {"Decor",           "Red neon tube",             18647,  100},
-    {"Decor",           "Blue neon tune",            18648,  100},
-    {"Decor",           "Green neon tube",           18649,  100},
-    {"Decor",           "Yellow neon tube",          18650,  100},
-    {"Decor",           "Pink neon tube",            18651,  100},
-    {"Decor",           "White neon tube",           18652,  100},
-    {"Decor",           "Beer bottle",               1543,   10},
-    {"Decor",           "Yellow beer bottle",        1544,   10},
-    {"Decor",           "Medicine bottle",           1950,   10},
-    {"Decor",           "Green beer bottle",         19818,  10},
-    {"Decor",           "Whiskey bottle",            19823,  10},
-    {"Decor",           "Wine bottle",               19820,  10},
-    {"Decor",           "Red wine bottle",           19822,  10},
-    {"Decor",           "Champagne bottle",          19824,  10},
-    {"Decor",           "Beer",                      19821,  10},
-    {"Decor",           "Target #1",           		 2056,   50},
-    {"Decor",           "Target #2",           		 2055,   50},
-    {"Decor",           "Target #3",           		 2051,   50},
-    {"Decor",           "Target #4",           		 2050,   50},
-    {"Decor",           "Target #5",           		 2049,   50},
-    {"Decor",           "Clothes pile #1",     		 2819,   50},
-    {"Decor",           "Clothes pile #2",      	 2843,   50},
-    {"Decor",           "Clothes pile #3",      	 2844,   50},
-    {"Decor",           "Clothes pile #4",      	 2845,   50},
-    {"Decor",           "Clothes pile #5",      	 2846,   50},
-    {"Decor",           "Dragon Head",          	 3528,   150},
-    {"Decor",           "Fountain",             	 9833,   150},
-    {"Decor",           "Light",                 	 1231,   150},
-    {"Decor",           "Blue Light",             	19122,   150},
-    {"Decor",           "Green Light",              19123,   150},
-    {"Decor",           "Red Light",           	    19124,   150},
-    {"Weapons",         "9mm",                        346,    50},
-    {"Weapons",         "Deagle",                     348,    50},
-    {"Weapons",         "Shotgun",                    349,    50},
-    {"Weapons",         "Ak-47",                      355,    50},
-    {"Weapons",         "UZI",                        352,    50},
-    {"Weapons",         "Camera",                     367,    50}
-
-};
 new const landCategories[][] =
 {
 	{"Appliances"},
@@ -8018,62 +8612,6 @@ ShowLandObjects(playerid, type)
 
 	ShowPlayerSelectionMenu(playerid, type, landCategories[PlayerData[playerid][pCategory]], models, index);
 }
-ShowObjectSelectionMenu(playerid, type)
-{
-    new
-		models[MAX_SELECTION_MENU_ITEMS] = {-1, ...},
-		index;
-
-	PlayerData[playerid][pFurnitureIndex] = -1;
-
-	for(new i = 0; i < sizeof(furnitureArray); i ++)
-	{
-	    if(!strcmp(furnitureArray[i][fCategory], furnitureCategories[PlayerData[playerid][pCategory]]))
-	    {
-	        if(PlayerData[playerid][pFurnitureIndex] == -1)
-	        {
-	            PlayerData[playerid][pFurnitureIndex] = i;
-			}
-
-	        models[index++] = furnitureArray[i][fModel];
-	    }
-	}
-
-	ShowPlayerSelectionMenu(playerid, type, furnitureCategories[PlayerData[playerid][pCategory]], models, index);
-}
-
-PurchaseFurniture(playerid, index)
-{
-    if(PlayerData[playerid][pCash] < furnitureArray[index][fPrice])
-    {
-        SendClientMessage(playerid, COLOR_GREY, "You can't purchase this. You don't have enough money for it.");
-    }
-    else
-    {
-        new
-            Float:x,
-            Float:y,
-	        Float:z,
-    	    Float:a;
-
-        if(PlayerData[playerid][pEditType] == EDIT_FURNITURE_PREVIEW && IsValidDynamicObject(PlayerData[playerid][pEditObject])) // Bug fix where if you did '/furniture buy' again while editing your object gets stuck. (12/28/2016)
-        {
-            DestroyDynamicObject(PlayerData[playerid][pEditObject]);
-            PlayerData[playerid][pEditObject] = INVALID_OBJECT_ID;
-		}
-
-		GetPlayerPos(playerid, x, y, z);
-		GetPlayerFacingAngle(playerid, a);
-
-		PlayerData[playerid][pEditType] = EDIT_FURNITURE_PREVIEW;
-		PlayerData[playerid][pEditObject] = CreateDynamicObject(furnitureArray[index][fModel], x + 2.0 * floatsin(-a, degrees), y + 2.0 * floatcos(-a, degrees), z + 1.0, 0.0, 0.0, ((19353 <= furnitureArray[index][fModel] <= 19417) || (19426 <= furnitureArray[index][fModel] <= 19465)) ? (a + 90.0) : (a), GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-        PlayerData[playerid][pSelected] = index;
-        Streamer_Update(playerid);
-		SendClientMessageEx(playerid, COLOR_AQUA, "You are now previewing {FF6347}%s{33CCFF}. This furniture item costs {00AA00}%s{33CCFF} to purchase.", furnitureArray[index][fName], FormatNumber(furnitureArray[index][fPrice]));
-		SendClientMessageEx(playerid, COLOR_AQUA, "Use your cursor to control the editor interface. Click the floppy disk to save changes.");
-        EditDynamicObject(playerid, PlayerData[playerid][pEditObject]);
-	}
-}
 
 ClearChat(playerid)
 {
@@ -8100,6 +8638,133 @@ Streamer_SetExtraFloat(objectid, type, Float:value)
 
 	format(string, sizeof(string), "%f", value);
 	setproperty(.id = objectid, .value = type, .string = string);
+	return 1;
+}
+
+Dialog:BuyFurniture(playerid, response, listitem, inputtext[])
+{
+	if (response)
+	{
+		PlayerData[playerid][pSelected] = listitem;
+		ShowFurniturePreviewer(playerid);
+	}
+	return 1;
+}
+
+Dialog:HouseFurniture(playerid, response, listitem, inputtext[])
+{
+	new
+		house = PlayerData[playerid][pHouse];
+
+	if (!IsValidHouseID(house) || GetNearbyHouse(playerid) != house)
+	{
+		return 0;
+	}
+	if (response)
+	{
+		switch (listitem)
+		{
+			case 0: // Buy furniture
+			{
+				ShowFurnitureCategories(playerid);
+			}
+			case 1: // Edit furniture
+			{
+				if (HouseInfo[house][hLabels])
+				{
+					PlayerData[playerid][pFurnitureHouse] = -1;
+
+					SetFurnitureEditMode(house, false);
+					SendInfoMessage(playerid, "You are no longer editing your furniture.");
+				}
+				else
+				{
+					if (PlayerData[playerid][pFurnitureHouse] != -1)
+					{
+						SetFurnitureEditMode(PlayerData[playerid][pFurnitureHouse], false);
+					}
+					PlayerData[playerid][pFurnitureHouse] = house;
+
+					SetFurnitureEditMode(house, true);
+					SendInfoMessage(playerid, "You are now in edition mode. Use /cancel to stop editing.");
+				}
+			}
+			case 2:
+			{
+
+			}
+		}
+	}
+	return 1;
+}
+Dialog:FurnEditConfirm(playerid, response, listitem, inputtext[])
+{
+	if(!response) return ListTexture(playerid);
+	EditDynamicObjectEx(playerid, EDIT_TYPE_FURNITURE, Furniture[GetPVarInt(playerid, "FurnID")][fObject], GetPVarInt(playerid, "FurnID"));
+	return 1;
+}
+
+Dialog:ChangeMat(playerid, response, listitem, inputtext[])
+{
+	if(!response) return 1;
+	if(listitem == 0 || listitem == 1) return ShowColorList(playerid);
+	new t = -1;
+	for(new x = 0; x < sizeof(MaterialIDs); x++)
+	{
+		if(strcmp(inputtext, MaterialIDs[x][Name], true) == 0)
+		{
+			t = x;
+			break;
+		}
+	}
+	if(t == -1) return SendClientMessage(playerid, COLOR_RED, "An error has occurred, please try it later! (DEBUG: \"ChangeMatHandler\")");
+	FurnitureChange(playerid, GetPVarInt(playerid, "FurnID"), GetPVarInt(playerid, "MatSlot"), t, 1);
+	return true;
+}
+
+Dialog:ChangeColor(playerid, response, listitem, inputtext[])
+{
+	if(!response) return 1;
+	if(listitem == 0 || listitem == 1) return MaterialRes
+	FurnitureChange(playerid, GetPVarInt(playerid, "FurnID"), GetPVarInt(playerid, "MatSlot"), listitem, 2);
+	return true;
+}
+
+Dialog:MaterialHandler(playerid, response, listitem, inputtext[])
+{
+	if(!response) return 1;
+	if(listitem == 4)
+	{
+		for(new i = 0; i != 3; i ++)
+		{
+			Furniture[GetPVarInt(playerid, "FurnID")][fMaterial][i] = 0;
+			Furniture[GetPVarInt(playerid, "FurnID")][fMatColour][i] = 0;
+			SetDynamicObjectMaterial(Furniture[GetPVarInt(playerid, "FurnID")][fObject], i, -1, "none", "none", 0);
+		}
+		SaveFurniture(GetPVarInt(playerid, "FurnID"));
+	}
+	SetPVarInt(playerid, "MatSlot", listitem);
+	MaterialRes
+	//ShowMaterialList(playerid);
+	return true;
+}
+
+Dialog:TextureResources(playerid, response, listitem, inputtext[])
+{
+	if(!response) return 1;
+	new gstr[2056], gString[256];
+	format(gString, sizeof(gString), " << {F3FF02}Select Color\n");
+	strcat(gstr, gString);
+	for(new i = 0; i < sizeof(MaterialIDs); i++)
+	{
+		if(strcmp("None", MaterialIDs[i][Resource], true) == 0) continue;
+		if(strcmp(inputtext, MaterialIDs[i][Resource], true) == 0)
+		{
+			strcat(gstr, MaterialIDs[i][Name]);
+			strcat(gstr, "\n");
+		}
+	}
+	Dialog_Show(playerid, ChangeMat, DIALOG_STYLE_LIST, "Texture List", gstr, ">>", "Cancel");
 	return 1;
 }
 Dialog:Treadmill(playerid, response, listitem, inputtext[])
@@ -12568,6 +13233,373 @@ SetAttachedObject(playerid, modelid, bone, Float:x = 0.0, Float:y = 0.0, Float:z
 	return -1;
 }
 
+IsValidHouseID(id)
+{
+	return (id >= 0 && id < MAX_HOUSES) && HouseInfo[id][hExists];
+}
+ClearFurniture(house)
+{
+	if (!IsValidHouseID(house))
+	{
+		return 0;
+	}
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+		if (Furniture[i][fExists] && Furniture[i][fHouseID] == HouseInfo[house][hID])
+		{
+
+			DestroyDynamicObject(Furniture[i][fObject]);
+			DestroyDynamic3DTextLabel(Furniture[i][fText]);
+
+			Furniture[i][fExists] = 0;
+			Furniture[i][fID] = 0;
+		}
+	}
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM "#TABLE_FURNITURE" WHERE fHouseID = %i", HouseInfo[house][hID]);
+	mysql_tquery(connectionID, queryBuffer);
+	return 1;
+}
+
+ClearOutsideFurniture(house)
+{
+	if (!IsValidHouseID(house))
+	{
+		return 0;
+	}
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+		if (Furniture[i][fExists] && Furniture[i][fHouseID] == HouseInfo[house][hID] && Furniture[i][fInterior] == HouseInfo[house][hInterior] && Furniture[i][fWorld] == HouseInfo[house][hWorld])
+		{
+
+			DeleteFurniture(i);
+		}
+	}
+	return 1;
+}
+SaveFurniture(furniture)
+{
+	static
+		queryString[512];
+
+	if (!IsValidFurnitureID(furniture)) return 0;
+
+	format(queryString, sizeof(queryString), "UPDATE "#TABLE_FURNITURE" SET fModel = %i, fX = %.4f, fY = %.4f, fZ = %.4f, fRX = %.4f, fRY = %.4f, fRZ = %.4f, fInterior = %i, fWorld = %i, fCode = %i, fMoney = %i, Mat1 = %i, Mat2 = %i, Mat3 = %i, MatColor1 = %i, MatColor2 = %i, MatColor3 = %i WHERE fID = %i",
+		Furniture[furniture][fModel],
+		Furniture[furniture][fSpawn][0],
+		Furniture[furniture][fSpawn][1],
+		Furniture[furniture][fSpawn][2],
+		Furniture[furniture][fSpawn][3],
+		Furniture[furniture][fSpawn][4],
+		Furniture[furniture][fSpawn][5],
+		Furniture[furniture][fInterior],
+		Furniture[furniture][fWorld],
+		Furniture[furniture][fCode],
+		Furniture[furniture][fMoney],
+		Furniture[furniture][fMaterial][0],
+		Furniture[furniture][fMaterial][1],
+		Furniture[furniture][fMaterial][2],
+		Furniture[furniture][fMatColour][0],
+		Furniture[furniture][fMatColour][1],
+		Furniture[furniture][fMatColour][2],
+		Furniture[furniture][fID]
+	);
+
+	return mysql_tquery(connectionID, queryString);
+}
+
+DeleteFurniture(furniture)
+{
+	if (!IsValidFurnitureID(furniture))
+	{
+		return 0;
+	}
+
+	DestroyDynamicObject(Furniture[furniture][fObject]);
+	DestroyDynamic3DTextLabel(Furniture[furniture][fText]);
+
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM "#TABLE_FURNITURE" WHERE fID = %i", Furniture[furniture][fID]);
+	mysql_tquery(connectionID, queryBuffer);
+
+	Furniture[furniture][fID] = 0;
+	Furniture[furniture][fExists] = 0;
+	Furniture[furniture][fObject] = INVALID_OBJECT_ID;
+	Furniture[furniture][fText] = INVALID_3DTEXT_ID;
+	return 1;
+}
+
+ShowFurnitureCategories(playerid)
+{
+	new string[192];
+
+	for (new i = 0; i < sizeof(g_FurnitureTypes); i ++) {
+		strcat(string, g_FurnitureTypes[i]);
+		strcat(string, "\n");
+	}
+	Dialog_Show(playerid, BuyFurniture, DIALOG_STYLE_LIST, "{FFFFFF}Select category", string, "Select", "Cancel");
+}
+
+SetFurnitureEditMode(house, enable)
+{
+	HouseInfo[house][hLabels] = enable;
+
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+		if (Furniture[i][fExists] && Furniture[i][fHouseID] == HouseInfo[house][hID])
+		{
+			Furniture[i][fEdit] = enable;
+			UpdateFurnitureText(i);
+		}
+	}
+}
+
+AddFurniture(house, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, interior, worldid)
+{
+	new
+		id = GetNextFurnitureID();
+
+	if (id != -1)
+	{
+		Furniture[id][fExists] = 1;
+		Furniture[id][fHouseID] = HouseInfo[house][hID];
+		Furniture[id][fEdit] = HouseInfo[house][hLabels];
+		Furniture[id][fModel] = modelid;
+		Furniture[id][fSpawn][0] = x;
+		Furniture[id][fSpawn][1] = y;
+		Furniture[id][fSpawn][2] = z;
+		Furniture[id][fSpawn][3] = rx;
+		Furniture[id][fSpawn][4] = ry;
+		Furniture[id][fSpawn][5] = rz;
+		Furniture[id][fInterior] = interior;
+		Furniture[id][fWorld] = worldid;
+		Furniture[id][fCode] = 0;
+		Furniture[id][fMoney] = 0;
+		Furniture[id][fSafeOpen] = 0;
+		Furniture[id][fDoorOpen] = 0;
+		Furniture[id][fObject] = INVALID_OBJECT_ID;
+		Furniture[id][fText] = INVALID_3DTEXT_ID;
+
+		for(new i = 0; i != 3; i ++)
+		{
+			Furniture[id][fMaterial][i] = 0;
+			Furniture[id][fMatColour][i] = 0;
+		}
+
+		UpdateFurniture(id);
+
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO "#TABLE_FURNITURE" (fHouseID) VALUES(%i)", Furniture[id][fHouseID]);
+		mysql_tquery(connectionID, queryBuffer, "OnFurnitureAdded", "i", id);
+	}
+	return id;
+}
+
+PreviewFurniture(playerid, index)
+{
+	if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
+
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:angle;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, angle);
+
+	x += 2.0 * floatsin(-angle, degrees);
+	y += 2.0 * floatcos(-angle, degrees);
+
+	if (IsValidDynamicObject(gPreviewFurniture[playerid]))
+	{
+		DestroyDynamicObject(gPreviewFurniture[playerid]);
+	}
+	gPreviewFurniture[playerid] = CreateDynamicObject(g_FurnitureList[index][e_ModelID], x, y, z, 0.0, 0.0, angle, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+    PlayerData[playerid][pFurnitureIndex] = index;
+	EditDynamicObjectEx(playerid, EDIT_FURNITURE_PREVIEW, gPreviewFurniture[playerid]);
+	//EditDynamicObjectEx(playerid, EDIT_TYPE_FURNITURE, Furniture[furniture][fObject], furniture);
+	SendInfoMessage(playerid, "Press ESC to cancel. Click the disk icon to save changes.");
+	return 1;
+}
+IsValidFurnitureID(id)
+{
+	return (id >= 0 && id < MAX_FURNITURE) && Furniture[id][fExists];
+}
+GetNextFurnitureID()
+{
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+		if (!Furniture[i][fExists])
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+GetClosestFurniture(playerid, Float:range, model)
+{
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+		if (Furniture[i][fExists] && Furniture[i][fModel] == model && IsPlayerNearPoint(playerid, range, Furniture[i][fSpawn][0], Furniture[i][fSpawn][1], Furniture[i][fSpawn][2], Furniture[i][fInterior], Furniture[i][fWorld]))
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+ShowFurniturePreviewer(playerid)
+{
+    new
+		models[MAX_SELECTION_MENU_ITEMS] = {-1, ...},
+		index;
+
+	PlayerData[playerid][pFurnitureIndex] = -1;
+
+	for(new i = 0; i < sizeof(g_FurnitureList); i ++)
+	{
+	    if (g_FurnitureList[i][e_ModelCategory] == PlayerData[playerid][pSelected])
+	    {
+	        if(PlayerData[playerid][pFurnitureIndex] == -1)
+	        {
+	            PlayerData[playerid][pFurnitureIndex] = i;
+			}
+
+	        models[index++] = g_FurnitureList[i][e_ModelID];
+	    }
+	}
+	ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_FURNITURE, "House Furniture", models, index);
+	return 0;
+}
+ListTexture(playerid)
+{
+	new fid = GetPVarInt(playerid, "FurnID");
+
+	new list[256], header[64];
+	format(header, sizeof(header), "You are now editing ID: %d.", GetPVarInt(playerid, "FurnID"));
+	format(list, sizeof(list), "Index 1: %s\nIndex 2: %s\nIndex 3: %s\n \nClear Textures", Furniture[fid][fMaterial][0] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"), Furniture[fid][fMaterial][1] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"), Furniture[fid][fMaterial][2] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"));
+	Dialog_Show(playerid, MaterialHandler, DIALOG_STYLE_LIST, header, list, ">>", "Cancel");
+	return 1;
+}
+EditDynamicObjectEx(playerid, type, objectid, extraid = -1)
+{
+	PlayerData[playerid][pEditType] = type;
+	PlayerData[playerid][pSelected] = extraid;
+
+	return EditDynamicObject(playerid, objectid);
+}
+ShowColorList(playerid)
+{
+	new list[4056], bigStr[256], gString[256];
+	format(gString, sizeof(gString), " << {F3FF02}Select Texture\n");
+	strcat(list, gString);
+	for(new i = 0; i < sizeof(MaterialColors); i++)
+	{
+		if(strcmp("none", MaterialColors[i][ColorName], true) == 0) continue;
+		format(bigStr, sizeof(bigStr), "%s\n", MaterialColors[i][ColorName]);
+		strcat(list, bigStr);
+	}
+	Dialog_Show(playerid, ChangeColor, DIALOG_STYLE_LIST, "Color List", list, ">>", "Cancel");
+	return 1;
+}
+UpdateFurniture(furniture)
+{
+	if (!IsValidFurnitureID(furniture))
+	{
+		return 0;
+	}
+	DestroyDynamicObject(Furniture[furniture][fObject]);
+	Furniture[furniture][fObject] = CreateDynamicObject(Furniture[furniture][fModel], Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], Furniture[furniture][fSpawn][3], Furniture[furniture][fSpawn][4], Furniture[furniture][fSpawn][5], Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+
+	for(new i = 0; i != 3; i ++)
+	{
+		if(MaterialIDs[Furniture[furniture][fMaterial][i]][ModelID] != 0)
+		{
+			SetDynamicObjectMaterial(Furniture[furniture][fObject], i, MaterialIDs[Furniture[furniture][fMaterial][i]][ModelID], MaterialIDs[Furniture[furniture][fMaterial][i]][TxdName], MaterialIDs[Furniture[furniture][fMaterial][i]][TextureName], MaterialColors[Furniture[furniture][fMatColour][i]][ColorHex]);
+		}
+		else if(Furniture[furniture][fMatColour][i] != 0)
+		{
+			SetDynamicObjectMaterial(Furniture[furniture][fObject], i, -1, MaterialIDs[Furniture[furniture][fMaterial][i]][TxdName], MaterialIDs[Furniture[furniture][fMaterial][i]][TextureName], MaterialColors[Furniture[furniture][fMatColour][i]][ColorHex]);
+		}
+	}
+	UpdateFurnitureText(furniture);
+	return 1;
+}
+
+UpdateFurnitureText(furniture)
+{
+	new
+		string[64];
+
+	if (!IsValidFurnitureID(furniture))
+	{
+		return 0;
+	}
+	DestroyDynamic3DTextLabel(Furniture[furniture][fText]);
+
+	if (Furniture[furniture][fEdit])
+	{
+		format(string, sizeof(string), "ID: {00FF00}%i{FFFFFF}\n/edit, /delete.", furniture);
+
+		Furniture[furniture][fText] = CreateDynamic3DTextLabel(string, COLOR_WHITE, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+	}
+	else
+	{
+		if (Furniture[furniture][fModel] == 2332)
+		{
+			if (Furniture[furniture][fSafeOpen])
+			{
+				Furniture[furniture][fText] = CreateDynamic3DTextLabel("Status: {00FF00}Opened{AFAFAF}\nPress Y to use safe", COLOR_GREY, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 3.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+			}
+			else
+			{
+				Furniture[furniture][fText] = CreateDynamic3DTextLabel("Status: {FF5030}Closed{AFAFAF}\nPress Y to use safe", COLOR_GREY, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 3.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+			}
+		}
+
+		else
+		{
+			Furniture[furniture][fText] = INVALID_3DTEXT_ID;
+		}
+	}
+	return 1;
+}
+FurnitureChange(playerid, furnid, index, list, status = 1) // 1 for mat, 2 for color
+{
+	new model, txd[24], texture[24], color;
+	switch(status)
+	{
+		case 1:
+		{
+			SendClientMessage(playerid, -1, "Furniture texture has been updated.");
+			Furniture[furnid][fMaterial][index] = list;
+			SetDynamicObjectMaterial(Furniture[furnid][fObject], index, MaterialIDs[ Furniture[furnid][fMaterial][index] ][ModelID], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TxdName], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TextureName], MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
+			SaveFurniture(furnid);
+		}
+		case 2:
+		{
+			if(Furniture[furnid][fMaterial][index] == 0)
+			{
+				Furniture[furnid][fMatColour][index] = list;
+				SetDynamicObjectMaterial(Furniture[furnid][fObject], index, -1, MaterialIDs[ Furniture[furnid][fMaterial][index] ][TxdName], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TextureName], MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
+				SaveFurniture(furnid);
+			}
+			else
+			{
+				SendClientMessage(playerid, -1, "Furniture color has been updated.");
+				Furniture[furnid][fMatColour][index] = list;
+				GetDynamicObjectMaterial(Furniture[furnid][fObject], index, model, txd, texture, color);
+				SetDynamicObjectMaterial(Furniture[furnid][fObject], index, model, txd, texture, MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
+				SaveFurniture(furnid);
+			}
+		}
+	}
+	return 1;
+}
+CancelObjectEdit(playerid)
+{
+	PlayerData[playerid][pEditType] = 0;
+	PlayerData[playerid][pSelected] = -1;
+
+	return CancelEdit(playerid);
+}
 stock strmatch(const string1[], const string2[])
 {
     if ((strcmp(string1, string2, true, strlen(string2)) == 0) && (strlen(string2) == strlen(string1)))
@@ -14401,39 +15433,8 @@ ShowDialogToPlayer(playerid, dialogid)
 		{
 		    Dialog_Show(playerid, DIALOG_REFERRAL, DIALOG_STYLE_INPUT, "Have you been referred here by anyone?", "Please enter the name of the player who referred you here:\n(You can click on 'Skip' if you haven't been referred by anyone.)", "Submit", "Skip");
 		}
-		case DIALOG_BUYFURNITURETYPE:
-		{
-		    Dialog_Show(playerid, DIALOG_BUYFURNITURETYPE, DIALOG_STYLE_LIST, "Choose your browsing method.", "Browse by Model\nBrowse by List", "Select", "Cancel");
-		}
-		case DIALOG_BUYFURNITURE1:
-		{
-		    for(new i = 0; i < sizeof(furnitureCategories); i ++)
-		    {
-		        format(string, sizeof(string), "%s\n%s", string, furnitureCategories[i]);
-		    }
 
-		    Dialog_Show(playerid, DIALOG_BUYFURNITURE1, DIALOG_STYLE_LIST, "Choose a category to browse.", string, "Select", "Back");
-		}
-		case DIALOG_BUYFURNITURE2:
-		{
-		    new index = -1;
 
-            for(new i = 0; i < sizeof(furnitureArray); i ++)
-            {
-                if(!strcmp(furnitureArray[i][fCategory], furnitureCategories[PlayerData[playerid][pCategory]]))
-                {
-                    if(index == -1)
-                    {
-                        index = i;
-                    }
-
-                    format(string, sizeof(string), "%s\n%s (%s)", string, furnitureArray[i][fName], FormatNumber(furnitureArray[i][fPrice]));
-                }
-            }
-
-            PlayerData[playerid][pFurnitureIndex] = index;
-            Dialog_Show(playerid, DIALOG_BUYFURNITURE2, DIALOG_STYLE_LIST, "Choose an item in order to preview it.", string, "Select", "Back");
-		}
 		case DIALOG_ATM:
 		{
 		    format(string, sizeof(string), "What would you like to do today? (Your account balance is %s.)", FormatNumber(PlayerData[playerid][pBank]));
@@ -14768,71 +15769,7 @@ ShowDialogToPlayer(playerid, dialogid)
 			format(string, sizeof(string), "How much materials would you like to withdraw? (This arms dealer contains %i materials.)", GangInfo[PlayerData[playerid][pGang]][gArmsMaterials]);
 			Dialog_Show(playerid, GangStashWithdrawMats, DIALOG_STYLE_INPUT, "Arms dealer | Withdraw", string, "Submit", "Back");
 		}
-		case DIALOG_GANGDRUGDEALER:
-		{
-		    Dialog_Show(playerid, DIALOG_GANGDRUGDEALER, DIALOG_STYLE_LIST, "Drug dealer", "Buy Drugs\nEdit", "Select", "Cancel");
-		}
-		case DIALOG_GANGDRUGSHOP:
-		{
-		    format(string, sizeof(string), "Drug\tPrice\tStock\nWeed\t$%i\t%i grams\nCocaine\t$%i\t%i grams\nMeth\t$%i\t%i grams", GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][0], GangInfo[PlayerData[playerid][pDealerGang]][gDrugWeed], GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][1], GangInfo[PlayerData[playerid][pDealerGang]][gDrugCocaine], GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][2], GangInfo[PlayerData[playerid][pDealerGang]][gDrugMeth]);
-			Dialog_Show(playerid, DIALOG_GANGDRUGSHOP, DIALOG_STYLE_TABLIST_HEADERS, "Drug dealer", string, "Buy", "Back");
-		}
-		case DIALOG_GANGDRUGBUY:
-		{
-		    if(PlayerData[playerid][pSelected] == 0) {
-		        format(string, sizeof(string), "How much weed would you like to buy? (%s per gram. %i grams available.)", FormatNumber(GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][0]), GangInfo[PlayerData[playerid][pDealerGang]][gDrugWeed]);
-			} else if(PlayerData[playerid][pSelected] == 1) {
-		        format(string, sizeof(string), "How much cocaine would you like to buy? (%s per gram. %i grams available.)", FormatNumber(GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][1]), GangInfo[PlayerData[playerid][pDealerGang]][gDrugCocaine]);
-			} else if(PlayerData[playerid][pSelected] == 2) {
-		        format(string, sizeof(string), "How much meth would you like to buy? (%s per gram. %i grams available.)", FormatNumber(GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][2]), GangInfo[PlayerData[playerid][pDealerGang]][gDrugMeth]);
-			}
 
-		    Dialog_Show(playerid, DIALOG_GANGDRUGBUY, DIALOG_STYLE_INPUT, "Drug dealer | Buy", string, "Submit", "Back");
-		}
-		case DIALOG_GANGDRUGEDIT:
-		{
-			format(string, sizeof(string), "Drug dealer (Weed: %i) (Cocaine: %i) (Meth: %i)", GangInfo[PlayerData[playerid][pGang]][gDrugWeed], GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], GangInfo[PlayerData[playerid][pGang]][gDrugMeth]);
-			Dialog_Show(playerid, DIALOG_GANGDRUGEDIT, DIALOG_STYLE_LIST, string, "Edit prices\nDeposit drugs\nWithdraw drugs", "Select", "Back");
-		}
-		case DIALOG_GANGDRUGPRICES:
-		{
-		    format(string, sizeof(string), "Drug\tPrice\tStock\nWeed\t$%i\t%i grams\nCocaine\t$%i\t%i grams\nMeth\t$%i\t%i grams", GangInfo[PlayerData[playerid][pGang]][gDrugPrices][0], GangInfo[PlayerData[playerid][pGang]][gDrugWeed], GangInfo[PlayerData[playerid][pGang]][gDrugPrices][1], GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], GangInfo[PlayerData[playerid][pGang]][gDrugPrices][2], GangInfo[PlayerData[playerid][pGang]][gDrugMeth]);
-			Dialog_Show(playerid, DIALOG_GANGDRUGPRICES, DIALOG_STYLE_TABLIST_HEADERS, "Choose a drug price to edit.", string, "Change", "Back");
-		}
-		case DIALOG_GANGDRUGDEPOSITS:
-		{
-		    format(string, sizeof(string), "Weed (%ig)\nCocaine (%ig)\nMeth (%ig)", GangInfo[PlayerData[playerid][pGang]][gDrugWeed], GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], GangInfo[PlayerData[playerid][pGang]][gDrugMeth]);
-		    Dialog_Show(playerid, DIALOG_GANGDRUGDEPOSITS, DIALOG_STYLE_LIST, "Drug dealer | Deposit", string, "Select", "Back");
-		}
-		case DIALOG_GANGDRUGDEPOSIT:
-		{
-		    if(PlayerData[playerid][pSelected] == 0) {
-		        format(string, sizeof(string), "How much weed would you like to deposit? (This drug dealer contains %i grams.)", GangInfo[PlayerData[playerid][pGang]][gDrugWeed]);
-		    } else if(PlayerData[playerid][pSelected] == 1) {
-		        format(string, sizeof(string), "How much cocaine would you like to deposit? (This drug dealer contains %i grams.)", GangInfo[PlayerData[playerid][pGang]][gDrugCocaine]);
-			} else if(PlayerData[playerid][pSelected] == 2) {
-		        format(string, sizeof(string), "How much meth would you like to deposit? (This drug dealer contains %i grams.)", GangInfo[PlayerData[playerid][pGang]][gDrugMeth]);
-			}
-
-			Dialog_Show(playerid, DIALOG_GANGDRUGDEPOSIT, DIALOG_STYLE_INPUT, "Drug dealer | Deposit", string, "Submit", "Back");
-		}
-		case DIALOG_GANGDRUGWITHDRAWS:
-		{
-		    format(string, sizeof(string), "Weed (%ig)\nCocaine (%ig)\nMeth (%ig)", GangInfo[PlayerData[playerid][pGang]][gDrugWeed], GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], GangInfo[PlayerData[playerid][pGang]][gDrugMeth]);
-		    Dialog_Show(playerid, DIALOG_GANGDRUGWITHDRAWS, DIALOG_STYLE_LIST, "Drug dealer | Withdraw", string, "Select", "Back");
-		}
-        case DIALOG_GANGDRUGWITHDRAW:
-		{
-		    if(PlayerData[playerid][pSelected] == 0) {
-		        format(string, sizeof(string), "How much weed would you like to withdraw? (This drug dealer contains %i grams.)", GangInfo[PlayerData[playerid][pGang]][gDrugWeed]);
-		    } else if(PlayerData[playerid][pSelected] == 1) {
-		        format(string, sizeof(string), "How much cocaine would you like to withdraw? (This drug dealer contains %i grams.)", GangInfo[PlayerData[playerid][pGang]][gDrugCocaine]);
-			} else if(PlayerData[playerid][pSelected] == 2) {
-		        format(string, sizeof(string), "How much meth would you like to withdraw? (This drug dealer contains %i grams.)", GangInfo[PlayerData[playerid][pGang]][gDrugMeth]);
-			}
-
-			Dialog_Show(playerid, DIALOG_GANGDRUGWITHDRAW, DIALOG_STYLE_INPUT, "Drug dealer | Withdraw", string, "Submit", "Back");
-		}
 		case DIALOG_CRACKTRUNK:
 		{
 		    if(VehicleInfo[PlayerData[playerid][pCocaineFrom]][vWeed]/20 > 0) format(string, sizeof(string), "%s\nWeed (%ig)", string, VehicleInfo[PlayerData[playerid][pCocaineFrom]][vWeed]/20);
@@ -21641,10 +22578,7 @@ IsEmergencyFaction(playerid)
 
 	return 0;
 }
-IsAMedic(playerid)
-{
-	return GetFactionType(playerid) == FACTION_MEDIC;
-}
+
 IsLawEnforcement(playerid)
 {
 	return GetFactionType(playerid) == FACTION_POLICE || GetFactionType(playerid) == FACTION_FEDERAL || GetFactionType(playerid) == FACTION_ARMY;
@@ -21700,13 +22634,7 @@ IsDoorObject(objectid)
 
 	if((modelid) && !IsGateObject(objectid))
 	{
-		for(new i = 0; i < sizeof(furnitureArray); i ++)
-		{
-	    	if(!strcmp(furnitureArray[i][fCategory], "Doors & Gates") && furnitureArray[i][fModel] == modelid)
-	    	{
-		        return 1;
-			}
-		}
+
 		for(new i = 0; i < sizeof(landArray); i ++)
 		{
 	    	if(!strcmp(landArray[i][fCategory], "Doors & Gates") && landArray[i][fModel] == modelid)
@@ -22143,24 +23071,6 @@ ReloadGang(gangid)
             GangInfo[gangid][gText][0] = CreateDynamic3DTextLabel(string, COLOR_ORANGE, GangInfo[gangid][gStashX], GangInfo[gangid][gStashY], GangInfo[gangid][gStashZ], 10.0, .worldid = GangInfo[gangid][gStashWorld], .interiorid = GangInfo[gangid][gStashInterior]);
             GangInfo[gangid][gPickup] = CreateDynamicPickup(1239, 1, GangInfo[gangid][gStashX], GangInfo[gangid][gStashY], GangInfo[gangid][gStashZ], .worldid = GangInfo[gangid][gStashWorld], .interiorid = GangInfo[gangid][gStashInterior]);
 	    }
-	    if(GangInfo[gangid][gArmsDealer] && GangInfo[gangid][gArmsX] != 0.0 && GangInfo[gangid][gArmsY] != 0.0 && GangInfo[gangid][gArmsZ] != 0.0)
-	    {
-	        format(string, sizeof(string), "%s\nArms Dealer\n/armsdealer for more info.", GangInfo[gangid][gName]);
-
-	        GangInfo[gangid][gActors][0] = CreateActor(179, GangInfo[gangid][gArmsX], GangInfo[gangid][gArmsY], GangInfo[gangid][gArmsZ], GangInfo[gangid][gArmsA]);
-			GangInfo[gangid][gText][1] = CreateDynamic3DTextLabel(string, COLOR_ORANGE, GangInfo[gangid][gArmsX], GangInfo[gangid][gArmsY], GangInfo[gangid][gArmsZ] + 0.3, 10.0, .worldid = GangInfo[gangid][gArmsWorld]);
-
-		    SetActorVirtualWorld(GangInfo[gangid][gActors][0], GangInfo[gangid][gArmsWorld]);
-		}
-		if(GangInfo[gangid][gDrugDealer] && GangInfo[gangid][gDrugX] != 0.0 && GangInfo[gangid][gDrugY] != 0.0 && GangInfo[gangid][gDrugZ] != 0.0)
-	    {
-	        format(string, sizeof(string), "%s\nDrug Dealer\n/drugdealer for more info.", GangInfo[gangid][gName]);
-
-	        GangInfo[gangid][gActors][1] = CreateActor(28, GangInfo[gangid][gDrugX], GangInfo[gangid][gDrugY], GangInfo[gangid][gDrugZ], GangInfo[gangid][gDrugA]);
-            GangInfo[gangid][gText][2] = CreateDynamic3DTextLabel(string, COLOR_ORANGE, GangInfo[gangid][gDrugX], GangInfo[gangid][gDrugY], GangInfo[gangid][gDrugZ] + 0.3, 10.0, .worldid = GangInfo[gangid][gDrugWorld]);
-
-	        SetActorVirtualWorld(GangInfo[gangid][gActors][1], GangInfo[gangid][gDrugWorld]);
-		}
 	}
 }
 GiveGangPoints(gangid, amount)
@@ -23759,82 +24669,6 @@ SetHouseOwner(houseid, playerid)
 	ReloadHouse(houseid);
 }
 
-RemoveFurniture(objectid)
-{
-    if(IsValidDynamicObject(objectid) && Streamer_GetExtraInt(objectid, E_OBJECT_TYPE) == E_OBJECT_FURNITURE)
-	{
- 		new
-	        id = Streamer_GetExtraInt(objectid, E_OBJECT_INDEX_ID);
-
-	    DeleteFurnitureObject(objectid);
-
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM furniture WHERE id = %i", id);
-	    mysql_tquery(connectionID, queryBuffer);
-	}
-}
-
-DeleteFurnitureObject(objectid)
-{
-	if(IsValidDynamicObject(objectid) && Streamer_GetExtraInt(objectid, E_OBJECT_TYPE) == E_OBJECT_FURNITURE)
-	{
-    	new Text3D:textid = Text3D:Streamer_GetExtraInt(objectid, E_OBJECT_3DTEXT_ID);
-
-        if(IsValidDynamic3DTextLabel(textid))
-        {
-            DestroyDynamic3DTextLabel(textid);
-        }
-
-        DestroyDynamicObject(objectid);
-	}
-}
-
-RemoveAllFurniture(houseid)
-{
-    if(HouseInfo[houseid][hExists])
-	{
-	    for(new i = 0, j = Streamer_GetUpperBound(STREAMER_TYPE_OBJECT); i <= j; i ++)
-	    {
-	        if(IsValidDynamicObject(i) && Streamer_GetExtraInt(i, E_OBJECT_TYPE) == E_OBJECT_FURNITURE && Streamer_GetExtraInt(i, E_OBJECT_EXTRA_ID) == HouseInfo[houseid][hID])
-	        {
-             	DeleteFurnitureObject(i);
-			}
-		}
-
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM furniture WHERE houseid = %i", HouseInfo[houseid][hID]);
-		mysql_tquery(connectionID, queryBuffer);
-	}
-}
-
-ReloadFurniture(objectid, labels)
-{
-	if(IsValidDynamicObject(objectid) && Streamer_GetExtraInt(objectid, E_OBJECT_TYPE) == E_OBJECT_FURNITURE)
-	{
-	    new
-	        id = Streamer_GetExtraInt(objectid, E_OBJECT_INDEX_ID);
-
-	    DeleteFurnitureObject(objectid);
-
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM furniture WHERE id = %i", id);
-	    mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_LOAD_FURNITURE, labels);
-	}
-}
-
-ReloadAllFurniture(houseid)
-{
-    if(HouseInfo[houseid][hExists])
-	{
-	    for(new i = 0, j = Streamer_GetUpperBound(STREAMER_TYPE_OBJECT); i <= j; i ++)
-	    {
-	        if(IsValidDynamicObject(i) && Streamer_GetExtraInt(i, E_OBJECT_TYPE) == E_OBJECT_FURNITURE && Streamer_GetExtraInt(i, E_OBJECT_EXTRA_ID) == HouseInfo[houseid][hID])
-	        {
-             	DeleteFurnitureObject(i);
-			}
-		}
-
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM furniture WHERE houseid = %i", HouseInfo[houseid][hID]);
-		mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_LOAD_FURNITURE, HouseInfo[houseid][hLabels]);
-	}
-}
 
 ReloadHouse(houseid)
 {
@@ -26393,11 +27227,7 @@ public SecondTimer()
 	   				SendClientMessage(i, COLOR_GREY2, "You left the editing area. Furniture previewing cancelled.");
 	   				DestroyDynamicObject(PlayerData[i][pEditObject]);
 				}
-				else if(PlayerData[i][pEditType] == EDIT_FURNITURE)
-				{
-	   				ReloadFurniture(PlayerData[i][pEditObject], HouseInfo[PlayerData[i][pFurnitureHouse]][hLabels]);
-	   				SendClientMessage(i, COLOR_GREY2, "You left the editing area. Editing mode has been disabled.");
-				}
+
 				else if(PlayerData[i][pEditType] == EDIT_LAND_OBJECT)
 				{
 	   				ReloadLandObject(PlayerData[i][pEditObject], LandInfo[PlayerData[i][pObjectLand]][lLabels]);
@@ -31362,117 +32192,24 @@ public OnQueryFinished(threadid, extraid)
 		}
 		case THREAD_COUNT_FURNITURE:
 		{
-		    new houseid = GetInsideHouse(extraid);
 
-		    if(cache_get_row_int(0, 0) >= GetHouseFurnitureCapacity(houseid))
-		    {
-		        SendClientMessageEx(extraid, COLOR_GREY, "Your house is only allowed up to %i furniture at its current level.", GetHouseFurnitureCapacity(houseid));
-		    }
-		    else
-		    {
-		        ShowDialogToPlayer(extraid, DIALOG_BUYFURNITURETYPE);
-				//ShowDialogToPlayer(extraid, DIALOG_BUYFURNITURE1);
-			}
 		}
 		case THREAD_SELL_FURNITURE:
 		{
-		    if(cache_get_row_count(connectionID))
-		    {
-		        new name[32], price = percent(cache_get_field_content_int(0, "price"), 75);
 
-		        cache_get_field_content(0, "name", name);
-		        GivePlayerCash(extraid, price);
-
-		        SendClientMessageEx(extraid, COLOR_AQUA, "You have sold {FF6347}%s{33CCFF} and received a 75 percent refund of {00AA00}$%i{33CCFF}.", name, price);
-		        RemoveFurniture(PlayerData[extraid][pSelected]);
-			}
 		}
 		case THREAD_CLEAR_FURNITURE:
 		{
-		    if(!rows)
-		    {
-		        SendClientMessage(extraid, COLOR_GREY, "Your home contains no furniture which can be sold.");
-		    }
-		    else
-		    {
-		        new price, houseid = GetInsideHouse(extraid);
 
-			    for(new i = 0; i < rows; i ++)
-				{
-				    price += percent(cache_get_field_content_int(i, "price"), 75);
-				}
-
-				RemoveAllFurniture(houseid);
-
-				GivePlayerCash(extraid, price);
-				SendClientMessageEx(extraid, COLOR_AQUA, "You have sold a total of %i items and received {00AA00}$%i{33CCFF} back.", rows, price);
-			}
 		}
 
 		case THREAD_DUPLICATE_FURNITURE:
 		{
-			//name, modelid, price, pos_x, pos_y, pos_z, rot_x, rot_y, rot_z
 
-  			if(cache_get_row_count(connectionID))
-			{
-			    new string[20], name[32], houseid = GetInsideHouse(extraid);
-
-			    new modelid = cache_get_field_content_int(0, "modelid");
-			    new price = cache_get_field_content_int(0, "price");
-			    new Float:x = cache_get_field_content_float(0, "pos_x");
-			    new Float:y = cache_get_field_content_float(0, "pos_y");
-			    new Float:z = cache_get_field_content_float(0, "pos_z");
-			    new Float:rx = cache_get_field_content_float(0, "rot_x");
-			    new Float:ry = cache_get_field_content_float(0, "rot_y");
-			    new Float:rz = cache_get_field_content_float(0, "rot_z");
-
-			    if(PlayerData[extraid][pCash] < price)
-			    {
-			        SendClientMessage(extraid, COLOR_GREY, "You can't afford to duplicate this furniture.");
-			    }
-			    else
-			    {
-			        // INSERT INTO furniture VALUES(null, %i, %i, '%e', %i, '%f', '%f', '%f', '%f', '%f', '%f', %i, %i, 0, 0)
-
-			        PlayerData[extraid][pFurnitureHouse] = houseid;
-				    cache_get_field_content(0, "name", name);
-
-			    	GivePlayerCash(extraid, -price);
-			    	SendClientMessageEx(extraid, COLOR_GREEN, "%s duplicated for $%i. You will now edit this object.", name, price);
-
-				    format(string, sizeof(string), "~r~-$%i", price);
-				    GameTextForPlayer(extraid, string, 5000, 1);
-
-				    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO furniture VALUES(null, %i, %i, '%e', %i, '%f', '%f', '%f', '%f', '%f', '%f', %i, %i, 0, 0)", HouseInfo[houseid][hID], modelid, name, price, x, y, z, rx, ry, rz, GetPlayerInterior(extraid), GetPlayerVirtualWorld(extraid));
-					mysql_tquery(connectionID, queryBuffer);
-
-					mysql_tquery(connectionID, "SELECT * FROM furniture WHERE id = LAST_INSERT_ID()", "OnQueryFinished", "ii", THREAD_LOAD_FURNITURE, HouseInfo[houseid][hLabels]);
-					mysql_tquery(connectionID, "SELECT LAST_INSERT_ID() FROM furniture LIMIT 1", "OnQueryFinished", "ii", THREAD_DUPLICATED_FURNITURE, extraid);
-				}
-			}
 		}
 		case THREAD_DUPLICATED_FURNITURE:
 		{
-			if(cache_get_row_count(connectionID))
-			{
-			    new id = cache_get_row_int(0, 0);
 
-			    for(new i = 0, j = Streamer_GetUpperBound(STREAMER_TYPE_OBJECT); i <= j; i ++)
-			    {
-			        if(IsValidDynamicObject(i) && Streamer_GetExtraInt(i, E_OBJECT_TYPE) == E_OBJECT_FURNITURE && Streamer_GetExtraInt(i, E_OBJECT_INDEX_ID) == id)
-			        {
-			            PlayerData[extraid][pEditType] = EDIT_FURNITURE;
-		    	    	PlayerData[extraid][pEditObject] = i;
-
-						EditDynamicObject(extraid, i);
-	    		    	GameTextForPlayer(extraid, "~w~Editing Mode~n~~g~Click disk to save~n~~r~Press ESC to cancel", 5000, 1);
-
-			            //PlayerData[extraid][pSelected] = i;
-						//ShowDialogToPlayer(extraid, DIALOG_LANDOBJECTMENU);
-			            break;
-					}
-			    }
-		    }
 		}
 		case THREAD_COUNT_TEXTS:
 		{
@@ -32353,6 +33090,42 @@ func hidemotd(playerid)
     return 1;
 }
 
+forward OnLoadFurniture();
+public OnLoadFurniture()
+{
+    new
+	    rows = cache_get_row_count(connectionID);
+
+	for (new i = 0; i < rows; i ++)
+	{
+	    Furniture[i][fExists] = 1;
+	    Furniture[i][fID] = cache_get_field_content_int(i, "fID");
+	    Furniture[i][fHouseID] = cache_get_field_content_int(i, "fHouseID");
+	    Furniture[i][fModel] = cache_get_field_content_int(i, "fModel");
+	    Furniture[i][fSpawn][0] = cache_get_field_content_float(i, "fX");
+	    Furniture[i][fSpawn][1] = cache_get_field_content_float(i, "fY");
+	    Furniture[i][fSpawn][2] = cache_get_field_content_float(i, "fZ");
+	    Furniture[i][fSpawn][3] = cache_get_field_content_float(i, "fRX");
+	    Furniture[i][fSpawn][4] = cache_get_field_content_float(i, "fRY");
+	    Furniture[i][fSpawn][5] = cache_get_field_content_float(i, "fRZ");
+        Furniture[i][fInterior] = cache_get_field_content_int(i, "fInterior");
+        Furniture[i][fWorld] = cache_get_field_content_int(i, "fWorld");
+        Furniture[i][fCode] = cache_get_field_content_int(i, "fCode");
+        Furniture[i][fMoney] = cache_get_field_content_int(i, "fMoney");
+
+        Furniture[i][fMaterial][0] = cache_get_field_content_int(i, "Mat1");
+        Furniture[i][fMaterial][1] = cache_get_field_content_int(i, "Mat2");
+        Furniture[i][fMaterial][2] = cache_get_field_content_int(i, "Mat3");
+        Furniture[i][fMatColour][0] = cache_get_field_content_int(i, "MatColor1");
+        Furniture[i][fMatColour][1] = cache_get_field_content_int(i, "MatColor2");
+        Furniture[i][fMatColour][2] = cache_get_field_content_int(i, "MatColor3");
+
+        Furniture[i][fObject] = INVALID_OBJECT_ID;
+        Furniture[i][fText] = INVALID_3DTEXT_ID;
+        UpdateFurniture(i);
+	}
+	printf("(SQL) %i furniture loaded.", rows);
+}
 public OnGameModeInit()
 {
 
@@ -32396,7 +33169,7 @@ public OnGameModeInit()
 
 		mysql_tquery(connectionID, "TRUNCATE TABLE shots");
 		mysql_tquery(connectionID, "SELECT * FROM houses", "OnQueryFinished", "ii", THREAD_LOAD_HOUSES, 0);
-		mysql_tquery(connectionID, "SELECT * FROM furniture", "OnQueryFinished", "ii", THREAD_LOAD_FURNITURE, 0);
+		mysql_tquery(connectionID, "SELECT * FROM "#TABLE_FURNITURE"", "OnLoadFurniture");
 		mysql_tquery(connectionID, "SELECT * FROM garages", "OnQueryFinished", "ii", THREAD_LOAD_GARAGES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM businesses", "OnQueryFinished", "ii", THREAD_LOAD_BUSINESSES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM entrances", "OnQueryFinished", "ii", THREAD_LOAD_ENTRANCES, 0);
@@ -35354,8 +36127,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 		ShowActionBubble(playerid, "** %s aims their tazer full of electricity at %s and stuns them.", GetRPName(playerid), GetRPName(damagedid));
 		SendClientMessageEx(damagedid, COLOR_AQUA, "You've been {FF6347}stunned{33CCFF} with electricity by %s's tazer.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have stunned %s with electricity. They are disabled for 10 seconds.", GetRPName(damagedid));
+		return 0;
 	}
-
 	if(PlayerData[playerid][pToggleHUD] == 0 && IsPlayerConnected(playerid))
 	{
 		new string[50];
@@ -35438,7 +36211,11 @@ ProcessDamage(playerid, weaponid)
 public OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 {
 	new string[50];
-
+	if(gettime() - PlayerData[playerid][pLastUpdate] >= 3 && !PlayerData[playerid][pHurt])
+	{
+	    GameTextForPlayer(issuerid, "That player is AFK!", 5000, 3);
+	    return 0;
+	}
 	if(IsPlayerConnected(issuerid))
 	{
 	    if(weaponid == 4 && PlayerHasWeapon(issuerid, 4) && IsPlayerInRangeOfPlayer(playerid, issuerid, 20.0) && amount > 100.0)
@@ -35457,7 +36234,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 			PlayerData[playerid][pDamageTimer] = SetTimerEx("DestroyDamageTD", 1500, false, "i", playerid);
 		}
 	}
-	if (IsValidDamageWeapon(weaponid) && WeaponDamages[weaponid] != 0.0 && PlayerData[issuerid][pTazer] == 0 && !PlayerData[playerid][pAFK]) {
+	if (IsValidDamageWeapon(weaponid) && WeaponDamages[weaponid] != 0.0 && PlayerData[issuerid][pTazer] != 1) {
 		ProcessDamage(playerid, weaponid);
 	}
 	return 1;
@@ -35864,13 +36641,9 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 
 	            if(houseid >= 0 && HasFurniturePerms(playerid, houseid))
 	            {
-		            PurchaseFurniture(playerid, listitem + PlayerData[playerid][pFurnitureIndex]);
+		            PreviewFurniture(playerid, listitem + PlayerData[playerid][pFurnitureIndex]);
 				}
 	        }
-	        else
-	        {
-	            ShowDialogToPlayer(playerid, DIALOG_BUYFURNITURE1);
-			}
 	    }
 	    case MODEL_SELECTION_LANDOBJECTS:
 	    {
@@ -37746,65 +38519,60 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 
 	switch(PlayerData[playerid][pEditType])
 	{
-	    case EDIT_FURNITURE_PREVIEW:
-	    {
-			if(response != EDIT_RESPONSE_UPDATE)
-			{
-			    DestroyDynamicObject(PlayerData[playerid][pEditObject]);
-				PlayerData[playerid][pEditObject] = INVALID_OBJECT_ID;
-				PlayerData[playerid][pEditType] = 0;
+		case EDIT_FURNITURE_PREVIEW:
+		{
+		    if (response == EDIT_RESPONSE_CANCEL) {
+				DestroyDynamicObject(gPreviewFurniture[playerid]);
+				gPreviewFurniture[playerid] = INVALID_OBJECT_ID;
+			}
+            if (response == EDIT_RESPONSE_FINAL) {
+				//if (!IsPointInRangeOfPoint(20.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hSpawn][0], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][1], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][2]) && !IsPointInRangeOfPoint(100.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hInt][0], HouseInfo[PlayerData[playerid][pHouse]][hInt][1], HouseInfo[PlayerData[playerid][pHouse]][hInt][2]))
 
-			    if(response == EDIT_RESPONSE_FINAL)
-			    {
-			        new houseid = GetInsideHouse(playerid);
-
-					if(houseid >= 0 && HasFurniturePerms(playerid, houseid))
-					{
-					    if(PlayerData[playerid][pCash] < furnitureArray[PlayerData[playerid][pSelected]][fPrice])
-		                {
-		                    return SendClientMessage(playerid, COLOR_GREY, "You couldn't afford to purchase this item.");
-		                }
-
-					    new
-					        string[16];
-
-					    GivePlayerCash(playerid, -furnitureArray[PlayerData[playerid][pSelected]][fPrice]);
-
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO furniture VALUES(null, %i, %i, '%e', %i, '%f', '%f', '%f', '%f', '%f', '%f', %i, %i, 0, 0)", HouseInfo[houseid][hID], furnitureArray[PlayerData[playerid][pSelected]][fModel], furnitureArray[PlayerData[playerid][pSelected]][fName], furnitureArray[PlayerData[playerid][pSelected]][fPrice], x, y, z, rx, ry, rz, HouseInfo[houseid][hInterior], HouseInfo[houseid][hWorld]);
-						mysql_tquery(connectionID, queryBuffer);
-						mysql_tquery(connectionID, "SELECT * FROM furniture WHERE id = LAST_INSERT_ID()", "OnQueryFinished", "ii", THREAD_LOAD_FURNITURE, HouseInfo[houseid][hLabels]);
-
-						format(string, sizeof(string), "~r~-$%i", furnitureArray[PlayerData[playerid][pSelected]][fPrice]);
-						GameTextForPlayer(playerid, string, 5000, 1);
-
-						if(!strcmp(furnitureArray[PlayerData[playerid][pSelected]][fCategory], "Doors & Gates"))
-						{
-							SendClientMessage(playerid, COLOR_WHITE, "You can use /door to control your door and /lock to unlock or lock it.");
-						}
-					}
-			    }
-			    else if(response == EDIT_RESPONSE_CANCEL)
-			    {
-			        if(PlayerData[playerid][pMenuType] == 0)
-						ShowObjectSelectionMenu(playerid, MODEL_SELECTION_FURNITURE);
-					else
-						ShowDialogToPlayer(playerid, DIALOG_BUYFURNITURE2);
+				if (GetInsideHouse(playerid) != PlayerData[playerid][pHouse])
+				{
+					SendErrorMessage(playerid, "The object is out of range from your house.");
 				}
+				else if (!PlayerCanAfford(playerid, g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelPrice]))
+				{
+					SendErrorMessage(playerid, "You don't have enough money.");
+				}
+				else
+				{
+					new id = AddFurniture(PlayerData[playerid][pHouse], g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelID], x, y, z, rx, ry, rz, GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
+
+					if (id == -1)
+					{
+						SendErrorMessage(playerid, "There are no available furniture slots.");
+						SendAdminMessage(COLOR_RED, "Admin: %s has failed to add furniture! \"MAX_FURNITURE\" needs to be adjusted.", GetRPName(playerid));
+					}
+					else
+					{
+						GivePlayerCash(playerid, g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelPrice]);
+						ShowFurnitureCategories(playerid);
+						SendInfoMessage(playerid, "Furniture purchased for {33CC33}%s{FFFFFF}. Use /house to manage your furniture.", FormatNumber(g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelPrice]));
+					}
+				}
+				DestroyDynamicObject(gPreviewFurniture[playerid]);
+				gPreviewFurniture[playerid] = INVALID_OBJECT_ID;
 			}
 		}
-		case EDIT_FURNITURE:
+		case EDIT_TYPE_FURNITURE:
 		{
-		    if(response != EDIT_RESPONSE_UPDATE)
-			{
-				if(response == EDIT_RESPONSE_FINAL)
-				{
-				    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE furniture SET pos_x = '%f', pos_y = '%f', pos_z = '%f', rot_x = '%f', rot_y = '%f', rot_z = '%f' WHERE id = %i", x, y, z, rx, ry, rz, Streamer_GetExtraInt(objectid, E_OBJECT_INDEX_ID));
-					mysql_tquery(connectionID, queryBuffer);
-					SendClientMessage(playerid, COLOR_GREY, "Changes saved.");
-				}
+		    if (response == EDIT_RESPONSE_CANCEL) {
+				UpdateFurniture(PlayerData[playerid][pSelected]);
+			}
+            if (response == EDIT_RESPONSE_FINAL) {
+				Furniture[PlayerData[playerid][pSelected]][fSpawn][0] = x;
+				Furniture[PlayerData[playerid][pSelected]][fSpawn][1] = y;
+				Furniture[PlayerData[playerid][pSelected]][fSpawn][2] = z;
+				Furniture[PlayerData[playerid][pSelected]][fSpawn][3] = rx;
+				Furniture[PlayerData[playerid][pSelected]][fSpawn][4] = ry;
+				Furniture[PlayerData[playerid][pSelected]][fSpawn][5] = rz;
 
-		        ReloadFurniture(objectid, HouseInfo[PlayerData[playerid][pFurnitureHouse]][hLabels]);
-		        PlayerData[playerid][pEditType] = 0;
+				UpdateFurniture(PlayerData[playerid][pSelected]);
+				SaveFurniture(PlayerData[playerid][pSelected]);
+
+				SendInfoMessage(playerid, "You have edited furniture ID: %i.", PlayerData[playerid][pSelected]);
 			}
 		}
 		case EDIT_LAND_OBJECT_PREVIEW:
@@ -40671,72 +41439,7 @@ Dialog:DIALOG_INTERIORS(playerid, response, listitem, inputtext[])
     }
     return 1;
 }
-Dialog:DIALOG_BUYFURNITURETYPE(playerid, response, listitem, inputtext[])
-{
-    new houseid = GetInsideHouse(playerid);
 
-    if(houseid == -1 || !HasFurniturePerms(playerid, houseid))
-	{
-		return 0;
-	}
-
-    if(response)
-    {
-		PlayerData[playerid][pMenuType] = listitem;
-		ShowDialogToPlayer(playerid, DIALOG_BUYFURNITURE1);
-	}
-	return 1;
-}
-Dialog:DIALOG_BUYFURNITURE1(playerid, response, listitem, inputtext[])
-{
-    new houseid = GetInsideHouse(playerid);
-
-    if(houseid == -1 || !HasFurniturePerms(playerid, houseid))
-	{
-		return 0;
-	}
-
-    if(response)
-	{
-	    switch(PlayerData[playerid][pMenuType])
-	    {
-	        case 0: // Model selection
-	        {
-				PlayerData[playerid][pCategory] = listitem;
-				ShowObjectSelectionMenu(playerid, MODEL_SELECTION_FURNITURE);
-	        }
-	        case 1:
-            {
-				PlayerData[playerid][pCategory] = listitem;
-				ShowDialogToPlayer(playerid, DIALOG_BUYFURNITURE2);
-			}
-		}
-    }
-    else
-    {
-        ShowDialogToPlayer(playerid, DIALOG_BUYFURNITURETYPE);
-	}
-	return 1;
-}
-Dialog:DIALOG_BUYFURNITURE2(playerid, response, listitem, inputtext[])
-{
-    new houseid = GetInsideHouse(playerid);
-
-    if(houseid == -1 || !HasFurniturePerms(playerid, houseid))
-	{
-		return 0;
-	}
-
-    if(response)
-    {
-        PurchaseFurniture(playerid, listitem + PlayerData[playerid][pFurnitureIndex]);
-	}
-	else
-	{
-	    ShowDialogToPlayer(playerid, DIALOG_BUYFURNITURE1);
-	}
-	return 1;
-}
 Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 {
     if(response)
@@ -46691,498 +47394,6 @@ Dialog:GangStashWithdrawMats(playerid, response, listitem, inputtext[])
 	return 1;
 }
 
-Dialog:DIALOG_GANGDRUGDEALER(playerid, response, listitem, inputtext[])
-{
-    if(!IsPlayerInRangeOfPoint(playerid, 3.0, GangInfo[PlayerData[playerid][pDealerGang]][gDrugX], GangInfo[PlayerData[playerid][pDealerGang]][gDrugY], GangInfo[PlayerData[playerid][pDealerGang]][gDrugZ]))
-    {
-        return 1;
-	}
-
-	if(response)
-	{
-	    if(listitem == 0)
-	    {
-			ShowDialogToPlayer(playerid, DIALOG_GANGDRUGSHOP);
-		}
-		else if(listitem == 1)
-		{
-		    if(PlayerData[playerid][pGang] != PlayerData[playerid][pDealerGang])
-		    {
-		        return SendClientMessage(playerid, COLOR_GREY, "This drug dealer doesn't belong to your gang.");
-		    }
-		    if(PlayerData[playerid][pGangRank] < 6)
-		    {
-		        return SendClientMessage(playerid, COLOR_GREY, "You need to be rank 6+ in order to edit.");
-			}
-
-			ShowDialogToPlayer(playerid, DIALOG_GANGDRUGEDIT);
-		}
-	}
-	return 1;
-}
-Dialog:DIALOG_GANGDRUGSHOP(playerid, response, listitem, inputtext[])
-{
-    if(!IsPlayerInRangeOfPoint(playerid, 3.0, GangInfo[PlayerData[playerid][pDealerGang]][gDrugX], GangInfo[PlayerData[playerid][pDealerGang]][gDrugY], GangInfo[PlayerData[playerid][pDealerGang]][gDrugZ]))
-    {
-        return 1;
-	}
-
-	if(response)
-	{
-	    PlayerData[playerid][pSelected] = listitem;
-	    ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-	}
-	else
-	{
-	    ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEALER);
-	}
-	return 1;
-}
-Dialog:DIALOG_GANGDRUGBUY(playerid, response, listitem, inputtext[])
-{
-    if(!IsPlayerInRangeOfPoint(playerid, 3.0, GangInfo[PlayerData[playerid][pDealerGang]][gDrugX], GangInfo[PlayerData[playerid][pDealerGang]][gDrugY], GangInfo[PlayerData[playerid][pDealerGang]][gDrugZ]))
-    {
-        return 1;
-	}
-
-	if(response)
-	{
-	    new amount;
-
-	    switch(PlayerData[playerid][pSelected])
-	    {
-	        case 0: // Weed
-	        {
-	            if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-				}
-				if(amount < 1 || amount > GangInfo[PlayerData[playerid][pDealerGang]][gDrugWeed])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-	            }
-	            if(PlayerData[playerid][pCash] < GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][0] * amount)
-	            {
-	                SendClientMessage(playerid, COLOR_GREY, "You can't afford to buy that many grams.");
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-	            }
-	            if(PlayerData[playerid][pWeed] + amount > GetPlayerCapacity(playerid, CAPACITY_WEED))
-	            {
-	                SendClientMessageEx(playerid, COLOR_GREY, "You currently have %i/%i weed. You can't carry anymore until you upgrade your inventory skill.", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED));
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-				}
-
-				new cost = GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][0] * amount;
-
-				GangInfo[PlayerData[playerid][pDealerGang]][gDrugWeed] -= amount;
-				GangInfo[PlayerData[playerid][pDealerGang]][gCash] += cost;
-
-				PlayerData[playerid][pWeed] += amount;
-				GivePlayerCash(playerid, -cost);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugweed = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gDrugWeed], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				ShowActionBubble(playerid, "** %s paid $%i to the drug dealer and received %i grams of weed.", GetRPName(playerid), cost, amount);
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased %i grams of {00AA00}weed{33CCFF} for $%i.", amount, cost);
-			}
-			case 1: // Cocaine
-	        {
-	            if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-				}
-				if(amount < 1 || amount > GangInfo[PlayerData[playerid][pDealerGang]][gDrugCocaine])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-	            }
-	            if(PlayerData[playerid][pCash] < GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][1] * amount)
-	            {
-	                SendClientMessage(playerid, COLOR_GREY, "You can't afford to buy that many grams.");
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-	            }
-	            if(PlayerData[playerid][pCocaine] + amount > GetPlayerCapacity(playerid, CAPACITY_COCAINE))
-	            {
-	                SendClientMessageEx(playerid, COLOR_GREY, "You currently have %i/%i cocaine. You can't carry anymore until you upgrade your inventory skill.", PlayerData[playerid][pCocaine], GetPlayerCapacity(playerid, CAPACITY_COCAINE));
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-				}
-
-				new cost = GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][1] * amount;
-
-				GangInfo[PlayerData[playerid][pDealerGang]][gDrugCocaine] -= amount;
-				GangInfo[PlayerData[playerid][pDealerGang]][gCash] += cost;
-
-				PlayerData[playerid][pCocaine] += amount;
-				GivePlayerCash(playerid, -cost);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugcocaine = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gDrugCocaine], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				ShowActionBubble(playerid, "** %s paid $%i to the drug dealer and received %i grams of cocaine.", GetRPName(playerid), cost, amount);
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased %i grams of {00AA00}cocaine{33CCFF} for $%i.", amount, cost);
-			}
-			case 2: // Meth
-	        {
-	            if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-				}
-				if(amount < 1 || amount > GangInfo[PlayerData[playerid][pDealerGang]][gDrugMeth])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-	            }
-	            if(PlayerData[playerid][pCash] < GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][2] * amount)
-	            {
-	                SendClientMessage(playerid, COLOR_GREY, "You can't afford to buy that many grams.");
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-	            }
-	            if(PlayerData[playerid][pMeth] + amount > GetPlayerCapacity(playerid, CAPACITY_METH))
-	            {
-	                SendClientMessageEx(playerid, COLOR_GREY, "You currently have %i/%i meth. You can't carry anymore until you upgrade your inventory skill.", PlayerData[playerid][pMeth], GetPlayerCapacity(playerid, CAPACITY_METH));
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGBUY);
-				}
-
-				new cost = GangInfo[PlayerData[playerid][pDealerGang]][gDrugPrices][2] * amount;
-
-				GangInfo[PlayerData[playerid][pDealerGang]][gDrugMeth] -= amount;
-				GangInfo[PlayerData[playerid][pDealerGang]][gCash] += cost;
-
-				PlayerData[playerid][pMeth] += amount;
-				GivePlayerCash(playerid, -cost);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugmeth = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gDrugMeth], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				ShowActionBubble(playerid, "** %s paid $%i to the drug dealer and received %i grams of meth.", GetRPName(playerid), cost, amount);
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased %i grams of {00AA00}meth{33CCFF} for $%i.", amount, cost);
-			}
-	    }
-	}
-	else
-	{
-	    ShowDialogToPlayer(playerid, DIALOG_GANGDRUGSHOP);
-	}
-	return 1;
-}
-Dialog:DIALOG_GANGDRUGEDIT(playerid, response, listitem, inputtext[])
-{
-    if(PlayerData[playerid][pGang] == -1 || PlayerData[playerid][pGangRank] < 6)
-    {
-        return 1;
-	}
-
-	if(response)
-	{
-	    switch(listitem)
-	    {
-	        case 0: ShowDialogToPlayer(playerid, DIALOG_GANGDRUGPRICES);
-			case 1: ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSITS);
-			case 2: ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAWS);
-	    }
-	}
-	else
-	{
-	    ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEALER);
-	}
-	return 1;
-}
-Dialog:DIALOG_GANGDRUGPRICES(playerid, response, listitem, inputtext[])
-{
-    if(PlayerData[playerid][pGang] == -1 || PlayerData[playerid][pGangRank] < 5)
-    {
-        return 1;
-    }
-
-    if(response)
-    {
-        PlayerData[playerid][pSelected] = listitem;
-        Dialog_Show(playerid, DIALOG_GANGDRUGPRICE, DIALOG_STYLE_INPUT, "Drug dealer | Prices", "Enter the new price for this drug:", "Submit", "Back");
-    }
-    else
-    {
-        ShowDialogToPlayer(playerid, DIALOG_GANGDRUGEDIT);
-	}
-	return 1;
-}
-Dialog:DIALOG_GANGDRUGPRICE(playerid, response, listitem, inputtext[])
-{
-    if(PlayerData[playerid][pGang] == -1 || PlayerData[playerid][pGangRank] < 5)
-    {
-        return 1;
-    }
-
-    if(response)
-    {
-        new amount;
-
-        if(sscanf(inputtext, "i", amount))
-        {
-            return Dialog_Show(playerid, DIALOG_GANGDRUGPRICE, DIALOG_STYLE_INPUT, "Drug dealer | Prices", "Enter the new price for this drug:", "Submit", "Back");
-		}
-		if(amount < 0)
-		{
-		    SendClientMessage(playerid, COLOR_GREY, "The amount can't be below $0.");
-		    return Dialog_Show(playerid, DIALOG_GANGDRUGPRICE, DIALOG_STYLE_INPUT, "Drug dealer | Prices", "Enter the new price for this drug:", "Submit", "Back");
-		}
-
-		GangInfo[PlayerData[playerid][pGang]][gDrugPrices][PlayerData[playerid][pSelected]] = amount;
-
-		if(PlayerData[playerid][pSelected] == 0) {
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weed_price = %i WHERE id = %i", amount, PlayerData[playerid][pGang]);
-		    SendClientMessageEx(playerid, COLOR_AQUA, "You have set the price of {00AA00}weed{33CCFF} to $%i.", amount);
-        } else if(PlayerData[playerid][pSelected] == 1) {
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cocaine_price = %i WHERE id = %i", amount, PlayerData[playerid][pGang]);
-		    SendClientMessageEx(playerid, COLOR_AQUA, "You have set the price of {00AA00}cocaine{33CCFF} to $%i.", amount);
-        } else if(PlayerData[playerid][pSelected] == 2) {
-            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET meth_price = %i WHERE id = %i", amount, PlayerData[playerid][pGang]);
-		    SendClientMessageEx(playerid, COLOR_AQUA, "You have set the price of {00AA00}meth{33CCFF} to $%i.", amount);
-        }
-
-        mysql_tquery(connectionID, queryBuffer);
-    }
-
-    ShowDialogToPlayer(playerid, DIALOG_GANGDRUGPRICES);
-    return 1;
-}
-Dialog:DIALOG_GANGDRUGDEPOSITS(playerid, response, listitem, inputtext[])
-{
-    if(PlayerData[playerid][pGang] == -1 || PlayerData[playerid][pGangRank] < 5)
-    {
-        return 1;
-    }
-
-    if(response)
-    {
-        PlayerData[playerid][pSelected] = listitem;
-        ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSIT);
-	}
-	else
-	{
-	    ShowDialogToPlayer(playerid, DIALOG_GANGDRUGEDIT);
-    }
-    return 1;
-}
-Dialog:DIALOG_GANGDRUGWITHDRAWS(playerid, response, listitem, inputtext[])
-{
-    if(PlayerData[playerid][pGang] == -1 || PlayerData[playerid][pGangRank] < 5)
-    {
-        return 1;
-    }
-
-    if(response)
-    {
-        PlayerData[playerid][pSelected] = listitem;
-        ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-	}
-	else
-	{
-	    ShowDialogToPlayer(playerid, DIALOG_GANGDRUGEDIT);
-    }
-    return 1;
-}
-Dialog:DIALOG_GANGDRUGDEPOSIT(playerid, response, listitem, inputtext[])
-{
-    if(PlayerData[playerid][pGang] == -1 || PlayerData[playerid][pGangRank] < 5)
-    {
-        return 1;
-    }
-
-    if(response)
-    {
-        new amount;
-
-        switch(PlayerData[playerid][pSelected])
-        {
-            case 0: // Weed
-            {
-                if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSIT);
-				}
-				if(amount < 1 || amount > PlayerData[playerid][pWeed])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSIT);
-	            }
-
-				GangInfo[PlayerData[playerid][pGang]][gDrugWeed] += amount;
-				PlayerData[playerid][pWeed] -= amount;
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugweed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugWeed], PlayerData[playerid][pDealerGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %i grams of {00AA00}weed{33CCFF} in your drug dealer NPC.", amount);
-			}
-			case 1: // Cocaine
-            {
-                if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSIT);
-				}
-				if(amount < 1 || amount > PlayerData[playerid][pCocaine])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSIT);
-	            }
-
-				GangInfo[PlayerData[playerid][pGang]][gDrugCocaine] += amount;
-				PlayerData[playerid][pCocaine] -= amount;
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugcocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], PlayerData[playerid][pDealerGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %i grams of {00AA00}cocaine{33CCFF} in your drug dealer NPC.", amount);
-			}
-			case 2: // Meth
-            {
-                if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSIT);
-				}
-				if(amount < 1 || amount > PlayerData[playerid][pMeth])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSIT);
-	            }
-
-				GangInfo[PlayerData[playerid][pGang]][gDrugMeth] += amount;
-				PlayerData[playerid][pMeth] -= amount;
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugmeth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugMeth], PlayerData[playerid][pDealerGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %i grams of {00AA00}meth{33CCFF} in your drug dealer NPC.", amount);
-			}
-		}
-	}
-
-	ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEPOSITS);
-	return 1;
-}
-Dialog:DIALOG_GANGDRUGWITHDRAW(playerid, response, listitem, inputtext[])
-{
-    if(PlayerData[playerid][pGang] == -1 || PlayerData[playerid][pGangRank] < 5)
-    {
-        return 1;
-    }
-
-    if(response)
-    {
-        new amount;
-
-        switch(PlayerData[playerid][pSelected])
-        {
-            case 0: // Weed
-            {
-                if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-				}
-				if(amount < 1 || amount > GangInfo[PlayerData[playerid][pGang]][gDrugWeed])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-	            }
-	            if(PlayerData[playerid][pWeed] + amount > GetPlayerCapacity(playerid, CAPACITY_WEED))
-	            {
-	                SendClientMessageEx(playerid, COLOR_GREY, "You currently have %i/%i weed. You can't carry anymore until you upgrade your inventory skill.", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED));
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-				}
-
-				GangInfo[PlayerData[playerid][pGang]][gDrugWeed] -= amount;
-				PlayerData[playerid][pWeed] += amount;
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugweed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugWeed], PlayerData[playerid][pGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %i grams of {00AA00}weed{33CCFF} from your drug dealer NPC.", amount);
-			}
-			case 1: // Cocaine
-            {
-                if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-				}
-				if(amount < 1 || amount > GangInfo[PlayerData[playerid][pGang]][gDrugCocaine])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-	            }
-	            if(PlayerData[playerid][pCocaine] + amount > GetPlayerCapacity(playerid, CAPACITY_COCAINE))
-	            {
-	                SendClientMessageEx(playerid, COLOR_GREY, "You currently have %i/%i cocaine. You can't carry anymore until you upgrade your inventory skill.", PlayerData[playerid][pCocaine], GetPlayerCapacity(playerid, CAPACITY_COCAINE));
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-				}
-
-				GangInfo[PlayerData[playerid][pGang]][gDrugCocaine] -= amount;
-				PlayerData[playerid][pCocaine] += amount;
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugcocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugCocaine], PlayerData[playerid][pGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %i grams of {00AA00}cocaine{33CCFF} from your drug dealer NPC.", amount);
-			}
-			case 2: // Meth
-            {
-                if(sscanf(inputtext, "i", amount))
-	            {
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-				}
-				if(amount < 1 || amount > GangInfo[PlayerData[playerid][pGang]][gDrugMeth])
-				{
-				    SendClientMessage(playerid, COLOR_GREY, "Insufficient amount.");
-				    return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-	            }
-	            if(PlayerData[playerid][pMeth] + amount > GetPlayerCapacity(playerid, CAPACITY_METH))
-	            {
-	                SendClientMessageEx(playerid, COLOR_GREY, "You currently have %i/%i meth. You can't carry anymore until you upgrade your inventory skill.", PlayerData[playerid][pMeth], GetPlayerCapacity(playerid, CAPACITY_METH));
-	                return ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAW);
-				}
-
-				GangInfo[PlayerData[playerid][pGang]][gDrugMeth] -= amount;
-				PlayerData[playerid][pMeth] += amount;
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugmeth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugMeth], PlayerData[playerid][pGang]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
-				mysql_tquery(connectionID, queryBuffer);
-
-				SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %i grams of {00AA00}meth{33CCFF} from your drug dealer NPC.", amount);
-			}
-		}
-	}
-
-	ShowDialogToPlayer(playerid, DIALOG_GANGDRUGWITHDRAWS);
-	return 1;
-}
 Dialog:DIALOG_FREENAMECHANGE(playerid, response, listitem, inputtext[])
 {
     if(response)
@@ -52394,6 +52605,38 @@ CMD:editdealercars(playerid, params[])
 	else
 	{
 		ShowDealershipEditMenu(playerid, company);
+	}
+	return 1;
+}
+CMD:clearfurniture(playerid, params[])
+{
+	new house, type[10];
+
+	if (PlayerData[playerid][pAdmin] < 5)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else if (sscanf(params, "is[10]", house, type))
+	{
+		return SendSyntaxMessage(playerid, "/clearfurniture (house) (inside/outside)");
+	}
+	else if (!IsValidHouseID(house))
+	{
+		return SendErrorMessage(playerid, "The specified house is not valid.");
+	}
+	else
+	{
+		if (!strcmp(type, "inside", true))
+		{
+			ClearFurniture(house);
+			SendInfoMessage(playerid, "You have cleared the furniture for house %i.", house);
+		}
+		else if (!strcmp(type, "outside", true))
+		{
+			ClearOutsideFurniture(house);
+			SendInfoMessage(playerid, "You have cleared the outside furniture for house %i.", house);
+
+		}
 	}
 	return 1;
 }
@@ -62791,27 +63034,7 @@ CMD:edithouse(playerid, params[])
 	return 1;
 }
 
-CMD:removefurniture(playerid, params[])
-{
-	new houseid;
 
-	if(PlayerData[playerid][pAdmin] < ASST_MANAGEMENT && !PlayerData[playerid][pDynamicAdmin])
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	}
-	if(sscanf(params, "i", houseid))
-	{
-	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /removefurniture [houseid]");
-	}
-	if(!(0 <= houseid < MAX_HOUSES) || !HouseInfo[houseid][hExists])
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "Invalid house.");
-	}
-
-	RemoveAllFurniture(houseid);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed all furniture for house %i.", houseid);
-	return 1;
-}
 
 CMD:removehouse(playerid, params[])
 {
@@ -62830,7 +63053,6 @@ CMD:removehouse(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "Invalid house.");
 	}
 
-	RemoveAllFurniture(houseid);
 
 	DestroyDynamic3DTextLabel(HouseInfo[houseid][hText]);
 	DestroyDynamicPickup(HouseInfo[houseid][hPickup]);
@@ -63575,7 +63797,71 @@ CMD:alock(playerid, params[])
 
 	return 1;
 }
+CMD:delete(playerid, params[])
+{
+	new
+		furniture;
 
+	if (PlayerData[playerid][pFurnitureHouse] == -1 || !HouseInfo[PlayerData[playerid][pFurnitureHouse]][hLabels])
+	{
+		return SendErrorMessage(playerid, "You are not editing furniture.");
+	}
+	else if (sscanf(params, "i", furniture))
+	{
+		return SendSyntaxMessage(playerid, "/delete (furniture ID)");
+	}
+	else if (!IsValidFurnitureID(furniture))
+	{
+		return SendErrorMessage(playerid, "You have specified an invalid furniture ID.");
+	}
+	else if (Furniture[furniture][fHouseID] != HouseInfo[PlayerData[playerid][pFurnitureHouse]][hID])
+	{
+		return SendErrorMessage(playerid, "The specified ID belongs to another house.");
+	}
+	else
+	{
+		if (PlayerData[playerid][pEditType] == EDIT_TYPE_FURNITURE)
+		{
+			CancelObjectEdit(playerid);
+		}
+		DeleteFurniture(furniture);
+		SendInfoMessage(playerid, "You are deleted furniture ID: %i.", furniture);
+	}
+	return 1;
+}
+
+CMD:cancel(playerid, params[])
+{
+	if (PlayerData[playerid][pFurnitureHouse] == -1 || !HouseInfo[PlayerData[playerid][pFurnitureHouse]][hLabels])
+	{
+		return SendErrorMessage(playerid, "You are not editing furniture.");
+	}
+	else
+	{
+		SetFurnitureEditMode(PlayerData[playerid][pFurnitureHouse], false);
+
+		PlayerData[playerid][pFurnitureHouse] = -1;
+		SendInfoMessage(playerid, "You are no longer editing furniture.");
+	}
+	return 1;
+}
+
+CMD:furniture(playerid, params[])
+{
+
+	new id = GetInsideHouse(playerid);
+	if (!IsHouseOwner(playerid, id) && PlayerData[playerid][pFurniturePerms] != id)
+	{
+		return SendErrorMessage(playerid, "You don't have permissions to furnish this house.");
+	}
+	else
+	{
+//		if(!IsPlayerInside(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
+		PlayerData[playerid][pFurnitureHouse] = id;
+		Dialog_Show(playerid, HouseFurniture, DIALOG_STYLE_LIST, "{FFFFFF}Manage Furniture", "Purchase\nAdjustments", "Select", "Cancel");
+	}
+	return 1;
+}
 CMD:househelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
@@ -65748,185 +66034,6 @@ CMD:givehousekeys(playerid, params[])
 	}
 	return 1;
 }
-CMD:furniture(playerid, params[])
-{
-	new houseid = GetInsideHouse(playerid), option[14], param[32];
-
-	if(houseid == -1 || !HasFurniturePerms(playerid, houseid))
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside of any house of yours.");
-	}
-	if(sscanf(params, "s[14]S()[32]", option, param))
-	{
-	    SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /furniture [option]");
-	    SendClientMessage(playerid, COLOR_SYNTAX, "List of options: Buy, Edit, Duplicate, Sell, Clear, Allow, Disallow, Labels");
-	    return 1;
-	}
-	if(!strcmp(option, "buy", true))
-	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM furniture WHERE houseid = %i", HouseInfo[houseid][hID]);
-	    mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_COUNT_FURNITURE, playerid);
-	}
-	else if(!strcmp(option, "edit", true))
-	{
-	    new objectid;
-
-	    if(sscanf(param, "i", objectid))
-	    {
-	        return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /furniture [edit] [objectid]");
-		}
-		if(!IsValidDynamicObject(objectid) || Streamer_GetExtraInt(objectid, E_OBJECT_TYPE) != E_OBJECT_FURNITURE)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "Invalid object. You can find the object IDs for your furniture by enabling labels. [/furniture labels]");
-        }
-        if(Streamer_GetExtraInt(objectid, E_OBJECT_EXTRA_ID) != HouseInfo[houseid][hID])
-        {
-            return SendClientMessage(playerid, COLOR_GREY, "Invalid object. This furniture object is not inside of your house.");
-        }
-
-        PlayerData[playerid][pEditType] = EDIT_FURNITURE;
-        PlayerData[playerid][pEditObject] = objectid;
-        PlayerData[playerid][pFurnitureHouse] = houseid;
-
-		EditDynamicObject(playerid, objectid);
-        GameTextForPlayer(playerid, "~w~Editing Mode~n~~g~Click disk to save~n~~r~Press ESC to cancel", 5000, 1);
-	}
-	else if(!strcmp(option, "duplicate", true))
-	{
-	    new objectid;
-
-	    if(sscanf(param, "i", objectid))
-	    {
-	        return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /furniture [duplicate] [objectid]");
-		}
-		if(!IsValidDynamicObject(objectid) || Streamer_GetExtraInt(objectid, E_OBJECT_TYPE) != E_OBJECT_FURNITURE)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "Invalid object. You can find the object IDs for your furniture by enabling labels. [/furniture labels]");
-        }
-        if(Streamer_GetExtraInt(objectid, E_OBJECT_EXTRA_ID) != HouseInfo[houseid][hID])
-        {
-            return SendClientMessage(playerid, COLOR_GREY, "Invalid object. This furniture object is not inside of your house.");
-        }
-
-	    PlayerData[playerid][pSelected] = objectid;
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM furniture WHERE houseid = %i", HouseInfo[houseid][hID]);
-	    mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_CHECKDUPE_FURNITURE, playerid);
-
-
-	}
-	else if(!strcmp(option, "sell", true))
-	{
-	    new objectid;
-
-	    if(sscanf(param, "i", objectid))
-	    {
-	        return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /furniture [sell] [objectid] (75%% refund)");
-		}
-		if(!IsValidDynamicObject(objectid) || Streamer_GetExtraInt(objectid, E_OBJECT_TYPE) != E_OBJECT_FURNITURE)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "Invalid object. You can find the object IDs for your furniture by enabling labels. [/furniture labels]");
-        }
-        if(Streamer_GetExtraInt(objectid, E_OBJECT_EXTRA_ID) != HouseInfo[houseid][hID])
-        {
-            return SendClientMessage(playerid, COLOR_GREY, "Invalid object. This furniture object is not inside of your house.");
-        }
-
-        PlayerData[playerid][pSelected] = objectid;
-
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT name, price FROM furniture WHERE id = %i", Streamer_GetExtraInt(objectid, E_OBJECT_INDEX_ID));
-        mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_SELL_FURNITURE, playerid);
-	}
-	else if(!strcmp(option, "clear", true))
-	{
-	    if(isnull(param) || strcmp(param, "confirm", true) != 0)
-	    {
-	        SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /furniture [clear] [confirm]");
-			SendClientMessage(playerid, COLOR_SYNTAX, "This sells all of your furniture in your house. This action is irreversible.");
-			return 1;
-		}
-
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT price FROM furniture WHERE houseid = %i", HouseInfo[houseid][hID]);
-        mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_CLEAR_FURNITURE, playerid);
-	}
-	else if(!strcmp(option, "allow", true))
-	{
-	    new targetid;
-
-	    if(sscanf(param, "u", targetid))
-	    {
-	        return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /furniture [allow] [playerid]");
-		}
-		if(!IsHouseOwner(playerid, houseid))
-	    {
-	        return SendClientMessage(playerid, COLOR_GREY, "This can only be done by the house owner.");
-		}
-		if(!IsPlayerConnected(targetid) || !IsPlayerInRangeOfPlayer(playerid, targetid, 5.0))
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "The player specified is disconnected or out of range.");
-		}
-		if(targetid == playerid)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command on yourself.");
-		}
-		if(PlayerData[targetid][pFurniturePerms] == houseid)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You already allowed that player to access your furniture.");
-		}
-
-		PlayerData[targetid][pFurniturePerms] = houseid;
-
-		SendClientMessageEx(targetid, COLOR_AQUA, "%s has allowed you to access their home's furniture.", GetRPName(playerid));
-		SendClientMessageEx(playerid, COLOR_AQUA, "You have allowed %s to access your home's furniture.", GetRPName(targetid));
-	}
-	else if(!strcmp(option, "disallow", true))
-	{
-	    new targetid;
-
-	    if(sscanf(param, "u", targetid))
-	    {
-	        return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /furniture [disallow] [playerid]");
-		}
-		if(!IsHouseOwner(playerid, houseid))
-	    {
-	        return SendClientMessage(playerid, COLOR_GREY, "This can only be done by the house owner.");
-		}
-		if(!IsPlayerConnected(targetid) || !IsPlayerInRangeOfPlayer(playerid, targetid, 5.0))
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "The player specified is disconnected or out of range.");
-		}
-		if(targetid == playerid)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command on yourself.");
-		}
-		if(PlayerData[targetid][pFurniturePerms] != houseid)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You haven't allowed that player to access your furniture.");
-		}
-
-		PlayerData[targetid][pFurniturePerms] = -1;
-
-		SendClientMessageEx(targetid, COLOR_AQUA, "%s has removed your access to their home's furniture.", GetRPName(playerid));
-		SendClientMessageEx(playerid, COLOR_AQUA, "You have removed %s's access to your home's furniture.", GetRPName(targetid));
-	}
-	else if(!strcmp(option, "labels", true))
-	{
-	    if(!HouseInfo[houseid][hLabels])
-	    {
-	        HouseInfo[houseid][hLabels] = 1;
-         	SendClientMessage(playerid, COLOR_AQUA, "You will now see labels appear above all of your furniture.");
-	    }
-	    else
-	    {
-	        HouseInfo[houseid][hLabels] = 0;
-	        SendClientMessage(playerid, COLOR_AQUA, "You will no longer see any labels appear above your furniture.");
-	    }
-
-	    ReloadAllFurniture(houseid);
-	}
-
-
-	return 1;
-}
 
 CMD:creategarage(playerid, params[])
 {
@@ -66687,7 +66794,6 @@ CMD:removebiz(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "Invalid business.");
 	}
 
-	RemoveAllFurniture(businessid);
 
 	DestroyDynamic3DTextLabel(BusinessInfo[businessid][bText]);
 	DestroyDynamicPickup(BusinessInfo[businessid][bPickup]);
@@ -80825,7 +80931,7 @@ CMD:gang(playerid, params[])
 	{
 	    SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /gang [option]");
 	    SendClientMessage(playerid, COLOR_SYNTAX, "List of options: Invite, Kick, Rank, Roster, Online, Quit, Offlinekick");
-	    SendClientMessage(playerid, COLOR_SYNTAX, "List of options: MOTD, Stash, Stats, Turfs, Rankname, NPC, RemveNPC, Upgrade, War, Alliance");
+	    SendClientMessage(playerid, COLOR_SYNTAX, "List of options: MOTD, Stash, Stats, Turfs, Rankname, Upgrade, War, Alliance");
 	    return 1;
 	}
 	if(!strcmp(option, "invite", true))
@@ -81072,106 +81178,6 @@ CMD:gang(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have set the name of rank %i to {00AA00}%s{33CCFF}.", rankid, rank);
-	}
-    else if(!strcmp(option, "npc", true))
-	{
-	    new type, confirm[10];
-
-	    if(PlayerData[playerid][pGangRank] < 6)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You need to be at least rank 6+ to use this command.");
-		}
-		if(sscanf(param, "is[10]", type, confirm))
-		{
-		    SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /gang [npc] [slot] [confirm]");
-		    SendClientMessage(playerid, COLOR_SYNTAX, "List of slots: (1) Arms Dealer (2) Drug Dealer");
-		    return 1;
-		}
-		if(PlayerData[playerid][pTazedTime] > 0 || PlayerData[playerid][pInjured] > 0 || PlayerData[playerid][pHospital] > 0 || PlayerData[playerid][pCuffed] > 0 || PlayerData[playerid][pTied] > 0 || PlayerData[playerid][pJailTime] > 0 || PlayerData[playerid][pJoinedEvent] > 0 || PlayerData[playerid][pPaintball] > 0)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command at the moment.");
-		}
-		if(IsPlayerInAnyVehicle(playerid))
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command from within the vehicle.");
-		}
-
-		if(!isnull(confirm) && !strcmp(confirm, "confirm", true))
-		{
-			if(type == 1)
-			{
-			    if(!GangInfo[PlayerData[playerid][pGang]][gArmsDealer])
-				{
-		    		return SendClientMessage(playerid, COLOR_GREY, "Your gang doesn't have the arms dealer upgrade. (/gang upgrade)");
-				}
-
-				GetPlayerPos(playerid, GangInfo[PlayerData[playerid][pGang]][gArmsX], GangInfo[PlayerData[playerid][pGang]][gArmsY], GangInfo[PlayerData[playerid][pGang]][gArmsZ]);
-				SetPlayerPos(playerid, GangInfo[PlayerData[playerid][pGang]][gArmsX] + 1.0, GangInfo[PlayerData[playerid][pGang]][gArmsY], GangInfo[PlayerData[playerid][pGang]][gArmsZ] + 1.0);
-		        GetPlayerFacingAngle(playerid, GangInfo[PlayerData[playerid][pGang]][gArmsA]);
-		        GangInfo[PlayerData[playerid][pGang]][gArmsWorld] = GetPlayerVirtualWorld(playerid);
-
-		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET arms_x = '%f', arms_y = '%f', arms_z = '%f', arms_a = '%f', armsworld = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gArmsX], GangInfo[PlayerData[playerid][pGang]][gArmsY], GangInfo[PlayerData[playerid][pGang]][gArmsZ], GangInfo[PlayerData[playerid][pGang]][gArmsA], GangInfo[PlayerData[playerid][pGang]][gArmsWorld], PlayerData[playerid][pGang]);
-		        mysql_tquery(connectionID, queryBuffer);
-
-		        ReloadGang(PlayerData[playerid][pGang]);
-		        SendClientMessage(playerid, COLOR_AQUA, "You have moved the position of the arms dealer for your gang.");
-			}
-			else if(type == 2)
-			{
-			    if(!GangInfo[PlayerData[playerid][pGang]][gDrugDealer])
-				{
-		    		return SendClientMessage(playerid, COLOR_GREY, "Your gang doesn't have the drug dealer upgrade. (/gang upgrade)");
-				}
-
-				GetPlayerPos(playerid, GangInfo[PlayerData[playerid][pGang]][gDrugX], GangInfo[PlayerData[playerid][pGang]][gDrugY], GangInfo[PlayerData[playerid][pGang]][gDrugZ]);
-				SetPlayerPos(playerid, GangInfo[PlayerData[playerid][pGang]][gDrugX] + 1.0, GangInfo[PlayerData[playerid][pGang]][gDrugY], GangInfo[PlayerData[playerid][pGang]][gDrugZ] + 1.0);
-		        GetPlayerFacingAngle(playerid, GangInfo[PlayerData[playerid][pGang]][gDrugA]);
-		        GangInfo[PlayerData[playerid][pGang]][gDrugWorld] = GetPlayerVirtualWorld(playerid);
-
-		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drug_x = '%f', drug_y = '%f', drug_z = '%f', drug_a = '%f', drugworld = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gDrugX], GangInfo[PlayerData[playerid][pGang]][gDrugY], GangInfo[PlayerData[playerid][pGang]][gDrugZ], GangInfo[PlayerData[playerid][pGang]][gDrugA], GangInfo[PlayerData[playerid][pGang]][gDrugWorld], PlayerData[playerid][pGang]);
-		        mysql_tquery(connectionID, queryBuffer);
-
-		        ReloadGang(PlayerData[playerid][pGang]);
-		        SendClientMessage(playerid, COLOR_AQUA, "You have moved the position of the drug dealer for your gang.");
-			}
-		}
-	}
-    else if(!strcmp(option, "removenpc", true))
-	{
-	    new type, confirm[10];
-
-	    if(PlayerData[playerid][pGangRank] < 6)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You need to be at least rank 6+ to use this command.");
-		}
-		if(sscanf(param, "is[10]", type, confirm))
-		{
-		    SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /gang [removenpc] [slot] [confirm]");
-		    SendClientMessage(playerid, COLOR_SYNTAX, "List of slots: (1) Arms Dealer (2) Drug Dealer");
-		    return 1;
-		}
-		if(PlayerData[playerid][pTazedTime] > 0 || PlayerData[playerid][pInjured] > 0 || PlayerData[playerid][pHospital] > 0 || PlayerData[playerid][pCuffed] > 0 || PlayerData[playerid][pTied] > 0 || PlayerData[playerid][pJailTime] > 0 || PlayerData[playerid][pJoinedEvent] > 0 || PlayerData[playerid][pPaintball] > 0)
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command at the moment.");
-		}
-		if(IsPlayerInAnyVehicle(playerid))
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command from within the vehicle.");
-		}
-
-		if(!isnull(confirm) && !strcmp(confirm, "confirm", true))
-		{
-			if(type == 1)
-			{
-			    DestroyDynamic3DTextLabel(GangInfo[PlayerData[playerid][pGang]][gText][1]); // arms
-			    DestroyActor(GangInfo[PlayerData[playerid][pGang]][gActors][0]); //arms
-			}
-			else if(type == 2)
-			{
-                DestroyDynamic3DTextLabel(GangInfo[PlayerData[playerid][pGang]][gText][2]); // drugs
-				DestroyActor(GangInfo[PlayerData[playerid][pGang]][gActors][1]); // drigs
- 			}
-		}
 	}
 	else if(!strcmp(option, "upgrade", true))
 	{
@@ -82050,42 +82056,7 @@ CMD:guninv(playerid, params[])
 	return 1;
 }
 
-CMD:armsdealer(playerid, params[])
-{
-    if(PlayerData[playerid][pHours] < 2 || PlayerData[playerid][pWeaponRestricted] > 0)
-    {
-        return SendClientMessage(playerid, COLOR_GREY, "You are either weapon restricted or you played less than two playing hours.");
-    }
 
-	for(new i = 0; i < MAX_GANGS; i ++)
-	{
-	    if(GangInfo[i][gArmsDealer] && IsPlayerInRangeOfPoint(playerid, 3.0, GangInfo[i][gArmsX], GangInfo[i][gArmsY], GangInfo[i][gArmsZ]) && GetPlayerVirtualWorld(playerid) == GangInfo[i][gArmsWorld])
-	    {
-	        PlayerData[playerid][pDealerGang] = i;
-	        ShowDialogToPlayer(playerid, DIALOG_GANGARMSDEALER);
-	        return 1;
-		}
-	}
-
-	SendClientMessage(playerid, COLOR_GREY, "You are not in range of any gang owned arms dealers.");
-	return 1;
-}
-
-CMD:drugdealer(playerid, params[])
-{
-	for(new i = 0; i < MAX_GANGS; i ++)
-	{
-	    if(GangInfo[i][gDrugDealer] && IsPlayerInRangeOfPoint(playerid, 3.0, GangInfo[i][gDrugX], GangInfo[i][gDrugY], GangInfo[i][gDrugZ]) && GetPlayerVirtualWorld(playerid) == GangInfo[i][gDrugWorld])
-	    {
-	        PlayerData[playerid][pDealerGang] = i;
-	        ShowDialogToPlayer(playerid, DIALOG_GANGDRUGDEALER);
-	        return 1;
-		}
-	}
-
-	SendClientMessage(playerid, COLOR_GREY, "You are not in range of any gang owned drug dealers.");
-	return 1;
-}
 
 
 CMD:createturf(playerid, params[])
