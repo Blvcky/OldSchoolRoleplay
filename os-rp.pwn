@@ -5709,6 +5709,7 @@ new const clothingArray[][clothingEnum] =
     {"Misc clothing",       "Backpack",                  3026, 9, 500}
 };
 
+
 enum copEnum
 {
 	cModel,
@@ -20433,6 +20434,7 @@ RemovePlayerWeapon(playerid, weaponid)
 	// Save them to prevent rollbacks.
 	SavePlayerWeapons(playerid);
 }
+
 GivePlayerWeaponEx(playerid, weaponid, bool:temp = false)
 {
 	if(1 <= weaponid <= 46)
@@ -35357,7 +35359,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 	if(PlayerData[playerid][pToggleHUD] == 0 && IsPlayerConnected(playerid))
 	{
 		new string[50];
-		format(string, sizeof(string), "~g~Damage: You hit %s for %.0f damage.", GetRPName(damagedid), amount);
+		format(string, sizeof(string), "~g~%.0f damage.", amount);
 		TextDrawSetString(Damage[playerid], string);
 		TextDrawShowForPlayer(playerid, Damage[playerid]);
 		PlayerPlaySound(playerid, 17802, 0.0, 0.0, 15.0);
@@ -35455,7 +35457,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 			PlayerData[playerid][pDamageTimer] = SetTimerEx("DestroyDamageTD", 1500, false, "i", playerid);
 		}
 	}
-	if (IsValidDamageWeapon(weaponid) && WeaponDamages[weaponid] != 0.0 && !PlayerData[issuerid][pTazer] && !PlayerData[playerid][pAFK]) {
+	if (IsValidDamageWeapon(weaponid) && WeaponDamages[weaponid] != 0.0 && PlayerData[issuerid][pTazer] == 0 && !PlayerData[playerid][pAFK]) {
 		ProcessDamage(playerid, weaponid);
 	}
 	return 1;
@@ -35526,27 +35528,31 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 
 	return 1;
 }
-
+forward RechargeTazer(playerid);
+public RechargeTazer(playerid)
+{
+	if (PlayerData[playerid][pTazer])
+	{
+		GivePlayerWeapon(playerid, 23, 1);
+	}
+}
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 
 	if ((weaponid >= 22 && weaponid <= 38) && hittype == BULLET_HIT_TYPE_OBJECT && PlayerData[playerid][pRangeBooth] != -1 && hitid == g_BoothObject[PlayerData[playerid][pRangeBooth]])
  	{
-
-
 		PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 
 		PlayerData[playerid][pTargets]++;
 		DestroyObject(g_BoothObject[PlayerData[playerid][pRangeBooth]]);
-
 		SendClientMessageEx(playerid, COLOR_GREEN, "~b~Targets:~w~ %d/10", PlayerData[playerid][pTargets]);
-		//PlayerTextDrawSetString(playerid, PlayerData[playerid][pTextdraws][81], string);
-
 		SetTimerEx("UpdateBooth", 3000, false, "dd", playerid, PlayerData[playerid][pRangeBooth]);
 	}
 	if (weaponid == 23 && PlayerData[playerid][pTazer] && GetFactionType(playerid) == FACTION_POLICE) {
 	    PlayerPlaySoundEx(playerid, 6003);
+		SetTimerEx("RechargeTazer", 2000, false, "i", playerid);
+		ShowPlayerFooter(playerid, "Recharging tazer, please wait...", 2000);
 	}
 	if((PlayerData[playerid][pPaintball] > 0) && (GetPlayerVirtualWorld(playerid) != 1001 && GetPlayerVirtualWorld(playerid) != 1000))
 	{
@@ -40163,7 +40169,7 @@ Dialog:DIALOG_ADNEW(playerid, response, listitem, inputtext[])
 		}
 		gLastAd = gettime();
 		strval(inputtext);
-		SendClientMessageToAllEx((PlayerData[playerid][pVIPPackage] > 0) ? (0x00AA00FF) : (0x00AA00FF), "> Advertisement: %s {00aa00}Contact %s Ph: %i", GetRPName(playerid), inputtext, PlayerData[playerid][pPhone]);
+		SendClientMessageToAllEx((PlayerData[playerid][pVIPPackage] > 0) ? (0x00AA00FF) : (0x00AA00FF), "> Advertisement: %s {00aa00}[Ph: %i]", inputtext, PlayerData[playerid][pPhone]);
 	}
 	return 1;
 }
@@ -75553,6 +75559,7 @@ CMD:hm(playerid, params[])
 	SendProximityMessage(playerid, 50.0, COLOR_YELLOW, "[%s:o< %s]", GetRPName(playerid), params);
 	return 1;
 }
+CMD:taser(playerid, params[]) return callcmd::tazer(playerid, params);
 CMD:tazer(playerid, params[])
 {
 	if(!IsLawEnforcement(playerid) && GetFactionType(playerid) != FACTION_GOVERNMENT)
