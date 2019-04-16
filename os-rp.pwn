@@ -24,9 +24,8 @@
 				     **********************************************************************
 				     **********************************************************************
 											Copyright (c) 2018 - 2019
-											
-											 	Old School Roleplay
 
+											 	Old School Roleplay
 												Pedro & Hernandez
 
 */
@@ -53,7 +52,7 @@
 #define MYSQL_PASSWORD  ""
 // ---------------------------------------
 #define SERVER_NAME      "Old School Roleplay"
-#define SERVER_REVISION  "OS:RP v0.1"
+#define SERVER_REVISION  "OS:RP v0.2(f)"
 #define SERVER_ANTICHEAT "The server"
 // ---------------------------------------
 #define TABLE_USERS         "`users`" //to be moved all tables.
@@ -255,7 +254,8 @@ new
 #define Random(%0,%1)   (random((%1) - (%0)) + (%0))
 #define mysql_new_query(%0,%1,%2,%3,"%4"%5) \
 		mysql_tquery(%0,%1,%3,#%4%5)
-
+#undef INVALID_3DTEXT_ID
+#define INVALID_3DTEXT_ID (Text3D:0xFFFF)
 
 #define SCM 				SendClientMessage
 #define MaterialRes Dialog_Show(playerid, TextureResources, DIALOG_STYLE_LIST, "Texture Category:", "Material Colors\nPrinted Fabrics\nWooden\nTiles\nBuilding\nMetals\nPaintings\nWallpapers\nMisc", "Select", "Exit");
@@ -310,6 +310,7 @@ new
 #define MAX_OWNABLE_CARS (15)
 // ---------
 new gListedItems[MAX_PLAYERS][100], gTargetName[MAX_PLAYERS][MAX_PLAYER_NAME];
+new gPreviewFurniture[MAX_PLAYERS] = {-1, ...};
 new Float: WeaponDamages[47];
 new InsideShamal[MAX_PLAYERS];
 new VehicleStatus[MAX_VEHICLES char] = 0; // 0 == none, 1 == vehicle dead about to respawn
@@ -489,7 +490,7 @@ new g_BoothObject[MAX_BOOTHS] = {-1, ...};
 new gWeights[MAX_PLAYERS][2];
 new ElevatorState,
 	ElevatorFloor;
-new gPreviewFurniture[MAX_PLAYERS] = {-1, ...};
+
 new PlayerText:LoadingObjects0[MAX_PLAYERS];
 new PlayerText:LoadingObjects1[MAX_PLAYERS];
 new PlayerText:LoadingObjects2[MAX_PLAYERS];
@@ -822,7 +823,11 @@ enum
  	STASH_CAPACITY_PAINKILLERS,
 	STASH_CAPACITY_WEAPONS
 };
-
+enum {
+	EDIT_TYPE_NONE,
+	EDIT_TYPE_PREVIEW,
+	EDIT_TYPE_FURNITURE,
+};
 
 enum
 {
@@ -847,9 +852,7 @@ enum
 
 enum
 {
-	EDIT_FURNITURE_PREVIEW = 1,
-	EDIT_TYPE_FURNITURE,
-	EDIT_CLOTHING_PREVIEW,
+	EDIT_CLOTHING_PREVIEW = 1,
 	EDIT_CLOTHING,
 	EDIT_LAND_OBJECT_PREVIEW,
 	EDIT_LAND_OBJECT,
@@ -1103,6 +1106,11 @@ enum pEnum
 	pDistanceRan,
 	pWorkoutTime,
 	pLevel,
+	pEdit,
+	pEditID,
+	pHouseEdit,
+	pPreviewIndex,
+	pFurnitureIndex,
 	pHouse,
 	pFitness,
 	pGymMembership,
@@ -1434,8 +1442,7 @@ enum pEnum
 	pInviteHouse,
 	pRobberyOffer,
 	pDuelOffer,
-	pFurnitureIndex,
-	pFurnitureHouse,
+
 	pObjectLand,
 	pClothingIndex,
 	pEditType,
@@ -1757,7 +1764,8 @@ enum hEnum
     hPickup,
 	Text3D:hText,
 	hDelivery,
-	hLights
+	hLights,
+	hEdit
 };
 
 enum gEnum
@@ -8650,53 +8658,6 @@ Dialog:BuyFurniture(playerid, response, listitem, inputtext[])
 	}
 	return 1;
 }
-
-Dialog:HouseFurniture(playerid, response, listitem, inputtext[])
-{
-	new
-		house = PlayerData[playerid][pHouse];
-
-	if (!IsValidHouseID(house) || GetNearbyHouse(playerid) != house)
-	{
-		return 0;
-	}
-	if (response)
-	{
-		switch (listitem)
-		{
-			case 0: // Buy furniture
-			{
-				ShowFurnitureCategories(playerid);
-			}
-			case 1: // Edit furniture
-			{
-				if (HouseInfo[house][hLabels])
-				{
-					PlayerData[playerid][pFurnitureHouse] = -1;
-
-					SetFurnitureEditMode(house, false);
-					SendInfoMessage(playerid, "You are no longer editing your furniture.");
-				}
-				else
-				{
-					if (PlayerData[playerid][pFurnitureHouse] != -1)
-					{
-						SetFurnitureEditMode(PlayerData[playerid][pFurnitureHouse], false);
-					}
-					PlayerData[playerid][pFurnitureHouse] = house;
-
-					SetFurnitureEditMode(house, true);
-					SendInfoMessage(playerid, "You are now in edition mode. Use /cancel to stop editing.");
-				}
-			}
-			case 2:
-			{
-
-			}
-		}
-	}
-	return 1;
-}
 Dialog:FurnEditConfirm(playerid, response, listitem, inputtext[])
 {
 	if(!response) return ListTexture(playerid);
@@ -8730,34 +8691,47 @@ Dialog:ChangeColor(playerid, response, listitem, inputtext[])
 	return true;
 }
 
+
+
+ListTexture(playerid)
+{
+    new fid = GetPVarInt(playerid, "FurnID");
+
+	new list[256], header[64];
+	format(header, sizeof(header), "You are now editing ID: %d.", GetPVarInt(playerid, "FurnID"));
+	format(list, sizeof(list), "Index 1: %s\nIndex 2: %s\nIndex 3: %s\n \nClear Textures", Furniture[fid][fMaterial][0] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"), Furniture[fid][fMaterial][1] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"), Furniture[fid][fMaterial][2] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"));
+	Dialog_Show(playerid, MaterialHandler, DIALOG_STYLE_LIST, header, list, ">>", "Cancel");
+	return 1;
+}
+
 Dialog:MaterialHandler(playerid, response, listitem, inputtext[])
 {
 	if(!response) return 1;
 	if(listitem == 4)
 	{
-		for(new i = 0; i != 3; i ++)
+	    for(new i = 0; i != 3; i ++)
 		{
-			Furniture[GetPVarInt(playerid, "FurnID")][fMaterial][i] = 0;
-			Furniture[GetPVarInt(playerid, "FurnID")][fMatColour][i] = 0;
-			SetDynamicObjectMaterial(Furniture[GetPVarInt(playerid, "FurnID")][fObject], i, -1, "none", "none", 0);
+      		Furniture[GetPVarInt(playerid, "FurnID")][fMaterial][i] = 0;
+      		Furniture[GetPVarInt(playerid, "FurnID")][fMatColour][i] = 0;
+      		SetDynamicObjectMaterial(Furniture[GetPVarInt(playerid, "FurnID")][fObject], i, -1, "none", "none", 0);
 		}
-		SaveFurniture(GetPVarInt(playerid, "FurnID"));
+	    SaveFurniture(GetPVarInt(playerid, "FurnID"));
 	}
 	SetPVarInt(playerid, "MatSlot", listitem);
-	MaterialRes
+    MaterialRes
 	//ShowMaterialList(playerid);
 	return true;
 }
 
 Dialog:TextureResources(playerid, response, listitem, inputtext[])
 {
-	if(!response) return 1;
+    if(!response) return 1;
 	new gstr[2056], gString[256];
-	format(gString, sizeof(gString), " << {F3FF02}Select Color\n");
-	strcat(gstr, gString);
+    format(gString, sizeof(gString), " << {F3FF02}Select Color\n");
+    strcat(gstr, gString);
 	for(new i = 0; i < sizeof(MaterialIDs); i++)
 	{
-		if(strcmp("None", MaterialIDs[i][Resource], true) == 0) continue;
+	    if(strcmp("None", MaterialIDs[i][Resource], true) == 0) continue;
 		if(strcmp(inputtext, MaterialIDs[i][Resource], true) == 0)
 		{
 			strcat(gstr, MaterialIDs[i][Name]);
@@ -8767,6 +8741,100 @@ Dialog:TextureResources(playerid, response, listitem, inputtext[])
 	Dialog_Show(playerid, ChangeMat, DIALOG_STYLE_LIST, "Texture List", gstr, ">>", "Cancel");
 	return 1;
 }
+
+ShowColorList(playerid)
+{
+	new list[4056], bigStr[256], gString[256];
+    format(gString, sizeof(gString), " << {F3FF02}Select Texture\n");
+    strcat(list, gString);
+	for(new i = 0; i < sizeof(MaterialColors); i++)
+	{
+	    if(strcmp("none", MaterialColors[i][ColorName], true) == 0) continue;
+		format(bigStr, sizeof(bigStr), "%s\n", MaterialColors[i][ColorName]);
+		strcat(list, bigStr);
+	}
+	Dialog_Show(playerid, ChangeColor, DIALOG_STYLE_LIST, "Color List", list, ">>", "Cancel");
+	return 1;
+}
+
+FurnitureChange(playerid, furnid, index, list, status = 1) // 1 for mat, 2 for color
+{
+    new model, txd[24], texture[24], color;
+	switch(status)
+	{
+	    case 1:
+	    {
+	        SendClientMessage(playerid, -1, "Furniture texture has been updated.");
+	        Furniture[furnid][fMaterial][index] = list;
+	        SetDynamicObjectMaterial(Furniture[furnid][fObject], index, MaterialIDs[ Furniture[furnid][fMaterial][index] ][ModelID], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TxdName], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TextureName], MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
+			SaveFurniture(furnid);
+		}
+	    case 2:
+	    {
+	        if(Furniture[furnid][fMaterial][index] == 0)
+	        {
+	            Furniture[furnid][fMatColour][index] = list;
+	            SetDynamicObjectMaterial(Furniture[furnid][fObject], index, -1, MaterialIDs[ Furniture[furnid][fMaterial][index] ][TxdName], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TextureName], MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
+                SaveFurniture(furnid);
+			}
+            else
+            {
+		        SendClientMessage(playerid, -1, "Furniture color has been updated.");
+		        Furniture[furnid][fMatColour][index] = list;
+		    	GetDynamicObjectMaterial(Furniture[furnid][fObject], index, model, txd, texture, color);
+				SetDynamicObjectMaterial(Furniture[furnid][fObject], index, model, txd, texture, MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
+	            SaveFurniture(furnid);
+            }
+		}
+	}
+	return 1;
+}
+Dialog:HouseFurniture(playerid, response, listitem, inputtext[])
+{
+    new
+		house = PlayerData[playerid][pHouse];
+
+    if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not manage the furniture outside.");
+
+	if (!IsValidHouseID(house) || GetInsideHouse(playerid) != house)
+	{
+        return 0;
+	}
+	if (response)
+	{
+	    switch (listitem)
+	    {
+		    case 0: // Buy furniture
+		    {
+		        ShowFurnitureCategories(playerid);
+		    }
+		    case 1: // Edit furniture
+		    {
+		        if (HouseInfo[house][hEdit])
+		        {
+					PlayerData[playerid][pHouseEdit] = -1;
+
+					SetFurnitureEditMode(house, false);
+		            SendInfoMessage(playerid, "You are no longer editing your furniture.");
+				}
+				else
+				{
+				    if (PlayerData[playerid][pHouseEdit] != -1)
+				    {
+				        SetFurnitureEditMode(PlayerData[playerid][pHouseEdit], false);
+				    }
+				    PlayerData[playerid][pHouseEdit] = house;
+
+				    SetFurnitureEditMode(house, true);
+					SendInfoMessage(playerid, "You are now in edition mode. Use /cancel to stop editing.");
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+
 Dialog:Treadmill(playerid, response, listitem, inputtext[])
 {
 	if ((response) && IsPlayerInRangeOfPoint(playerid, 3.0, 773.5131, -2.1218, 1000.8479))
@@ -9203,13 +9271,7 @@ DoorCheck(playerid)
 	{
     	if(IsValidDynamicObject(i) && IsPlayerInRangeOfDynamicObject(playerid, i, 2.5) && IsDoorObject(i))
 		{
-		    if(houseid >= 0 && Streamer_GetExtraInt(i, E_OBJECT_TYPE) == E_OBJECT_FURNITURE && Streamer_GetExtraInt(i, E_OBJECT_EXTRA_ID) == HouseInfo[houseid][hID])
-			{
-			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT door_opened, door_locked FROM furniture WHERE id = %i", Streamer_GetExtraInt(i, E_OBJECT_INDEX_ID));
-			    mysql_tquery(connectionID, queryBuffer, "OnPlayerUseFurnitureDoor", "iii", playerid, i, Streamer_GetExtraInt(i, E_OBJECT_INDEX_ID));
-		    	return 1;
-			}
-			else if(landid >= 0 && Streamer_GetExtraInt(i, E_OBJECT_TYPE) == E_OBJECT_LAND && Streamer_GetExtraInt(i, E_OBJECT_EXTRA_ID) == LandInfo[landid][lID])
+			if(landid >= 0 && Streamer_GetExtraInt(i, E_OBJECT_TYPE) == E_OBJECT_LAND && Streamer_GetExtraInt(i, E_OBJECT_EXTRA_ID) == LandInfo[landid][lID])
 			{
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT door_opened, door_locked FROM landobjects WHERE id = %i", Streamer_GetExtraInt(i, E_OBJECT_INDEX_ID));
 			    mysql_tquery(connectionID, queryBuffer, "OnPlayerUseLandDoor", "iii", playerid, i, Streamer_GetExtraInt(i, E_OBJECT_INDEX_ID));
@@ -11555,7 +11617,7 @@ stock LoadGeneralTextdraws()
 	TextDrawFont(welcomenew, 3);
 	TextDrawSetProportional(welcomenew, 1);
 	////////////////////////////////////////////
-	
+
 	new motd[128];
 	format(motd, sizeof(motd), "%s", gServerMOTD);
 	Textdraw2 = TextDrawCreate(0.000000,437.000000,"SERVER MOTD:");
@@ -11579,7 +11641,7 @@ stock LoadGeneralTextdraws()
 	TextDrawSetProportional(Textdraw3,1);
 	TextDrawSetShadow(Textdraw2,1);
 	TextDrawSetShadow(Textdraw3,1);
-	
+
 	// LOGIN SCREEN NEW
 
     welcomepm = TextDrawCreate(204.743530, 134.166641, "Welcome to");
@@ -11987,7 +12049,7 @@ stock CreatePlayerTextDraws( playerid )
 	PlayerTextDrawBackgroundColor(playerid, playerfooter[playerid], 255);
 	PlayerTextDrawFont(playerid, playerfooter[playerid], 2);
 	PlayerTextDrawSetProportional(playerid, playerfooter[playerid], 1);
-	
+
 
 
 	LoadingObjects0[playerid] = CreatePlayerTextDraw(playerid, 219.267944, 377.416687, "LD_SPAC:white");
@@ -13233,373 +13295,6 @@ SetAttachedObject(playerid, modelid, bone, Float:x = 0.0, Float:y = 0.0, Float:z
 	return -1;
 }
 
-IsValidHouseID(id)
-{
-	return (id >= 0 && id < MAX_HOUSES) && HouseInfo[id][hExists];
-}
-ClearFurniture(house)
-{
-	if (!IsValidHouseID(house))
-	{
-		return 0;
-	}
-	for (new i = 0; i < MAX_FURNITURE; i ++)
-	{
-		if (Furniture[i][fExists] && Furniture[i][fHouseID] == HouseInfo[house][hID])
-		{
-
-			DestroyDynamicObject(Furniture[i][fObject]);
-			DestroyDynamic3DTextLabel(Furniture[i][fText]);
-
-			Furniture[i][fExists] = 0;
-			Furniture[i][fID] = 0;
-		}
-	}
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM "#TABLE_FURNITURE" WHERE fHouseID = %i", HouseInfo[house][hID]);
-	mysql_tquery(connectionID, queryBuffer);
-	return 1;
-}
-
-ClearOutsideFurniture(house)
-{
-	if (!IsValidHouseID(house))
-	{
-		return 0;
-	}
-	for (new i = 0; i < MAX_FURNITURE; i ++)
-	{
-		if (Furniture[i][fExists] && Furniture[i][fHouseID] == HouseInfo[house][hID] && Furniture[i][fInterior] == HouseInfo[house][hInterior] && Furniture[i][fWorld] == HouseInfo[house][hWorld])
-		{
-
-			DeleteFurniture(i);
-		}
-	}
-	return 1;
-}
-SaveFurniture(furniture)
-{
-	static
-		queryString[512];
-
-	if (!IsValidFurnitureID(furniture)) return 0;
-
-	format(queryString, sizeof(queryString), "UPDATE "#TABLE_FURNITURE" SET fModel = %i, fX = %.4f, fY = %.4f, fZ = %.4f, fRX = %.4f, fRY = %.4f, fRZ = %.4f, fInterior = %i, fWorld = %i, fCode = %i, fMoney = %i, Mat1 = %i, Mat2 = %i, Mat3 = %i, MatColor1 = %i, MatColor2 = %i, MatColor3 = %i WHERE fID = %i",
-		Furniture[furniture][fModel],
-		Furniture[furniture][fSpawn][0],
-		Furniture[furniture][fSpawn][1],
-		Furniture[furniture][fSpawn][2],
-		Furniture[furniture][fSpawn][3],
-		Furniture[furniture][fSpawn][4],
-		Furniture[furniture][fSpawn][5],
-		Furniture[furniture][fInterior],
-		Furniture[furniture][fWorld],
-		Furniture[furniture][fCode],
-		Furniture[furniture][fMoney],
-		Furniture[furniture][fMaterial][0],
-		Furniture[furniture][fMaterial][1],
-		Furniture[furniture][fMaterial][2],
-		Furniture[furniture][fMatColour][0],
-		Furniture[furniture][fMatColour][1],
-		Furniture[furniture][fMatColour][2],
-		Furniture[furniture][fID]
-	);
-
-	return mysql_tquery(connectionID, queryString);
-}
-
-DeleteFurniture(furniture)
-{
-	if (!IsValidFurnitureID(furniture))
-	{
-		return 0;
-	}
-
-	DestroyDynamicObject(Furniture[furniture][fObject]);
-	DestroyDynamic3DTextLabel(Furniture[furniture][fText]);
-
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM "#TABLE_FURNITURE" WHERE fID = %i", Furniture[furniture][fID]);
-	mysql_tquery(connectionID, queryBuffer);
-
-	Furniture[furniture][fID] = 0;
-	Furniture[furniture][fExists] = 0;
-	Furniture[furniture][fObject] = INVALID_OBJECT_ID;
-	Furniture[furniture][fText] = INVALID_3DTEXT_ID;
-	return 1;
-}
-
-ShowFurnitureCategories(playerid)
-{
-	new string[192];
-
-	for (new i = 0; i < sizeof(g_FurnitureTypes); i ++) {
-		strcat(string, g_FurnitureTypes[i]);
-		strcat(string, "\n");
-	}
-	Dialog_Show(playerid, BuyFurniture, DIALOG_STYLE_LIST, "{FFFFFF}Select category", string, "Select", "Cancel");
-}
-
-SetFurnitureEditMode(house, enable)
-{
-	HouseInfo[house][hLabels] = enable;
-
-	for (new i = 0; i < MAX_FURNITURE; i ++)
-	{
-		if (Furniture[i][fExists] && Furniture[i][fHouseID] == HouseInfo[house][hID])
-		{
-			Furniture[i][fEdit] = enable;
-			UpdateFurnitureText(i);
-		}
-	}
-}
-
-AddFurniture(house, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, interior, worldid)
-{
-	new
-		id = GetNextFurnitureID();
-
-	if (id != -1)
-	{
-		Furniture[id][fExists] = 1;
-		Furniture[id][fHouseID] = HouseInfo[house][hID];
-		Furniture[id][fEdit] = HouseInfo[house][hLabels];
-		Furniture[id][fModel] = modelid;
-		Furniture[id][fSpawn][0] = x;
-		Furniture[id][fSpawn][1] = y;
-		Furniture[id][fSpawn][2] = z;
-		Furniture[id][fSpawn][3] = rx;
-		Furniture[id][fSpawn][4] = ry;
-		Furniture[id][fSpawn][5] = rz;
-		Furniture[id][fInterior] = interior;
-		Furniture[id][fWorld] = worldid;
-		Furniture[id][fCode] = 0;
-		Furniture[id][fMoney] = 0;
-		Furniture[id][fSafeOpen] = 0;
-		Furniture[id][fDoorOpen] = 0;
-		Furniture[id][fObject] = INVALID_OBJECT_ID;
-		Furniture[id][fText] = INVALID_3DTEXT_ID;
-
-		for(new i = 0; i != 3; i ++)
-		{
-			Furniture[id][fMaterial][i] = 0;
-			Furniture[id][fMatColour][i] = 0;
-		}
-
-		UpdateFurniture(id);
-
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO "#TABLE_FURNITURE" (fHouseID) VALUES(%i)", Furniture[id][fHouseID]);
-		mysql_tquery(connectionID, queryBuffer, "OnFurnitureAdded", "i", id);
-	}
-	return id;
-}
-
-PreviewFurniture(playerid, index)
-{
-	if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
-
-	new
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:angle;
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, angle);
-
-	x += 2.0 * floatsin(-angle, degrees);
-	y += 2.0 * floatcos(-angle, degrees);
-
-	if (IsValidDynamicObject(gPreviewFurniture[playerid]))
-	{
-		DestroyDynamicObject(gPreviewFurniture[playerid]);
-	}
-	gPreviewFurniture[playerid] = CreateDynamicObject(g_FurnitureList[index][e_ModelID], x, y, z, 0.0, 0.0, angle, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-    PlayerData[playerid][pFurnitureIndex] = index;
-	EditDynamicObjectEx(playerid, EDIT_FURNITURE_PREVIEW, gPreviewFurniture[playerid]);
-	//EditDynamicObjectEx(playerid, EDIT_TYPE_FURNITURE, Furniture[furniture][fObject], furniture);
-	SendInfoMessage(playerid, "Press ESC to cancel. Click the disk icon to save changes.");
-	return 1;
-}
-IsValidFurnitureID(id)
-{
-	return (id >= 0 && id < MAX_FURNITURE) && Furniture[id][fExists];
-}
-GetNextFurnitureID()
-{
-	for (new i = 0; i < MAX_FURNITURE; i ++)
-	{
-		if (!Furniture[i][fExists])
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-GetClosestFurniture(playerid, Float:range, model)
-{
-	for (new i = 0; i < MAX_FURNITURE; i ++)
-	{
-		if (Furniture[i][fExists] && Furniture[i][fModel] == model && IsPlayerNearPoint(playerid, range, Furniture[i][fSpawn][0], Furniture[i][fSpawn][1], Furniture[i][fSpawn][2], Furniture[i][fInterior], Furniture[i][fWorld]))
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-ShowFurniturePreviewer(playerid)
-{
-    new
-		models[MAX_SELECTION_MENU_ITEMS] = {-1, ...},
-		index;
-
-	PlayerData[playerid][pFurnitureIndex] = -1;
-
-	for(new i = 0; i < sizeof(g_FurnitureList); i ++)
-	{
-	    if (g_FurnitureList[i][e_ModelCategory] == PlayerData[playerid][pSelected])
-	    {
-	        if(PlayerData[playerid][pFurnitureIndex] == -1)
-	        {
-	            PlayerData[playerid][pFurnitureIndex] = i;
-			}
-
-	        models[index++] = g_FurnitureList[i][e_ModelID];
-	    }
-	}
-	ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_FURNITURE, "House Furniture", models, index);
-	return 0;
-}
-ListTexture(playerid)
-{
-	new fid = GetPVarInt(playerid, "FurnID");
-
-	new list[256], header[64];
-	format(header, sizeof(header), "You are now editing ID: %d.", GetPVarInt(playerid, "FurnID"));
-	format(list, sizeof(list), "Index 1: %s\nIndex 2: %s\nIndex 3: %s\n \nClear Textures", Furniture[fid][fMaterial][0] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"), Furniture[fid][fMaterial][1] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"), Furniture[fid][fMaterial][2] ? ("{FFFF00}In Use") : ("{C3C3C3}Empty"));
-	Dialog_Show(playerid, MaterialHandler, DIALOG_STYLE_LIST, header, list, ">>", "Cancel");
-	return 1;
-}
-EditDynamicObjectEx(playerid, type, objectid, extraid = -1)
-{
-	PlayerData[playerid][pEditType] = type;
-	PlayerData[playerid][pSelected] = extraid;
-
-	return EditDynamicObject(playerid, objectid);
-}
-ShowColorList(playerid)
-{
-	new list[4056], bigStr[256], gString[256];
-	format(gString, sizeof(gString), " << {F3FF02}Select Texture\n");
-	strcat(list, gString);
-	for(new i = 0; i < sizeof(MaterialColors); i++)
-	{
-		if(strcmp("none", MaterialColors[i][ColorName], true) == 0) continue;
-		format(bigStr, sizeof(bigStr), "%s\n", MaterialColors[i][ColorName]);
-		strcat(list, bigStr);
-	}
-	Dialog_Show(playerid, ChangeColor, DIALOG_STYLE_LIST, "Color List", list, ">>", "Cancel");
-	return 1;
-}
-UpdateFurniture(furniture)
-{
-	if (!IsValidFurnitureID(furniture))
-	{
-		return 0;
-	}
-	DestroyDynamicObject(Furniture[furniture][fObject]);
-	Furniture[furniture][fObject] = CreateDynamicObject(Furniture[furniture][fModel], Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], Furniture[furniture][fSpawn][3], Furniture[furniture][fSpawn][4], Furniture[furniture][fSpawn][5], Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
-
-	for(new i = 0; i != 3; i ++)
-	{
-		if(MaterialIDs[Furniture[furniture][fMaterial][i]][ModelID] != 0)
-		{
-			SetDynamicObjectMaterial(Furniture[furniture][fObject], i, MaterialIDs[Furniture[furniture][fMaterial][i]][ModelID], MaterialIDs[Furniture[furniture][fMaterial][i]][TxdName], MaterialIDs[Furniture[furniture][fMaterial][i]][TextureName], MaterialColors[Furniture[furniture][fMatColour][i]][ColorHex]);
-		}
-		else if(Furniture[furniture][fMatColour][i] != 0)
-		{
-			SetDynamicObjectMaterial(Furniture[furniture][fObject], i, -1, MaterialIDs[Furniture[furniture][fMaterial][i]][TxdName], MaterialIDs[Furniture[furniture][fMaterial][i]][TextureName], MaterialColors[Furniture[furniture][fMatColour][i]][ColorHex]);
-		}
-	}
-	UpdateFurnitureText(furniture);
-	return 1;
-}
-
-UpdateFurnitureText(furniture)
-{
-	new
-		string[64];
-
-	if (!IsValidFurnitureID(furniture))
-	{
-		return 0;
-	}
-	DestroyDynamic3DTextLabel(Furniture[furniture][fText]);
-
-	if (Furniture[furniture][fEdit])
-	{
-		format(string, sizeof(string), "ID: {00FF00}%i{FFFFFF}\n/edit, /delete.", furniture);
-
-		Furniture[furniture][fText] = CreateDynamic3DTextLabel(string, COLOR_WHITE, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
-	}
-	else
-	{
-		if (Furniture[furniture][fModel] == 2332)
-		{
-			if (Furniture[furniture][fSafeOpen])
-			{
-				Furniture[furniture][fText] = CreateDynamic3DTextLabel("Status: {00FF00}Opened{AFAFAF}\nPress Y to use safe", COLOR_GREY, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 3.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
-			}
-			else
-			{
-				Furniture[furniture][fText] = CreateDynamic3DTextLabel("Status: {FF5030}Closed{AFAFAF}\nPress Y to use safe", COLOR_GREY, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 3.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
-			}
-		}
-
-		else
-		{
-			Furniture[furniture][fText] = INVALID_3DTEXT_ID;
-		}
-	}
-	return 1;
-}
-FurnitureChange(playerid, furnid, index, list, status = 1) // 1 for mat, 2 for color
-{
-	new model, txd[24], texture[24], color;
-	switch(status)
-	{
-		case 1:
-		{
-			SendClientMessage(playerid, -1, "Furniture texture has been updated.");
-			Furniture[furnid][fMaterial][index] = list;
-			SetDynamicObjectMaterial(Furniture[furnid][fObject], index, MaterialIDs[ Furniture[furnid][fMaterial][index] ][ModelID], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TxdName], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TextureName], MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
-			SaveFurniture(furnid);
-		}
-		case 2:
-		{
-			if(Furniture[furnid][fMaterial][index] == 0)
-			{
-				Furniture[furnid][fMatColour][index] = list;
-				SetDynamicObjectMaterial(Furniture[furnid][fObject], index, -1, MaterialIDs[ Furniture[furnid][fMaterial][index] ][TxdName], MaterialIDs[ Furniture[furnid][fMaterial][index] ][TextureName], MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
-				SaveFurniture(furnid);
-			}
-			else
-			{
-				SendClientMessage(playerid, -1, "Furniture color has been updated.");
-				Furniture[furnid][fMatColour][index] = list;
-				GetDynamicObjectMaterial(Furniture[furnid][fObject], index, model, txd, texture, color);
-				SetDynamicObjectMaterial(Furniture[furnid][fObject], index, model, txd, texture, MaterialColors[ Furniture[furnid][fMatColour][index] ][ColorHex]);
-				SaveFurniture(furnid);
-			}
-		}
-	}
-	return 1;
-}
-CancelObjectEdit(playerid)
-{
-	PlayerData[playerid][pEditType] = 0;
-	PlayerData[playerid][pSelected] = -1;
-
-	return CancelEdit(playerid);
-}
 stock strmatch(const string1[], const string2[])
 {
     if ((strcmp(string1, string2, true, strlen(string2)) == 0) && (strlen(string2) == strlen(string1)))
@@ -22634,7 +22329,13 @@ IsDoorObject(objectid)
 
 	if((modelid) && !IsGateObject(objectid))
 	{
-
+		for(new i = 0; i < sizeof(g_FurnitureList); i ++)
+		{
+	    	if(g_FurnitureList[i][e_ModelCategory] == FURNITURE_DOORS && g_FurnitureList[i][e_ModelID] == modelid)
+	    	{
+		        return 1;
+			}
+		}
 		for(new i = 0; i < sizeof(landArray); i ++)
 		{
 	    	if(!strcmp(landArray[i][fCategory], "Doors & Gates") && landArray[i][fModel] == modelid)
@@ -24511,10 +24212,271 @@ HasFurniturePerms(playerid, houseid)
 {
 	return IsHouseOwner(playerid, houseid) || PlayerData[playerid][pFurniturePerms] == houseid;
 }
-
+IsValidFurnitureID(id)
+{
+	return (id >= 0 && id < MAX_FURNITURE) && Furniture[id][fExists];
+}
+IsValidHouseID(id)
+{
+	return (id >= 0 && id < MAX_HOUSES) && HouseInfo[id][hExists];
+}
 IsHouseOwner(playerid, houseid)
 {
 	return (HouseInfo[houseid][hOwnerID] == PlayerData[playerid][pID]);
+}
+
+PreviewFurniture(playerid, index)
+{
+    if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
+
+	new
+	    Float:x,
+	    Float:y,
+	    Float:z,
+	    Float:angle;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, angle);
+
+	x += 2.0 * floatsin(-angle, degrees);
+	y += 2.0 * floatcos(-angle, degrees);
+
+	if (IsValidDynamicObject(gPreviewFurniture[playerid]))
+	{
+	    DestroyDynamicObject(gPreviewFurniture[playerid]);
+	}
+	gPreviewFurniture[playerid] = CreateDynamicObject(g_FurnitureList[index][e_ModelID], x, y, z, 0.0, 0.0, angle, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+    PlayerData[playerid][pPreviewIndex] = index;
+	EditDynamicObjectEx(playerid, EDIT_TYPE_PREVIEW, gPreviewFurniture[playerid]);
+	//EditDynamicObjectEx(playerid, EDIT_TYPE_FURNITURE, Furniture[furniture][fObject], furniture);
+	SendInfoMessage(playerid, "Press ESC to cancel. Click the disk icon to save changes.");
+	return 1;
+}
+
+
+ShowFurniturePreviewer(playerid)
+{
+    new
+		models[MAX_SELECTION_MENU_ITEMS] = {-1, ...},
+		index;
+
+	PlayerData[playerid][pPreviewIndex] = -1;
+
+	for(new i = 0; i < sizeof(g_FurnitureList); i ++)
+	{
+	    if (g_FurnitureList[i][e_ModelCategory] == PlayerData[playerid][pSelected])
+	    {
+	        if(PlayerData[playerid][pPreviewIndex] == -1)
+	        {
+	            PlayerData[playerid][pPreviewIndex] = i;
+			}
+
+	        models[index++] = g_FurnitureList[i][e_ModelID];
+	    }
+	}
+	ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_FURNITURE, "House Furniture", models, index);
+	return 0;
+}
+
+HideFurniturePreviewer(playerid)
+{
+	PlayerData[playerid][pFurnitureMenu] = 0;
+
+	HidePlayerTextDraws(playerid, 70, 77);
+	CancelSelectTextDraw(playerid);
+}
+UpdateFurniture(furniture)
+{
+	if (!IsValidFurnitureID(furniture))
+	{
+	    return 0;
+	}
+	DestroyDynamicObject(Furniture[furniture][fObject]);
+	Furniture[furniture][fObject] = CreateDynamicObject(Furniture[furniture][fModel], Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], Furniture[furniture][fSpawn][3], Furniture[furniture][fSpawn][4], Furniture[furniture][fSpawn][5], Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+
+	for(new i = 0; i != 3; i ++)
+	{
+		if(MaterialIDs[Furniture[furniture][fMaterial][i]][ModelID] != 0)
+		{
+		    SetDynamicObjectMaterial(Furniture[furniture][fObject], i, MaterialIDs[Furniture[furniture][fMaterial][i]][ModelID], MaterialIDs[Furniture[furniture][fMaterial][i]][TxdName], MaterialIDs[Furniture[furniture][fMaterial][i]][TextureName], MaterialColors[Furniture[furniture][fMatColour][i]][ColorHex]);
+		}
+		else if(Furniture[furniture][fMatColour][i] != 0)
+		{
+		    SetDynamicObjectMaterial(Furniture[furniture][fObject], i, -1, MaterialIDs[Furniture[furniture][fMaterial][i]][TxdName], MaterialIDs[Furniture[furniture][fMaterial][i]][TextureName], MaterialColors[Furniture[furniture][fMatColour][i]][ColorHex]);
+		}
+	}
+	UpdateFurnitureText(furniture);
+	return 1;
+}
+
+UpdateFurnitureText(furniture)
+{
+	new
+		string[64];
+
+	if (!IsValidFurnitureID(furniture))
+	{
+	    return 0;
+	}
+	DestroyDynamic3DTextLabel(Furniture[furniture][fText]);
+
+	if (Furniture[furniture][fEdit])
+	{
+	    format(string, sizeof(string), "ID: {00FF00}%i{FFFFFF}\n/edit, /delete.", furniture);
+
+		Furniture[furniture][fText] = CreateDynamic3DTextLabel(string, COLOR_WHITE, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+	}
+	else
+	{
+	    if (Furniture[furniture][fModel] == 2332)
+		{
+		    if (Furniture[furniture][fSafeOpen])
+		    {
+		        Furniture[furniture][fText] = CreateDynamic3DTextLabel("Status: {00FF00}Opened{AFAFAF}\nPress Y to use safe", COLOR_GREY, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 3.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+		    }
+		    else
+		    {
+		    	Furniture[furniture][fText] = CreateDynamic3DTextLabel("Status: {FF5030}Closed{AFAFAF}\nPress Y to use safe", COLOR_GREY, Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], 3.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
+			}
+		}
+		else
+		{
+		    Furniture[furniture][fText] = INVALID_3DTEXT_ID;
+		}
+	}
+
+	return 1;
+}
+
+SaveFurniture(furniture)
+{
+	if (!IsValidFurnitureID(furniture)) return 0;
+
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE rp_furniture SET fModel = %i, fX = %.4f, fY = %.4f, fZ = %.4f, fRX = %.4f, fRY = %.4f, fRZ = %.4f, fInterior = %i, fWorld = %i, fCode = %i, fMoney = %i, Mat1 = %i, Mat2 = %i, Mat3 = %i, MatColor1 = %i, MatColor2 = %i, MatColor3 = %i WHERE fID = %i",
+	    Furniture[furniture][fModel],
+	    Furniture[furniture][fSpawn][0],
+	    Furniture[furniture][fSpawn][1],
+	    Furniture[furniture][fSpawn][2],
+	    Furniture[furniture][fSpawn][3],
+	    Furniture[furniture][fSpawn][4],
+	    Furniture[furniture][fSpawn][5],
+	    Furniture[furniture][fInterior],
+	    Furniture[furniture][fWorld],
+	    Furniture[furniture][fCode],
+	    Furniture[furniture][fMoney],
+	    Furniture[furniture][fMaterial][0],
+	    Furniture[furniture][fMaterial][1],
+	    Furniture[furniture][fMaterial][2],
+	    Furniture[furniture][fMatColour][0],
+	    Furniture[furniture][fMatColour][1],
+	    Furniture[furniture][fMatColour][2],
+	    Furniture[furniture][fID]
+	);
+	return mysql_tquery(connectionID, queryBuffer);
+//	return printf(queryBuffer);
+}
+
+DeleteFurniture(furniture)
+{
+    if (!IsValidFurnitureID(furniture))
+	{
+		return 0;
+	}
+
+	DestroyDynamicObject(Furniture[furniture][fObject]);
+	DestroyDynamic3DTextLabel(Furniture[furniture][fText]);
+
+	format(queryBuffer, sizeof(queryBuffer), "DELETE FROM rp_furniture WHERE fID = %i", Furniture[furniture][fID]);
+	mysql_tquery(connectionID, queryBuffer);
+
+	Furniture[furniture][fID] = 0;
+	Furniture[furniture][fExists] = 0;
+	Furniture[furniture][fObject] = INVALID_OBJECT_ID;
+	Furniture[furniture][fText] = INVALID_3DTEXT_ID;
+	return 1;
+}
+
+ShowFurnitureCategories(playerid)
+{
+    new string[192];
+
+	for (new i = 0; i < sizeof(g_FurnitureTypes); i ++) {
+ 		strcat(string, g_FurnitureTypes[i]);
+   		strcat(string, "\n");
+   	}
+    Dialog_Show(playerid, BuyFurniture, DIALOG_STYLE_LIST, "{FFFFFF}Select category", string, "Select", "Cancel");
+}
+
+SetFurnitureEditMode(house, enable)
+{
+    HouseInfo[house][hEdit] = enable;
+
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+ 		if (Furniture[i][fExists] && Furniture[i][fHouseID] == HouseInfo[house][hID])
+   		{
+     		Furniture[i][fEdit] = enable;
+			UpdateFurnitureText(i);
+ 		}
+	}
+}
+GetNextFurnitureID()
+{
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+	    if (!Furniture[i][fExists])
+	    {
+	        return i;
+		}
+	}
+	return -1;
+}
+
+AddFurniture(house, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, interior, worldid)
+{
+	new
+	    id = GetNextFurnitureID();
+
+	if (id != -1)
+	{
+		Furniture[id][fExists] = 1;
+		Furniture[id][fHouseID] = HouseInfo[house][hID];
+		Furniture[id][fEdit] = HouseInfo[house][hEdit];
+		Furniture[id][fModel] = modelid;
+		Furniture[id][fSpawn][0] = x;
+		Furniture[id][fSpawn][1] = y;
+		Furniture[id][fSpawn][2] = z;
+		Furniture[id][fSpawn][3] = rx;
+		Furniture[id][fSpawn][4] = ry;
+		Furniture[id][fSpawn][5] = rz;
+		Furniture[id][fInterior] = interior;
+		Furniture[id][fWorld] = worldid;
+		Furniture[id][fCode] = 0;
+		Furniture[id][fMoney] = 0;
+        Furniture[id][fSafeOpen] = 0;
+        Furniture[id][fDoorOpen] = 0;
+		Furniture[id][fObject] = INVALID_OBJECT_ID;
+		Furniture[id][fText] = INVALID_3DTEXT_ID;
+
+		for(new i = 0; i != 3; i ++)
+		{
+		    Furniture[id][fMaterial][i] = 0;
+		    Furniture[id][fMatColour][i] = 0;
+		}
+
+		UpdateFurniture(id);
+
+		format(queryBuffer, sizeof(queryBuffer), "INSERT INTO rp_furniture (fHouseID) VALUES(%i)", Furniture[id][fHouseID]);
+		mysql_tquery(connectionID, queryBuffer, "OnFurnitureAdded", "i", id);
+	}
+	return id;
+}
+forward OnFurnitureAdded(furniture);
+public OnFurnitureAdded(furniture)
+{
+    Furniture[furniture][fID] = cache_insert_id(connectionID);
+
+    SaveFurniture(furniture);
 }
 
 GetVehicleStashCapacity(vehicleid, item)
@@ -27222,13 +27184,7 @@ public SecondTimer()
 			}
 			if(PlayerData[i][pEditType] > 0 && IsValidDynamicObject(PlayerData[i][pEditObject]) && !IsPlayerInRangeOfDynamicObject(i, PlayerData[i][pEditObject], 50.0))
 			{
-				if(PlayerData[i][pEditType] == EDIT_FURNITURE_PREVIEW)
-				{
-	   				SendClientMessage(i, COLOR_GREY2, "You left the editing area. Furniture previewing cancelled.");
-	   				DestroyDynamicObject(PlayerData[i][pEditObject]);
-				}
-
-				else if(PlayerData[i][pEditType] == EDIT_LAND_OBJECT)
+				if(PlayerData[i][pEditType] == EDIT_LAND_OBJECT)
 				{
 	   				ReloadLandObject(PlayerData[i][pEditObject], LandInfo[PlayerData[i][pObjectLand]][lLabels]);
 	   				SendClientMessage(i, COLOR_GREY2, "You left the editing area. Editing mode has been disabled.");
@@ -29082,31 +29038,6 @@ public OnPlayerAttemptNameChange(playerid, name[])
 	}
 }
 
-forward OnPlayerRamFurnitureDoor(playerid, objectid, id);
-public OnPlayerRamFurnitureDoor(playerid, objectid, id)
-{
-	if(cache_get_field_content_int(0, "door_opened"))
-	{
-		SendClientMessage(playerid, COLOR_GREY, "The door is already opened.");
-	}
-	else
-	{
-	    new
-	        Float:rx,
-			Float:ry,
-			Float:rz;
-
-		ShowActionBubble(playerid, "** %s rams the door down.", GetRPName(playerid));
-
-        GetDynamicObjectRot(objectid, rx, ry, rz);
-        rz -= 90.0;
-		SetDynamicObjectRot(objectid, rx, ry, rz);
-
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE furniture SET rot_z = '%f', door_locked = 0, door_opened = 1 WHERE id = %i", rz, id);
-		mysql_tquery(connectionID, queryBuffer);
-	}
-}
-
 forward OnPlayerRamLandDoor(playerid, objectid, id);
 public OnPlayerRamLandDoor(playerid, objectid, id)
 {
@@ -29129,56 +29060,6 @@ public OnPlayerRamLandDoor(playerid, objectid, id)
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE landobjects SET rot_z = '%f', door_locked = 0, door_opened = 1 WHERE id = %i", rz, id);
 		mysql_tquery(connectionID, queryBuffer);
-	}
-}
-
-forward OnPlayerLockFurnitureDoor(playerid, id);
-public OnPlayerLockFurnitureDoor(playerid, id)
-{
-	new status = !cache_get_field_content_int(0, "door_locked");
-
-	if(status) {
-	    ShowActionBubble(playerid, "** %s locks the door.", GetRPName(playerid));
-	} else {
-	    ShowActionBubble(playerid, "** %s unlocks the door.", GetRPName(playerid));
-	}
-
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE furniture SET door_locked = %i WHERE id = %i", status, id);
-	mysql_tquery(connectionID, queryBuffer);
-}
-
-forward OnPlayerUseFurnitureDoor(playerid, objectid, id);
-public OnPlayerUseFurnitureDoor(playerid, objectid, id)
-{
-    if(cache_get_row_int(0, 1))
-	{
-	    SendClientMessage(playerid, COLOR_GREY, "This door is locked.");
-	}
-	else
-	{
-		new
-			status = !cache_get_row_int(0, 0),
-			Float:rx,
-			Float:ry,
-			Float:rz;
-
-		GetDynamicObjectRot(objectid, rx, ry, rz);
-
-		if(status) {
-		    rz -= 90.0;
-		} else {
-			rz += 90.0;
-		}
-
-		SetDynamicObjectRot(objectid, rx, ry, rz);
-
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE furniture SET rot_z = '%f', door_opened = %i WHERE id = %i", rz, status, id);
-		mysql_tquery(connectionID, queryBuffer);
-
-		if(status)
-		    ShowActionBubble(playerid, "** %s opens the door.", GetRPName(playerid));
-		else
-		    ShowActionBubble(playerid, "** %s closes the door.", GetRPName(playerid));
 	}
 }
 
@@ -31639,25 +31520,7 @@ public OnQueryFinished(threadid, extraid)
 		}
 		case THREAD_LOAD_FURNITURE:
 		{
-		    for(new i = 0; i < rows; i ++)
-		    {
-		        new objectid = CreateDynamicObject(cache_get_field_content_int(i, "modelid"), cache_get_field_content_float(i, "pos_x"), cache_get_field_content_float(i, "pos_y"), cache_get_field_content_float(i, "pos_z"), cache_get_field_content_float(i, "rot_x"), cache_get_field_content_float(i, "rot_y"), cache_get_field_content_float(i, "rot_z"), cache_get_field_content_int(i, "world"), cache_get_field_content_int(i, "interior"));
 
-				Streamer_SetExtraInt(objectid, E_OBJECT_TYPE, E_OBJECT_FURNITURE);
-				Streamer_SetExtraInt(objectid, E_OBJECT_INDEX_ID, cache_get_field_content_int(i, "id"));
-				Streamer_SetExtraInt(objectid, E_OBJECT_EXTRA_ID, cache_get_field_content_int(i, "houseid"));
-
-				if(extraid)
-				{
-				    new
-				        string[48];
-
-				    cache_get_field_content(i, "name", string);
-
-					format(string, sizeof(string), "[%i] - %s", objectid, string);
-					Streamer_SetExtraInt(objectid, E_OBJECT_3DTEXT_ID, _:CreateDynamic3DTextLabel(string, COLOR_GREY2, cache_get_field_content_float(i, "pos_x"), cache_get_field_content_float(i, "pos_y"), cache_get_field_content_float(i, "pos_z"), 10.0, .worldid = cache_get_field_content_int(i, "world"), .interiorid = cache_get_field_content_int(i, "interior")));
-				}
-			}
 		}
 		case THREAD_LOAD_GARAGES:
 		{
@@ -32855,17 +32718,7 @@ public OnQueryFinished(threadid, extraid)
 		}
 		case THREAD_CHECKDUPE_FURNITURE:
 		{
-		    new houseid = GetInsideHouse(extraid);
 
-		    if(cache_get_row_int(0, 0) >= GetHouseFurnitureCapacity(houseid))
-		    {
-		        SendClientMessageEx(extraid, COLOR_GREY, "You are only only allowed up to %i objects for your house.", GetHouseFurnitureCapacity(houseid));
-		    }
-		    else
-		    {
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT name, modelid, price, pos_x, pos_y, pos_z, rot_x, rot_y, rot_z FROM furniture WHERE id = %i", Streamer_GetExtraInt(PlayerData[extraid][pSelected], E_OBJECT_INDEX_ID));
-        		mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_DUPLICATE_FURNITURE, extraid);
-		    }
 		}
 		case THREAD_LOAD_LOCATIONS:
 		{
@@ -33050,7 +32903,42 @@ public OnQueryFinished(threadid, extraid)
 		}
 	}
 }
+forward OnLoadFurniture();
+public OnLoadFurniture()
+{
+    new
+	    rows = cache_get_row_count(connectionID);
 
+	for (new i = 0; i < rows; i ++)
+	{
+	    Furniture[i][fExists] = 1;
+	    Furniture[i][fID] = cache_get_field_content_int(i, "fID");
+	    Furniture[i][fHouseID] = cache_get_field_content_int(i, "fHouseID");
+	    Furniture[i][fModel] = cache_get_field_content_int(i, "fModel");
+	    Furniture[i][fSpawn][0] = cache_get_field_content_float(i, "fX");
+	    Furniture[i][fSpawn][1] = cache_get_field_content_float(i, "fY");
+	    Furniture[i][fSpawn][2] = cache_get_field_content_float(i, "fZ");
+	    Furniture[i][fSpawn][3] = cache_get_field_content_float(i, "fRX");
+	    Furniture[i][fSpawn][4] = cache_get_field_content_float(i, "fRY");
+	    Furniture[i][fSpawn][5] = cache_get_field_content_float(i, "fRZ");
+        Furniture[i][fInterior] = cache_get_field_content_int(i, "fInterior");
+        Furniture[i][fWorld] = cache_get_field_content_int(i, "fWorld");
+        Furniture[i][fCode] = cache_get_field_content_int(i, "fCode");
+        Furniture[i][fMoney] = cache_get_field_content_int(i, "fMoney");
+
+        Furniture[i][fMaterial][0] = cache_get_field_content_int(i, "Mat1");
+        Furniture[i][fMaterial][1] = cache_get_field_content_int(i, "Mat2");
+        Furniture[i][fMaterial][2] = cache_get_field_content_int(i, "Mat3");
+        Furniture[i][fMatColour][0] = cache_get_field_content_int(i, "MatColor1");
+        Furniture[i][fMatColour][1] = cache_get_field_content_int(i, "MatColor2");
+        Furniture[i][fMatColour][2] = cache_get_field_content_int(i, "MatColor3");
+
+        Furniture[i][fObject] = INVALID_OBJECT_ID;
+        Furniture[i][fText] = INVALID_3DTEXT_ID;
+        UpdateFurniture(i);
+	}
+	printf("(SQL) %i furniture loaded.", rows);
+}
 // ---------------------------------------
 // ---- PRIVATE LS ELEVATOR FORWARDS -----
 forward Elevator_Initialize();
@@ -33090,42 +32978,6 @@ func hidemotd(playerid)
     return 1;
 }
 
-forward OnLoadFurniture();
-public OnLoadFurniture()
-{
-    new
-	    rows = cache_get_row_count(connectionID);
-
-	for (new i = 0; i < rows; i ++)
-	{
-	    Furniture[i][fExists] = 1;
-	    Furniture[i][fID] = cache_get_field_content_int(i, "fID");
-	    Furniture[i][fHouseID] = cache_get_field_content_int(i, "fHouseID");
-	    Furniture[i][fModel] = cache_get_field_content_int(i, "fModel");
-	    Furniture[i][fSpawn][0] = cache_get_field_content_float(i, "fX");
-	    Furniture[i][fSpawn][1] = cache_get_field_content_float(i, "fY");
-	    Furniture[i][fSpawn][2] = cache_get_field_content_float(i, "fZ");
-	    Furniture[i][fSpawn][3] = cache_get_field_content_float(i, "fRX");
-	    Furniture[i][fSpawn][4] = cache_get_field_content_float(i, "fRY");
-	    Furniture[i][fSpawn][5] = cache_get_field_content_float(i, "fRZ");
-        Furniture[i][fInterior] = cache_get_field_content_int(i, "fInterior");
-        Furniture[i][fWorld] = cache_get_field_content_int(i, "fWorld");
-        Furniture[i][fCode] = cache_get_field_content_int(i, "fCode");
-        Furniture[i][fMoney] = cache_get_field_content_int(i, "fMoney");
-
-        Furniture[i][fMaterial][0] = cache_get_field_content_int(i, "Mat1");
-        Furniture[i][fMaterial][1] = cache_get_field_content_int(i, "Mat2");
-        Furniture[i][fMaterial][2] = cache_get_field_content_int(i, "Mat3");
-        Furniture[i][fMatColour][0] = cache_get_field_content_int(i, "MatColor1");
-        Furniture[i][fMatColour][1] = cache_get_field_content_int(i, "MatColor2");
-        Furniture[i][fMatColour][2] = cache_get_field_content_int(i, "MatColor3");
-
-        Furniture[i][fObject] = INVALID_OBJECT_ID;
-        Furniture[i][fText] = INVALID_3DTEXT_ID;
-        UpdateFurniture(i);
-	}
-	printf("(SQL) %i furniture loaded.", rows);
-}
 public OnGameModeInit()
 {
 
@@ -33169,7 +33021,8 @@ public OnGameModeInit()
 
 		mysql_tquery(connectionID, "TRUNCATE TABLE shots");
 		mysql_tquery(connectionID, "SELECT * FROM houses", "OnQueryFinished", "ii", THREAD_LOAD_HOUSES, 0);
-		mysql_tquery(connectionID, "SELECT * FROM "#TABLE_FURNITURE"", "OnLoadFurniture");
+		mysql_tquery(connectionID, "SELECT * FROM rp_furniture", "OnLoadFurniture");
+
 		mysql_tquery(connectionID, "SELECT * FROM garages", "OnQueryFinished", "ii", THREAD_LOAD_GARAGES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM businesses", "OnQueryFinished", "ii", THREAD_LOAD_BUSINESSES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM entrances", "OnQueryFinished", "ii", THREAD_LOAD_ENTRANCES, 0);
@@ -33209,7 +33062,7 @@ public OnGameModeInit()
 		    case 3: gWeather = 12;
 		}
 		SetWeather(gWeather);
-		
+
 		gettime(.hour = gHour);
 	 	gettime(.hour = gWorldTime);
 		SetWorldTime(gWorldTime);
@@ -33246,7 +33099,7 @@ public OnGameModeInit()
 		CreateLSPDMap();
 		ResetElevatorQueue();
 		Elevator_Initialize();
-		
+
 		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
 		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
 		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
@@ -33380,7 +33233,7 @@ public OnPhoneResponse(playerid, number)
 
 			SendClientMessage(playerid, COLOR_LIGHTORANGE, "Dispatch: This is the mechanic hotline. Please explain your situation to us.");
 			PlayerData[playerid][pCalling] = 6324;
-			
+
 		}
 		default:
 		{
@@ -33504,35 +33357,7 @@ public OnPlayerConnect(playerid)
 	RemoveBuildingForPlayer(playerid, 3661, 2164.9375, -1666.3047, 17.5547, 0.25);
 
      //=========General Hospital map by johnson=========//
-	RemoveBuildingForPlayer(playerid, 5466, 1881.7969, -1315.5391, 37.9453, 0.25);
-	RemoveBuildingForPlayer(playerid, 5597, 2011.4688, -1300.8984, 28.6953, 0.25);
-	RemoveBuildingForPlayer(playerid, 5598, 1914.2109, -1300.0547, 30.7266, 0.25);
-	RemoveBuildingForPlayer(playerid, 5636, 2042.1797, -1346.8047, 24.0078, 0.25);
-	RemoveBuildingForPlayer(playerid, 1525, 1969.5938, -1289.6953, 24.5625, 0.25);
-	RemoveBuildingForPlayer(playerid, 5665, 1913.3984, -1288.2969, 31.8594, 0.25);
-	RemoveBuildingForPlayer(playerid, 1261, 1864.2422, -1273.8281, 41.1797, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 1861.7422, -1330.8906, 12.8672, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 1861.7891, -1305.2109, 12.8672, 0.25);
-	RemoveBuildingForPlayer(playerid, 5463, 1881.7969, -1315.5391, 37.9453, 0.25);
-	RemoveBuildingForPlayer(playerid, 5644, 1881.8203, -1315.9219, 30.8359, 0.25);
-	RemoveBuildingForPlayer(playerid, 5464, 1902.4297, -1309.5391, 29.9141, 0.25);
-	RemoveBuildingForPlayer(playerid, 5462, 1914.2109, -1300.0547, 30.7266, 0.25);
-	RemoveBuildingForPlayer(playerid, 700, 1970.5078, -1328.3203, 23.3359, 0.25);
-	RemoveBuildingForPlayer(playerid, 700, 2003.4375, -1328.3203, 23.2344, 0.25);
-	RemoveBuildingForPlayer(playerid, 620, 1989.6641, -1328.0859, 22.5703, 0.25);
-	RemoveBuildingForPlayer(playerid, 5461, 2011.4688, -1300.8984, 28.6953, 0.25);
-	RemoveBuildingForPlayer(playerid, 5631, 2011.4063, -1302.9453, 28.2734, 0.25);
-	RemoveBuildingForPlayer(playerid, 620, 2039.1094, -1327.9766, 22.6016, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 2057.1328, -1311.2891, 23.1641, 0.25);
-	RemoveBuildingForPlayer(playerid, 700, 2055.0938, -1311.7813, 23.2344, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 2057.1094, -1302.3906, 23.2422, 0.25);
-	RemoveBuildingForPlayer(playerid, 1267, 1864.2422, -1273.8281, 41.1797, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 1966.3281, -1270.7422, 23.2656, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 1946.2266, -1270.7656, 19.8047, 0.25);
-	RemoveBuildingForPlayer(playerid, 5465, 1993.2969, -1284.9375, 26.7344, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 2008.6328, -1271.3125, 23.1641, 0.25);
-	RemoveBuildingForPlayer(playerid, 673, 2054.6797, -1281.5781, 22.9453, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 2056.7578, -1270.7656, 23.2422, 0.25);
+
 
 
     seatbelt[playerid] = 0;
@@ -33551,9 +33376,7 @@ public OnPlayerConnect(playerid)
     fRepfamtext[playerid] = Text3D:INVALID_3DTEXT_ID;
 	SendClientMessage(playerid, 0xA9C4E4FF, "Establishing connection to the {00aa00}Old School Roleplay{A9C4E4} please wait...");
 
-	// casino
-//	RemoveBuildingForPlayer(playerid, 4618, 1613.2578, -1185.4453, 29.8750, 0.25);
-//	RemoveBuildingForPlayer(playerid, 4683, 1613.2578, -1185.4453, 29.8750, 0.25);
+
 	/////////////aerodrom nikola tesla
 	RemoveBuildingForPlayer(playerid, 1215, 1586.210, -2325.562, 13.023, 0.250);
 	RemoveBuildingForPlayer(playerid, 4992, 1654.539, -2286.804, 13.320, 0.250);
@@ -36641,7 +36464,7 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 
 	            if(houseid >= 0 && HasFurniturePerms(playerid, houseid))
 	            {
-		            PreviewFurniture(playerid, listitem + PlayerData[playerid][pFurnitureIndex]);
+		            PreviewFurniture(playerid, listitem + PlayerData[playerid][pPreviewIndex]);
 				}
 	        }
 	    }
@@ -37832,11 +37655,11 @@ public OnPlayerText(playerid, text[])
 			}
 			else
 			{
-			    if(IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && CarWindows[GetPlayerVehicleID(playerid)] == 0)
+			    if(IsPlayerInAnyVehicle(playerid) && !IsAMotorBike(GetPlayerVehicleID(playerid)) && CarWindows[GetPlayerVehicleID(playerid)] == 0)
 			    {
 			        foreach(new i : Player)
 			        {
-			            if(IsPlayerInAnyVehicle(i) && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid))
+			            if(IsPlayerInAnyVehicle(i) && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid) && !IsAMotorBike(GetPlayerVehicleID(playerid)))
 			            {
         					SendClientMessageEx(i, COLOR_GREY1, "(Windows closed) %s says: %s", GetRPName(playerid), text);
 			            }
@@ -38081,7 +37904,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 				if (IsPlayerNearGymEquipment(playerid)) GymCheck(playerid);
 			}
-             
+
 			PlayerData[playerid][pLastPress] = time; // Prevents spamming. Sometimes keys get messed up and register twice.
 		}
 		else if(newkeys & KEY_NO)
@@ -38517,64 +38340,78 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 
-	switch(PlayerData[playerid][pEditType])
+	if (response == EDIT_RESPONSE_CANCEL)
 	{
-		case EDIT_FURNITURE_PREVIEW:
-		{
-		    if (response == EDIT_RESPONSE_CANCEL) {
-				DestroyDynamicObject(gPreviewFurniture[playerid]);
-				gPreviewFurniture[playerid] = INVALID_OBJECT_ID;
+	    switch (PlayerData[playerid][pEdit])
+	    {
+	        case EDIT_TYPE_PREVIEW:
+	        {
+	            DestroyDynamicObject(gPreviewFurniture[playerid]);
+	            gPreviewFurniture[playerid] = INVALID_OBJECT_ID;
 			}
-            if (response == EDIT_RESPONSE_FINAL) {
-				//if (!IsPointInRangeOfPoint(20.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hSpawn][0], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][1], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][2]) && !IsPointInRangeOfPoint(100.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hInt][0], HouseInfo[PlayerData[playerid][pHouse]][hInt][1], HouseInfo[PlayerData[playerid][pHouse]][hInt][2]))
+	        case EDIT_TYPE_FURNITURE:
+	        {
+	            UpdateFurniture(PlayerData[playerid][pEditID]);
+	        }
+		}
+	    PlayerData[playerid][pEdit] = EDIT_TYPE_NONE;
+	}
+	else if (response == EDIT_RESPONSE_FINAL)
+	{
+	    switch (PlayerData[playerid][pEdit])
+	    {
+	        case EDIT_TYPE_PREVIEW: // Furniture preview
+	        {
+	            //if (!IsPointInRangeOfPoint(20.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hSpawn][0], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][1], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][2]) && !IsPointInRangeOfPoint(100.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hInt][0], HouseInfo[PlayerData[playerid][pHouse]][hInt][1], HouseInfo[PlayerData[playerid][pHouse]][hInt][2]))
 
-				if (GetInsideHouse(playerid) != PlayerData[playerid][pHouse])
+	            if (GetInsideHouse(playerid) != PlayerData[playerid][pHouse])
 				{
-					SendErrorMessage(playerid, "The object is out of range from your house.");
+				    SendErrorMessage(playerid, "The object is out of range from your house.");
 				}
-				else if (!PlayerCanAfford(playerid, g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelPrice]))
+				else if (!PlayerCanAfford(playerid, g_FurnitureList[PlayerData[playerid][pPreviewIndex]][e_ModelPrice]))
 				{
-					SendErrorMessage(playerid, "You don't have enough money.");
+				    SendErrorMessage(playerid, "You don't have enough money.");
 				}
 				else
 				{
-					new id = AddFurniture(PlayerData[playerid][pHouse], g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelID], x, y, z, rx, ry, rz, GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
+					new id = AddFurniture(PlayerData[playerid][pHouse], g_FurnitureList[PlayerData[playerid][pPreviewIndex]][e_ModelID], x, y, z, rx, ry, rz, GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
 
-					if (id == -1)
-					{
-						SendErrorMessage(playerid, "There are no available furniture slots.");
-						SendAdminMessage(COLOR_RED, "Admin: %s has failed to add furniture! \"MAX_FURNITURE\" needs to be adjusted.", GetRPName(playerid));
+				    if (id == -1)
+				    {
+				        SendErrorMessage(playerid, "There are no available furniture slots.");
+				        SendAdminMessage(COLOR_RED, "Admin: %s has failed to add furniture! \"MAX_FURNITURE\" needs to be adjusted.", GetRPName(playerid));
 					}
 					else
 					{
-						GivePlayerCash(playerid, g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelPrice]);
+					    GivePlayerCash(playerid, -g_FurnitureList[PlayerData[playerid][pPreviewIndex]][e_ModelPrice]);
+
 						ShowFurnitureCategories(playerid);
-						SendInfoMessage(playerid, "Furniture purchased for {33CC33}%s{FFFFFF}. Use /house to manage your furniture.", FormatNumber(g_FurnitureList[PlayerData[playerid][pFurnitureIndex]][e_ModelPrice]));
+					    SendInfoMessage(playerid, "Furniture purchased for {33CC33}%s{FFFFFF}. Use /house to manage your furniture.", FormatNumber(g_FurnitureList[PlayerData[playerid][pPreviewIndex]][e_ModelPrice]));
 					}
 				}
 				DestroyDynamicObject(gPreviewFurniture[playerid]);
 				gPreviewFurniture[playerid] = INVALID_OBJECT_ID;
-			}
-		}
-		case EDIT_TYPE_FURNITURE:
-		{
-		    if (response == EDIT_RESPONSE_CANCEL) {
-				UpdateFurniture(PlayerData[playerid][pSelected]);
-			}
-            if (response == EDIT_RESPONSE_FINAL) {
-				Furniture[PlayerData[playerid][pSelected]][fSpawn][0] = x;
-				Furniture[PlayerData[playerid][pSelected]][fSpawn][1] = y;
-				Furniture[PlayerData[playerid][pSelected]][fSpawn][2] = z;
-				Furniture[PlayerData[playerid][pSelected]][fSpawn][3] = rx;
-				Furniture[PlayerData[playerid][pSelected]][fSpawn][4] = ry;
-				Furniture[PlayerData[playerid][pSelected]][fSpawn][5] = rz;
+	        }
+	        case EDIT_TYPE_FURNITURE: // House furniture
+	        {
+	            Furniture[PlayerData[playerid][pEditID]][fSpawn][0] = x;
+	            Furniture[PlayerData[playerid][pEditID]][fSpawn][1] = y;
+	            Furniture[PlayerData[playerid][pEditID]][fSpawn][2] = z;
+	            Furniture[PlayerData[playerid][pEditID]][fSpawn][3] = rx;
+	            Furniture[PlayerData[playerid][pEditID]][fSpawn][4] = ry;
+	            Furniture[PlayerData[playerid][pEditID]][fSpawn][5] = rz;
 
-				UpdateFurniture(PlayerData[playerid][pSelected]);
-				SaveFurniture(PlayerData[playerid][pSelected]);
+	            UpdateFurniture(PlayerData[playerid][pEditID]);
+	            SaveFurniture(PlayerData[playerid][pEditID]);
 
-				SendInfoMessage(playerid, "You have edited furniture ID: %i.", PlayerData[playerid][pSelected]);
-			}
-		}
+	            SendInfoMessage(playerid, "You have edited furniture ID: %i.", PlayerData[playerid][pEditID]);
+	        }
+	    }
+	    PlayerData[playerid][pEdit] = EDIT_TYPE_NONE;
+	    PlayerData[playerid][pEditID] = -1;
+	}
+	switch(PlayerData[playerid][pEditType])
+	{
 		case EDIT_LAND_OBJECT_PREVIEW:
 	    {
 			if(response != EDIT_RESPONSE_UPDATE)
@@ -38735,6 +38572,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "EditingGateID");
 		}
 	}
+
  	return 1;
 }
 Dialog:DealerList(playerid, response, listitem, inputtext[])
@@ -52608,35 +52446,148 @@ CMD:editdealercars(playerid, params[])
 	}
 	return 1;
 }
-CMD:clearfurniture(playerid, params[])
+CMD:furniture(playerid, params[])
 {
-	new house, type[10];
+	new id = GetInsideHouse(playerid);
+    if (!IsHouseOwner(playerid, id) && PlayerData[playerid][pFurniturePerms] != id)
+	{
+		return SendErrorMessage(playerid, "You don't have permissions to furnish this house.");
+	}
+    else
+    {
+        if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
+        PlayerData[playerid][pHouse] = id;
+	    Dialog_Show(playerid, HouseFurniture, DIALOG_STYLE_LIST, "{FFFFFF}Manage Furniture", "Purchase\nAdjustments", "Select", "Cancel");
+	}
+	return 1;
+}
 
-	if (PlayerData[playerid][pAdmin] < 5)
+CMD:edit(playerid, params[])
+{
+	new
+		furniture;
+
+	if (PlayerData[playerid][pHouseEdit] == -1 || !HouseInfo[PlayerData[playerid][pHouseEdit]][hEdit])
 	{
-		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	    return SendErrorMessage(playerid, "You are not editing furniture.");
 	}
-	else if (sscanf(params, "is[10]", house, type))
+	else if (sscanf(params, "i", furniture))
 	{
-		return SendSyntaxMessage(playerid, "/clearfurniture (house) (inside/outside)");
+	    return SendSyntaxMessage(playerid, "/edit (furniture ID)");
 	}
-	else if (!IsValidHouseID(house))
+	else if (!IsValidFurnitureID(furniture))
 	{
-		return SendErrorMessage(playerid, "The specified house is not valid.");
+	    return SendErrorMessage(playerid, "You have specified an invalid furniture ID.");
+	}
+	else if (Furniture[furniture][fHouseID] != HouseInfo[PlayerData[playerid][pHouseEdit]][hID])
+	{
+	    return SendErrorMessage(playerid, "The specified ID belongs to another house.");
+	}
+	else if (PlayerData[playerid][pEdit] == EDIT_TYPE_PREVIEW)
+	{
+	    return SendErrorMessage(playerid, "You can't edit furniture while previewing.");
 	}
 	else
 	{
-		if (!strcmp(type, "inside", true))
-		{
-			ClearFurniture(house);
-			SendInfoMessage(playerid, "You have cleared the furniture for house %i.", house);
-		}
-		else if (!strcmp(type, "outside", true))
-		{
-			ClearOutsideFurniture(house);
-			SendInfoMessage(playerid, "You have cleared the outside furniture for house %i.", house);
+	    SetPVarInt(playerid, "FurnID", furniture);
+	    Dialog_Show(playerid, FurnEditConfirm, DIALOG_STYLE_MSGBOX, "Furniture Edit", "Please select a type:", "Position", "Texture");
+		SendInfoMessage(playerid, "You are now editing ID: %i. Click the disk icon to save changes.", furniture);
+	}
+	return 1;
+}
 
+CMD:edittexture(playerid, params[])
+{
+	new
+		furniture;
+
+	if (PlayerData[playerid][pHouseEdit] == -1 || !HouseInfo[PlayerData[playerid][pHouseEdit]][hEdit])
+	{
+	    return SendErrorMessage(playerid, "You are not editing furniture.");
+	}
+	else if (sscanf(params, "i", furniture))
+	{
+	    return SendSyntaxMessage(playerid, "/edit (furniture ID)");
+	}
+	else if (!IsValidFurnitureID(furniture))
+	{
+	    return SendErrorMessage(playerid, "You have specified an invalid furniture ID.");
+	}
+	else if (Furniture[furniture][fHouseID] != HouseInfo[PlayerData[playerid][pHouseEdit]][hID])
+	{
+	    return SendErrorMessage(playerid, "The specified ID belongs to another house.");
+	}
+	else if (PlayerData[playerid][pEdit] == EDIT_TYPE_PREVIEW)
+	{
+	    return SendErrorMessage(playerid, "You can't edit furniture while previewing.");
+	}
+	else
+	{
+
+		SendInfoMessage(playerid, "You are now editing ID: %i. Click the disk icon to save changes.", furniture);
+	}
+	return 1;
+}
+
+CMD:delete(playerid, params[])
+{
+	new
+		furniture;
+
+	if (PlayerData[playerid][pHouseEdit] == -1 || !HouseInfo[PlayerData[playerid][pHouseEdit]][hEdit])
+	{
+	    return SendErrorMessage(playerid, "You are not editing furniture.");
+	}
+	else if (sscanf(params, "i", furniture))
+	{
+	    return SendSyntaxMessage(playerid, "/delete (furniture ID)");
+	}
+	else if (!IsValidFurnitureID(furniture))
+	{
+	    return SendErrorMessage(playerid, "You have specified an invalid furniture ID.");
+	}
+	else if (Furniture[furniture][fHouseID] != HouseInfo[PlayerData[playerid][pHouseEdit]][hID])
+	{
+	    return SendErrorMessage(playerid, "The specified ID belongs to another house.");
+	}
+	else
+	{
+		if (PlayerData[playerid][pEdit] == EDIT_TYPE_FURNITURE)
+		{
+			CancelObjectEdit(playerid);
 		}
+		DeleteFurniture(furniture);
+		SendInfoMessage(playerid, "You are deleted furniture ID: %i.", furniture);
+	}
+	return 1;
+}
+EditDynamicObjectEx(playerid, type, objectid, extraid = -1)
+{
+	PlayerData[playerid][pEdit] = type;
+	PlayerData[playerid][pEditID] = extraid;
+
+	return EditDynamicObject(playerid, objectid);
+}
+
+CancelObjectEdit(playerid)
+{
+    PlayerData[playerid][pEdit] = EDIT_TYPE_NONE;
+	PlayerData[playerid][pEditID] = -1;
+
+	return CancelEdit(playerid);
+}
+CMD:cancel(playerid, params[])
+{
+	if (PlayerData[playerid][pHouseEdit] == -1 || !HouseInfo[PlayerData[playerid][pHouseEdit]][hEdit])
+	{
+	    return SendErrorMessage(playerid, "You are not editing furniture.");
+	}
+	else
+	{
+	    SetFurnitureEditMode(PlayerData[playerid][pHouseEdit], false);
+
+	    PlayerData[playerid][pHouseEdit] = -1;
+	    SendInfoMessage(playerid, "You are no longer editing furniture.");
 	}
 	return 1;
 }
@@ -53349,7 +53300,7 @@ CMD:give(playerid, params[])
 
 		PlayerData[playerid][pMaterials] -= amount;
 		PlayerData[targetid][pMaterials] += amount;
-		
+
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
@@ -53466,7 +53417,7 @@ CMD:give(playerid, params[])
 
 		PlayerData[playerid][pPainkillers] -= amount;
 		PlayerData[targetid][pPainkillers] += amount;
-		
+
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
@@ -63797,71 +63748,7 @@ CMD:alock(playerid, params[])
 
 	return 1;
 }
-CMD:delete(playerid, params[])
-{
-	new
-		furniture;
 
-	if (PlayerData[playerid][pFurnitureHouse] == -1 || !HouseInfo[PlayerData[playerid][pFurnitureHouse]][hLabels])
-	{
-		return SendErrorMessage(playerid, "You are not editing furniture.");
-	}
-	else if (sscanf(params, "i", furniture))
-	{
-		return SendSyntaxMessage(playerid, "/delete (furniture ID)");
-	}
-	else if (!IsValidFurnitureID(furniture))
-	{
-		return SendErrorMessage(playerid, "You have specified an invalid furniture ID.");
-	}
-	else if (Furniture[furniture][fHouseID] != HouseInfo[PlayerData[playerid][pFurnitureHouse]][hID])
-	{
-		return SendErrorMessage(playerid, "The specified ID belongs to another house.");
-	}
-	else
-	{
-		if (PlayerData[playerid][pEditType] == EDIT_TYPE_FURNITURE)
-		{
-			CancelObjectEdit(playerid);
-		}
-		DeleteFurniture(furniture);
-		SendInfoMessage(playerid, "You are deleted furniture ID: %i.", furniture);
-	}
-	return 1;
-}
-
-CMD:cancel(playerid, params[])
-{
-	if (PlayerData[playerid][pFurnitureHouse] == -1 || !HouseInfo[PlayerData[playerid][pFurnitureHouse]][hLabels])
-	{
-		return SendErrorMessage(playerid, "You are not editing furniture.");
-	}
-	else
-	{
-		SetFurnitureEditMode(PlayerData[playerid][pFurnitureHouse], false);
-
-		PlayerData[playerid][pFurnitureHouse] = -1;
-		SendInfoMessage(playerid, "You are no longer editing furniture.");
-	}
-	return 1;
-}
-
-CMD:furniture(playerid, params[])
-{
-
-	new id = GetInsideHouse(playerid);
-	if (!IsHouseOwner(playerid, id) && PlayerData[playerid][pFurniturePerms] != id)
-	{
-		return SendErrorMessage(playerid, "You don't have permissions to furnish this house.");
-	}
-	else
-	{
-//		if(!IsPlayerInside(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
-		PlayerData[playerid][pFurnitureHouse] = id;
-		Dialog_Show(playerid, HouseFurniture, DIALOG_STYLE_LIST, "{FFFFFF}Manage Furniture", "Purchase\nAdjustments", "Select", "Cancel");
-	}
-	return 1;
-}
 CMD:househelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
@@ -66794,7 +66681,7 @@ CMD:removebiz(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "Invalid business.");
 	}
 
-
+    ClearProducts(businessid);
 	DestroyDynamic3DTextLabel(BusinessInfo[businessid][bText]);
 	DestroyDynamicPickup(BusinessInfo[businessid][bPickup]);
 	//DestroyDynamicMapIcon(BusinessInfo[businessid][bMapIcon]);
