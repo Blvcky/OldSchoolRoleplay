@@ -827,7 +827,8 @@ enum {
 	EDIT_TYPE_NONE,
 	EDIT_TYPE_PREVIEW,
 	EDIT_TYPE_FURNITURE,
-	EDIT_TYPE_PAYPHONE
+	EDIT_TYPE_PAYPHONE,
+	EDIT_TYPE_ATM
 };
 
 enum
@@ -1072,6 +1073,16 @@ enum e_Timers
 	tHospital,
 	tRefuel,
 	tRepair
+};
+enum e_ATM
+{
+	atmID,
+	atmExists,
+	Float:atmSpawn[4],
+	atmInterior,
+	atmWorld,
+	atmObject,
+	Text3D:atmText
 };
 enum pEnum
 {
@@ -2140,7 +2151,6 @@ enum tEnum
     new Text:introTextdraws[26];
 #endif
 new connectionID;
-new radioConnectionID;
 new queryBuffer[1024];
 new Text:AnimationTD;
 new Text:TimeTD;
@@ -2189,6 +2199,7 @@ new RobberyInfo[robberyEnum];
 new MarkedPositions[MAX_PLAYERS][3][mEnum];
 new Timers[MAX_PLAYERS][e_Timers];
 new PlayerData[MAX_PLAYERS+1][pEnum];
+new ATM[MAX_ATMS][e_ATM];
 new Payphones[MAX_PAYPHONES][e_Payphones];
 new PlayerText:LoginTD[ MAX_PLAYERS ][ 14 ];
 new ReportInfo[MAX_REPORTS][rEnum];
@@ -5698,18 +5709,7 @@ enum impoundData {
 	impoundPickup
 };
 new ImpoundData[MAX_IMPOUND_LOTS][impoundData];
-enum aEnum
-{
-	aID,
-	bool:aExists,
-	Float:aPosX,
-	Float:aPosY,
-	Float:aPosZ,
-	Float:aPosA,
-	Text3D:aText,
-	aObject
-};
-new AtmInfo[MAX_ATMS][aEnum];
+
 
 enum jobEnum
 {
@@ -10739,6 +10739,13 @@ AddPayphone(Float:x, Float:y, Float:z, Float:angle, interior, world)
 	}
 	return id;
 }
+forward OnATMAdded(id);
+public OnATMAdded(id)
+{
+	ATM[id][atmID] = cache_insert_id(connectionID);
+
+	SaveATM(id);
+}
 forward OnPayphoneAdded(id);
 public OnPayphoneAdded(id)
 {
@@ -13871,13 +13878,13 @@ UpdatePayphoneText(id)
 	if (!Payphones[id][phExists]) return 0;
 
 	if (IsPlayerConnected(Payphones[id][phCaller])) {
-		format(string, sizeof(string), "ID: %i\nNumber: %i\n{FFD000}Ringing (/answer)", id, Payphones[id][phNumber]);
+		format(string, sizeof(string), "ID: %i\nNumber: %i\n{FF0000}Ringing (/answer)", id, Payphones[id][phNumber]);
 	}
 	else if (Payphones[id][phOccupied]) {
 		format(string, sizeof(string), "ID: %i\nNumber: %i\n{FF5030}Occupied", id, Payphones[id][phNumber]);
 	}
 	else {
-		format(string, sizeof(string), "ID: %i\nNumber: %i\n{33CC33}Available (/call)", id, Payphones[id][phNumber]);
+		format(string, sizeof(string), "ID: %i\nNumber: %i\n{00ff00}Available (/call)", id, Payphones[id][phNumber]);
 	}
 
 	UpdateDynamic3DTextLabelText(Payphones[id][phText], COLOR_GREY, string);
@@ -14316,7 +14323,7 @@ public mysql_connection_handle(type)
 	if(type == 0)
 		return connectionID;
 	else if(type == 1)
-		return radioConnectionID;
+		return connectionID;
 
 	return 0;
 }
@@ -15275,13 +15282,13 @@ ShowDialogToPlayer(playerid, dialogid)
 		{
 		    if(PlayerData[playerid][pSearch])
 		    {
-		        mysql_format(radioConnectionID, queryBuffer, sizeof(queryBuffer), "SELECT name FROM radiostations WHERE name LIKE '%%%e%%' OR subgenre LIKE '%%%e%%' ORDER BY name LIMIT %i, %i", PlayerData[playerid][pGenre], PlayerData[playerid][pGenre], (PlayerData[playerid][pPage] - 1) * MAX_LISTED_STATIONS, MAX_LISTED_STATIONS);
-				mysql_tquery(radioConnectionID, queryBuffer, "Radio_ListStations", "i", playerid);
+		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT name FROM radiostations WHERE name LIKE '%%%e%%' OR subgenre LIKE '%%%e%%' ORDER BY name LIMIT %i, %i", PlayerData[playerid][pGenre], PlayerData[playerid][pGenre], (PlayerData[playerid][pPage] - 1) * MAX_LISTED_STATIONS, MAX_LISTED_STATIONS);
+				mysql_tquery(connectionID, queryBuffer, "Radio_ListStations", "i", playerid);
 			}
 			else
 			{
-			    mysql_format(radioConnectionID, queryBuffer, sizeof(queryBuffer), "SELECT name FROM radiostations WHERE genre = '%e' AND subgenre = '%e' ORDER BY name LIMIT %i, %i", PlayerData[playerid][pGenre], PlayerData[playerid][pSubgenre], (PlayerData[playerid][pPage] - 1) * MAX_LISTED_STATIONS, MAX_LISTED_STATIONS);
-				mysql_tquery(radioConnectionID, queryBuffer, "Radio_ListStations", "i", playerid);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT name FROM radiostations WHERE genre = '%e' AND subgenre = '%e' ORDER BY name LIMIT %i, %i", PlayerData[playerid][pGenre], PlayerData[playerid][pSubgenre], (PlayerData[playerid][pPage] - 1) * MAX_LISTED_STATIONS, MAX_LISTED_STATIONS);
+				mysql_tquery(connectionID, queryBuffer, "Radio_ListStations", "i", playerid);
 			}
 		}
 		case DIALOG_MP3RADIOSEARCH:
@@ -22510,12 +22517,12 @@ GetNearbyLocation(playerid, Float:radii)
 }
 GetNearbyAtm(playerid)
 {
-	for(new i = 0; i < MAX_ATMS; i ++)
+	for (new i = 0; i < MAX_ATMS; i ++)
 	{
-	    if(AtmInfo[i][aExists] && IsPlayerInRangeOfPoint(playerid, 3.0, AtmInfo[i][aPosX], AtmInfo[i][aPosY], AtmInfo[i][aPosZ]))
+	    if (ATM[i][atmExists] && IsPlayerNearPoint(playerid, 2.0, ATM[i][atmSpawn][0], ATM[i][atmSpawn][1], ATM[i][atmSpawn][2], ATM[i][atmInterior], ATM[i][atmWorld]))
 	    {
 	        return i;
-	    }
+		}
 	}
 	return -1;
 }
@@ -22559,17 +22566,7 @@ ReloadLocker(lockerid)
 		LockerInfo[lockerid][lPickup] = CreateDynamicPickup(LockerInfo[lockerid][lIcon], 1, LockerInfo[lockerid][lPosX], LockerInfo[lockerid][lPosY], LockerInfo[lockerid][lPosZ], .worldid = LockerInfo[lockerid][lWorld], .interiorid = LockerInfo[lockerid][lInterior]);
 	}
 }
-ReloadAtm(atmid)
-{
-	if(AtmInfo[atmid][aExists])
-	{
-	    DestroyDynamic3DTextLabel(AtmInfo[atmid][aText]);
-	    DestroyDynamicObject(AtmInfo[atmid][aObject]);
 
-		AtmInfo[atmid][aText] = CreateDynamic3DTextLabel("ATM machine\n/atm to operate.", COLOR_YELLOW, AtmInfo[atmid][aPosX], AtmInfo[atmid][aPosY], AtmInfo[atmid][aPosZ] + 0.4, 10.0);
-        AtmInfo[atmid][aObject] = CreateDynamicObject(19324, AtmInfo[atmid][aPosX], AtmInfo[atmid][aPosY], AtmInfo[atmid][aPosZ], 0.0, 0.0, AtmInfo[atmid][aPosA]);
-	}
-}
 SetupGang(gangid, name[])
 {
 	strcpy(GangInfo[gangid][gName], name, 32);
@@ -22713,7 +22710,77 @@ ReloadPoint(pointid)
         PointInfo[pointid][pPickup] = CreateDynamicPickup(1239, 1, PointInfo[pointid][pPointX], PointInfo[pointid][pPointY], PointInfo[pointid][pPointZ], .worldid = PointInfo[pointid][pPointWorld], .interiorid = PointInfo[pointid][pPointInterior]);
 	}
 }
+AddATMMachine(Float:x, Float:y, Float:z, Float:angle, interior, world)
+{
+	new
+	    id = GetNextATMID();
 
+	if (id != -1)
+	{
+	    ATM[id][atmExists] = 1;
+	    ATM[id][atmSpawn][0] = x;
+	    ATM[id][atmSpawn][1] = y;
+	    ATM[id][atmSpawn][2] = z;
+	    ATM[id][atmSpawn][3] = angle;
+	    ATM[id][atmInterior] = interior;
+	    ATM[id][atmWorld] = world;
+	    ATM[id][atmObject] = INVALID_OBJECT_ID;
+	    ATM[id][atmText] = INVALID_3DTEXT_ID;
+
+	    UpdateATM(id);
+
+		format(queryBuffer, sizeof(queryBuffer), "INSERT INTO rp_atms (atmInterior) VALUES(%i)", interior);
+		mysql_tquery(connectionID, queryBuffer, "OnATMAdded", "i", id);
+	}
+	return id;
+}
+IsValidATMID(id)
+{
+	return (id >= 0 && id < MAX_ATMS) && ATM[id][atmExists];
+}
+GetNextATMID()
+{
+    for (new i = 0; i < MAX_ATMS; i ++)
+	{
+	    if (!ATM[i][atmExists])
+	    {
+	        return i;
+		}
+	}
+	return -1;
+}
+
+SaveATM(id)
+{
+	static
+	    queryString[192];
+
+	if (!ATM[id][atmExists]) return 0;
+
+	format(queryString, sizeof(queryString), "UPDATE rp_atms SET atmX = %.4f, atmY = %.4f, atmZ = %.4f, atmA = %.4f, atmInterior = %i, atmWorld = %i WHERE atmID = %i",
+	    ATM[id][atmSpawn][0],
+	    ATM[id][atmSpawn][1],
+	    ATM[id][atmSpawn][2],
+	    ATM[id][atmSpawn][3],
+	    ATM[id][atmInterior],
+	    ATM[id][atmWorld],
+	    ATM[id][atmID]
+	);
+	return mysql_tquery(connectionID, queryString);
+}
+
+UpdateATM(id)
+{
+	if (!ATM[id][atmExists])
+	{
+	    return 0;
+	}
+	DestroyDynamic3DTextLabel(ATM[id][atmText]);
+	DestroyDynamicObject(ATM[id][atmObject]);
+	ATM[id][atmObject] = CreateDynamicObject(19324, ATM[id][atmSpawn][0], ATM[id][atmSpawn][1], ATM[id][atmSpawn][2], 0.0, 0.0, ATM[id][atmSpawn][3], ATM[id][atmWorld], ATM[id][atmInterior]);
+	ATM[id][atmText] = CreateDynamic3DTextLabel("ATM machine\n/atm to operate.", COLOR_YELLOW, ATM[id][atmSpawn][0], ATM[id][atmSpawn][1], ATM[id][atmSpawn][2] + 0.9, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, ATM[id][atmWorld], ATM[id][atmInterior]);
+	return 1;
+}
 ReloadGang(gangid)
 {
 	if(GangInfo[gangid][gSetup])
@@ -28492,7 +28559,7 @@ public HTTP_OnMusicFetchResponse(index, response_code, data[])
 forward Radio_PlayStation(playerid);
 public Radio_PlayStation(playerid)
 {
-	if(cache_get_row_count(radioConnectionID))
+	if(cache_get_row_count(connectionID))
 	{
 	    new name[128], url[128];
 
@@ -28529,7 +28596,7 @@ public Radio_PlayStation(playerid)
 forward Radio_ListStations(playerid);
 public Radio_ListStations(playerid)
 {
-	new rows = cache_get_row_count(radioConnectionID);
+	new rows = cache_get_row_count(connectionID);
 
 	if((!rows) && PlayerData[playerid][pSearch] && PlayerData[playerid][pPage] == 1)
 	{
@@ -29852,19 +29919,6 @@ public OnAdminCreateLocker(playerid, lockerid, factionid, Float:x, Float:y, Floa
 
     ReloadLocker(lockerid);
     SendClientMessageEx(playerid, COLOR_GREEN, "** Locker %i created for %s.", lockerid, FactionInfo[factionid][fName]);
-}
-forward OnAdminCreateAtm(playerid, atm, Float:x, Float:y, Float:z, Float:a);
-public OnAdminCreateAtm(playerid, atm, Float:x, Float:y, Float:z, Float:a)
-{
-    AtmInfo[atm][aID] = cache_insert_id(connectionID);
-	AtmInfo[atm][aExists] = true;
-    AtmInfo[atm][aPosX] = x;
-    AtmInfo[atm][aPosY] = y;
-    AtmInfo[atm][aPosZ] = z;
-    AtmInfo[atm][aPosA] = a;
-
-	ReloadAtm(atm);
-    SendClientMessageEx(playerid, COLOR_GREEN, "** ATM [%i] created at %.1f, %.1f, %.1f.", atm, x, y, z);
 }
 
 forward OnAdminCreateLocation(playerid, location, name[], Float:x, Float:y, Float:z);
@@ -32751,13 +32805,17 @@ public OnQueryFinished(threadid, extraid)
 		{
 		    for(new i = 0; i < rows && i < MAX_ATMS; i ++)
 		    {
-		        AtmInfo[i][aID] = cache_get_field_content_int(i, "id");
-		        AtmInfo[i][aPosX] = cache_get_field_content_float(i, "pos_x");
-		        AtmInfo[i][aPosY] = cache_get_field_content_float(i, "pos_y");
-			   	AtmInfo[i][aPosZ] = cache_get_field_content_float(i, "pos_z");
-			   	AtmInfo[i][aPosA] = cache_get_field_content_float(i, "pos_r");
-				AtmInfo[i][aExists] = true;
-				ReloadAtm(i);
+			    ATM[i][atmExists] = 1;
+			    ATM[i][atmID] = cache_get_field_content_int(i, "atmID");
+			    ATM[i][atmSpawn][0] = cache_get_field_content_float(i, "atmX");
+			    ATM[i][atmSpawn][1] = cache_get_field_content_float(i, "atmY");
+			    ATM[i][atmSpawn][2] = cache_get_field_content_float(i, "atmZ");
+			    ATM[i][atmSpawn][3] = cache_get_field_content_float(i, "atmA");
+			    ATM[i][atmInterior] = cache_get_field_content_int(i, "atmInterior");
+			    ATM[i][atmWorld] = cache_get_field_content_int(i, "atmWorld");
+			    ATM[i][atmObject] = INVALID_OBJECT_ID;
+		        ATM[i][atmText] = INVALID_3DTEXT_ID;
+		        UpdateATM(i);
 			}
 			printf("[Script] %i atms loaded", (rows < MAX_ATMS) ? (rows) : (MAX_ATMS));
 		}
@@ -32975,8 +33033,6 @@ public OnGameModeInit()
 	SendRconCommand("weburl www.os-rp.net");
 	print("Old School Roleplay is loading...");
 
-	connectionID = mysql_connect(MYSQL_HOSTNAME, MYSQL_USERNAME, MYSQL_DATABASE, MYSQL_PASSWORD);
-	radioConnectionID = mysql_connect(MYSQL_HOSTNAME, MYSQL_USERNAME, "shoutcast", MYSQL_PASSWORD);
 
 	if(mysql_errno(connectionID))
 	{
@@ -32986,11 +33042,6 @@ public OnGameModeInit()
 	}
 	else
 	{
-		if(mysql_errno(radioConnectionID))
-		{
-		    print("[WARNING] - Couldn't connect to radio station database... server will continue to operate normally.");
-		    radioConnectionID = 0;
-		}
 		//spawn vehicles
 		CreateVehicle(421, 1559.9244, -2338.5549, 13.3744, 89.7600, -1, -1, 100);
 		CreateVehicle(421, 1559.9818, -2331.9814, 13.3744, 89.7600, -1, -1, 100);
@@ -33031,7 +33082,7 @@ public OnGameModeInit()
 		mysql_tquery(connectionID, "SELECT * FROM factionlockers", "OnQueryFinished", "ii", THREAD_LOAD_LOCKERS, 0);
 	    mysql_tquery(connectionID, "SELECT * FROM locations", "OnQueryFinished", "ii", THREAD_LOAD_LOCATIONS, 0);
 	    mysql_tquery(connectionID, "SELECT * FROM crews", "OnQueryFinished", "ii", THREAD_LOAD_CREWS, 0);
-	    mysql_tquery(connectionID, "SELECT * FROM atms", "OnQueryFinished", "ii", THREAD_LOAD_ATMS, 0);
+	    mysql_tquery(connectionID, "SELECT * FROM rp_atms", "OnQueryFinished", "ii", THREAD_LOAD_ATMS, 0);
 		mysql_tquery(connectionID, "SELECT * FROM `rp_gundamages`", "OnLoadGunDamages");
 		mysql_tquery(connectionID, "SELECT * FROM `crates`", "OnQueryFinished", "ii", LOADCRATE_THREAD, 0);
 		mysql_tquery(connectionID, "SELECT * FROM `gates`", "OnQueryFinished", "ii", THREAD_LOAD_GATES, 0);
@@ -38347,6 +38398,10 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			{
 			    UpdatePayphone(PlayerData[playerid][pEditID]);
 			}
+ 	        case EDIT_TYPE_ATM:
+	        {
+	            UpdateATM(PlayerData[playerid][pEditID]);
+			}
 		}
 	    PlayerData[playerid][pEdit] = EDIT_TYPE_NONE;
 	}
@@ -38411,6 +38466,18 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	            SavePayphone(PlayerData[playerid][pEditID]);
 
 	            SendInfoMessage(playerid, "You have edited payphone ID: %i.", PlayerData[playerid][pEditID]);
+	        }
+	        case EDIT_TYPE_ATM: // ATM machines
+	        {
+	            ATM[PlayerData[playerid][pEditID]][atmSpawn][0] = x;
+	            ATM[PlayerData[playerid][pEditID]][atmSpawn][1] = y;
+	            ATM[PlayerData[playerid][pEditID]][atmSpawn][2] = z;
+	            ATM[PlayerData[playerid][pEditID]][atmSpawn][3] = rz;
+
+	            UpdateATM(PlayerData[playerid][pEditID]);
+	            SaveATM(PlayerData[playerid][pEditID]);
+
+	            SendInfoMessage(playerid, "You have edited ATM machine ID: %i.", PlayerData[playerid][pEditID]);
 	        }
 	    }
 	    PlayerData[playerid][pEdit] = EDIT_TYPE_NONE;
@@ -44729,7 +44796,7 @@ Dialog:DIALOG_MP3PLAYER(playerid, response, listitem, inputtext[])
             }
             case 2:
             {
-				if(!radioConnectionID)
+				if(!connectionID)
 				{
 				    return SendClientMessage(playerid, COLOR_GREY, "The radio station database is currently unavailable.");
 				}
@@ -45012,13 +45079,13 @@ Dialog:DIALOG_MP3RADIORESULTS(playerid, response, listitem, inputtext[])
 
 			if(PlayerData[playerid][pSearch])
 			{
-			    mysql_format(radioConnectionID, queryBuffer, sizeof(queryBuffer), "SELECT name, url FROM radiostations WHERE name LIKE '%%%e%%' OR subgenre LIKE '%%%e%%' ORDER BY name LIMIT %i, 1", PlayerData[playerid][pGenre], PlayerData[playerid][pGenre], listitem);
-				mysql_tquery(radioConnectionID, queryBuffer, "Radio_PlayStation", "i", playerid);
+			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT name, url FROM radiostations WHERE name LIKE '%%%e%%' OR subgenre LIKE '%%%e%%' ORDER BY name LIMIT %i, 1", PlayerData[playerid][pGenre], PlayerData[playerid][pGenre], listitem);
+				mysql_tquery(connectionID, queryBuffer, "Radio_PlayStation", "i", playerid);
 			}
 			else
 			{
-				mysql_format(radioConnectionID, queryBuffer, sizeof(queryBuffer), "SELECT name, url FROM radiostations WHERE genre = '%e' AND subgenre = '%e' ORDER BY name LIMIT %i, 1", PlayerData[playerid][pGenre], PlayerData[playerid][pSubgenre], listitem);
-	        	mysql_tquery(radioConnectionID, queryBuffer, "Radio_PlayStation", "i", playerid);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT name, url FROM radiostations WHERE genre = '%e' AND subgenre = '%e' ORDER BY name LIMIT %i, 1", PlayerData[playerid][pGenre], PlayerData[playerid][pSubgenre], listitem);
+	        	mysql_tquery(connectionID, queryBuffer, "Radio_PlayStation", "i", playerid);
 			}
 		}
 	}
@@ -48164,8 +48231,8 @@ Dialog:DIALOG_ADDSTATION(playerid, response, listitem, inputtext[])
     if(response)
     {
         new name;
-        mysql_format(radioConnectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO radiostations VALUES ('%e', '%e', '%e', '%e')", name, inputtext, PlayerData[playerid][pSubgenre], PlayerData[playerid][pGenre]);
-		mysql_tquery(radioConnectionID, queryBuffer);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO radiostations VALUES ('%e', '%e', '%e', '%e')", name, inputtext, PlayerData[playerid][pSubgenre], PlayerData[playerid][pGenre]);
+		mysql_tquery(connectionID, queryBuffer);
 		PlayerData[playerid][pStationEdit] = 0;
     }
     return 1;
@@ -63286,7 +63353,7 @@ CMD:dynamichelp(playerid, params[])
 	SendClientMessage(playerid, COLOR_GREEN, "FIRES:{DDDDDD} /randomfire, /killfire, /spawnfire.");
 	SendClientMessage(playerid, COLOR_GREEN, "LOCKERS:{DDDDDD} /createlocker, /editlocker, /removelocker.");
 	SendClientMessage(playerid, COLOR_GREEN, "LOCATIONS:{DDDDDD} /createlocation, /editlocation, /removelocation.");
-	SendClientMessage(playerid, COLOR_GREEN, "ATMS:{DDDDDD} /createatm, /editatm, /removeatm");
+	SendClientMessage(playerid, COLOR_GREEN, "ATMS:{DDDDDD} /createatm, /gotoatm, /editatm, /deleteatm.");
 	SendClientMessage(playerid, COLOR_GREEN, "Gun Racks:{DDDDDD} /createrack, /editrack, /destroyrack");
 	SendClientMessage(playerid, COLOR_GREEN, "Gang Tags:{DDDDDD} /creategangtag, /destroygangtag");
 	SendClientMessage(playerid, COLOR_GREEN, "Dynamic Gate:{DDDDDD} /gnext, /gedit");
@@ -80755,6 +80822,61 @@ CMD:gang(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT COUNT(*) FROM "#TABLE_USERS" WHERE gang = %i", PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer, "OnPlayerAttemptInviteGang", "ii", playerid, targetid);
 	}
+	else if(!strcmp(option, "skin", true))
+	{
+	    new slot, skinid, gangid = PlayerData[playerid][pGang];
+		if(PlayerData[playerid][pGangRank] < 6)
+		{
+		    return SendClientMessage(playerid, COLOR_GREY, "You need to be at least rank 6 to use this command.");
+		}
+	    if(sscanf(param, "ii", slot, skinid))
+	    {
+
+	        SendClientMessage(playerid, COLOR_NAVYBLUE, "______ Gang Skins ______");
+
+	        for(new i = 0; i < MAX_GANG_SKINS; i ++)
+	        {
+	            if(GangInfo[gangid][gSkins][i] == 0)
+	            	SendClientMessageEx(playerid, COLOR_GREY2, "Skin %i: (none)", i + 1);
+				else
+				    SendClientMessageEx(playerid, COLOR_GREY2, "Skin %i: %i", i + 1, GangInfo[gangid][gSkins][i]);
+	        }
+
+	        return SendClientMessageEx(playerid, COLOR_SYNTAX, "USAGE: /gang [skin] [slot (1-%i)] [skinid]", MAX_GANG_SKINS);
+	    }
+		new forbidSkin[35] =
+		{
+			0, 71, 74, 264, 265, 266, 267, 274, 275, 276,
+			277, 278, 279, 280, 281, 282, 283, 284, 285,
+			286, 287, 288, 300, 301, 302, 306, 307, 308,
+			309, 310, 311
+		};
+
+
+	    if(!(1 <= slot <= MAX_GANG_SKINS))
+	    {
+	        return SendClientMessage(playerid, COLOR_GREY, "Invalid slot.");
+		}
+		if(!(1 <= skinid <= 311))
+		{
+		    return SendClientMessage(playerid, COLOR_GREY, "Invalid skin.");
+		}
+		for(new i = 0; i < sizeof forbidSkin; i++)
+		{
+			if(skinid == forbidSkin[i])
+			{
+				return SendClientMessage(playerid, COLOR_GREY, "You can't select this skin.");
+			}
+		}
+		slot--;
+
+		GangInfo[gangid][gSkins][slot] = skinid;
+
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO gangskins VALUES(%i, %i, %i) ON DUPLICATE KEY UPDATE skinid = %i", gangid, slot, skinid, skinid);
+		mysql_tquery(connectionID, queryBuffer);
+
+		SendClientMessageEx(playerid, COLOR_WHITE, "** You have set the skin in slot %i to ID %i.", slot + 1, skinid);
+	}
 	else if(!strcmp(option, "kick", true))
 	{
 		if(PlayerData[playerid][pGangRank] < 5)
@@ -83291,61 +83413,119 @@ CMD:createlocation(playerid, params[])
 }
 CMD:createatm(playerid, params[])
 {
-    new Float:x, Float:y, Float:z, Float:a;
-    if(PlayerData[playerid][pAdmin] < ASST_MANAGEMENT && !PlayerData[playerid][pDynamicAdmin])
-    {
-        return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
-    }
-    if(sscanf(params, "s[32]", "confirm"))
+	if (PlayerData[playerid][pAdmin] < 5)
 	{
-	    SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /createatm [confirm]");
-		SendClientMessage(playerid, COLOR_WHITE, "** NOTE: The ATM will be created at the coordinates you are standing on.");
-		return 1;
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
 	}
-	if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
+	else if (GetNearbyAtm(playerid) != -1)
 	{
-	    return SendClientMessage(playerid, COLOR_GREY, "Your virtual world & interior must be 0!");
+	    return SendErrorMessage(playerid, "There is another ATM nearby.");
 	}
-    GetPlayerPos(playerid, x, y, z);
- 	GetPlayerFacingAngle(playerid, a);
-    for(new i = 0; i < MAX_ATMS; i ++)
+	else
 	{
-		if(!AtmInfo[i][aExists])
+	    new
+	        Float:x,
+	        Float:y,
+	        Float:z,
+	        Float:angle,
+			id = -1;
+
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, angle);
+
+		x += 2.0 * floatsin(-angle, degrees);
+		y += 2.0 * floatcos(-angle, degrees);
+
+		id = AddATMMachine(x, y, z, angle, GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
+
+		if (id == -1)
 		{
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO atms VALUES(null, '%f', '%f', '%f', '%f')", x, y, z, a);
-		    mysql_tquery(connectionID, queryBuffer, "OnAdminCreateAtm", "iiffff", playerid, i, x, y, z, a);
-		    return 1;
+		    return SendErrorMessage(playerid, "There are no available ATM slots.");
+		}
+		else
+		{
+		    EditDynamicObjectEx(playerid, EDIT_TYPE_ATM, ATM[id][atmObject], id);
+		    SendInfoMessage(playerid, "You have added ATM machine %i (/editatm).", id);
 		}
 	}
-
-	SendClientMessage(playerid, COLOR_GREY, "ATM slots are currently full. Ask developers to increase the internal limit.");
 	return 1;
 }
-CMD:removeatm(playerid, params[])
+
+CMD:gotoatm(playerid, params[])
 {
-	new loc;
+	new id;
 
-	if(PlayerData[playerid][pAdmin] < ASST_MANAGEMENT && !PlayerData[playerid][pDynamicAdmin])
+	if (PlayerData[playerid][pAdmin] < 5)
 	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
 	}
-	if(sscanf(params, "i", loc))
+	else if (sscanf(params, "i", id))
 	{
-	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /removeatm [atmid] (/nearest)");
+	    return SendSyntaxMessage(playerid, "/gotoatm (machine ID)");
 	}
-	if(!(0 <= loc < MAX_ATMS) || !AtmInfo[loc][aExists])
+	else if (!IsValidATMID(id))
 	{
-	    return SendClientMessage(playerid, COLOR_GREY, "Invalid ATM or Static.");
+	    return SendErrorMessage(playerid, "You have specified an invalid ATM machine.");
 	}
-    DestroyDynamic3DTextLabel(AtmInfo[loc][aText]);
-    DestroyDynamicObject(AtmInfo[loc][aObject]);
+	else
+	{
+	    TeleportToCoords(playerid, ATM[id][atmSpawn][0], ATM[id][atmSpawn][1], ATM[id][atmSpawn][2], ATM[id][atmSpawn][3], ATM[id][atmInterior], ATM[id][atmWorld]);
+	    SendInfoMessage(playerid, "You have teleported to ATM machine %i.", id);
+	}
+	return 1;
+}
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM atms WHERE id = %i", AtmInfo[loc][aID]);
-	mysql_tquery(connectionID, queryBuffer);
-	AtmInfo[loc][aExists] = false;
-	AtmInfo[loc][aID] = 0;
+CMD:editatm(playerid, params[])
+{
+	new id;
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed ATM %i.", loc);
+	if (PlayerData[playerid][pAdmin] < 5)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else if (sscanf(params, "i", id))
+	{
+		return SendSyntaxMessage(playerid, "/editatm (machine ID)");
+	}
+	else if (!IsValidATMID(id))
+	{
+	    return SendErrorMessage(playerid, "You have specified an invalid ATM machine.");
+	}
+	else
+	{
+    	EditDynamicObjectEx(playerid, EDIT_TYPE_ATM, ATM[id][atmObject], id);
+		SendInfoMessage(playerid, "Click on the disk icon to save changes.");
+	}
+	return 1;
+}
+
+CMD:deleteatm(playerid, params[])
+{
+	new id;
+
+	if (PlayerData[playerid][pAdmin] < 5)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else if (sscanf(params, "i", id))
+	{
+	    return SendSyntaxMessage(playerid, "/deleteatm (machine ID)");
+	}
+	else if (!IsValidATMID(id))
+	{
+	    return SendErrorMessage(playerid, "You have specified an invalid ATM machine.");
+	}
+	else
+	{
+	    DestroyDynamic3DTextLabel(ATM[id][atmText]);
+	    DestroyDynamicObject(ATM[id][atmObject]);
+
+	    format(queryBuffer, sizeof(queryBuffer), "DELETE FROM rp_atms WHERE `atmID` = %i", ATM[id][atmID]);
+	    mysql_tquery(connectionID, queryBuffer);
+
+		ATM[id][atmExists] = 0;
+        SendInfoMessage(playerid, "You have deleted ATM %i.", id);
+	}
 	return 1;
 }
 CMD:removelocation(playerid, params[])
