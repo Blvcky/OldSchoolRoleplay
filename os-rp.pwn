@@ -47754,11 +47754,11 @@ Dialog:DIALOG_LOCATE(playerid, response, listitem, inputtext[])
 		    }
 		    case 1: // STORES
 		    {
-		    	Dialog_Show(playerid, DIALOG_LOCATELIST2, DIALOG_STYLE_LIST, "GPS - Select Destination", "24/7\nAmmunation\nClothing Store\nGymnasium\nRestaurant\nAdvertisement Store\nClub\nTool Shop", "Select", "Close");
+		    	Dialog_Show(playerid, DIALOG_LOCATELIST2, DIALOG_STYLE_LIST, "GPS - Select Destination", "24/7\nAmmunation\nClothing Store\nGymnasium\nRestaurant\nAdvertisement Store\nClub\nTool Shop\nDealership", "Select", "Close");
 		    }
 		    case 2: // GENERAL LOCATIONS
 		    {
-		    	Dialog_Show(playerid, DIALOG_LOCATELIST3, DIALOG_STYLE_LIST, "GPS - Select Destination", "DMV\nBank\nPaintball\nCasino\nVIP\nDrug Factory\nMaterials Pickup 1\nMaterials Pickup 2\nCar Dealership\nAirplane Dealership\nBoat Dealership\nMaterials Factory 1\nMaterials Factory 2\nHeisenbergs\nAirport Materials Depot\nMarina Materials Depot", "Select", "Close");
+		    	Dialog_Show(playerid, DIALOG_LOCATELIST3, DIALOG_STYLE_LIST, "GPS - Select Destination", "DMV\nBank\nPaintball\nCasino\nVIP\nDrug Factory\nMaterials Pickup 1\nMaterials Pickup 2\nMaterials Factory 1\nMaterials Factory 2\nHeisenbergs\nAirport Materials Depot\nMarina Materials Depot", "Select", "Close");
 		    }
 			case 3: // Find Turfs
 			{
@@ -47950,6 +47950,8 @@ Dialog:DIALOG_LOCATELIST2(playerid, response, listitem, inputtext[])
 		        LocateMethod(playerid,"Club");
 		    case 7:
 		        LocateMethod(playerid,"ToolShop");
+			case 8:
+			    LocateMethod(playerid,"Dealership");
 		}
 	}
 	return 1;
@@ -47976,21 +47978,15 @@ Dialog:DIALOG_LOCATELIST3(playerid, response, listitem, inputtext[])
 				LocateMethod(playerid,"MatPickup1");
             case 7:
 				LocateMethod(playerid,"MatPickup2");
-        	case 8:
-				LocateMethod(playerid,"Dealership");
-            case 9:
-				LocateMethod(playerid,"AirDealer");
-            case 10:
-				LocateMethod(playerid,"BoatDealer");
-            case 11:
+            case 8:
 				LocateMethod(playerid,"MatFactory1");
-            case 12:
+            case 9:
 				LocateMethod(playerid,"MatFactory2");
-        	case 13:
+        	case 10:
 				LocateMethod(playerid,"Heisenbergs");
-			case 14:
+			case 11:
 			    LocateMethod(playerid,"AirportDepot");
-			case 15:
+			case 12:
 			    LocateMethod(playerid,"MarinaDepot");
 		}
 	}
@@ -70557,9 +70553,17 @@ LocateMethod(playerid, params[])
 	}
 	else if(!strcmp(params, "dealership", true))
 	{
+	    new businessid = GetClosestBusiness(playerid, BUSINESS_DEALERSHIP);
+
+	    if(businessid == -1)
+	    {
+	        return SendClientMessage(playerid, COLOR_GREY, "There are no businesses of this type to be found.");
+	    }
+
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
-	    SetPlayerCheckpoint(playerid, 542.0433, -1293.5909, 17.2422, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the dealership.");
+	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
+	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest supermarket to you.");
+
 	}
 	else if(!strcmp(params, "boatdealer", true))
 	{
