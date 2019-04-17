@@ -827,6 +827,7 @@ enum {
 	EDIT_TYPE_NONE,
 	EDIT_TYPE_PREVIEW,
 	EDIT_TYPE_FURNITURE,
+	EDIT_TYPE_PAYPHONE
 };
 
 enum
@@ -9015,58 +9016,10 @@ Streamer_SetExtraInt(objectid, type, value)
 }
 SetRewardPlay(enable)
 {
-/*	new hostname[128];
-
-	GetServerVarAsString("hostname", hostname, sizeof(hostname));
-
-	if(enable)
-	{
-	    if(strfind(hostname, "Double XP") == -1)
-	    {
-		    format(hostname, sizeof(hostname), "hostname %s [2EXP!]", hostname);
-		    SendRconCommand(hostname);
-		}
-	}
-	else
-	{
-	    new pos = strfind(hostname, " [2EXP!]");
-
-	    if(pos != -1)
-	    {
-	        hostname[pos] = 0;
-		    format(hostname, sizeof(hostname), "hostname %s", hostname);
-		    SendRconCommand(hostname);
-		}
-	}
-*/
 	gHReward = enable;
 }
 SetDoubleXP(enable)
 {
-/*	new hostname[128];
-
-	GetServerVarAsString("hostname", hostname, sizeof(hostname));
-
-	if(enable)
-	{
-	    if(strfind(hostname, "Double XP") == -1)
-	    {
-		    format(hostname, sizeof(hostname), "hostname %s [2EXP!]", hostname);
-		    SendRconCommand(hostname);
-		}
-	}
-	else
-	{
-	    new pos = strfind(hostname, " [2EXP!]");
-
-	    if(pos != -1)
-	    {
-	        hostname[pos] = 0;
-		    format(hostname, sizeof(hostname), "hostname %s", hostname);
-		    SendRconCommand(hostname);
-		}
-	}
-*/
 	gDoubleXP = enable;
 }
 
@@ -10781,10 +10734,38 @@ AddPayphone(Float:x, Float:y, Float:z, Float:angle, interior, world)
 
 		UpdatePayphone(id);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO "#TABLE_PAYPHONES" (phInterior) VALUES(%i)", interior);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO rp_payphones (phInterior) VALUES(%i)", interior);
 		mysql_tquery(connectionID, queryBuffer, "OnPayphoneAdded", "i", id);
 	}
 	return id;
+}
+forward OnPayphoneAdded(id);
+public OnPayphoneAdded(id)
+{
+	Payphones[id][phID] = cache_insert_id(connectionID);
+
+	SavePayphone(id);
+}
+
+SavePayphone(id)
+{
+	static
+	    queryString[512];
+
+	if (!Payphones[id][phExists]) return 0;
+
+	format(queryString, sizeof(queryString), "UPDATE rp_payphones SET phNumber = %i, phX = %.4f, phY = %.4f, phZ = %.4f, phA = %.4f, phInterior = %i, phWorld = %i WHERE phID = %i",
+	    Payphones[id][phNumber],
+	    Payphones[id][phX],
+	    Payphones[id][phY],
+	    Payphones[id][phZ],
+	    Payphones[id][phA],
+	    Payphones[id][phInterior],
+	    Payphones[id][phWorld],
+	    Payphones[id][phID]
+	);
+
+	return mysql_tquery(connectionID, queryString);
 }
 stock GetPlayerSQLId(playerid)
 {
@@ -13011,17 +12992,7 @@ GetVehicleModelFromName(const string[])
 	}
 	return 0;
 }
-GetVehicleFromPlate(const plate[])
-{
-	for (new i = 0; i < MAX_VEHICLES; i ++)
-	{
-		if (IsValidVehicleID(i) && !strcmp(VehicleInfo[i][vPlate], plate, true))
-		{
-			return i;
-		}
-	}
-	return -1;
-}
+
 StopWorkout(playerid)
 {
 	if (PlayerData[playerid][pWorkout] != WORKOUT_NONE)
@@ -24278,13 +24249,6 @@ ShowFurniturePreviewer(playerid)
 	return 0;
 }
 
-HideFurniturePreviewer(playerid)
-{
-	PlayerData[playerid][pFurnitureMenu] = 0;
-
-	HidePlayerTextDraws(playerid, 70, 77);
-	CancelSelectTextDraw(playerid);
-}
 UpdateFurniture(furniture)
 {
 	if (!IsValidFurnitureID(furniture))
@@ -32903,6 +32867,31 @@ public OnQueryFinished(threadid, extraid)
 		}
 	}
 }
+
+forward OnLoadPayphones();
+public OnLoadPayphones()
+{
+	new
+	    rows = cache_get_row_count(connectionID);
+
+	for (new i = 0; i < rows; i ++)
+	{
+	    Payphones[i][phExists] = 1;
+	    Payphones[i][phID] = cache_get_field_content_int(i, "phID");
+	    Payphones[i][phNumber] = cache_get_field_content_int(i, "phNumber");
+	    Payphones[i][phX] = cache_get_field_content_float(i, "phX");
+	    Payphones[i][phY] = cache_get_field_content_float(i, "phY");
+	    Payphones[i][phZ] = cache_get_field_content_float(i, "phZ");
+	    Payphones[i][phA] = cache_get_field_content_float(i, "phA");
+	    Payphones[i][phInterior] = cache_get_field_content_int(i, "phInterior");
+	    Payphones[i][phWorld] = cache_get_field_content_int(i, "phWorld");
+	    Payphones[i][phCaller] = INVALID_PLAYER_ID;
+	    Payphones[i][phObject] = INVALID_OBJECT_ID;
+	    Payphones[i][phText] = INVALID_3DTEXT_ID;
+
+	    UpdatePayphone(i);
+	}
+}
 forward OnLoadFurniture();
 public OnLoadFurniture()
 {
@@ -33050,6 +33039,7 @@ public OnGameModeInit()
 	 	mysql_tquery(connectionID, "SELECT * FROM `impoundlots`", "Impound_Load", "");
 		mysql_tquery(connectionID, "SELECT * FROM `gunracks`", "Rack_Load", "");
 		mysql_tquery(connectionID, "SELECT * FROM rp_dealercars", "OnLoadDealershipCars");
+		mysql_tquery(connectionID, "SELECT * FROM rp_payphones", "OnLoadPayphones");
 	    mysql_tquery(connectionID, "UPDATE "#TABLE_USERS" SET vippackage = 0, viptime = 0 WHERE viptime < UNIX_TIMESTAMP()", "OnQueryFinished", "ii", THREAD_REMOVE_VIP, 0);
 		print("Saving server information on mysql...");
 		SaveMysqlInformation();
@@ -38353,6 +38343,10 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	        {
 	            UpdateFurniture(PlayerData[playerid][pEditID]);
 	        }
+   			case EDIT_TYPE_PAYPHONE:
+			{
+			    UpdatePayphone(PlayerData[playerid][pEditID]);
+			}
 		}
 	    PlayerData[playerid][pEdit] = EDIT_TYPE_NONE;
 	}
@@ -38405,6 +38399,18 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	            SaveFurniture(PlayerData[playerid][pEditID]);
 
 	            SendInfoMessage(playerid, "You have edited furniture ID: %i.", PlayerData[playerid][pEditID]);
+	        }
+	        case EDIT_TYPE_PAYPHONE: // Payphones
+			{
+	            Payphones[PlayerData[playerid][pEditID]][phX] = x;
+	            Payphones[PlayerData[playerid][pEditID]][phY] = y;
+	            Payphones[PlayerData[playerid][pEditID]][phZ] = z;
+	            Payphones[PlayerData[playerid][pEditID]][phA] = rz;
+
+	            UpdatePayphone(PlayerData[playerid][pEditID]);
+	            SavePayphone(PlayerData[playerid][pEditID]);
+
+	            SendInfoMessage(playerid, "You have edited payphone ID: %i.", PlayerData[playerid][pEditID]);
 	        }
 	    }
 	    PlayerData[playerid][pEdit] = EDIT_TYPE_NONE;
@@ -49184,6 +49190,128 @@ func VehEngine(playerid)
 		SetVehicleParams(vehicleid, VEHICLE_ENGINE, false);
 		ShowActionBubble(playerid, "** %s's engine was turned off (( %s )).", GetVehicleName(vehicleid), GetRPName(playerid));
 
+	}
+	return 1;
+}
+CMD:addpayphone(playerid, params[])
+{
+	if (PlayerData[playerid][pAdmin] < 5)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else if (GetClosestPayphone(playerid) != -1)
+	{
+	    return SendErrorMessage(playerid, "There is another payphone nearby.");
+	}
+	else
+	{
+	    new
+	        Float:x,
+	        Float:y,
+	        Float:z,
+	        Float:angle,
+			id = -1;
+
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, angle);
+
+		x += 2.0 * floatsin(-angle, degrees);
+		y += 2.0 * floatcos(-angle, degrees);
+
+		id = AddPayphone(x, y, z, angle, GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
+
+		if (id == -1)
+		{
+		    return SendErrorMessage(playerid, "There are no available payphone slots.");
+		}
+		else
+		{
+		    EditDynamicObjectEx(playerid, EDIT_TYPE_PAYPHONE, Payphones[id][phObject], id);
+		    SendInfoMessage(playerid, "You have added payphone %i (/editpayphone).", id);
+		}
+	}
+	return 1;
+}
+
+CMD:gotopayphone(playerid, params[])
+{
+	new id;
+
+	if (PlayerData[playerid][pAdmin] < 5)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else if (sscanf(params, "i", id))
+	{
+	    return SendSyntaxMessage(playerid, "/gotopayphone (payphone ID)");
+	}
+	else if (!IsValidPayphoneID(id))
+	{
+	    return SendErrorMessage(playerid, "You have specified an invalid payphone ID.");
+	}
+	else
+	{
+	    TeleportToCoords(playerid, Payphones[id][phX], Payphones[id][phY], Payphones[id][phZ], Payphones[id][phA], Payphones[id][phInterior], Payphones[id][phWorld]);
+	    SendInfoMessage(playerid, "You have teleported to payphone %i.", id);
+	}
+	return 1;
+}
+
+CMD:editpayphone(playerid, params[])
+{
+	new id;
+
+	if (PlayerData[playerid][pAdmin] < 5)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else if (sscanf(params, "i", id))
+	{
+		return SendSyntaxMessage(playerid, "/editpayphone (payphone ID)");
+	}
+	else if (!IsValidPayphoneID(id))
+	{
+	    return SendErrorMessage(playerid, "You have specified an invalid payphone ID.");
+	}
+	else
+	{
+    	EditDynamicObjectEx(playerid, EDIT_TYPE_PAYPHONE, Payphones[id][phObject], id);
+		SendInfoMessage(playerid, "Click on the disk icon to save changes.");
+	}
+	return 1;
+}
+
+CMD:deletepayphone(playerid, params[])
+{
+	new id;
+
+	if (PlayerData[playerid][pAdmin] < 5)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else if (sscanf(params, "i", id))
+	{
+	    return SendSyntaxMessage(playerid, "/deletepayphone (payphone ID)");
+	}
+	else if (!IsValidPayphoneID(id))
+	{
+	    return SendErrorMessage(playerid, "You have specified an invalid payphone ID.");
+	}
+	else
+	{
+		if (Payphones[id][phCaller] != INVALID_PLAYER_ID)
+		{
+		    HangupCall(Payphones[id][phCaller]);
+	    }
+
+	    DestroyDynamic3DTextLabel(Payphones[id][phText]);
+	    DestroyDynamicObject(Payphones[id][phObject]);
+
+	    format(queryBuffer, sizeof(queryBuffer), "DELETE FROM rp_payphones WHERE `phID` = %i", Payphones[id][phID]);
+	    mysql_tquery(connectionID, queryBuffer);
+
+		Payphones[id][phExists] = 0;
+        SendInfoMessage(playerid, "You have deleted payphone %i.", id);
 	}
 	return 1;
 }
@@ -63168,7 +63296,8 @@ CMD:dynamichelp(playerid, params[])
 	SendClientMessage(playerid, COLOR_GREEN, "Gun Racks:{DDDDDD} /createrack, /editrack, /destroyrack");
 	SendClientMessage(playerid, COLOR_GREEN, "Gang Tags:{DDDDDD} /creategangtag, /destroygangtag");
 	SendClientMessage(playerid, COLOR_GREEN, "Dynamic Gate:{DDDDDD} /gnext, /gedit");
-//	SendClientMessage(playerid, COLOR_GREEN, "Speed Camers:{DDDDDD} /createspeed, /destroyspeed");
+	SendClientMessage(playerid, COLOR_GREEN, "Payphones:{FFFFFF} /addpayphone, /gotopayphone, /editpayphone, /deletepayphone.");
+
 
 	return 1;
 }
@@ -69835,233 +69964,7 @@ CMD:texts(playerid, params[])
     mysql_tquery(connectionID, queryBuffer, "OnQueryFinished", "ii", THREAD_VIEW_TEXTS, playerid);
 	return 1;
 }
-IsAtPPhone(playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		if(IsPlayerInRangeOfPoint(playerid,2.0, 2257.6204,-1211.6672,23.9688))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 2259.1699,-1211.6823,23.9688))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 2166.4114,-1155.8069,24.8616))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 2166.3911,-1154.8484,24.8768))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 2069.4734,-1766.7620,13.5627))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1805.7720,-1600.7738,13.5469))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1806.7633,-1599.9169,13.5469))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 177.3324,-181.1043,342.9255))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 175.3610,-181.0896,342.9255))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1807.7419,-1599.0959,13.5469))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1808.6910,-1598.2692,13.5469))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1809.8148,-1597.3035,13.5469))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1723.0848,-1721.3447,13.5474))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1723.0874,-1720.4420,13.5396))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1721.1917,-1720.3246,13.5410))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 637.9525,-1229.1355,18.0662))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 637.9161,-1227.5524,18.1311))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 523.9922,-1525.5909,14.7481))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 523.0968,-1526.4395,14.8025))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 522.3276,-1525.6387,14.7507))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 523.1563,-1524.7772,14.6955))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 523.1030,-1517.2473,14.6005))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 522.3268,-1516.3895,14.5959))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 523.1338,-1515.5823,14.5916))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 523.9926,-1516.4518,14.5963))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 355.4074,-1365.2148,14.4666))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 356.8159,-1364.4976,14.4850))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1597.3217,-2237.9460,13.5531))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1929.0925,-1784.8688,13.5469))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 2307.9922,-1642.1765,14.8270))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 2517.4741,-1513.4985,24.0000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1755.7268,-1943.5547,13.5699))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1607.9260,-1742.0320,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1607.7500,-1745.0874,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1607.9247,-1748.1997,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1607.8302,-1751.4835,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1607.9271,-1754.2765,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1580.1117,-1737.3566,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1579.9865,-1739.0687,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1580.0710,-1740.7539,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1580.0695,-1742.2753,1441.2000))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1126.9550,-1439.2750,15.7969))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1125.8700,-1438.2302,15.7969))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1126.9512,-1437.2789,15.7969))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1127.9321,-1438.1611,15.7969))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1727.2344,-1905.1825,13.5636))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1704.6962,-1913.2136,13.5691))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1703.7516,-1913.9818,13.5693))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1702.8719,-1913.0397,13.5695))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1703.8611,-1912.3149,13.5693))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1703.6171,-1910.4674,13.5693))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1702.8115,-1909.6428,13.5695))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1703.5713,-1908.8021,13.5694))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1704.4790,-1909.5593,13.5691))
-		{
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,2.0, 1796.4546,-1884.7369,13.4014))
-		{
-			return 1;
-		}
-	}
-	return 0;
-}
+
 CMD:h(playerid, params[])
 {
 	return callcmd::hangup(playerid, params);
@@ -70146,12 +70049,7 @@ CMD:call(playerid, params[])
 	else if (sscanf(params, "s[64]", nam1))
 	{
 		SendSyntaxMessage(playerid, "/call [number/contact name]");
-		SendInfoMessage(playerid, "Numbers:");
-		SendInfoMessage(playerid, "911 - Emergency");
-		SendInfoMessage(playerid, "991 - Non-Emergency");
-		SendInfoMessage(playerid, "555 - Taxi");
-		SendInfoMessage(playerid, "444 - Advertisements");
-		SendInfoMessage(playerid, "655 - Rapid Recovery");
+		SendClientMessage(playerid, COLOR_SYNTAX, "Special numbers: 911, 6324(taxi), 8294(mechanic)");
 		return 1;
 	}
 	else
