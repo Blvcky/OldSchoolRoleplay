@@ -47750,7 +47750,7 @@ Dialog:DIALOG_LOCATE(playerid, response, listitem, inputtext[])
 		{
 		    case 0: // JOBS
 		    {
-		    	Dialog_Show(playerid, DIALOG_LOCATELIST1, DIALOG_STYLE_LIST, "GPS - Select Destination", "Pizzaman\nCourier\nFisherman\nBodyguard\nWeapon Dealer\nMechanic\nMiner\nSweeper\nTaxi Driver\nDrug Dealer\nLawyer\nDetective\nThief\nGarbage Man\nFarmer\nTrucker", "Select", "Close");
+		    	Dialog_Show(playerid, DIALOG_LOCATELIST1, DIALOG_STYLE_LIST, "GPS - Select Destination", "Pizzaman\nCourier\nFisherman\nBodyguard\nWeapon Dealer\nMechanic\nMiner\nSweeper\nTaxi Driver\nDrug Dealer\nLawyer\nDetective\nGarbage Man\nFarmer\nTrucker", "Select", "Close");
 		    }
 		    case 1: // STORES
 		    {
@@ -47917,11 +47917,9 @@ Dialog:DIALOG_LOCATELIST1(playerid, response, listitem, inputtext[])
 				LocateMethod(playerid,"Lawyer");
             case 11:
 				LocateMethod(playerid,"Detective");
-            case 12:
-				LocateMethod(playerid,"Thief");
-			case 13:
+			case 12:
 			    LocateMethod(playerid,"GarbageMan");
-			case 14:
+			case 13:
 			    LocateMethod(playerid,"Farmer");
 
 		}
