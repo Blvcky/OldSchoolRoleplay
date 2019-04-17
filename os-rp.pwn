@@ -1,6 +1,7 @@
 /*				     **********************************************************************
 				     **********************************************************************
 				     **********************************************************************
+						
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
@@ -26,7 +27,7 @@
 											Copyright (c) 2018 - 2019
 
 											 	Old School Roleplay
-												Pedro & Hernandez
+										    Pedro & Hernandez & MMilot
 
 */
 #include <a_samp>
@@ -1955,7 +1956,10 @@ enum vEnum
 	vTimer,
 	vRank,
 	carImpounded,
-	carImpoundPrice
+	carImpoundPrice,
+	bool:vForSale,
+	vForSalePrice,
+	Text3D:vForSaleLabel,
 };
 
 enum fEnum
@@ -3476,6 +3480,7 @@ new const houseInteriors[][houseInt] =
 	{"Mansion", 	 350000,  1,  1834.2408, -1278.7684, 832.1602, 180.0000},//17
 	{"Mansion", 	 500000, 7,  925.0102, -496.8101, 843.8953, 90.0000},//18
 	{"Mansion",      2500000, 5,  1298.8682, -796.2053, 1084.0078, 0.0000}//19
+	{"Special",      3000000, 1,  1412.639892, -1.787510, 1000.924377}//20
 };
 
 enum garageInt
@@ -9788,35 +9793,35 @@ stock GetHealthDots(playerid)
 	HP = GetHealth(playerid);
 
 	if(HP == 100)
-	    tmp = "•••••••••••••"; // 13 Dots
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"; // 13 Dots
 	else if(HP >= 94 && HP < 100)
-	    tmp = "••••••••••••{660000}•"; // {660000}
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½"; // {660000}
     else if(HP >= 88 && HP < 94)
-	    tmp = "•••••••••••{660000}••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½";
     else if(HP >= 82 && HP < 88)
-	    tmp = "••••••••••{660000}•••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½";
 	else if(HP >= 76 && HP < 82)
-	    tmp = "•••••••••{660000}••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½";
 	else if(HP >= 70 && HP < 76)
-	    tmp = "••••••••{660000}•••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(HP >= 64 && HP < 70)
-	    tmp = "•••••••{660000}••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(HP >= 58 && HP < 64)
-	    tmp = "••••••{660000}•••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(HP >= 52 && HP < 58)
-	    tmp = "••••••{660000}••••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(HP >= 46 && HP < 52)
-	    tmp = "•••••{660000}•••••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(HP >= 40 && HP < 46)
-	    tmp = "••••{660000}••••••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
  	else if(HP >= 34 && HP < 40)
-	    tmp = "•••{660000}•••••••••••";
+	    tmp = "ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
   	else if(HP >= 28 && HP < 34)
-	    tmp = "••{660000}••••••••••••";
+	    tmp = "ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
    	else if(HP >= 12 && HP < 28)
-	    tmp = "•{660000}•••••••••••••";
+	    tmp = "ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
     else if(HP >= 0 && HP < 12)
-	    tmp = "{660000}•••••••••••••";
+	    tmp = "{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 
 	return tmp;
 }
@@ -9829,35 +9834,35 @@ stock GetArmorDots(playerid)
 	AR = GetArmor(playerid);
 
 	if(AR == 100)
-	    tmp = "•••••••••••••"; // 13 Dots
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"; // 13 Dots
 	else if(AR >= 94 && AR < 100)
-	    tmp = "••••••••••••{660000}•"; // {660000}
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½"; // {660000}
     else if(AR >= 88 && AR < 94)
-	    tmp = "•••••••••••{660000}••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½";
     else if(AR >= 82 && AR < 88)
-	    tmp = "••••••••••{660000}•••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½";
 	else if(AR >= 76 && AR < 82)
-	    tmp = "•••••••••{660000}••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½";
 	else if(AR >= 70 && AR < 76)
-	    tmp = "••••••••{660000}•••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(AR >= 64 && AR < 70)
-	    tmp = "•••••••{660000}••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(AR >= 58 && AR < 64)
-	    tmp = "••••••{660000}•••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(AR >= 52 && AR < 58)
-	    tmp = "••••••{660000}••••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(AR >= 46 && AR < 52)
-	    tmp = "•••••{660000}•••••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 	else if(AR >= 40 && AR < 46)
-	    tmp = "••••{660000}••••••••••";
+	    tmp = "ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
  	else if(AR >= 34 && AR < 40)
-	    tmp = "•••{660000}•••••••••••";
+	    tmp = "ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
   	else if(AR >= 28 && AR < 34)
-	    tmp = "••{660000}••••••••••••";
+	    tmp = "ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
    	else if(AR >= 12 && AR < 28)
-	    tmp = "•{660000}•••••••••••••";
+	    tmp = "ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
     else if(AR >= 0 && AR < 12)
-	    tmp = "{660000}•••••••••••••";
+	    tmp = "{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 
 	return tmp;
 }
@@ -10886,7 +10891,7 @@ func CreateLSPDMap()
 	SetDynamicObjectMaterial(lspdenterijer, 7, 17547, "eastbeach4a_lae2", "bluestucco1", 0);
 	SetDynamicObjectMaterial(lspdenterijer, 8, 17547, "eastbeach4a_lae2", "bluestucco1", 0);
 	lspdenterijer = CreateDynamicObjectEx(19327,1583.751,-1657.967,2111.874,0.000,0.000,0.000,300.000,300.000);
-	SetDynamicObjectMaterialText(lspdenterijer, 0, "ÄÎÏÐÎÑÍÀß", 120, "Ariel", 40, 1, -1, 0, 1);
+	SetDynamicObjectMaterialText(lspdenterijer, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", 120, "Ariel", 40, 1, -1, 0, 1);
 	lspdenterijer = CreateDynamicObjectEx(19455,1552.662,-1675.364,2111.287,0.000,0.000,0.000,300.000,300.000);
 	SetDynamicObjectMaterial(lspdenterijer, 0, 6095, "shops01_law", "GB_chatwall03b", 0);
 	lspdenterijer = CreateDynamicObjectEx(19071,1567.988,-1674.938,2108.537,0.000,179.994,0.000,300.000,300.000);
@@ -23363,6 +23368,12 @@ ResetVehicle(vehicleid)
 	VehicleInfo[vehicleid][vTimer] = -1;
 	VehicleInfo[vehicleid][vRank] = 0;
 
+	VehicleInfo[vehicleid][vForSale] = false;
+	VehicleInfo[vehicleid][vForSalePrice] = 0;
+	
+	if(VehicleInfo[vehicleid][vForSaleLabel] != Text3D:INVALID_3DTEXT_ID) DestroyDynamic3DTextLabel(VehicleInfo[vehicleid][vForSaleLabel]);
+	VehicleInfo[vehicleid][vForSaleLabel] = Text3D:INVALID_3DTEXT_ID;
+
 	for(new i = 0; i < 14; i ++)
 	{
 	    VehicleInfo[vehicleid][vMods][i] = 0;
@@ -28954,6 +28965,17 @@ public OnPlayerAttemptBuyVehicleEx(playerid, offeredby, vehicleid, price)
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET ownerid = %i, owner = '%s' WHERE id = %i", VehicleInfo[vehicleid][vOwnerID], VehicleInfo[vehicleid][vOwner], VehicleInfo[vehicleid][vID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
+	    if(VehicleInfo[vehicleid][vForSale])
+		{
+			VehicleInfo[vehicleid][vForSale] = false;
+			VehicleInfo[vehicleid][vForSalePrice] = 0;
+			DestroyDynamic3DTextLabel(VehicleInfo[vehicleid][vForSaleLabel]);
+			VehicleInfo[vehicleid][vForSaleLabel] = Text3D:INVALID_3DTEXT_ID;
+
+            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET forsale = 0, forsaleprice = 0 WHERE id = %i", VehicleInfo[vehicleid][vID]);
+	   		mysql_tquery(connectionID, queryBuffer);
+		}
+
 	    GivePlayerCash(offeredby, price);
 	    GivePlayerCash(playerid, -price);
 
@@ -29476,6 +29498,16 @@ public OnPlayerSpawnVehicle(playerid, parked)
 		    VehicleInfo[vehicleid][carImpoundPrice] = cache_get_field_content_int(0, "carImpoundPrice");
 			vehicleFuel[vehicleid] = cache_get_field_content_int(0, "fuel");
 			adminVehicle{vehicleid} = false;
+
+			VehicleInfo[vehicleid][vForSale] = bool:cache_get_field_content_int(0, "forsale");
+			VehicleInfo[vehicleid][vForSalePrice] = cache_get_field_content_int(0, "forsaleprice");
+
+			if(VehicleInfo[vehicleid][vForSale])
+			{
+				new forsale[264];
+				format(forsale, sizeof(forsale), "FOR SALE\n%s - %s\nPh: %i.", GetVehicleName(vehicleid), FormatNumber(VehicleInfo[vehicleid][vForSalePrice]), PlayerData[playerid][pPhone]);
+                VehicleInfo[vehicleid][vForSaleLabel] = CreateDynamic3DTextLabel(forsale, COLOR_GREY2, 0.0, 0.0, 0.0, 10.0, INVALID_PLAYER_ID, vehicleid, 1, -1, 0, -1, 30.0);
+ 			}
 
 			ReloadVehicle(vehicleid);
 
@@ -33141,21 +33173,21 @@ public OnGameModeInit()
 		ResetElevatorQueue();
 		Elevator_Initialize();
 
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOO                  OOOO    SSSSSS				   ");
-		print("OOOO                  OOOO    SSSSSS				   ");
-		print("OOOO    ooooooooo     OOOO    SSSSSS				   ");
-		print("OOOO    o       o     OOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOO    o       o     OOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOO    o       o     OOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOO    ooooooooo     OOOO                    SSSSSS");
-		print("OOOO                  OOOO                    SSSSSS");
-		print("OOOO                  OOOO                    SSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSS				   ");
+		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSS				   ");
+		print("OOOOï¿½ï¿½ï¿½ï¿½oooooooooï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSS				   ");
+		print("OOOOï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ oï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ oï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ oï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOï¿½ï¿½ï¿½ï¿½oooooooooï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSSSSS");
+		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSSSSS");
+		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
 		print("______________________________________________");
 		print("| Old School Roleplay by Pedro		        |");
 		print("| Gamemode loaded successfully.              |");
@@ -48667,9 +48699,149 @@ CMD:shout(playerid, params[])
 	{
 	    return SendClientMessage(playerid, COLOR_WHITE, "Usage: /(s)hout [text]");
 	}
-	SetPlayerBubbleText(playerid, 20.0, COLOR_WHITE, "(Shouts) %s!", params);
+
+    SetPlayerBubbleText(playerid, 20.0, COLOR_WHITE, "(Shouts) %s!", params);
 	format(string, sizeof(string), "%s shouts: %s!", GetRPName(playerid), params);
 	SendProximityFadeMessage(playerid, 20.0, string, COLOR_GREY1, COLOR_GREY2, COLOR_GREY3, COLOR_GREY4, COLOR_GREY5);
+	
+	foreach(new i : House)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 10.0, HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]))	
+		{	
+			foreach(new p : Player)
+			{
+				if(IsPlayerInRangeOfPoint(p, 30.0, HouseInfo[i][hIntX], HouseInfo[i][hIntY], HouseInfo[i][hIntZ]))
+				{		
+					if(GetPlayerVirtualWorld(p) == HouseInfo[i][hWorld])
+					{		
+						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	SendClientMessage(p, COLOR_GREY1, string);
+			    	}
+			    }
+			}
+	    }		
+	    if(IsPlayerInRangeOfPoint(playerid, 20.0, HouseInfo[i][hIntX], HouseInfo[i][hIntY], HouseInfo[i][hIntZ]))
+	    {	
+	    	if(GetPlayerVirtualWorld(playerid) == HouseInfo[i][hWorld])
+	    	{	
+		    	foreach(new p : Player)
+				{	
+					if(IsPlayerInRangeOfPoint(p, 15.0, HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]))
+					{		
+						if(GetPlayerVirtualWorld(p) == 0)
+					    {
+					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	    SendClientMessage(p, COLOR_GREY1, string);
+			    	    }
+			    	}
+			    }
+			}
+		}	    	    
+	}
+	foreach(new i : Business)
+	{
+	    if(IsPlayerInRangeOfPoint(playerid, 10.0, BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]))
+		{	
+			foreach(new p : Player)
+			{
+				if(IsPlayerInRangeOfPoint(p, 30.0, BusinessInfo[i][bIntX], BusinessInfo[i][bIntY], BusinessInfo[i][bIntZ]))
+				{		
+					if(GetPlayerVirtualWorld(p) == BusinessInfo[i][bWorld])	
+					{		
+						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	SendClientMessage(p, COLOR_GREY1, string);
+			    	}
+			    }
+			}
+	    }
+	    if(IsPlayerInRangeOfPoint(playerid, 20.0, BusinessInfo[i][bIntX], BusinessInfo[i][bIntY], BusinessInfo[i][bIntZ]))
+	    {	
+	    	if(GetPlayerVirtualWorld(playerid) == BusinessInfo[i][bWorld])	
+	    	{	
+		    	foreach(new p : Player)
+				{	
+					if(IsPlayerInRangeOfPoint(p, 15.0, BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]))
+					{		
+						if(GetPlayerVirtualWorld(p) == 0)
+					    {
+					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	    SendClientMessage(p, COLOR_GREY1, string);
+			    	    }
+			    	}
+			    }
+			}
+		}
+	}
+	foreach(new i : Entrance)
+	{				
+		if(IsPlayerInRangeOfPoint(playerid, 10.0, EntranceInfo[i][ePosX], EntranceInfo[i][ePosY], EntranceInfo[i][ePosZ]))
+		{
+			foreach(new p : Player)
+			{
+				if(IsPlayerInRangeOfPoint(p, 30.0, EntranceInfo[i][eIntX], EntranceInfo[i][eIntY], EntranceInfo[i][eIntZ]))	
+				{	
+					if(GetPlayerVirtualWorld(p) == EntranceInfo[i][eWorld])	
+					{		
+						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	SendClientMessage(p, COLOR_GREY1, string);
+			    	}
+			    }
+			}
+	    }
+	    if(IsPlayerInRangeOfPoint(playerid, 20.0, EntranceInfo[i][eIntX], EntranceInfo[i][eIntY], EntranceInfo[i][eIntZ]))	
+	    {	
+	    	if(GetPlayerVirtualWorld(playerid) == EntranceInfo[i][eWorld])	
+	    	{	
+		    	foreach(new p : Player)
+				{	
+					if(IsPlayerInRangeOfPoint(p, 15.0, EntranceInfo[i][ePosX], EntranceInfo[i][ePosY], EntranceInfo[i][ePosZ]))
+					{		
+						if(GetPlayerVirtualWorld(p) == 0)
+					    {
+					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	    SendClientMessage(p, COLOR_GREY1, string);
+			    	    }
+			    	}
+			    }
+			}
+		}	
+	}
+
+	foreach(new i : Garage)
+	{	
+		if(IsPlayerInRangeOfPoint(playerid, 10.0, GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]))
+		{	
+			foreach(new p : Player)
+			{	
+				if(IsPlayerInRangeOfPoint(playerid, 30.0, garageInteriors[GarageInfo[i][gType]][intVX], garageInteriors[GarageInfo[i][gType]][intVY], garageInteriors[GarageInfo[i][gType]][intVZ]))
+				{	
+					if(GetPlayerVirtualWorld(p) == GarageInfo[i][gWorld])	
+					{		
+						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	SendClientMessage(p, COLOR_GREY1, string);
+			    	}
+			    }
+			}
+	    }
+	    if(IsPlayerInRangeOfPoint(playerid, 20.0, garageInteriors[GarageInfo[i][gType]][intVX], garageInteriors[GarageInfo[i][gType]][intVY], garageInteriors[GarageInfo[i][gType]][intVZ]))
+	    {	
+	    	if(GetPlayerVirtualWorld(playerid) == GarageInfo[i][gWorld])
+	    	{	
+		    	foreach(new p : Player)
+				{	
+					if(IsPlayerInRangeOfPoint(p, 15.0, GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]))
+					{		
+						if(GetPlayerVirtualWorld(p) == 0)
+					    {
+					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
+			        	    SendClientMessage(p, COLOR_GREY1, string);
+			    	    }
+			    	}
+			    }
+			}
+		}	
+	}
+
 	return 1;
 }
 
@@ -48823,6 +48995,119 @@ CMD:stats(playerid, params[])
 {
 //	ShowDialogToPlayer(playerid, DIALOG_STATS);
 	DisplayStats(playerid);
+	return 1;
+}
+
+
+CMD:networth(playerid, params[])
+{
+	PrintNetWorthPlayer(playerid);
+	return 1;
+}
+
+PrintNetWorthPlayer(playerid)
+{
+	new others = 0,
+	assets = 0,
+	pricevehicle = 0,
+	pricehouse = 0,
+	pricebiz = 0,
+	priceland = 0,
+	pricegarage = 0;
+	new totalwealth = PlayerData[playerid][pCash] + PlayerData[playerid][pBank];
+
+ 	foreach(new i : Vehicle)
+	{
+	    if(PlayerData[playerid][pID] == VehicleInfo[i][vOwnerID])
+	    {
+            assets += VehicleInfo[i][vPrice];
+            pricevehicle += VehicleInfo[i][vPrice];
+		}
+	}
+    foreach(new i : House)
+    {
+        if(HouseInfo[i][hExists] && PlayerData[playerid][pID] == HouseInfo[i][hOwnerID])
+        {
+            assets += HouseInfo[i][hPrice];
+            pricehouse += HouseInfo[i][hPrice];
+		}
+	}
+ 	foreach(new i : Business)
+    {
+        if(BusinessInfo[i][bExists] && PlayerData[playerid][pID] == BusinessInfo[i][bOwnerID])
+        {
+            assets += BusinessInfo[i][bPrice];
+            pricebiz += BusinessInfo[i][bPrice];
+		}
+	}
+    foreach(new i : Land)
+	{
+	    if(LandInfo[i][lExists] && PlayerData[playerid][pID] == LandInfo[i][lOwnerID])
+	    {
+            others += LandInfo[i][lPrice];
+            priceland += LandInfo[i][lPrice];
+		}
+	}
+	foreach(new i : Garage)
+	{
+        if(GarageInfo[i][gExists] && PlayerData[playerid][pID] == GarageInfo[i][gOwnerID])
+        {
+            others += GarageInfo[i][gPrice];
+            pricegarage += GarageInfo[i][gPrice];
+		}
+	}
+	new total = totalwealth + assets;
+	new total2 = total + others;
+
+    SendClientMessage(playerid, 0x7514F6FF, "__________ Net Worth __________");
+	SendClientMessageEx(playerid, COLOR_GREY2, "Para: +{FF6347}%s", FormatNumber(PlayerData[playerid][pCash]));
+    SendClientMessageEx(playerid, COLOR_GREY2, "Bank: +{FF6347}%s", FormatNumber(PlayerData[playerid][pBank]));
+    SendClientMessageEx(playerid, COLOR_GREY2, "Pronat: +{ff6347}%s", FormatNumber(assets));
+
+    foreach(new i : House)
+    {
+        if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i))
+        {
+            SendClientMessageEx(playerid, COLOR_GREY2, "- ShtÃ«pia: +{FF6347}%s", FormatNumber(pricehouse));
+            break;
+		}
+	}
+	foreach(new i : Business)
+    {
+        if(BusinessInfo[i][bExists] && IsBusinessOwner(playerid, i))
+        {
+            SendClientMessageEx(playerid, COLOR_GREY2, "- Biznese: +{FF6347}%s", FormatNumber(pricebiz));
+            break;
+		}
+	}
+ 	foreach(new i : Vehicle)
+    {
+	    if(PlayerData[playerid][pID] == VehicleInfo[i][vOwnerID])
+	    {
+	        SendClientMessageEx(playerid, COLOR_GREY2, "- Vetura: +{FF6347}%s", FormatNumber(pricevehicle));
+	        break;
+		}
+	}
+    SendClientMessageEx(playerid, COLOR_GREY2, "Tjera: +{FF6347}%s", FormatNumber(others));
+    foreach(new i : Land)
+	{
+	    if(LandInfo[i][lExists] && IsLandOwner(playerid, i))
+	    {
+	        SendClientMessageEx(playerid, COLOR_GREY2, "- Toka: +{FF6347}%s", FormatNumber(priceland));
+	        break;
+		}
+	}
+    foreach(new i : Garage)
+	{
+        if(GarageInfo[i][gExists] && IsGarageOwner(playerid, i))
+        {
+            SendClientMessageEx(playerid, COLOR_GREY2, "- Garazha: +{FF6347}%s", FormatNumber(pricegarage));
+            break;
+		}
+	}
+	
+	SendClientMessage(playerid, COLOR_GREEN, "_______________________________");
+	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj Ã«shtÃ«: %s", FormatNumber(total2));
 	return 1;
 }
 
@@ -49254,6 +49539,58 @@ func VehEngine(playerid)
 	}
 	return 1;
 }
+
+CMD:setforsale(playerid, params[])
+{
+	new askingprice, forsale[264], vehicleid = GetPlayerVehicleID(playerid);
+	
+	if(!vehicleid || !IsVehicleOwner(playerid, vehicleid))
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside any vehicle of yours.");
+	}
+
+	if(VehicleInfo[vehicleid][vForSale]) return SendClientMessage(playerid, COLOR_GREY, "This vehicle is already for sale.");
+    if(!PlayerData[playerid][pPhone]) return SendClientMessage(playerid, COLOR_GREY, "You don't have any phone setup.");
+
+	if(sscanf(params, "i", askingprice)) return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /setforsale [price]");
+	if(askingprice < 1 || askingprice > 50000000) return SendClientMessage(playerid, COLOR_GREY, "Price must be between $1 and $50,000,000.");
+
+	VehicleInfo[vehicleid][vForSale] = true;
+	VehicleInfo[vehicleid][vForSalePrice] = askingprice;
+
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET forsale = 1, forsaleprice = %i WHERE id = %i",  askingprice, VehicleInfo[vehicleid][vID]);
+	mysql_tquery(connectionID, queryBuffer);
+
+    format(forsale, sizeof(forsale), "FOR SALE\n%s - %s\nPh: %i.", GetVehicleName(vehicleid), FormatNumber(VehicleInfo[vehicleid][vForSalePrice]), PlayerData[playerid][pPhone]);
+    VehicleInfo[vehicleid][vForSaleLabel] = CreateDynamic3DTextLabel(forsale, COLOR_GREY2, 0.0, 0.0, 0.0, 10.0, INVALID_PLAYER_ID, vehicleid, 1, -1, 0, -1, 30.0);
+	
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have set your %s for sale with an asking price of $%s.", GetVehicleName(vehicleid), FormatNumber(VehicleInfo[vehicleid][vForSalePrice]));
+	return 1;
+}
+
+CMD:cancelforsale(playerid, params[])
+{
+    new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!vehicleid || !IsVehicleOwner(playerid, vehicleid))
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside any vehicle of yours.");
+	}
+
+	if(!VehicleInfo[vehicleid][vForSale]) return SendClientMessage(playerid, COLOR_GREY, "This vehicle is not for sale.");
+
+	VehicleInfo[vehicleid][vForSale] = false;
+	VehicleInfo[vehicleid][vForSalePrice] = 0;
+
+    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET forsale = 0, forsaleprice = 0 WHERE id = %i", VehicleInfo[vehicleid][vID]);
+	mysql_tquery(connectionID, queryBuffer);
+
+	DestroyDynamic3DTextLabel(VehicleInfo[vehicleid][vForSaleLabel]);
+
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have cancelled the sale of your %s.", GetVehicleName(vehicleid));
+	return true;
+}
+
 CMD:addpayphone(playerid, params[])
 {
 	if (PlayerData[playerid][pAdmin] < 5)
@@ -51512,7 +51849,7 @@ public DeleteGate(gateid, adminid)
 }
 CMD:samphelp(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_GLOBAL, "_____________________[ SA:MP 0.3.7R2 CLIENT ]_________________________");
+	SendClientMessageEx(playerid, COLOR_GLOBAL, "_____________________[ SA:MP 0.3.7 R2 CLIENT ]_________________________");
 	SendClientMessageEx(playerid, COLOR_GREY, "*** CLIENT *** /interior /save /headmove /timestamp /dl");
 	SendClientMessageEx(playerid, COLOR_GREY, "*** CLIENT *** /pagesize /rs /fpslimit");
 	return 1;
@@ -86546,4 +86883,3 @@ public mdc_FetchVehicle(playerid, owner[]) {
 	SelectTextDraw(playerid, -1);
 }
 //---------------------------------------------
-
