@@ -32,18 +32,21 @@
 */
 #include <a_samp>
 #include <crashdetect>
+
 #include <a_http>
 #include <a_mysql>
 #include <foreach>
 #include <progress2>
 #include <sscanf2>
-#include <streamer>
+
 #include <selection>
-#include <tp>
 #include <Pawn.CMD>
 #include <easyDialog>
 #include <youtube_stream>
 #include <dof2>
+#include <YSI\y_hooks>
+#include <nex-ac>
+#include <streamer>
 // --------------------------------------
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 120
@@ -62,6 +65,11 @@
 #define TABLE_FACTIONS      "`factions`"
 #define TABLE_GANGS         "`gangs`"
 // ---------------------------------------
+#if !defined AC_MAX_PING
+	#define AC_MAX_PING					500
+#endif
+// ---------------------------------------
+#define AC_DEFAULT_COLOR    -1
 #define COLOR_WHITE 		0xFFFFFFFF
 #define COLOR_SAMP     		0xAAC4E5FF
 #define COLOR_YELLOW    	0xFFD200FF
@@ -253,7 +261,7 @@ new
 #define RED_TEAM    0
 #define BLUE_TEAM   1
 // ---------------------------------------
-#define strcpy(%0,%1)   strcat(((%0[0] = 0), %0), %1)
+
 #define percent(%0,%1)  floatround((float((%0)) / 100) * (%1))
 #define Random(%0,%1)   (random((%1) - (%0)) + (%0))
 #define mysql_new_query(%0,%1,%2,%3,"%4"%5) \
@@ -428,7 +436,7 @@ new Text:td_mdc_Box = Text:INVALID_TEXT_DRAW,
 	Text:td_mdc_veh_BoxNoEnt = Text:INVALID_TEXT_DRAW,
 	Text:td_mdc_veh_InnerBoxNoEnt = Text:INVALID_TEXT_DRAW,
 	Text:td_mdc_veh_TextNoEnt = Text:INVALID_TEXT_DRAW,
-	Iterator:CriminalRecordIterator[MAX_PLAYERS]<MAX_CRIMINAL_RECORDS>,
+	Iterator:RecordIterator[MAX_PLAYERS]<MAX_CRIMINAL_RECORDS>,
 	CriminalRecordData[MAX_PLAYERS][MAX_CRIMINAL_RECORDS][CriminalRecordEnum];
 
 new pTazerReplace[MAX_PLAYERS];
@@ -508,7 +516,7 @@ new PlayerText:LoadingObjects5[MAX_PLAYERS];
 new ElevatorQueue[21],
 	FloorRequestedBy[21];
 new ElevatorBoostTimer;
-new Iterator:Vehicle<MAX_VEHICLES>;
+
 #include <vehicleFix>
 
 static FloorNames[21][] =
@@ -535,7 +543,27 @@ static FloorNames[21][] =
 	"Nineteenth Floor",
 	"Penthouse"
 };
+new phone_RingtoneNames[][] = {
+	"Default Ringtone",
+	"Musical Ringtone 1",
+	"Musical Ringtone 2",
+	"Musical Ringtone 3",
+	"Musical Ringtone 4",
+	"Musical Ringtone 5",
+	"Musical Ringtone 6",
+	"Musical Ringtone 7"
+};
 
+new phone_RingtoneIDs[][] = {
+	{ 3600, 0 },
+	{ 1062, 1063 },
+	{ 1068, 1069 },
+	{ 1076, 1077 },
+	{ 1097, 1098 },
+	{ 1183, 1184 },
+	{ 1185, 1186 },
+	{ 1187, 1188 }
+};
 static Float:FloorZOffsets[21] =
 {
     0.0,		// 0.0,
@@ -1610,7 +1638,20 @@ enum pEnum
 	pHelmet,
 	pCarryCrate,
 	pBlindfold,
-	pBlinded
+	pBlinded,
+	pWarnTimer,
+	pWarnWeapon,
+	pWarnHealth,
+	pWarnArmor,
+	pWarnAirbreak,
+	pWarnSpeedhack,
+	pWarnMoneyHack,
+	pWarnAmmoHack,
+	pWarnFlyHack,
+	pWarnDialogHack,
+	pWarnGodMode,
+	pWarnRapidFire,
+	pWarnTeleport
 };
 
 enum rEnum
@@ -9894,87 +9935,6 @@ GetPlayerArmourEx(playerid)
 	GetPlayerArmour(playerid, armor);
 	return floatround(armor);
 }
-stock GetHealthDots(playerid)
-{
-	new tmp[64];
-	new Float:HP;
-
-	HP = GetHealth(playerid);
-
-	if(HP == 100)
-	    tmp = "?????????????"; // 13 Dots
-	else if(HP >= 94 && HP < 100)
-	    tmp = "????????????{660000}?"; // {660000}
-    else if(HP >= 88 && HP < 94)
-	    tmp = "???????????{660000}??";
-    else if(HP >= 82 && HP < 88)
-	    tmp = "??????????{660000}???";
-	else if(HP >= 76 && HP < 82)
-	    tmp = "?????????{660000}????";
-	else if(HP >= 70 && HP < 76)
-	    tmp = "????????{660000}?????";
-	else if(HP >= 64 && HP < 70)
-	    tmp = "???????{660000}??????";
-	else if(HP >= 58 && HP < 64)
-	    tmp = "??????{660000}???????";
-	else if(HP >= 52 && HP < 58)
-	    tmp = "??????{660000}????????";
-	else if(HP >= 46 && HP < 52)
-	    tmp = "?????{660000}?????????";
-	else if(HP >= 40 && HP < 46)
-	    tmp = "????{660000}??????????";
- 	else if(HP >= 34 && HP < 40)
-	    tmp = "???{660000}???????????";
-  	else if(HP >= 28 && HP < 34)
-	    tmp = "??{660000}????????????";
-   	else if(HP >= 12 && HP < 28)
-	    tmp = "?{660000}?????????????";
-    else if(HP >= 0 && HP < 12)
-	    tmp = "{660000}?????????????";
-
-	return tmp;
-}
-
-stock GetArmorDots(playerid)
-{
-	new tmp[64];
-	new Float:AR;
-
-	AR = GetArmor(playerid);
-
-	if(AR == 100)
-	    tmp = "?????????????"; // 13 Dots
-	else if(AR >= 94 && AR < 100)
-	    tmp = "????????????{660000}?"; // {660000}
-    else if(AR >= 88 && AR < 94)
-	    tmp = "???????????{660000}??";
-    else if(AR >= 82 && AR < 88)
-	    tmp = "??????????{660000}???";
-	else if(AR >= 76 && AR < 82)
-	    tmp = "?????????{660000}????";
-	else if(AR >= 70 && AR < 76)
-	    tmp = "????????{660000}?????";
-	else if(AR >= 64 && AR < 70)
-	    tmp = "???????{660000}??????";
-	else if(AR >= 58 && AR < 64)
-	    tmp = "??????{660000}???????";
-	else if(AR >= 52 && AR < 58)
-	    tmp = "??????{660000}????????";
-	else if(AR >= 46 && AR < 52)
-	    tmp = "?????{660000}?????????";
-	else if(AR >= 40 && AR < 46)
-	    tmp = "????{660000}??????????";
- 	else if(AR >= 34 && AR < 40)
-	    tmp = "???{660000}???????????";
-  	else if(AR >= 28 && AR < 34)
-	    tmp = "??{660000}????????????";
-   	else if(AR >= 12 && AR < 28)
-	    tmp = "?{660000}?????????????";
-    else if(AR >= 0 && AR < 12)
-	    tmp = "{660000}?????????????";
-
-	return tmp;
-}
 
 GivePlayerHealth(playerid, Float:amount)
 {
@@ -10214,10 +10174,9 @@ forward OnLoadGunDamages();
 public OnLoadGunDamages()
 {
 	new
-		rows,
+		rows = cache_get_row_count(connectionID),
 		weaponid
 	;
-	cache_get_row_count(rows);
 	for (new i = 0; i < rows; i ++)
 	{
 		weaponid = cache_get_field_content_int(i, "Weapon");
@@ -12718,21 +12677,6 @@ stock IsACruiser(vehicleid)
 	return 0;
 }
 
-stock ishex(str[])
-{
-	//P:3("ishex called: \"%s\"", str);
-	new
-		i,
-		cur;
-	if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X')) i = 2;
-	while (str[i])
-	{
-		cur = str[i++];
-		if (!(('0' <= cur <= '9') || ('A' <= cur <= 'F') || ('a' <= cur <= 'f'))) return 0;
-		//if ((cur < '0') || ('9' < cur < 'A') || ('F' < cur < 'a') || (cur > 'f')) return 0;
-	}
-	return 1;
-}
 stock PlayerName(playerid)
 {
     new name[MAX_PLAYER_NAME];
@@ -14166,8 +14110,7 @@ public OnPlayerTextPlayer(playerid, text[])
 	new
 		contact[MAX_PLAYER_NAME];
 	new rows, fields;
-	cache_get_row_count(rows);
-	cache_get_field_count(fields);
+	cache_get_data(rows, fields, connectionID);
 	if (!rows)
 	{
 		return SendErrorMessage(playerid, "You don't have that name in your contacts");
@@ -14189,8 +14132,7 @@ public OnPlayerCallContact(playerid)
 	new
 		contact[MAX_PLAYER_NAME];
 	new rows, fields;
-	cache_get_row_count(rows);
-	cache_get_field_count(fields);
+	cache_get_data(rows, fields, connectionID);
 
 	if (!rows)
 	{
@@ -14214,8 +14156,7 @@ public OnPlayerTextContact(playerid)
 		contact[MAX_PLAYER_NAME];
 
 	new rows, fields;
-	cache_get_row_count(rows);
-	cache_get_field_count(fields);
+	cache_get_data(rows, fields, connectionID);
 
 	if (!rows)
 	{
@@ -14248,9 +14189,7 @@ public OnPlayerListContacts(playerid)
 		number;
 
 	new rows, fields;
-	cache_get_row_count(rows);
-	cache_get_field_count(fields);
-
+	cache_get_data(rows, fields, connectionID);
 	strcat(string, "Add Contact");
 
 	for (new i = 0; i < rows; i ++)
@@ -15935,7 +15874,25 @@ SendPaycheck(playerid)
 		    rent = -1;
 		}
 	}
-
+	switch(PlayerData[playerid][pVIPPackage])
+	{
+		case 1:
+		{
+			format(coordsstring, sizeof(coordsstring), "VIP Bonus: $1,500\n");
+			total+= 1500;
+		}
+		case 2:
+		{
+		   format(coordsstring, sizeof(coordsstring), "VIP Bonus: $2,000\n");
+		   total+= 2000;
+		}
+		case 3:
+		{
+		   format(coordsstring, sizeof(coordsstring), "VIP Bonus: $2,500\n");
+		   total+= 2500;
+		}
+	}
+	strcat(str, coordsstring);
 	format(coordsstring, sizeof(coordsstring), "Old Balance: %s\n", FormatNumber(PlayerData[playerid][pBank]));
 	strcat(str, coordsstring);
 	format(coordsstring, sizeof(coordsstring), "______________________________________\n");
@@ -22007,7 +21964,19 @@ ResetPlayer(playerid)
     PlayerData[playerid][pPreviewType] = 0;
     PlayerData[playerid][pPreviewTime] = 0;
     PlayerData[playerid][pHHCheck] = 0;
-
+	PlayerData[playerid][pWarnTimer] = 0;
+	PlayerData[playerid][pWarnWeapon] = 0;
+	PlayerData[playerid][pWarnHealth] = 0;
+	PlayerData[playerid][pWarnArmor] = 0;
+	PlayerData[playerid][pWarnAirbreak] = 0;
+	PlayerData[playerid][pWarnSpeedhack] = 0;
+	PlayerData[playerid][pWarnMoneyHack] = 0;
+	PlayerData[playerid][pWarnAmmoHack] = 0;
+	PlayerData[playerid][pWarnFlyHack] = 0;
+	PlayerData[playerid][pWarnDialogHack] = 0;
+	PlayerData[playerid][pWarnGodMode] = 0;
+	PlayerData[playerid][pWarnRapidFire] = 0;
+	PlayerData[playerid][pWarnTeleport] = 0;
  	CancelActiveCheckpoint(playerid);
  	CancelBreakIn(playerid);
 
@@ -25932,7 +25901,7 @@ SendGangMessage(gangid, color, const text[], {Float,_}:...)
 
 SendGraphicMessage(color, string2[])
 {
-	foreach(Player, i)
+	foreach(new i : Player)
 	{
 		if(IsPlayerConnected(i))
 		{
@@ -25946,7 +25915,7 @@ SendGraphicMessage(color, string2[])
 
 SendFMMessage(color, string2[])
 {
-	foreach(Player, i)
+	foreach(new i : Player)
 	{
 		if(IsPlayerConnected(i))
 		{
@@ -25960,7 +25929,7 @@ SendFMMessage(color, string2[])
 
 SendGMMessage(color, string2[])
 {
-	foreach(Player, i)
+	foreach(new i : Player)
 	{
 		if(IsPlayerConnected(i))
 		{
@@ -25975,7 +25944,7 @@ SendGMMessage(color, string2[])
 
 SendAPMessage(color, string2[])
 {
-	foreach(Player, i)
+	foreach(new i : Player)
 	{
 		if(IsPlayerConnected(i))
 		{
@@ -25989,7 +25958,7 @@ SendAPMessage(color, string2[])
 
 SendWDMessage(color, string2[])
 {
-	foreach(Player, i)
+	foreach(new i : Player)
 	{
 		if(IsPlayerConnected(i))
 		{
@@ -26003,7 +25972,7 @@ SendWDMessage(color, string2[])
 
 SendDGAMessage(color, string2[])
 {
-	foreach(Player, i)
+	foreach(new i : Player)
 	{
 		if(IsPlayerConnected(i))
 		{
@@ -27112,6 +27081,23 @@ public SecondTimer()
 						}
 					}
 				}
+			}
+			PlayerData[i][pWarnTimer]++;
+
+			if (PlayerData[i][pWarnTimer] > 5)
+			{
+				PlayerData[i][pWarnWeapon] = 0;
+				PlayerData[i][pWarnHealth] = 0;
+				PlayerData[i][pWarnArmor] = 0;
+				PlayerData[i][pWarnAirbreak] = 0;
+				PlayerData[i][pWarnSpeedhack] = 0;
+				PlayerData[i][pWarnMoneyHack] = 0;
+				PlayerData[i][pWarnAmmoHack] = 0;
+				PlayerData[i][pWarnFlyHack] = 0;
+				PlayerData[i][pWarnDialogHack] = 0;
+				PlayerData[i][pWarnGodMode] = 0;
+				PlayerData[i][pWarnRapidFire] = 0;
+				PlayerData[i][pWarnTeleport] = 0;
 			}
 		    if(!PlayerData[i][pToggleTextdraws])
 		    {
@@ -33422,7 +33408,19 @@ public OnPlayerConnect(playerid)
 	PlayerData[playerid][pRangeBooth] = -1;
 	PlayerData[playerid][pTargets] = 0;
 	PlayerData[playerid][pTargetLevel] = 0;
-
+	PlayerData[playerid][pWarnTimer] = 0;
+	PlayerData[playerid][pWarnWeapon] = 0;
+	PlayerData[playerid][pWarnHealth] = 0;
+	PlayerData[playerid][pWarnArmor] = 0;
+	PlayerData[playerid][pWarnAirbreak] = 0;
+	PlayerData[playerid][pWarnSpeedhack] = 0;
+	PlayerData[playerid][pWarnMoneyHack] = 0;
+	PlayerData[playerid][pWarnAmmoHack] = 0;
+	PlayerData[playerid][pWarnFlyHack] = 0;
+	PlayerData[playerid][pWarnDialogHack] = 0;
+	PlayerData[playerid][pWarnGodMode] = 0;
+	PlayerData[playerid][pWarnRapidFire] = 0;
+	PlayerData[playerid][pWarnTeleport] = 0;
 
 	//police
 
@@ -34358,7 +34356,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid) {
 		}
 	} else if(clickedid == td_mdc_cr_ArrowDown) {
 	    new ScrollTop = GetPVarInt(playerid, "mdc_cr_ScrollTop");
-		if(Iter_Count(CriminalRecordIterator[playerid]) > ScrollTop + 7) {
+		if(Iter_Count(RecordIterator[playerid]) > ScrollTop + 7) {
 		    ScrollTop += 1;
 		    SetPVarInt(playerid, "mdc_cr_ScrollTop", ScrollTop);
 			for(new i = 0; i < sizeof(td_mdc_cr_Info); i++) {
@@ -36487,47 +36485,179 @@ stock CanPlayerCbug(playerid)
    	}
    	return 1;
 }*/
-
-public OnPlayerTeleport(playerid, Float:distance)
+stock CheckAdmin(playerid, level)
 {
-	if((gAnticheat) && PlayerData[playerid][pAdmin] < JUNIOR_ADMIN && !PlayerData[playerid][pKicked] && InsideTut[playerid] == 0)
-	{
-	    if(!IsPlayerInRangeOfPoint(playerid, 3.0, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]))
-	    {
-		    PlayerData[playerid][pACWarns]++;
-
-		    if(PlayerData[playerid][pACWarns] < MAX_ANTICHEAT_WARNINGS)
-		    {
-	    	    SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s[%i] is possibly teleport hacking (distance: %.1f).", GetRPName(playerid), playerid, distance);
-	        	Log_Write("log_cheat", "%s (uid: %i) possibly teleport hacked (distance: %.1f)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], distance);
-			}
-			else
-			{
-		    	SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was autobanned by %s, reason: Teleport hacks", GetRPName(playerid), SERVER_ANTICHEAT);
-		    	BanPlayer(playerid, SERVER_ANTICHEAT, "Teleport hacks");
-			}
-		}
-	}
-
-	return 1;
+	if (PlayerData[playerid][pAdmin] >= level)
+		return true;
+	else
+		return false;
 }
 
-public OnPlayerAirbreak(playerid)
-{
-	if((gAnticheat) && PlayerData[playerid][pAdmin] < JUNIOR_ADMIN && !PlayerData[playerid][pKicked])
-	{
-	    PlayerData[playerid][pACWarns]++;
 
-	    if(PlayerData[playerid][pACWarns] < MAX_ANTICHEAT_WARNINGS)
-	    {
-	        SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s[%i] is possibly using airbreak.", GetRPName(playerid), playerid);
-	        Log_Write("log_cheat", "%s (uid: %i) possibly used airbreak.", GetPlayerNameEx(playerid), PlayerData[playerid][pID]);
-		}
-		else
+
+forward OnCheatDetected(playerid, ip_address[], type, code);
+public OnCheatDetected(playerid, ip_address[], type, code)
+{
+
+	switch (code)
+	{
+		case 0 .. 1:
 		{
-		    SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was autobanned by %s, reason: Airbreak", GetRPName(playerid), SERVER_ANTICHEAT);
-		    BanPlayer(playerid, SERVER_ANTICHEAT, "Airbreak");
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnAirbreak]++;
+
+			if (PlayerData[playerid][pWarnAirbreak] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be airbreaking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnAirbreak] = 0;
+			}
 		}
+		case 2 .. 6:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnTeleport]++;
+
+			if (PlayerData[playerid][pWarnTeleport] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be teleport hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnTeleport] = 0;
+			}
+		}
+		case 7 .. 8:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnFlyHack]++;
+
+			if (PlayerData[playerid][pWarnFlyHack] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be flying.", GetRPName(playerid));
+				PlayerData[playerid][pWarnFlyHack] = 0;
+			}
+		}
+		case 9 .. 10:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnSpeedhack]++;
+
+			if (PlayerData[playerid][pWarnSpeedhack] > 3)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be speed hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnSpeedhack] = 0;
+			}
+		}
+		case 11 .. 12:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnHealth]++;
+
+			if (PlayerData[playerid][pWarnHealth] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be health hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnHealth] = 0;
+			}
+		}
+		case 13:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnArmor]++;
+
+			if (PlayerData[playerid][pWarnArmor] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be armor hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnArmor] = 0;
+			}
+		}
+		case 14:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnMoneyHack]++;
+
+			if (PlayerData[playerid][pWarnMoneyHack] > 3)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be money hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnMoneyHack] = 0;
+			}
+		}
+		case 15:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnWeapon]++;
+
+			if (PlayerData[playerid][pWarnWeapon] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be weapon hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnWeapon] = 0;
+			}
+		}
+		case 16 .. 17:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnAmmoHack]++;
+
+			if (PlayerData[playerid][pWarnAmmoHack] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be ammo hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnAmmoHack] = 0;
+			}
+		}
+		case 19 .. 20:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnGodMode]++;
+
+			if (PlayerData[playerid][pWarnGodMode] > 1)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be godmode hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnGodMode] = 0;
+			}
+		}
+		case 26:
+		{
+			if(CheckAdmin(playerid, 5))
+				return 1;
+
+			PlayerData[playerid][pWarnRapidFire]++;
+
+			if (PlayerData[playerid][pWarnRapidFire] > 2)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be rapidfiring.", GetRPName(playerid));
+				PlayerData[playerid][pWarnRapidFire] = 0;
+			}
+		}
+		/*case 39:
+		{
+			PlayerData[playerid][pWarnDialogHack]++;
+
+			if (PlayerData[playerid][pWarnDialogHack] > 10)
+			{
+				SendAdminMessage(COLOR_RED, "Admin: %s might be dialog hacking.", GetRPName(playerid));
+				PlayerData[playerid][pWarnDialogHack] = 0;
+			}
+		}
+		default:
+		{
+			SendAdminMessage(COLOR_RED, "Admin: %s is hacking (code: %i).", GetRPName(playerid), code);
+		}*/
 	}
 
 	return 1;
@@ -37973,6 +38103,17 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             }
         }
    	}
+   	if (PRESSED(KEY_FIRE) && GetPlayerWeapon(playerid) == 41 && PlayerData[playerid][pGang] != -1 && Graffiti_Nearest(playerid))
+	{
+		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || PlayerData[playerid][pInjured] > 0 || PlayerData[playerid][pHospital] > 0 || PlayerData[playerid][pMiningTime] > 0 || PlayerData[playerid][pTazedTime] > 0 || PlayerData[playerid][pCuffed] > 0 || PlayerData[playerid][pLootTime] > 0)
+		{
+		    return false;
+		}
+		if(Graffiti_Nearest(playerid))
+		{
+			Dialog_Show(playerid, Graffiti_Type, DIALOG_STYLE_LIST, "Graffiti Style", "Default Gang Tags\nCustom Text", "Select", "Close");
+		}
+	}
 	if(newkeys & KEY_SPRINT)
 	{
 	    if(PlayerData[playerid][pLoopAnim])
@@ -38485,11 +38626,7 @@ Dialog:FurnEditConfirm(playerid, response, listitem, inputtext[])
 	}
 	return 1;
 }
-public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z)
-{
 
-	return 1;
-}
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 
@@ -38847,6 +38984,14 @@ ShowDealershipPreviewMenu(playerid, company)
 	}
 	return 1;
 }
+Dialog:PhoneMusic(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+	
+	}
+	return 1;
+}
 Dialog:PhoneMenu(playerid, response, listitem, inputtext[])
 {
 	if (response)
@@ -38867,11 +39012,11 @@ Dialog:PhoneMenu(playerid, response, listitem, inputtext[])
 			}
 			case 3:
 			{
-				SendErrorMessage(playerid, "This feature is still being developed.");
+				Dialog_Show(playerid, PhoneMusic, DIALOG_STYLE_LIST, "{6688ff}Phone Music", "Default Ringtone\nMusical Ringtone 1\nMusical Ringtone 2\nMusical Ringtone 3\nMusical Ringtone 4\nMusical Ringtone 5\nMusical Ringtone 6\nMusical Ringtone 7", "Select", "Cancel");
 			}
 			case 4:
 			{
-				Dialog_Show(playerid, PhoneMusic, DIALOG_STYLE_LIST, "{6688ff}Phone Music", "Music 1\nMusic 2\nMusic 3\nMusic 4\nMusic 5", "Select", "Cancel");
+				SendErrorMessage(playerid, "This feature is still being developed.");
 			}
 			case 5:
 			{
@@ -41230,6 +41375,7 @@ Dialog:Graffiti_Text(playerid, response, listitem, inputtext[])
 		}
         PlayerData[playerid][pGraffiti] = id;
         PlayerData[playerid][pGraffitiTime] = 15;
+        GraffitiData[id][graffitiDefault] = 0;
 		format(GraffitiData[id][graffitiFont], 50, gang_tag_font[playerid]);
 		printf("Debug: %s", GraffitiData[id][graffitiFont]);
 		strpack(PlayerData[playerid][pGraffitiText], inputtext, 64 char);
@@ -69346,6 +69492,10 @@ CMD:phone(playerid, params[])
 	if (!PlayerData[playerid][pPhone])
 		return SendErrorMessage(playerid, "You don't have any phone setup.");
 
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || PlayerData[playerid][pInjured] > 0 || PlayerData[playerid][pHospital] > 0 || PlayerData[playerid][pMiningTime] > 0 || PlayerData[playerid][pTazedTime] > 0 || PlayerData[playerid][pCuffed] > 0 || PlayerData[playerid][pLootTime] > 0)
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "You're currently unable to use phone at this moment.");
+	}
 	OpenPhone(playerid);
 	ShowActionBubble(playerid, "* %s takes out their phone.", GetRPName(playerid));
 	return 1;
@@ -85578,7 +85728,7 @@ stock mdc_ResetCriminalRecordData(playerid) {
 		}
 	}
 
-	Iter_Clear(CriminalRecordIterator[playerid]);
+	Iter_Clear(RecordIterator[playerid]);
 }
 
 stock mdc_ShowVehicles(playerid, name[]) {
@@ -85679,12 +85829,12 @@ public mdc_FetchTickets(playerid, name[]) {
 	mdc_ResetCriminalRecordData(playerid);
 	SetPVarInt(playerid, "mdc_cr_ScrollTop", 0);
 	for(new i = 0; i < cache_get_row_count(); i++) {
-		idx = Iter_Free(CriminalRecordIterator[playerid]);
+		idx = Iter_Free(RecordIterator[playerid]);
 		if(idx == -1) {
 		    break;
 		}
 
-		Iter_Add(CriminalRecordIterator[playerid], idx);
+		Iter_Add(RecordIterator[playerid], idx);
 		format(CriminalRecordData[playerid][idx][mdc_cr_offender], MAX_PLAYER_NAME, "%s", name);
 		CriminalRecordData[playerid][idx][mdc_cr_type] = RECORD_TICKET;
 		cache_get_field_content(i, "reason", CriminalRecordData[playerid][idx][mdc_cr_description], connectionID, 200);
@@ -85704,12 +85854,12 @@ forward mdc_FetchCharges(playerid, name[]);
 public mdc_FetchCharges(playerid, name[]) {
 	new idx;
 	for(new i = 0; i < cache_get_row_count(); i++) {
-		idx = Iter_Free(CriminalRecordIterator[playerid]);
+		idx = Iter_Free(RecordIterator[playerid]);
 		if(idx == -1) {
 		    break;
 		}
 
-        Iter_Add(CriminalRecordIterator[playerid], idx);
+        Iter_Add(RecordIterator[playerid], idx);
 		format(CriminalRecordData[playerid][idx][mdc_cr_offender], MAX_PLAYER_NAME, "%s", name);
 		CriminalRecordData[playerid][idx][mdc_cr_type] = RECORD_CHARGE;
 		cache_get_field_content(i, "crime", CriminalRecordData[playerid][idx][mdc_cr_description], connectionID, 200);
@@ -85719,7 +85869,7 @@ public mdc_FetchCharges(playerid, name[]) {
 		CriminalRecordData[playerid][idx][mdc_cr_served] = cache_get_field_content_int(i, "served", connectionID);
 	}
 
-	new count = Iter_Count(CriminalRecordIterator[playerid]);
+	new count = Iter_Count(RecordIterator[playerid]);
 	mdc_Hide(playerid, false);
     TextDrawShowForPlayer(playerid, td_mdc_HeaderBox);
     if(count >= 7) {
