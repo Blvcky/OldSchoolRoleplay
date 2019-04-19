@@ -1,13 +1,13 @@
 # Old School Roleplay Development
 ### v0.3 Update list:
-[*] Fixed furniture doors.
-[*]Fixed /call 911.
-[*]Fixed /rpm.
-[*][*]Updated /shout(/s) command.
-[*]Updated /dynamichelp.
-[*]Players can now furnish outside their houses.
-[*]Fixed a bug with player virtual world.
-[*]Fixed radio stations.
+* Fixed furniture doors.
+*Fixed /call 911.
+*Fixed /rpm.
+*Updated /shout(/s) command.
+*Updated /dynamichelp.
+*Players can now furnish outside their houses.
+*Fixed a bug with player virtual world.
+*Fixed radio stations.
 
 ### Unfinished & To do things.
 [*]Brand new tax system.
