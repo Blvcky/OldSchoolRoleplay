@@ -313,6 +313,7 @@ new
 
 #define MAX_OWNABLE_CARS (15)
 // ---------
+new gang_tag_font[MAX_PLAYERS][50], gang_tag_chosen[MAX_PLAYERS];
 new gListedItems[MAX_PLAYERS][100], gTargetName[MAX_PLAYERS][MAX_PLAYER_NAME];
 new gPreviewFurniture[MAX_PLAYERS] = {-1, ...};
 new Float: WeaponDamages[47];
@@ -585,8 +586,7 @@ enum
 	ACCOUNT_CREATION,
 	DIALOG_FOOD,
 	DIALOG_INTERIORS,
-	DIALOG_GRAFFITICOLOR,
-	DIALOG_GRAFFITITEXT,
+
     DIALOG_NEWUPGRADE,
     DIALOG_NEWUPGRADEONE,
 	DIALOG_NEON,
@@ -1689,19 +1689,13 @@ enum graffitiData {
 	graffitiIcon,
 	graffitiObject,
 	graffitiColor,
-	graffitiText[64]
+	graffitiText[64],
+	graffitiDefault,
+	graffitiFont[50]
 };
-enum landgraffitiData {
-	graffitiID,
-	graffitiExists,
-	Float:graffitiPos[4],
-	graffitiIcon,
-	graffitiObject,
-	graffitiColor,
-	graffitiText[64]
-};
+
 new GraffitiData[MAX_GRAFFITI_POINTS][graffitiData];
-new LandGraffitiData[MAX_LANDGRAFFITI_POINTS][landgraffitiData];
+
 enum hEnum
 {
 	hExists,
@@ -8616,7 +8610,153 @@ Streamer_SetExtraFloat(objectid, type, Float:value)
 	setproperty(.id = objectid, .value = type, .string = string);
 	return 1;
 }
+Dialog:Graffiti_Type(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		if(listitem == 0)
+		{
+			Dialog_Show(playerid, Dialog_Tag_Default, DIALOG_STYLE_LIST, "Default Tag", "Pink graffiti Temple Drive Ballas\nOrange graffiti Varrio loz aztecas\nDark green graffiti Seville BLVD\nOrange graffiti Varrio Los Aztecas\nPurple graffiti Kilo tray Ballas\nPurple graffiti San Fiero Rifa\nDark green graffiti Los Santos Vagos\nPurple graffiti Front Yard Ballaz\nPink graffiti Rollin Heights Ballas\nDark blue Temple drive Ballas", "Select", "Cancel");
+		}
+		if(listitem == 1)
+		{
+			Dialog_Show(playerid, Dialog_Tag_Font, DIALOG_STYLE_LIST, "Chose a font!", "Arial\nCourier\nImpact\nPricedown\nDaredevil\nBombing\naaaiight! fat\nFrom Street Art\nGhang\nGraffogie\nGraphers Blog\nNosegrind Demo", "Select", "Cancel");
+		}
+	}
+	return 1;
+}
 
+Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new id = Graffiti_Nearest(playerid);
+	    switch(listitem)
+	    {
+			case 0:
+			{
+			    gang_tag_chosen[playerid] = 1529;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 1:
+			{
+			    gang_tag_chosen[playerid] = 1531;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+
+			}
+			case 2:
+			{
+			    gang_tag_chosen[playerid] = 18660;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 3:
+			{
+			    gang_tag_chosen[playerid] = 18661;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 4:
+			{
+			    gang_tag_chosen[playerid] = 18662;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+   		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 5:
+			{
+			    gang_tag_chosen[playerid] = 18663;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+   		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 6:
+			{
+			    gang_tag_chosen[playerid] = 18665;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+   		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 7:
+			{
+			    gang_tag_chosen[playerid] = 18666;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+   		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 8:
+			{
+			    gang_tag_chosen[playerid] = 18667;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+   		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+			case 9:
+			{
+			    gang_tag_chosen[playerid] = 18664;
+			    SendClientMessageEx(playerid, -1, "You've chose %s", inputtext);
+   		        PlayerData[playerid][pGraffiti] = id;
+		        PlayerData[playerid][pGraffitiTime] = 15;
+				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
+				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+			}
+	    }
+	}
+	return 1;
+}
+Dialog:Dialog_Tag_Font(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		format(gang_tag_font[playerid], 50, inputtext);
+ 		Dialog_Show(playerid, Graffiti_Text, DIALOG_STYLE_INPUT, "Graffiti Text", "Please enter the text you wish to spray below.\n\nNote: Your text input cannot exceed over 64 characters.", "Submit", "Cancel");
+	}
+	return 1;
+}
 Dialog:BuyFurniture(playerid, response, listitem, inputtext[])
 {
 	if (response)
@@ -13246,6 +13386,52 @@ SetAttachedObject(playerid, modelid, bone, Float:x = 0.0, Float:y = 0.0, Float:z
 
 	return -1;
 }
+stock strreplace2(string[], const search[], const replacement[], bool:ignorecase = false, pos = 0, limit = -1, maxlength = sizeof(string)) {
+		// No need to do anything if the limit is 0.
+		if (limit == 0)
+				return 0;
+
+		new
+						 sublen = strlen(search),
+						 replen = strlen(replacement),
+				bool:packed = ispacked(string),
+						 maxlen = maxlength,
+						 len = strlen(string),
+						 count = 0
+		;
+
+
+		// "maxlen" holds the max string length (not to be confused with "maxlength", which holds the max. array size).
+		// Since packed strings hold 4 characters per array slot, we multiply "maxlen" by 4.
+		if (packed)
+				maxlen *= 4;
+
+		// If the length of the substring is 0, we have nothing to look for..
+		if (!sublen)
+				return 0;
+
+		// In this line we both assign the return value from "strfind" to "pos" then check if it's -1.
+		while (-1 != (pos = strfind(string, search, ignorecase, pos))) {
+				// Delete the string we found
+				strdel(string, pos, pos + sublen);
+
+				len -= sublen;
+
+				// If there's anything to put as replacement, insert it. Make sure there's enough room first.
+				if (replen && len + replen < maxlen) {
+						strins(string, replacement, pos, maxlength);
+
+						pos += replen;
+						len += replen;
+				}
+
+				// Is there a limit of number of replacements, if so, did we break it?
+				if (limit != -1 && ++count >= limit)
+						break;
+		}
+
+		return count;
+}
 
 stock strmatch(const string1[], const string2[])
 {
@@ -14193,14 +14379,6 @@ public OnGraffitiCreated(id)
 {
 	GraffitiData[id][graffitiID] = cache_insert_id(connectionID);
 	Graffiti_Save(id);
-
-	return 1;
-}
-forward OnLandGraffitiCreated(id);
-public OnLandGraffitiCreated(id)
-{
-	LandGraffitiData[id][graffitiID] = cache_insert_id(connectionID);
-	LandGraffiti_Save(id);
 
 	return 1;
 }
@@ -23478,38 +23656,32 @@ stock Graffiti_Refresh(id)
 {
 	if (id != -1 && GraffitiData[id][graffitiExists])
 	{
-		if (IsValidDynamicMapIcon(GraffitiData[id][graffitiIcon]))
-		    DestroyDynamicMapIcon(GraffitiData[id][graffitiIcon]);
+		if(GraffitiData[id][graffitiDefault] != 0)
+		{
+ 			if (IsValidDynamicObject(GraffitiData[id][graffitiObject]))
+				DestroyDynamicObject(GraffitiData[id][graffitiObject]);
 
-		if (IsValidDynamicObject(GraffitiData[id][graffitiObject]))
-			DestroyDynamicObject(GraffitiData[id][graffitiObject]);
+		 	GraffitiData[id][graffitiObject] = CreateDynamicObject(GraffitiData[id][graffitiDefault], GraffitiData[id][graffitiPos][0], GraffitiData[id][graffitiPos][1], GraffitiData[id][graffitiPos][2], 0.0, 0.0, GraffitiData[id][graffitiPos][3]);
+		}
+		else
+		{
+			if (IsValidDynamicMapIcon(GraffitiData[id][graffitiIcon]))
+			    DestroyDynamicMapIcon(GraffitiData[id][graffitiIcon]);
 
-        //GraffitiData[id][graffitiIcon] = CreateDynamicMapIcon(GraffitiData[id][graffitiPos][0], GraffitiData[id][graffitiPos][1], GraffitiData[id][graffitiPos][2], 23, 0, -1, -1, -1, 100.0, MAPICON_GLOBAL);
-		GraffitiData[id][graffitiObject] = CreateDynamicObject(19482, GraffitiData[id][graffitiPos][0], GraffitiData[id][graffitiPos][1], GraffitiData[id][graffitiPos][2], 0.0, 0.0, GraffitiData[id][graffitiPos][3]);
+			if (IsValidDynamicObject(GraffitiData[id][graffitiObject]))
+				DestroyDynamicObject(GraffitiData[id][graffitiObject]);
 
-		SetDynamicObjectMaterial(GraffitiData[id][graffitiObject], 0, 0, "none", "none", 0);
-		SetDynamicObjectMaterialText(GraffitiData[id][graffitiObject], 0, GraffitiData[id][graffitiText], OBJECT_MATERIAL_SIZE_256x128, "Arial", 24, 1, GraffitiData[id][graffitiColor], 0, 0);
+	        //GraffitiData[id][graffitiIcon] = CreateDynamicMapIcon(GraffitiData[id][graffitiPos][0], GraffitiData[id][graffitiPos][1], GraffitiData[id][graffitiPos][2], 23, 0, -1, -1, -1, 100.0, MAPICON_GLOBAL);
+			GraffitiData[id][graffitiObject] = CreateDynamicObject(19482, GraffitiData[id][graffitiPos][0], GraffitiData[id][graffitiPos][1], GraffitiData[id][graffitiPos][2], 0.0, 0.0, GraffitiData[id][graffitiPos][3]);
+			new font[50];
+			strcpy(font, GraffitiData[id][graffitiFont]);
+			SetDynamicObjectMaterial(GraffitiData[id][graffitiObject], 0, 0, "none", "none", 0);
+			SetDynamicObjectMaterialText(GraffitiData[id][graffitiObject], 0, GraffitiData[id][graffitiText], OBJECT_MATERIAL_SIZE_256x128, font, 24, 1, GraffitiData[id][graffitiColor], 0, 0);
+		}
 	}
 	return 1;
 }
-stock LandGraffiti_Refresh(id)
-{
-	if (id != -1 && LandGraffitiData[id][graffitiExists])
-	{
-		if (IsValidDynamicMapIcon(LandGraffitiData[id][graffitiIcon]))
-		    DestroyDynamicMapIcon(LandGraffitiData[id][graffitiIcon]);
 
-		if (IsValidDynamicObject(LandGraffitiData[id][graffitiObject]))
-			DestroyDynamicObject(LandGraffitiData[id][graffitiObject]);
-
-
-		LandGraffitiData[id][graffitiObject] = CreateDynamicObject(19482, LandGraffitiData[id][graffitiPos][0], LandGraffitiData[id][graffitiPos][1], LandGraffitiData[id][graffitiPos][2], 0.0, 0.0, LandGraffitiData[id][graffitiPos][3]);
-
-		SetDynamicObjectMaterial(LandGraffitiData[id][graffitiObject], 0, 0, "none", "none", 0);
-		SetDynamicObjectMaterialText(LandGraffitiData[id][graffitiObject], 0, LandGraffitiData[id][graffitiText], OBJECT_MATERIAL_SIZE_256x128, "Arial", 24, 1, LandGraffitiData[id][graffitiColor], 0, 0);
-	}
-	return 1;
-}
 stock IsSprayingInProgress(id)
 {
 	foreach (new i : Player)
@@ -23576,37 +23748,22 @@ stock Graffiti_Delete(id)
 	}
 	return 1;
 }
-stock LandGraffiti_Save(id)
-{
-	new
-	    query[384];
 
-	format(query, sizeof(query), "UPDATE `landgraffiti` SET `graffitiX` = '%.4f', `graffitiY` = '%.4f', `graffitiZ` = '%.4f', `graffitiAngle` = '%.4f', `graffitiColor` = '%d', `graffitiText` = '%s' WHERE `graffitiID` = '%d'",
-        LandGraffitiData[id][graffitiPos][0],
-        LandGraffitiData[id][graffitiPos][1],
-        LandGraffitiData[id][graffitiPos][2],
-        LandGraffitiData[id][graffitiPos][3],
-		LandGraffitiData[id][graffitiColor],
-		SQL_ReturnEscaped(LandGraffitiData[id][graffitiText]),
-		LandGraffitiData[id][graffitiID]
-	);
-	return mysql_tquery(connectionID, query);
-}
 stock Graffiti_Save(id)
 {
-	new
-	    query[384];
 
-	format(query, sizeof(query), "UPDATE `graffiti` SET `graffitiX` = '%.4f', `graffitiY` = '%.4f', `graffitiZ` = '%.4f', `graffitiAngle` = '%.4f', `graffitiColor` = '%d', `graffitiText` = '%s' WHERE `graffitiID` = '%d'",
+	format(queryBuffer, sizeof(queryBuffer), "UPDATE `graffiti` SET `graffitiX` = '%.4f', `graffitiY` = '%.4f', `graffitiZ` = '%.4f', `graffitiAngle` = '%.4f', `graffitiDefault` = '%d', `graffitiColor` = '%d', `graffitiFont` = '%s', `graffitiText` = '%s' WHERE `graffitiID` = '%d'",
         GraffitiData[id][graffitiPos][0],
         GraffitiData[id][graffitiPos][1],
         GraffitiData[id][graffitiPos][2],
         GraffitiData[id][graffitiPos][3],
+        GraffitiData[id][graffitiDefault],
 		GraffitiData[id][graffitiColor],
+  		SQL_ReturnEscaped(GraffitiData[id][graffitiFont]),
 		SQL_ReturnEscaped(GraffitiData[id][graffitiText]),
 		GraffitiData[id][graffitiID]
 	);
-	return mysql_tquery(connectionID, query);
+	return mysql_tquery(connectionID, queryBuffer);
 }
 
 stock Graffiti_Create(Float:x, Float:y, Float:z, Float:angle)
@@ -23626,29 +23783,6 @@ stock Graffiti_Create(Float:x, Float:y, Float:z, Float:angle)
 
 			Graffiti_Refresh(i);
 			mysql_tquery(connectionID, "INSERT INTO `graffiti` (`graffitiColor`) VALUES(0)", "OnGraffitiCreated", "d", i);
-
-			return i;
-		}
-	}
-	return -1;
-}
-stock LandGraffiti_Create(Float:x, Float:y, Float:z, Float:angle)
-{
-	for (new i = 0; i < MAX_LANDGRAFFITI_POINTS; i ++)
-	{
-	    if (!GraffitiData[i][graffitiExists])
-	    {
-			LandGraffitiData[i][graffitiExists] = 1;
-			LandGraffitiData[i][graffitiPos][0] = x;
-			LandGraffitiData[i][graffitiPos][1] = y;
-			LandGraffitiData[i][graffitiPos][2] = z;
-			LandGraffitiData[i][graffitiPos][3] = angle - 90.0;
-			LandGraffitiData[i][graffitiColor] = 0xFFFFFFFF;
-
-			format(LandGraffitiData[i][graffitiText], 32, "/landtext");
-
-			LandGraffiti_Refresh(i);
-			mysql_tquery(connectionID, "INSERT INTO `landgraffiti` (`graffitiColor`) VALUES(0)", "OnLandGraffitiCreated", "d", i);
 
 			return i;
 		}
@@ -23679,46 +23813,21 @@ public Graffiti_Load()
 	for (new i = 0; i < rows; i ++) if (i < MAX_GRAFFITI_POINTS)
 	{
 	    cache_get_field_content(i, "graffitiText", GraffitiData[i][graffitiText], connectionID, 64);
-
+		cache_get_field_content(i, "graffitiFont", GraffitiData[i][graffitiFont], connectionID, 50);
     	GraffitiData[i][graffitiExists] = 1;
 	    GraffitiData[i][graffitiID] = cache_get_field_content_int(i, "graffitiID");
+		GraffitiData[i][graffitiDefault] = cache_get_field_content_int(i, "graffitiDefault");
 	    GraffitiData[i][graffitiPos][0] = cache_get_field_content_float(i, "graffitiX");
 	    GraffitiData[i][graffitiPos][1] = cache_get_field_content_float(i, "graffitiY");
 	    GraffitiData[i][graffitiPos][2] = cache_get_field_content_float(i, "graffitiZ");
 	    GraffitiData[i][graffitiPos][3] = cache_get_field_content_float(i, "graffitiAngle");
+
 	    GraffitiData[i][graffitiColor] = cache_get_field_content_int(i, "graffitiColor");
 
 		Graffiti_Refresh(i);
 	}
 	return 1;
 }
-forward LandGraffiti_Load();
-public LandGraffiti_Load()
-{
-	static
-	    rows,
-	    fields;
-
-	cache_get_data(rows, fields, connectionID);
-
-	for (new i = 0; i < rows; i ++) if (i < MAX_LANDGRAFFITI_POINTS)
-	{
-	    cache_get_field_content(i, "graffitiText", LandGraffitiData[i][graffitiText], connectionID, 64);
-
-    	LandGraffitiData[i][graffitiExists] = 1;
-	    LandGraffitiData[i][graffitiID] = cache_get_field_content_int(i, "graffitiID");
-	    LandGraffitiData[i][graffitiPos][0] = cache_get_field_content_float(i, "graffitiX");
-	    LandGraffitiData[i][graffitiPos][1] = cache_get_field_content_float(i, "graffitiY");
-	    LandGraffitiData[i][graffitiPos][2] = cache_get_field_content_float(i, "graffitiZ");
-	    LandGraffitiData[i][graffitiPos][3] = cache_get_field_content_float(i, "graffitiAngle");
-	    LandGraffitiData[i][graffitiColor] = cache_get_field_content_int(i, "graffitiColor");
-
-		LandGraffiti_Refresh(i);
-	}
-	return 1;
-}
-
-
 
 
 ReloadLandObject(objectid, labels)
@@ -26968,20 +27077,39 @@ public SecondTimer()
 
 		            if (PlayerData[i][pGraffitiTime] < 1)
 					{
-                        new str[500];
-					    strunpack(str, PlayerData[i][pGraffitiText]);
-	        	        format(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], 64, str);
-
-					    GraffitiData[PlayerData[i][pGraffiti]][graffitiColor] = PlayerData[i][pGraffitiColor];
-
-						Graffiti_Refresh(PlayerData[i][pGraffiti]);
-					    Graffiti_Save(PlayerData[i][pGraffiti]);
-
-					    ClearAnimations(i, 1);
-						SendProximityMessage(i, 30.0, COLOR_PURPLE, "** %s puts their can of spray paint away.", GetRPName(i));
-
-		   	            PlayerData[i][pGraffiti] = -1;
-		   	            PlayerData[i][pGraffitiTime] = 0;
+						if(gang_tag_chosen[i] != 0)
+						{
+						    new Float:x, Float:y, Float:z, Float:a;
+						    GetPlayerPos(i, x, y, z);
+							GetPlayerFacingAngle(i, a);
+						    GraffitiData[PlayerData[i][pGraffiti]][graffitiPos][3] = a + 90.0;
+						    GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault] = gang_tag_chosen[i];
+						    printf("%d", gang_tag_chosen[i]);
+						    printf("%d", GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault]);
+						    gang_tag_chosen[i] = 0;
+							Graffiti_Refresh(PlayerData[i][pGraffiti]);
+						    Graffiti_Save(PlayerData[i][pGraffiti]);
+						    ClearAnimations(i, 1);
+							SendProximityMessage(i, 30.0, COLOR_PURPLE, "** %s puts their can of spray paint away.", GetRPName(i));
+			   	            PlayerData[i][pGraffiti] = -1;
+			   	            PlayerData[i][pGraffitiTime] = 0;
+						}
+						else
+						{
+	                        new str[500];
+						    strunpack(str, PlayerData[i][pGraffitiText]);
+		        	        format(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], 64, str);
+		        	        strreplace2(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], "(n)", "\n");
+                            GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault] = 0;
+                            gang_tag_chosen[i] = 0;
+						    GraffitiData[PlayerData[i][pGraffiti]][graffitiColor] = PlayerData[i][pGraffitiColor];
+							Graffiti_Refresh(PlayerData[i][pGraffiti]);
+						    Graffiti_Save(PlayerData[i][pGraffiti]);
+						    ClearAnimations(i, 1);
+							SendProximityMessage(i, 30.0, COLOR_PURPLE, "** %s puts their can of spray paint away.", GetRPName(i));
+			   	            PlayerData[i][pGraffiti] = -1;
+			   	            PlayerData[i][pGraffitiTime] = 0;
+						}
 					}
 				}
 			}
@@ -33028,7 +33156,6 @@ public OnGameModeInit()
 		mysql_tquery(connectionID, "TRUNCATE TABLE shots");
 		mysql_tquery(connectionID, "SELECT * FROM houses", "OnQueryFinished", "ii", THREAD_LOAD_HOUSES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM rp_furniture", "OnLoadFurniture");
-
 		mysql_tquery(connectionID, "SELECT * FROM garages", "OnQueryFinished", "ii", THREAD_LOAD_GARAGES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM businesses", "OnQueryFinished", "ii", THREAD_LOAD_BUSINESSES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM entrances", "OnQueryFinished", "ii", THREAD_LOAD_ENTRANCES, 0);
@@ -33223,17 +33350,16 @@ public OnPhoneResponse(playerid, number)
 
 	switch (number)
 	{
-
-		case 8294:
-		{
-			SendClientMessage(playerid, COLOR_YELLOW, "(Phone) Taxi: Would you like to request a taxi? Say 'yes' or 'no'.");
-			PlayerData[playerid][pCalling] = 8294;
-		}
 		case 911:
 		{
 			PlayerData[playerid][pCalling] = 911;
 			ShowActionBubble(playerid, "** %s dials a number on their keypad and begins a call.", GetRPName(playerid));
 			SendClientMessage(playerid, COLOR_YELLOW, "Dispatch: 911, what is your emergency? Enter 'police' or 'medic'.");
+		}
+		case 8294:
+		{
+			SendClientMessage(playerid, COLOR_YELLOW, "(Phone) Taxi: Would you like to request a taxi? Say 'yes' or 'no'.");
+			PlayerData[playerid][pCalling] = 8294;
 		}
 		case 6324:
 		{
@@ -38585,16 +38711,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			Graffiti_Refresh(PlayerData[playerid][pEditGraffiti]);
 			Graffiti_Save(PlayerData[playerid][pEditGraffiti]);
 		}
-	    else if (PlayerData[playerid][pEditLandGraffiti] != -1 && LandGraffitiData[PlayerData[playerid][pEditLandGraffiti]][graffitiExists])
-	    {
-			LandGraffitiData[PlayerData[playerid][pEditLandGraffiti]][graffitiPos][0] = x;
-			LandGraffitiData[PlayerData[playerid][pEditLandGraffiti]][graffitiPos][1] = y;
-			LandGraffitiData[PlayerData[playerid][pEditLandGraffiti]][graffitiPos][2] = z;
-			LandGraffitiData[PlayerData[playerid][pEditLandGraffiti]][graffitiPos][3] = rz;
 
-			LandGraffiti_Refresh(PlayerData[playerid][pEditLandGraffiti]);
-			LandGraffiti_Save(PlayerData[playerid][pEditLandGraffiti]);
-		}
 	}
  	return 1;
 }
@@ -41090,7 +41207,7 @@ Dialog:DIALOG_REGISTER_ACCENT(playerid, response, listitem, inputtext[])
 	return ShowDialogToPlayer(playerid, ACCOUNT_CREATION);
 }
 
-Dialog:DIALOG_GRAFFITITEXT(playerid, response, listitem, inputtext[])
+Dialog:Graffiti_Text(playerid, response, listitem, inputtext[])
 {
 	if (response)
 	{
@@ -41101,11 +41218,11 @@ Dialog:DIALOG_GRAFFITITEXT(playerid, response, listitem, inputtext[])
 
 	    if (isnull(inputtext))
 	    {
-	        return Dialog_Show(playerid, DIALOG_GRAFFITITEXT, DIALOG_STYLE_INPUT, "Graffiti Text", "Please enter the text you wish to spray below.\n\nNote: Your text input cannot exceed over 64 characters.", "Submit", "Cancel");
+	        return Dialog_Show(playerid, Graffiti_Text, DIALOG_STYLE_INPUT, "Graffiti Text", "Please enter the text you wish to spray below.\n\nNote: Your text input cannot exceed over 64 characters.", "Submit", "Cancel");
 		}
 		if (strlen(inputtext) > 64)
 		{
-		    return Dialog_Show(playerid, DIALOG_GRAFFITITEXT, DIALOG_STYLE_INPUT, "Graffiti Text", "Error: Your input can't exceed 64 characters.\n\nPlease enter the text you wish to spray below.\n\nNote: Your text input cannot exceed over 64 characters.", "Submit", "Cancel");
+		    return Dialog_Show(playerid, Graffiti_Text, DIALOG_STYLE_INPUT, "Graffiti Text", "Error: Your input can't exceed 64 characters.\n\nPlease enter the text you wish to spray below.\n\nNote: Your text input cannot exceed over 64 characters.", "Submit", "Cancel");
 		}
         if (IsSprayingInProgress(id))
         {
@@ -41113,13 +41230,12 @@ Dialog:DIALOG_GRAFFITITEXT(playerid, response, listitem, inputtext[])
 		}
         PlayerData[playerid][pGraffiti] = id;
         PlayerData[playerid][pGraffitiTime] = 15;
-
+		format(GraffitiData[id][graffitiFont], 50, gang_tag_font[playerid]);
+		printf("Debug: %s", GraffitiData[id][graffitiFont]);
 		strpack(PlayerData[playerid][pGraffitiText], inputtext, 64 char);
 		ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 		SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
-		//ShowPlayerFooter(playerid, "You are now spraying your ~g~graffiti.");
 		GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-
 		SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 	}
 	return 1;
@@ -44411,35 +44527,6 @@ Dialog:DIALOG_LANDMENU(playerid, response, listitem, inputtext[])
 			case 6:
 			{
 			    Dialog_Show(playerid, DIALOG_LANDPERMS, DIALOG_STYLE_INPUT, "Permissions", "Please enter the name or ID of the player to take or give permissions to:", "Submit", "Back");
-			}
-			case 7:
-			{
-				static
-				    id = -1,
-					Float:x,
-					Float:y,
-					Float:z,
-					Float:angle;
-
-				if(GetPlayerInterior(playerid) > 0 || GetPlayerVirtualWorld(playerid) > 0)
-				{
-			 		return SendClientMessage(playerid, COLOR_GREY, "You can only create graffiti points outside interiors.");
-				}
-
-				GetPlayerPos(playerid, x, y, z);
-				GetPlayerFacingAngle(playerid, angle);
-
-				id = LandGraffiti_Create(x, y, z, angle);
-
-				if(id == -1)
-				{
-				    return SendClientMessage(playerid, COLOR_GREY, "The server has reached the limit for land text points.");
-				}
-
-				EditDynamicObject(playerid, LandGraffitiData[id][graffitiObject]);
-
-				PlayerData[playerid][pEditLandGraffiti] = id;
-				SendClientMessageEx(playerid, COLOR_GREY, "You have successfully created graffiti ID: %d.", id);
 			}
 		}
     }
@@ -49742,12 +49829,10 @@ CMD:gspray(playerid, params[])
 	}
 
     PlayerData[playerid][pGraffitiColor] = GangTag_IntColor(GangInfo[PlayerData[playerid][pGang]][gColor]);
-//	Dialog_Show(playerid, DIALOG_GRAFFITICOLOR, DIALOG_STYLE_LIST, "Select Color", "{FFFFFF}White\n{FF0000}Red\n{FFFF00}Yellow\n{33CC33}Green\n{33CCFF}Light Blue\n{FFA500}Orange\n{1394BF}Dark Blue\n{000000}Black", "Select", "Cancel");
-	Dialog_Show(playerid, DIALOG_GRAFFITITEXT, DIALOG_STYLE_INPUT, "Graffiti Text", "Please enter the text you wish to spray below.\n\nNote: Your text input cannot exceed over 64 characters.", "Submit", "Cancel");
+	Dialog_Show(playerid, Graffiti_Type, DIALOG_STYLE_LIST, "Graffiti Style", "Default Gang Tags\nCustom Text", "Select", "Close");
 
 	return 1;
 }
-
 
 CMD:togcs(playerid,params[])
 {
