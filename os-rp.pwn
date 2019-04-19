@@ -1,7 +1,7 @@
 /*				     **********************************************************************
 				     **********************************************************************
 				     **********************************************************************
-						
+
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
@@ -53,11 +53,14 @@
 #define MYSQL_PASSWORD  ""
 // ---------------------------------------
 #define SERVER_NAME      "Old School Roleplay"
-#define SERVER_REVISION  "OS:RP v0.2(f)"
+#define SERVER_REVISION  "OS:RP v0.3"
 #define SERVER_ANTICHEAT "The server"
 // ---------------------------------------
 #define TABLE_USERS         "`users`" //to be moved all tables.
 #define TABLE_FURNITURE		"`rp_furniture`"
+#define TABLE_DAMAGES       "`rp_gundamages`"
+#define TABLE_FACTIONS      "`factions`"
+#define TABLE_GANGS         "`gangs`"
 // ---------------------------------------
 #define COLOR_WHITE 		0xFFFFFFFF
 #define COLOR_SAMP     		0xAAC4E5FF
@@ -147,7 +150,7 @@
 #define MAX_GRAFFITI_POINTS         200
 #define MAX_LANDGRAFFITI_POINTS     200
 #define MAX_GANGTAGS 				100
-#define MAX_GATES 					4000
+
 #define	MAX_WEP						43
 #define MAX_BOOTHS 					8
 #define MAX_IMPOUND_LOTS            100
@@ -762,47 +765,6 @@ enum
 	DIALOG_CORPSE
 }
 
-
-
-enum gInfo
-{
-    gGATE,
-    gHID,
-	Float: gSpeed,
-	Float: gRange,
-	gModel,
-	gVW,
-	gFamilyID,
-	gInt,
-	Float:gPosX,
-	Float:gPosY,
-	Float:gPosZ,
-	Float:gRotX,
-	Float:gRotY,
-	Float:gRotZ,
-	Float:gPosXM,
-	Float:gPosYM,
-	Float:gPosZM,
-	Float:gRotXM,
-	Float:gRotYM,
-    Float:gRotZM,
-    gStatus,
-    gPass[24],
-	gAllegiance,
-	gGroupType,
-	gGroupID,
-    gRenderHQ,
-	gTimer,
-	gAutomate,
-	gLocked,
-	gTIndex,
-	gTModel,
-	gTTXD[64],
-	gTTexture[64],
-	gTColor,
-	gFacility
-};
-new GateInfo[MAX_GATES][gInfo];
 enum
 {
 	VEHICLE_ENGINE,
@@ -3479,7 +3441,7 @@ new const houseInteriors[][houseInt] =
 	{"Upper Class",  30000,  4,  1282.0646, -1140.2067, 980.0524, 0.0000},//16
 	{"Mansion", 	 350000,  1,  1834.2408, -1278.7684, 832.1602, 180.0000},//17
 	{"Mansion", 	 500000, 7,  925.0102, -496.8101, 843.8953, 90.0000},//18
-	{"Mansion",      2500000, 5,  1298.8682, -796.2053, 1084.0078, 0.0000}//19
+	{"Mansion",      2500000, 5,  1298.8682, -796.2053, 1084.0078, 0.0000},//19
 	{"Special",      3000000, 1,  1412.639892, -1.787510, 1000.924377}//20
 };
 
@@ -8664,12 +8626,7 @@ Dialog:BuyFurniture(playerid, response, listitem, inputtext[])
 	}
 	return 1;
 }
-Dialog:FurnEditConfirm(playerid, response, listitem, inputtext[])
-{
-	if(!response) return ListTexture(playerid);
-	EditDynamicObjectEx(playerid, EDIT_TYPE_FURNITURE, Furniture[GetPVarInt(playerid, "FurnID")][fObject], GetPVarInt(playerid, "FurnID"));
-	return 1;
-}
+
 
 Dialog:ChangeMat(playerid, response, listitem, inputtext[])
 {
@@ -8800,9 +8757,9 @@ Dialog:HouseFurniture(playerid, response, listitem, inputtext[])
     new
 		house = PlayerData[playerid][pHouse];
 
-    if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not manage the furniture outside.");
+    if(!GetInsideHouse(playerid) && !GetFurnitureHouse(playerid)) return SendErrorMessage(playerid, "You are not nearby or in a house that you own.");
 
-	if (!IsValidHouseID(house) || GetInsideHouse(playerid) != house)
+	if (!IsValidHouseID(house) || !IsHouseOwner(playerid, house))
 	{
         return 0;
 	}
@@ -9067,27 +9024,22 @@ Float:DistanceCameraTargetToLocation(Float:cx, Float:cy, Float:cz, Float:ox, Flo
 
 	return floatsqroot((x - ox) * (x - ox) + (y - oy) * (y - oy) + (z - oz) * (z - oz));
 }
+GetClosestDoor(playerid, Float:range)
+{
+	for (new i = 0; i < MAX_FURNITURE; i ++)
+	{
+		if (Furniture[i][fExists] && IsDoorModel(Furniture[i][fModel]) && IsPlayerNearPoint(playerid, range, Furniture[i][fSpawn][0], Furniture[i][fSpawn][1], Furniture[i][fSpawn][2], Furniture[i][fInterior], Furniture[i][fWorld]))
+		{
+			return i;
+		}
+	}
+	return -1;
+}
 
 GateCheck(playerid)
 {
 	new id;
-	new Float:X, Float:Y, Float:Z;
-	for(new i = 0; i < sizeof(GateInfo); i++)
-	{
-		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(GateInfo[i][gGroupID] != -1 && (0 <= PlayerData[playerid][pFaction] < MAX_FACTIONS) && PlayerData[playerid][pFaction] == GateInfo[i][gGroupID] && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW] && GetPlayerInterior(playerid) == GateInfo[i][gInt])
-		{
-			if(GateInfo[i][gLocked] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This gate is currently locked.");
-			if(GateInfo[i][gAutomate] == 1) return 1;
-			MoveGate(playerid, i);
-		}
-		else if(GateInfo[i][gFamilyID] != -1 && PlayerData[playerid][pGang] == GateInfo[i][gFamilyID] && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW] && GetPlayerInterior(playerid) == GateInfo[i][gInt])
-		{
-			if(GateInfo[i][gLocked] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This gate is currently locked.");
-			if(GateInfo[i][gAutomate] == 1) return 1;
-			MoveGate(playerid, i);
-		}
-	}
+
     if(IsPlayerInRangeOfPoint(playerid, 10.0, 1544.639892, -1631.008666, 13.252797)) // PD barrier
 	{
 	    if(GetFactionType(playerid) != FACTION_POLICE && GetFactionType(playerid) != FACTION_FEDERAL)
@@ -9224,7 +9176,24 @@ DoorCheck(playerid)
 			return 1;
 		}
 	}
-
+	if(GetInsideHouse(playerid))
+	{
+		if (IsValidFurnitureID(GetClosestDoor(playerid, 2.0)))
+		{
+			if (Furniture[GetClosestDoor(playerid, 2.0)][fDoorOpen] == 1)
+			{
+				Furniture[GetClosestDoor(playerid, 2.0)][fSpawn][5] = Furniture[GetClosestDoor(playerid, 2.0)][fSpawn][5] + 90.0;
+				Furniture[GetClosestDoor(playerid, 2.0)][fDoorOpen] = 0;
+				UpdateFurniture(GetClosestDoor(playerid, 2.0));
+			}
+			else
+			{
+				Furniture[GetClosestDoor(playerid, 2.0)][fSpawn][5] = Furniture[GetClosestDoor(playerid, 2.0)][fSpawn][5] - 90.0;
+				Furniture[GetClosestDoor(playerid, 2.0)][fDoorOpen] = 1;
+				UpdateFurniture(GetClosestDoor(playerid, 2.0));
+			}
+		}
+	}
 	for(new i = 0, j = Streamer_GetUpperBound(STREAMER_TYPE_OBJECT); i <= j; i ++)
 	{
     	if(IsValidDynamicObject(i) && IsPlayerInRangeOfDynamicObject(playerid, i, 2.5) && IsDoorObject(i))
@@ -9793,35 +9762,35 @@ stock GetHealthDots(playerid)
 	HP = GetHealth(playerid);
 
 	if(HP == 100)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"; // 13 Dots
+	    tmp = "?????????????"; // 13 Dots
 	else if(HP >= 94 && HP < 100)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½"; // {660000}
+	    tmp = "????????????{660000}?"; // {660000}
     else if(HP >= 88 && HP < 94)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½";
+	    tmp = "???????????{660000}??";
     else if(HP >= 82 && HP < 88)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½";
+	    tmp = "??????????{660000}???";
 	else if(HP >= 76 && HP < 82)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "?????????{660000}????";
 	else if(HP >= 70 && HP < 76)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "????????{660000}?????";
 	else if(HP >= 64 && HP < 70)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "???????{660000}??????";
 	else if(HP >= 58 && HP < 64)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "??????{660000}???????";
 	else if(HP >= 52 && HP < 58)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "??????{660000}????????";
 	else if(HP >= 46 && HP < 52)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "?????{660000}?????????";
 	else if(HP >= 40 && HP < 46)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "????{660000}??????????";
  	else if(HP >= 34 && HP < 40)
-	    tmp = "ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "???{660000}???????????";
   	else if(HP >= 28 && HP < 34)
-	    tmp = "ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "??{660000}????????????";
    	else if(HP >= 12 && HP < 28)
-	    tmp = "ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "?{660000}?????????????";
     else if(HP >= 0 && HP < 12)
-	    tmp = "{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "{660000}?????????????";
 
 	return tmp;
 }
@@ -9834,35 +9803,35 @@ stock GetArmorDots(playerid)
 	AR = GetArmor(playerid);
 
 	if(AR == 100)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"; // 13 Dots
+	    tmp = "?????????????"; // 13 Dots
 	else if(AR >= 94 && AR < 100)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½"; // {660000}
+	    tmp = "????????????{660000}?"; // {660000}
     else if(AR >= 88 && AR < 94)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½";
+	    tmp = "???????????{660000}??";
     else if(AR >= 82 && AR < 88)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½";
+	    tmp = "??????????{660000}???";
 	else if(AR >= 76 && AR < 82)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "?????????{660000}????";
 	else if(AR >= 70 && AR < 76)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "????????{660000}?????";
 	else if(AR >= 64 && AR < 70)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "???????{660000}??????";
 	else if(AR >= 58 && AR < 64)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "??????{660000}???????";
 	else if(AR >= 52 && AR < 58)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "??????{660000}????????";
 	else if(AR >= 46 && AR < 52)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "?????{660000}?????????";
 	else if(AR >= 40 && AR < 46)
-	    tmp = "ï¿½ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "????{660000}??????????";
  	else if(AR >= 34 && AR < 40)
-	    tmp = "ï¿½ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "???{660000}???????????";
   	else if(AR >= 28 && AR < 34)
-	    tmp = "ï¿½ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "??{660000}????????????";
    	else if(AR >= 12 && AR < 28)
-	    tmp = "ï¿½{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "?{660000}?????????????";
     else if(AR >= 0 && AR < 12)
-	    tmp = "{660000}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+	    tmp = "{660000}?????????????";
 
 	return tmp;
 }
@@ -10085,7 +10054,7 @@ SetWeaponDamage(weaponid, Float:damage) // Edited by Grime (09-27-2017)
 {
 	if(IsValidDamageWeapon(weaponid))
 	{
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO `rp_gundamages`  (Weapon, Damage) VALUES(%i, %.4f) ON DUPLICATE KEY UPDATE Damage = %.4f", weaponid, damage, damage);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO "#TABLE_DAMAGES"  (Weapon, Damage) VALUES(%i, %.4f) ON DUPLICATE KEY UPDATE Damage = %.4f", weaponid, damage, damage);
 		mysql_tquery(connectionID, queryBuffer);
 		WeaponDamages[weaponid] = damage;
 	}
@@ -10891,7 +10860,7 @@ func CreateLSPDMap()
 	SetDynamicObjectMaterial(lspdenterijer, 7, 17547, "eastbeach4a_lae2", "bluestucco1", 0);
 	SetDynamicObjectMaterial(lspdenterijer, 8, 17547, "eastbeach4a_lae2", "bluestucco1", 0);
 	lspdenterijer = CreateDynamicObjectEx(19327,1583.751,-1657.967,2111.874,0.000,0.000,0.000,300.000,300.000);
-	SetDynamicObjectMaterialText(lspdenterijer, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", 120, "Ariel", 40, 1, -1, 0, 1);
+	SetDynamicObjectMaterialText(lspdenterijer, 0, "?????????", 120, "Ariel", 40, 1, -1, 0, 1);
 	lspdenterijer = CreateDynamicObjectEx(19455,1552.662,-1675.364,2111.287,0.000,0.000,0.000,300.000,300.000);
 	SetDynamicObjectMaterial(lspdenterijer, 0, 6095, "shops01_law", "GB_chatwall03b", 0);
 	lspdenterijer = CreateDynamicObjectEx(19071,1567.988,-1674.938,2108.537,0.000,179.994,0.000,300.000,300.000);
@@ -22291,7 +22260,18 @@ IsGateModel(modelid)
 
 	return 0;
 }
+IsDoorModel(modelid)
+{
+    switch(modelid)
+    {
+        case 19802, 2930, 2911, 1567, 1491, 1492, 1493, 1494, 1495, 1496, 1497, 1498, 1499, 1500, 1501, 1502, 1504, 1505, 1506, 1507, 1523, 8957, 7891, 3109, 3089, 3061, 3037, 3029, 2970, 2949, 2948,2947, 2946, 2944, 977:
+        {
+            return 1;
+        }
+    }
 
+	return 0;
+}
 IsGateObject(objectid)
 {
     new
@@ -22312,13 +22292,6 @@ IsDoorObject(objectid)
 
 	if((modelid) && !IsGateObject(objectid))
 	{
-		for(new i = 0; i < sizeof(g_FurnitureList); i ++)
-		{
-	    	if(g_FurnitureList[i][e_ModelCategory] == FURNITURE_DOORS && g_FurnitureList[i][e_ModelID] == modelid)
-	    	{
-		        return 1;
-			}
-		}
 		for(new i = 0; i < sizeof(landArray); i ++)
 		{
 	    	if(!strcmp(landArray[i][fCategory], "Doors & Gates") && landArray[i][fModel] == modelid)
@@ -22680,7 +22653,7 @@ AddPointMoney(type, amount)
 	            amount /= 2;
 	            GangInfo[PointInfo[i][pCapturedGang]][gCash] += amount;
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cash = %i WHERE id = %i", GangInfo[PointInfo[i][pCapturedGang]][gCash], PointInfo[i][pCapturedGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cash = %i WHERE id = %i", GangInfo[PointInfo[i][pCapturedGang]][gCash], PointInfo[i][pCapturedGang]);
 	        	mysql_tquery(connectionID, queryBuffer);
 	        }
 
@@ -22823,7 +22796,7 @@ GiveGangPoints(gangid, amount)
 	{
         GangInfo[gangid][gPoints] = GangInfo[gangid][gPoints] + amount;
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET points = %i WHERE id = %i", GangInfo[gangid][gPoints], gangid);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET points = %i WHERE id = %i", GangInfo[gangid][gPoints], gangid);
         mysql_tquery(connectionID, queryBuffer);
 	}
 }
@@ -22832,7 +22805,7 @@ RemoveGang(gangid)
 {
 	if(GangInfo[gangid][gAlliance] >= 0)
 	{
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = -1 WHERE id = %i", gangid);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = -1 WHERE id = %i", gangid);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    GangInfo[GangInfo[gangid][gAlliance]][gAlliance] = -1;
@@ -23370,7 +23343,7 @@ ResetVehicle(vehicleid)
 
 	VehicleInfo[vehicleid][vForSale] = false;
 	VehicleInfo[vehicleid][vForSalePrice] = 0;
-	
+
 	if(VehicleInfo[vehicleid][vForSaleLabel] != Text3D:INVALID_3DTEXT_ID) DestroyDynamic3DTextLabel(VehicleInfo[vehicleid][vForSaleLabel]);
 	VehicleInfo[vehicleid][vForSaleLabel] = Text3D:INVALID_3DTEXT_ID;
 
@@ -23832,7 +23805,7 @@ TurfTaxCheck(playerid, amount)
 
 		    GangInfo[TurfInfo[turfid][tCapturedGang]][gCash] += amount;
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cash = %i WHERE id = %i", GangInfo[TurfInfo[turfid][tCapturedGang]][gCash], TurfInfo[turfid][tCapturedGang]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cash = %i WHERE id = %i", GangInfo[TurfInfo[turfid][tCapturedGang]][gCash], TurfInfo[turfid][tCapturedGang]);
 	    	mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -24137,7 +24110,6 @@ ReloadBusiness(businessid)
 
 		DestroyDynamic3DTextLabel(BusinessInfo[businessid][bText]);
 		DestroyDynamicPickup(BusinessInfo[businessid][bPickup]);
-      //  DestroyDynamicMapIcon(BusinessInfo[businessid][bMapIcon]);
 		if(BusinessInfo[businessid][bColor] == -1 || BusinessInfo[businessid][bColor] == -256)
 		{
 			color = 0xC8C8C8FF;
@@ -24157,18 +24129,6 @@ ReloadBusiness(businessid)
 
 		BusinessInfo[businessid][bText] = CreateDynamic3DTextLabel(string, COLOR_GREY1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ] + 0.1, 10.0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
         BusinessInfo[businessid][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(businessid), 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-
-		/*switch(BusinessInfo[businessid][bType])
-		{
-		    case BUSINESS_STORE: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 17, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		    case BUSINESS_GUNSHOP: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 6, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		    case BUSINESS_CLOTHES: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 45, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		    case BUSINESS_RESTAURANT: 	BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 10, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		    case BUSINESS_GYM: 			BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 54, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		    case BUSINESS_AGENCY: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 58, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		    case BUSINESS_BARCLUB: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 49, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		    case BUSINESS_TOOLSHOP:     BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 11, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
-		}*/
 	}
 }
 
@@ -24276,8 +24236,6 @@ IsHouseOwner(playerid, houseid)
 
 PreviewFurniture(playerid, index)
 {
-    if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
-
 	new
 	    Float:x,
 	    Float:y,
@@ -24335,7 +24293,7 @@ UpdateFurniture(furniture)
 	}
 	DestroyDynamicObject(Furniture[furniture][fObject]);
 	Furniture[furniture][fObject] = CreateDynamicObject(Furniture[furniture][fModel], Furniture[furniture][fSpawn][0], Furniture[furniture][fSpawn][1], Furniture[furniture][fSpawn][2], Furniture[furniture][fSpawn][3], Furniture[furniture][fSpawn][4], Furniture[furniture][fSpawn][5], Furniture[furniture][fWorld], Furniture[furniture][fInterior]);
-
+	Streamer_SetExtraInt(Furniture[furniture][fObject], E_OBJECT_EXTRA_ID, Furniture[furniture][fID]);
 	for(new i = 0; i != 3; i ++)
 	{
 		if(MaterialIDs[Furniture[furniture][fMaterial][i]][ModelID] != 0)
@@ -24626,6 +24584,18 @@ GetNearbyHouseEx(playerid)
 	return GetNearbyHouse(playerid) == -1 ? GetInsideHouse(playerid) : GetNearbyHouse(playerid);
 }
 
+GetFurnitureHouse(playerid)
+{
+	foreach(new i : House)
+	{
+	    if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i) && IsPlayerInRangeOfPoint(playerid, 15.0, HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]) && GetPlayerInterior(playerid) == HouseInfo[i][hOutsideInt] && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hOutsideVW])
+	    {
+	        return i;
+		}
+	}
+
+	return -1;
+}
 GetNearbyHouse(playerid)
 {
 	foreach(new i : House)
@@ -28060,7 +28030,7 @@ public MinuteTimer()
 		            {
 		                GangInfo[i][gTurfTokens]++;
 
-		                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET turftokens = turftokens + 1 WHERE id = %i", i);
+		                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET turftokens = turftokens + 1 WHERE id = %i", i);
 		                mysql_tquery(connectionID, queryBuffer);
 		            }
 		        }
@@ -28071,7 +28041,7 @@ public MinuteTimer()
 		            {
 		                FactionInfo[i][fTurfTokens]++;
 
-		                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET turftokens = turftokens + 1 WHERE id = %i", i);
+		                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET turftokens = turftokens + 1 WHERE id = %i", i);
 		                mysql_tquery(connectionID, queryBuffer);
 		            }
 		        }
@@ -28138,7 +28108,7 @@ public MinuteTimer()
 						SendClientMessageToAllEx(COLOR_YELLOW, "Point wars: %s has successfully captured %s for %s.", GetRPName(PointInfo[i][pCapturer]), PointInfo[i][pName], GangInfo[PointInfo[i][pCapturedGang]][gName]);
 						SendGangMessage(PointInfo[i][pCapturedGang], COLOR_YELLOW, "Your gang has earned $%i, 50 GP, and 1 Turf Token for successfully capturing this point.", PointInfo[i][pProfits]);
 
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET turftokens = %i, cash = %i WHERE id = %i", GangInfo[PointInfo[i][pCapturedGang]][gTurfTokens], GangInfo[PointInfo[i][pCapturedGang]][gCash], PointInfo[i][pCapturedGang]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET turftokens = %i, cash = %i WHERE id = %i", GangInfo[PointInfo[i][pCapturedGang]][gTurfTokens], GangInfo[PointInfo[i][pCapturedGang]][gCash], PointInfo[i][pCapturedGang]);
 					    mysql_tquery(connectionID, queryBuffer);
 
 					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE points SET capturedby = '%s', capturedgang = %i, profits = 0, time = 20 WHERE id = %i", PointInfo[i][pCapturedBy], PointInfo[i][pCapturedGang], i);
@@ -28212,7 +28182,7 @@ public MinuteTimer()
 							        GangInfo[gangid][gMaterials] = GangInfo[gangid][gMaterials] + amount > GetGangStashCapacity(gangid, STASH_CAPACITY_MATERIALS) ? GetGangStashCapacity(gangid, STASH_CAPACITY_MATERIALS) : GangInfo[gangid][gMaterials] + 15000;
 									SendGangMessage(gangid, COLOR_YELLOW, "Your gang earned %i materials in the stash for capturing this turf!", amount);
 
-							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i WHERE id = %i", GangInfo[gangid][gMaterials], gangid);
+							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i WHERE id = %i", GangInfo[gangid][gMaterials], gangid);
 							        mysql_tquery(connectionID, queryBuffer);
 								}
 							    case 2:
@@ -28225,7 +28195,7 @@ public MinuteTimer()
 								    GangInfo[gangid][gWeapons][GANGWEAPON_UZI] += amount;
 							        SendGangMessage(gangid, COLOR_YELLOW, "Your gang earned +%i of 9mm/SDPistol/Shotgun/Tec9/Uzi each in its stash for capturing this turf!", amount);
 
-							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_9mm = %i, weapon_sdpistol = %i, weapon_shotgun = %i, weapon_tec9 = %i, weapon_uzi = %i WHERE id = %i", GangInfo[gangid][gWeapons][GANGWEAPON_9MM], GangInfo[gangid][gWeapons][GANGWEAPON_SDPISTOL], GangInfo[gangid][gWeapons][GANGWEAPON_SHOTGUN], GangInfo[gangid][gWeapons][GANGWEAPON_TEC9], GangInfo[gangid][gWeapons][GANGWEAPON_UZI], gangid);
+							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_9mm = %i, weapon_sdpistol = %i, weapon_shotgun = %i, weapon_tec9 = %i, weapon_uzi = %i WHERE id = %i", GangInfo[gangid][gWeapons][GANGWEAPON_9MM], GangInfo[gangid][gWeapons][GANGWEAPON_SDPISTOL], GangInfo[gangid][gWeapons][GANGWEAPON_SHOTGUN], GangInfo[gangid][gWeapons][GANGWEAPON_TEC9], GangInfo[gangid][gWeapons][GANGWEAPON_UZI], gangid);
 							        mysql_tquery(connectionID, queryBuffer);
 								}
 								case 3:
@@ -28236,7 +28206,7 @@ public MinuteTimer()
 								    GangInfo[gangid][gWeapons][GANGWEAPON_RIFLE] += amount;
 							        SendGangMessage(gangid, COLOR_YELLOW, "Your gang earned +%i of MP5/AK47/Rifle each in its stash for capturing this turf!", amount);
 
-							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_mp5 = %i, weapon_ak47 = %i, weapon_rifle = %i WHERE id = %i", GangInfo[gangid][gWeapons][GANGWEAPON_MP5], GangInfo[gangid][gWeapons][GANGWEAPON_AK47], GangInfo[gangid][gWeapons][GANGWEAPON_RIFLE], gangid);
+							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_mp5 = %i, weapon_ak47 = %i, weapon_rifle = %i WHERE id = %i", GangInfo[gangid][gWeapons][GANGWEAPON_MP5], GangInfo[gangid][gWeapons][GANGWEAPON_AK47], GangInfo[gangid][gWeapons][GANGWEAPON_RIFLE], gangid);
 							        mysql_tquery(connectionID, queryBuffer);
 								}
 								case 4:
@@ -28248,7 +28218,7 @@ public MinuteTimer()
 								   // GangInfo[gangid][gWeapons][GANGWEAPON_SPAS12] += (amount-8);
 							        SendGangMessage(gangid, COLOR_YELLOW, "Your gang earned +%i of AK/Deagle each in its stash for capturing this turf!", amount);
 
-							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_ak47 = %i, weapon_deagle = %i WHERE id = %i", GangInfo[gangid][gWeapons][GANGWEAPON_AK47], GangInfo[gangid][gWeapons][GANGWEAPON_DEAGLE], gangid);
+							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_ak47 = %i, weapon_deagle = %i WHERE id = %i", GangInfo[gangid][gWeapons][GANGWEAPON_AK47], GangInfo[gangid][gWeapons][GANGWEAPON_DEAGLE], gangid);
 							        mysql_tquery(connectionID, queryBuffer);
 								}
 								case 5:
@@ -28257,7 +28227,7 @@ public MinuteTimer()
 							        GangInfo[gangid][gMeth] = GangInfo[gangid][gMeth] + 50 > GetGangStashCapacity(gangid, STASH_CAPACITY_METH) ? GetGangStashCapacity(gangid, STASH_CAPACITY_METH) : GangInfo[gangid][gMeth] + 50;
 							        SendGangMessage(gangid, COLOR_YELLOW, "Your gang earned 100 grams of weed & 50 grams of meth in the stash for capturing this turf!");
 
-							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weed = %i, meth = %i WHERE id = %i", GangInfo[gangid][gWeed], GangInfo[gangid][gMeth], gangid);
+							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weed = %i, meth = %i WHERE id = %i", GangInfo[gangid][gWeed], GangInfo[gangid][gMeth], gangid);
 							        mysql_tquery(connectionID, queryBuffer);
 								}
 								case 6:
@@ -28265,7 +28235,7 @@ public MinuteTimer()
 							        GangInfo[gangid][gCocaine] = GangInfo[gangid][gCocaine] + 75 > GetGangStashCapacity(gangid, STASH_CAPACITY_COCAINE) ? GetGangStashCapacity(gangid, STASH_CAPACITY_COCAINE) : GangInfo[gangid][gCocaine] + 75;
 							        SendGangMessage(gangid, COLOR_YELLOW, "Your gang earned 75 grams of cocaine in the stash for capturing this turf!");
 
-							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cocaine = %i WHERE id = %i", GangInfo[gangid][gCocaine], gangid);
+							        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cocaine = %i WHERE id = %i", GangInfo[gangid][gCocaine], gangid);
 							        mysql_tquery(connectionID, queryBuffer);
 								}
 								case 7:
@@ -32862,44 +32832,7 @@ public OnQueryFinished(threadid, extraid)
 		}
 		case THREAD_LOAD_GATES:
 		{
-		    for(new i; i < rows; i++)
-		    {
-				GateInfo[i][gHID] = cache_get_field_content_int(i, "HID");
-				GateInfo[i][gSpeed] = cache_get_field_content_float(i, "Speed");
-				GateInfo[i][gRange] = cache_get_field_content_float(i, "Range");
-				GateInfo[i][gModel] = cache_get_field_content_int(i, "Model");
-				GateInfo[i][gVW] = cache_get_field_content_int(i, "VW");
-				GateInfo[i][gInt] = cache_get_field_content_int(i, "Int");
-				cache_get_field_content(i, "Pass", GateInfo[i][gPass], 24);
-				GateInfo[i][gPosX] = cache_get_field_content_float(i, "PosX");
-				GateInfo[i][gPosY] = cache_get_field_content_float(i, "PosY");
-				GateInfo[i][gPosZ] = cache_get_field_content_float(i, "PosZ");
-				GateInfo[i][gRotX] = cache_get_field_content_float(i, "RotX");
-				GateInfo[i][gRotY] = cache_get_field_content_float(i, "RotY");
-				GateInfo[i][gRotZ] = cache_get_field_content_float(i, "RotZ");
-				GateInfo[i][gPosXM] = cache_get_field_content_float(i, "PosXM");
-				GateInfo[i][gPosYM] = cache_get_field_content_float(i, "PosYM");
-				GateInfo[i][gPosZM] = cache_get_field_content_float(i, "PosZM");
-				GateInfo[i][gRotXM] = cache_get_field_content_float(i, "RotXM");
-				GateInfo[i][gRotYM] = cache_get_field_content_float(i, "RotYM");
-				GateInfo[i][gRotZM] = cache_get_field_content_float(i, "RotZM");
-				GateInfo[i][gAllegiance] = cache_get_field_content_int(i, "Allegiance");
-				GateInfo[i][gGroupType] = cache_get_field_content_int(i, "GroupType");
-				GateInfo[i][gGroupID] = cache_get_field_content_int(i, "GroupID");
-				GateInfo[i][gFamilyID] = cache_get_field_content_int(i, "GangID");
-				GateInfo[i][gRenderHQ] = cache_get_field_content_int(i, "RenderHQ");
-				GateInfo[i][gTimer] = cache_get_field_content_int(i, "Timer");
-				GateInfo[i][gAutomate] = cache_get_field_content_int(i, "Automate");
-				GateInfo[i][gLocked] = cache_get_field_content_int(i, "Locked");
-				GateInfo[i][gTIndex] = cache_get_field_content_int(i, "TIndex");
-				GateInfo[i][gTModel] = cache_get_field_content_int(i, "TModel");
-				cache_get_field_content(i, "TTXD", GateInfo[i][gTTXD], 64);
-				cache_get_field_content(i, "TTexture", GateInfo[i][gTTexture], 64);
-				GateInfo[i][gTColor] = cache_get_field_content_int(i, "TColor");
-				if(GateInfo[i][gPosX] != 0.0) CreateGate(i);
-				i++;
-			}
-			printf("[Script] Loaded %d gates", rows);
+
 		}
 
 		case THREAD_RELEASECAR:
@@ -32992,6 +32925,7 @@ public OnLoadFurniture()
 	{
 	    Furniture[i][fExists] = 1;
 	    Furniture[i][fID] = cache_get_field_content_int(i, "fID");
+
 	    Furniture[i][fHouseID] = cache_get_field_content_int(i, "fHouseID");
 	    Furniture[i][fModel] = cache_get_field_content_int(i, "fModel");
 	    Furniture[i][fSpawn][0] = cache_get_field_content_float(i, "fX");
@@ -33064,7 +32998,7 @@ public OnGameModeInit()
     SetGameModeText("Loading...");
 	SendRconCommand("weburl www.os-rp.net");
 	print("Old School Roleplay is loading...");
-
+    connectionID = mysql_connect(MYSQL_HOSTNAME, MYSQL_USERNAME, MYSQL_DATABASE, MYSQL_PASSWORD);
 
 	if(mysql_errno(connectionID))
 	{
@@ -33115,7 +33049,7 @@ public OnGameModeInit()
 	    mysql_tquery(connectionID, "SELECT * FROM locations", "OnQueryFinished", "ii", THREAD_LOAD_LOCATIONS, 0);
 	    mysql_tquery(connectionID, "SELECT * FROM crews", "OnQueryFinished", "ii", THREAD_LOAD_CREWS, 0);
 	    mysql_tquery(connectionID, "SELECT * FROM rp_atms", "OnQueryFinished", "ii", THREAD_LOAD_ATMS, 0);
-		mysql_tquery(connectionID, "SELECT * FROM `rp_gundamages`", "OnLoadGunDamages");
+		mysql_tquery(connectionID, "SELECT * FROM "#TABLE_DAMAGES"", "OnLoadGunDamages");
 		mysql_tquery(connectionID, "SELECT * FROM `crates`", "OnQueryFinished", "ii", LOADCRATE_THREAD, 0);
 		mysql_tquery(connectionID, "SELECT * FROM `gates`", "OnQueryFinished", "ii", THREAD_LOAD_GATES, 0);
 		mysql_tquery(connectionID, "SELECT * FROM `graffiti`", "Graffiti_Load", "");
@@ -33173,21 +33107,21 @@ public OnGameModeInit()
 		ResetElevatorQueue();
 		Elevator_Initialize();
 
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSS				   ");
-		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSS				   ");
-		print("OOOOï¿½ï¿½ï¿½ï¿½oooooooooï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSS				   ");
-		print("OOOOï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ oï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ oï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ oï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOï¿½ï¿½ï¿½ï¿½oooooooooï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSSSSS");
-		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSSSSS");
-		print("OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OOOOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
-		print("OOOOOOOOOOOOOOOOOOOOOOOOOOï¿½ï¿½ï¿½ï¿½SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOO??????????????????OOOO????SSSSSS				   ");
+		print("OOOO??????????????????OOOO????SSSSSS				   ");
+		print("OOOO????ooooooooo?????OOOO????SSSSSS				   ");
+		print("OOOO????o?????? o?????OOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOO????o?????? o?????OOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOO????o?????? o?????OOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOO????ooooooooo?????OOOO????????????????????SSSSSS");
+		print("OOOO??????????????????OOOO????????????????????SSSSSS");
+		print("OOOO??????????????????OOOO????????????????????SSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOO????SSSSSSSSSSSSSSSSSSSSSS");
+		print("OOOOOOOOOOOOOOOOOOOOOOOOOO????SSSSSSSSSSSSSSSSSSSSSS");
 		print("______________________________________________");
 		print("| Old School Roleplay by Pedro		        |");
 		print("| Gamemode loaded successfully.              |");
@@ -34679,7 +34613,7 @@ public OnPlayerDisconnect(playerid, reason)
 		            GangInfo[PlayerData[playerid][pGang]][gTurfTokens]++;
 		            SendGangMessage(PlayerData[playerid][pGang], COLOR_YELLOW, "%s crashed while attempting to capture a turf. 1 turf token was refunded to your gang.", GetRPName(playerid));
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET turftokens = turftokens + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET turftokens = turftokens + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 				}
 				else if(PlayerData[playerid][pFaction] >= 0)
@@ -34687,7 +34621,7 @@ public OnPlayerDisconnect(playerid, reason)
 		            FactionInfo[PlayerData[playerid][pFaction]][fTurfTokens]++;
 		            SendFactionMessage(PlayerData[playerid][pFaction], COLOR_YELLOW, "%s crashed while attempting to capture a turf. 1 turf token was refunded to your faction.", GetRPName(playerid));
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET turftokens = turftokens + 1 WHERE id = %i", PlayerData[playerid][pFaction]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET turftokens = turftokens + 1 WHERE id = %i", PlayerData[playerid][pFaction]);
 		            mysql_tquery(connectionID, queryBuffer);
 				}
 			}
@@ -36534,7 +36468,9 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 	        if(response)
 	        {
 	            new houseid = GetInsideHouse(playerid);
-
+				if(houseid == -1)
+				    houseid = GetFurnitureHouse(playerid);
+				    
 	            if(houseid >= 0 && HasFurniturePerms(playerid, houseid))
 	            {
 		            PreviewFurniture(playerid, listitem + PlayerData[playerid][pPreviewIndex]);
@@ -38409,7 +38345,25 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
 
     return 1;
 }
+Dialog:FurnEditConfirm(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0: EditDynamicObjectEx(playerid, EDIT_TYPE_FURNITURE, Furniture[GetPVarInt(playerid, "FurnID")][fObject], GetPVarInt(playerid, "FurnID"));
+			case 1: ListTexture(playerid);
+			case 2: PreviewFurniture(playerid, Furniture[GetPVarInt(playerid, "FurnID")][fObject]);
+			case 3: DeleteFurniture(GetPVarInt(playerid, "FurnID"));
+		}
+	}
+	return 1;
+}
+public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z)
+{
 
+	return 1;
+}
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 
@@ -38445,7 +38399,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	        {
 	            //if (!IsPointInRangeOfPoint(20.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hSpawn][0], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][1], HouseInfo[PlayerData[playerid][pHouse]][hSpawn][2]) && !IsPointInRangeOfPoint(100.0, x, y, z, HouseInfo[PlayerData[playerid][pHouse]][hInt][0], HouseInfo[PlayerData[playerid][pHouse]][hInt][1], HouseInfo[PlayerData[playerid][pHouse]][hInt][2]))
 
-	            if (GetInsideHouse(playerid) != PlayerData[playerid][pHouse])
+	            if (GetInsideHouse(playerid) != PlayerData[playerid][pHouse] && GetFurnitureHouse(playerid) != PlayerData[playerid][pHouse])
 				{
 				    SendErrorMessage(playerid, "The object is out of range from your house.");
 				}
@@ -38641,43 +38595,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			LandGraffiti_Refresh(PlayerData[playerid][pEditLandGraffiti]);
 			LandGraffiti_Save(PlayerData[playerid][pEditLandGraffiti]);
 		}
-
-		else if(GetPVarInt(playerid, "gEdit") == 1)
-		{
-			if(PlayerData[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gateid = GetPVarInt(playerid, "EditingGateID");
-			GateInfo[gateid][gPosX] = x;
-			GateInfo[gateid][gPosY] = y;
-			GateInfo[gateid][gPosZ] = z;
-			GateInfo[gateid][gRotX] = rx;
-			GateInfo[gateid][gRotY] = ry;
-			GateInfo[gateid][gRotZ] = rz;
-			CreateGate(gateid);
-			SaveGate(gateid);
-			SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the open position of Gate ID: %d", gateid);
-			//SendClientMessage(playerid, COLOR_WHITE, string);
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
-		}
-		else if(GetPVarInt(playerid, "gEdit") == 2)
-		{
-			if(PlayerData[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gateid = GetPVarInt(playerid, "EditingGateID");
-			GateInfo[gateid][gPosXM] = x;
-			GateInfo[gateid][gPosYM] = y;
-			GateInfo[gateid][gPosZM] = z;
-			GateInfo[gateid][gRotXM] = rx;
-			GateInfo[gateid][gRotYM] = ry;
-			GateInfo[gateid][gRotZM] = rz;
-			CreateGate(gateid);
-			SaveGate(gateid);
-			SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the closed position of Gate ID: %d", gateid);
-		//	SendClientMessage(playerid, COLOR_WHITE, string);
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
-		}
 	}
-
  	return 1;
 }
 Dialog:DealerList(playerid, response, listitem, inputtext[])
@@ -45242,7 +45160,7 @@ Dialog:DIALOG_GANGSTASHVEST(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 200;
 				SetScriptArmour(playerid, 100.0);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s takes a kevlar vest from the gang stash.", GetRPName(playerid));
@@ -45277,7 +45195,7 @@ Dialog:DIALOG_GANGSTASHVESTRANK(playerid, response, listitem, inputtext[])
         GangInfo[PlayerData[playerid][pGang]][gVestRank] = listitem;
         SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}Kevlar vests{33CCFF} to rank %i+.", listitem);
 
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_vest = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_vest = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
         mysql_tquery(connectionID, queryBuffer);
 	}
 
@@ -45340,7 +45258,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_9MM]--;
 		            GivePlayerWeaponEx(playerid, 22);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_9mm = weapon_9mm - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_9mm = weapon_9mm - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws a 9mm from the gang stash.", GetRPName(playerid));
@@ -45364,7 +45282,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SDPISTOL]--;
 		            GivePlayerWeaponEx(playerid, 23);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_sdpistol = weapon_sdpistol - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sdpistol = weapon_sdpistol - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws a silenced pistol from the gang stash.", GetRPName(playerid));
@@ -45388,7 +45306,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_DEAGLE]--;
 		            GivePlayerWeaponEx(playerid, 24);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_deagle = weapon_deagle - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_deagle = weapon_deagle - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws a Desert Eagle from the gang stash.", GetRPName(playerid));
@@ -45412,7 +45330,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SHOTGUN]--;
 		            GivePlayerWeaponEx(playerid, 25);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_shotgun = weapon_shotgun - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_shotgun = weapon_shotgun - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws a shotgun from the gang stash.", GetRPName(playerid));
@@ -45436,7 +45354,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_TEC9]--;
 		            GivePlayerWeaponEx(playerid, 32);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_tec9 = weapon_tec9 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_tec9 = weapon_tec9 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws a Tec-9 from the gang stash.", GetRPName(playerid));
@@ -45460,7 +45378,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_UZI]--;
 		            GivePlayerWeaponEx(playerid, 28);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_uzi = weapon_uzi - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_uzi = weapon_uzi - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws a Micro Uzi from the gang stash.", GetRPName(playerid));
@@ -45484,7 +45402,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MP5]--;
 		            GivePlayerWeaponEx(playerid, 29);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_mp5 = weapon_mp5 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_mp5 = weapon_mp5 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws an MP5 from the gang stash.", GetRPName(playerid));
@@ -45508,7 +45426,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_AK47]--;
 		            GivePlayerWeaponEx(playerid, 30);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_ak47 = weapon_ak47 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_ak47 = weapon_ak47 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws an AK-47 from the gang stash.", GetRPName(playerid));
@@ -45532,7 +45450,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_RIFLE]--;
 		            GivePlayerWeaponEx(playerid, 33);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_rifle = weapon_rifle - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_rifle = weapon_rifle - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s withdraws a rifle from the gang stash.", GetRPName(playerid));
@@ -45563,7 +45481,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_9MM]++;
 		            RemovePlayerWeapon(playerid, 22);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_9mm = weapon_9mm + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_9mm = weapon_9mm + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a 9mm in the gang stash.", GetRPName(playerid));
@@ -45579,7 +45497,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SDPISTOL]++;
 		            RemovePlayerWeapon(playerid, 23);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_sdpistol = weapon_sdpistol + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sdpistol = weapon_sdpistol + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a silenced pistol in the gang stash.", GetRPName(playerid));
@@ -45595,7 +45513,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_DEAGLE]++;
 		            RemovePlayerWeapon(playerid, 24);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_deagle = weapon_deagle + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_deagle = weapon_deagle + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a Desert Eagle in the gang stash.", GetRPName(playerid));
@@ -45611,7 +45529,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SHOTGUN]++;
 		            RemovePlayerWeapon(playerid, 25);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_shotgun = weapon_shotgun + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_shotgun = weapon_shotgun + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a shotgun in the gang stash.", GetRPName(playerid));
@@ -45627,7 +45545,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SPAS12]++;
 		            RemovePlayerWeapon(playerid, 27);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_spas12 = weapon_spas12 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_spas12 = weapon_spas12 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a SPAS-12 in the gang stash.", GetRPName(playerid));
@@ -45643,7 +45561,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SAWNOFF]++;
 		            RemovePlayerWeapon(playerid, 26);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_sawnoff = weapon_sawnoff + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sawnoff = weapon_sawnoff + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a sawnoff shotgun in the gang stash.", GetRPName(playerid));
@@ -45659,7 +45577,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_TEC9]++;
 		            RemovePlayerWeapon(playerid, 32);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_tec9 = weapon_tec9 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_tec9 = weapon_tec9 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a Tec-9 in the gang stash.", GetRPName(playerid));
@@ -45675,7 +45593,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_UZI]++;
 		            RemovePlayerWeapon(playerid, 28);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_uzi = weapon_uzi + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_uzi = weapon_uzi + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a Micro Uzi in the gang stash.", GetRPName(playerid));
@@ -45691,7 +45609,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MP5]++;
 		            RemovePlayerWeapon(playerid, 29);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_mp5 = weapon_mp5 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_mp5 = weapon_mp5 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits an MP5 in the gang stash.", GetRPName(playerid));
@@ -45707,7 +45625,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_AK47]++;
 		            RemovePlayerWeapon(playerid, 30);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_ak47 = weapon_ak47 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_ak47 = weapon_ak47 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits an AK-47 in the gang stash.", GetRPName(playerid));
@@ -45723,7 +45641,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_M4]++;
 		            RemovePlayerWeapon(playerid, 31);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_m4 = weapon_m4 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_m4 = weapon_m4 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits an M4 in the gang stash.", GetRPName(playerid));
@@ -45739,7 +45657,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_RIFLE]++;
 		            RemovePlayerWeapon(playerid, 33);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_rifle = weapon_rifle + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_rifle = weapon_rifle + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a rifle in the gang stash.", GetRPName(playerid));
@@ -45755,7 +45673,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SNIPER]++;
 		            RemovePlayerWeapon(playerid, 34);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_sniper = weapon_sniper + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sniper = weapon_sniper + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a sniper rifle in the gang stash.", GetRPName(playerid));
@@ -45771,7 +45689,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MOLOTOV]++;
 		            RemovePlayerWeapon(playerid, 18);
 
-		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weapon_molotov = weapon_molotov + 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_molotov = weapon_molotov + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
 		            ShowActionBubble(playerid, "** %s deposits a molotov in the gang stash.", GetRPName(playerid));
@@ -45811,7 +45729,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_9MM] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}9mm{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_9mm = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_9mm = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
             case GANGWEAPON_SDPISTOL:
@@ -45819,7 +45737,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_SDPISTOL] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}Silenced pistol{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_9mm = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_9mm = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
             case GANGWEAPON_DEAGLE:
@@ -45827,7 +45745,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_DEAGLE] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}Desert Eagle{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_deagle = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_deagle = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
             case GANGWEAPON_SHOTGUN:
@@ -45835,7 +45753,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_SHOTGUN] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}Shotgun{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_shotgun = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_shotgun = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
     		case GANGWEAPON_TEC9:
@@ -45843,7 +45761,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_TEC9] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}Tec-9{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_tec9 = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_tec9 = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
             case GANGWEAPON_UZI:
@@ -45851,7 +45769,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_UZI] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}Micro Uzi{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_uzi = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_uzi = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
             case GANGWEAPON_MP5:
@@ -45859,7 +45777,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_MP5] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}MP5{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_mp5 = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_mp5 = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
             case GANGWEAPON_AK47:
@@ -45867,7 +45785,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_AK47] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}AK-47{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_ak47 = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_ak47 = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
             case GANGWEAPON_RIFLE:
@@ -45875,7 +45793,7 @@ Dialog:GangStashWeaponRank(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gWeaponRanks][GANGWEAPON_RIFLE] = listitem;
                 SendClientMessageEx(playerid, COLOR_AQUA, "You have set the rank restriction for {FF6347}Rifle{33CCFF} to rank %i+.", listitem);
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET rank_rifle = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET rank_rifle = %i WHERE id = %i", listitem, PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
             }
 		}
@@ -45976,7 +45894,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gWeed] -= amount;
 				PlayerData[playerid][pWeed] += amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gWeed], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gWeed], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
@@ -46002,7 +45920,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gCocaine] -= amount;
 				PlayerData[playerid][pCocaine] += amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCocaine], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCocaine], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
@@ -46028,7 +45946,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gMeth] -= amount;
 				PlayerData[playerid][pMeth] += amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET meth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMeth], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET meth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMeth], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
@@ -46054,7 +45972,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gPainkillers] -= amount;
 				PlayerData[playerid][pPainkillers] += amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET painkillers = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPainkillers], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET painkillers = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPainkillers], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
@@ -46080,7 +45998,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gMaterials] -= amount;
 				PlayerData[playerid][pMaterials] += amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
@@ -46101,7 +46019,7 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gCash] -= amount;
 				GivePlayerCash(playerid, amount);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCash], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCash], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s withdraws some cash from the gang stash.", GetRPName(playerid));
@@ -46156,7 +46074,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gWeed] += amount;
 				PlayerData[playerid][pWeed] -= amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET weed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gWeed], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weed = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gWeed], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
@@ -46182,7 +46100,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gCocaine] += amount;
 				PlayerData[playerid][pCocaine] -= amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCocaine], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cocaine = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCocaine], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
@@ -46208,7 +46126,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gMeth] += amount;
 				PlayerData[playerid][pMeth] -= amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET meth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMeth], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET meth = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMeth], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
@@ -46234,7 +46152,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gPainkillers] += amount;
 				PlayerData[playerid][pPainkillers] -= amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET painkillers = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPainkillers], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET painkillers = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPainkillers], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
@@ -46260,7 +46178,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gMaterials] += amount;
 				PlayerData[playerid][pMaterials] -= amount;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
@@ -46286,7 +46204,7 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gCash] += amount;
 				GivePlayerCash(playerid, -amount);
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCash], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCash], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				ShowActionBubble(playerid, "** %s deposits some cash in the gang stash.", GetRPName(playerid));
@@ -46323,7 +46241,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 100;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_9MM]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_9mm = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_9MM], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_9mm = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_9MM], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a 9mm and stores it to the gang stash.", GetRPName(playerid));
@@ -46342,7 +46260,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 150;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SDPISTOL]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_sdpistol = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SDPISTOL], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_sdpistol = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SDPISTOL], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a silenced pistol and stores it to the gang stash.", GetRPName(playerid));
@@ -46361,7 +46279,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 200;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SHOTGUN]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_shotgun = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SHOTGUN], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_shotgun = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SHOTGUN], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a shotgun and stores it to the gang stash.", GetRPName(playerid));
@@ -46380,7 +46298,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 500;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_UZI]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_uzi = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_UZI], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_uzi = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_UZI], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a Micro SMG and stores it to the gang stash.", GetRPName(playerid));
@@ -46399,7 +46317,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 500;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_TEC9]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_tec9 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_TEC9], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_tec9 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_TEC9], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a Tec-9 and stores it to the gang stash.", GetRPName(playerid));
@@ -46418,7 +46336,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 1000;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MP5]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_mp5 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MP5], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_mp5 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MP5], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts an MP5 and stores it to the gang stash.", GetRPName(playerid));
@@ -46437,7 +46355,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 1000;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_RIFLE]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_rifle = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_RIFLE], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_rifle = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_RIFLE], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a rifle and stores it to the gang stash.", GetRPName(playerid));
@@ -46456,7 +46374,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 2000;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_DEAGLE]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_deagle = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_DEAGLE], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_deagle = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_DEAGLE], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a Desert Eagle and stores it to the gang stash.", GetRPName(playerid));
@@ -46475,7 +46393,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 5000;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MOLOTOV]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_molotov = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MOLOTOV], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_molotov = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MOLOTOV], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a molotov and stores it to the gang stash.", GetRPName(playerid));
@@ -46494,7 +46412,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 3000;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_AK47]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_ak47 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_AK47], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_ak47 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_AK47], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts an AK-47 and stores it to the gang stash.", GetRPName(playerid));
@@ -46513,7 +46431,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 GangInfo[PlayerData[playerid][pGang]][gMaterials] -= 3000;
                 GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SAWNOFF]++;
 
-                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET materials = %i, weapon_sawnoff = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SAWNOFF], PlayerData[playerid][pGang]);
+                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_sawnoff = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SAWNOFF], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
                 ShowActionBubble(playerid, "** %s crafts a sawnoff shotgun and stores it to the gang stash.", GetRPName(playerid));
@@ -46705,7 +46623,7 @@ Dialog:DIALOG_GANGPOINTSHOP(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gDrugPrices][2] = 1500;
 				GangInfo[PlayerData[playerid][pGang]][gPoints] -= 500;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET drugdealer = 1, drug_x = 0.0, drug_y = 0.0, drug_z = 0.0, drugweed = 0, drugcocaine = 0, drugmeth = 0, weed_price = 500, cocaine_price = 1000, meth_price = 1500, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET drugdealer = 1, drug_x = 0.0, drug_y = 0.0, drug_z = 0.0, drugweed = 0, drugcocaine = 0, drugmeth = 0, weed_price = 500, cocaine_price = 1000, meth_price = 1500, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				GivePlayerCash(playerid, -50000);
@@ -46734,7 +46652,7 @@ Dialog:DIALOG_GANGPOINTSHOP(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gArmsMaterials] = 0;
 				GangInfo[PlayerData[playerid][pGang]][gPoints] -= 500;
 
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsdealer = 1, arms_x = 0.0, arms_y = 0.0, arms_z = 0.0, armsmaterials = 0, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsdealer = 1, arms_x = 0.0, arms_y = 0.0, arms_z = 0.0, armsmaterials = 0, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				GivePlayerCash(playerid, -50000);
@@ -46821,7 +46739,7 @@ Dialog:DIALOG_GANGPOINTSHOP(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gMatLevel]++;
 				GangInfo[PlayerData[playerid][pGang]][gPoints] -= pointsNeeded;
 				GivePlayerCash(playerid, -cashNeeded);
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET matlevel = %i, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMatLevel], GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET matlevel = %i, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMatLevel], GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_GREEN, "You have spent %i GP & $%i for materials upgrade %i/3", pointsNeeded, cashNeeded, GangInfo[PlayerData[playerid][pGang]][gMatLevel]);
@@ -46849,7 +46767,7 @@ Dialog:DIALOG_GANGPOINTSHOP(playerid, response, listitem, inputtext[])
 				GangInfo[PlayerData[playerid][pGang]][gGunLevel]++;
 				GangInfo[PlayerData[playerid][pGang]][gPoints] -= pointsNeeded;
 				GivePlayerCash(playerid, -cashNeeded);
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET gunlevel = %i, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gGunLevel], GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
+				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET gunlevel = %i, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gGunLevel], GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
 				SendClientMessageEx(playerid, COLOR_GREEN, "You have spent %i GP & $%i for guns upgrade %i/5", pointsNeeded, cashNeeded, GangInfo[PlayerData[playerid][pGang]][gGunLevel]);
@@ -46876,7 +46794,7 @@ Dialog:DIALOG_GANGPOINTSHOP(playerid, response, listitem, inputtext[])
 						GangInfo[PlayerData[playerid][pGang]][gLevel] = 2;
 						GangInfo[PlayerData[playerid][pGang]][gPoints] -= 6000;
 
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET level = 2, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET level = 2, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
 						mysql_tquery(connectionID, queryBuffer);
 
 						GivePlayerCash(playerid, -75000);
@@ -46901,7 +46819,7 @@ Dialog:DIALOG_GANGPOINTSHOP(playerid, response, listitem, inputtext[])
 						GangInfo[PlayerData[playerid][pGang]][gLevel] = 3;
 						GangInfo[PlayerData[playerid][pGang]][gPoints] -= 12000;
 
-						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET level = 3, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
+						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET level = 3, points = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gPoints], PlayerData[playerid][pGang]);
 						mysql_tquery(connectionID, queryBuffer);
 
 						GivePlayerCash(playerid, -100000);
@@ -46959,7 +46877,7 @@ Dialog:DIALOG_GANGARMSPRICE(playerid, response, listitem, inputtext[])
 
 		GangInfo[PlayerData[playerid][pGang]][gArmsPrices][PlayerData[playerid][pSelected]] = amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsprice_%i = %i WHERE id = %i", PlayerData[playerid][pSelected] + 1, amount, PlayerData[playerid][pGang]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsprice_%i = %i WHERE id = %i", PlayerData[playerid][pSelected] + 1, amount, PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		if(PlayerData[playerid][pSelected] == 0) {
@@ -47040,7 +46958,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 500;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47063,7 +46981,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 500;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47086,7 +47004,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 1000;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47109,7 +47027,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 2000;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47132,7 +47050,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 5000;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47155,7 +47073,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 3000;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47178,7 +47096,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 4000;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47201,7 +47119,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 6500;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47224,7 +47142,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials] -= 3000;
 	            GangInfo[PlayerData[playerid][pDealerGang]][gCash] += GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem];
 
-	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
+	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i, cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pDealerGang]][gArmsMaterials], GangInfo[PlayerData[playerid][pDealerGang]][gCash], PlayerData[playerid][pDealerGang]);
 	            mysql_tquery(connectionID, queryBuffer);
 
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
@@ -47288,7 +47206,7 @@ Dialog:GangStashDepositMats(playerid, response, listitem, inputtext[])
 	    GangInfo[PlayerData[playerid][pGang]][gArmsMaterials] += amount;
 	    PlayerData[playerid][pMaterials] -= amount;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gArmsMaterials], PlayerData[playerid][pGang]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gArmsMaterials], PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
@@ -47324,7 +47242,7 @@ Dialog:GangStashWithdrawMats(playerid, response, listitem, inputtext[])
 	    GangInfo[PlayerData[playerid][pGang]][gArmsMaterials] -= amount;
 	    PlayerData[playerid][pMaterials] += amount;
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET armsmaterials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gArmsMaterials], PlayerData[playerid][pGang]);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET armsmaterials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gArmsMaterials], PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
@@ -48703,31 +48621,31 @@ CMD:shout(playerid, params[])
     SetPlayerBubbleText(playerid, 20.0, COLOR_WHITE, "(Shouts) %s!", params);
 	format(string, sizeof(string), "%s shouts: %s!", GetRPName(playerid), params);
 	SendProximityFadeMessage(playerid, 20.0, string, COLOR_GREY1, COLOR_GREY2, COLOR_GREY3, COLOR_GREY4, COLOR_GREY5);
-	
+
 	foreach(new i : House)
 	{
-		if(IsPlayerInRangeOfPoint(playerid, 10.0, HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]))	
-		{	
+		if(IsPlayerInRangeOfPoint(playerid, 10.0, HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]))
+		{
 			foreach(new p : Player)
 			{
 				if(IsPlayerInRangeOfPoint(p, 30.0, HouseInfo[i][hIntX], HouseInfo[i][hIntY], HouseInfo[i][hIntZ]))
-				{		
+				{
 					if(GetPlayerVirtualWorld(p) == HouseInfo[i][hWorld])
-					{		
+					{
 						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
 			        	SendClientMessage(p, COLOR_GREY1, string);
 			    	}
 			    }
 			}
-	    }		
+	    }
 	    if(IsPlayerInRangeOfPoint(playerid, 20.0, HouseInfo[i][hIntX], HouseInfo[i][hIntY], HouseInfo[i][hIntZ]))
-	    {	
+	    {
 	    	if(GetPlayerVirtualWorld(playerid) == HouseInfo[i][hWorld])
-	    	{	
+	    	{
 		    	foreach(new p : Player)
-				{	
+				{
 					if(IsPlayerInRangeOfPoint(p, 15.0, HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]))
-					{		
+					{
 						if(GetPlayerVirtualWorld(p) == 0)
 					    {
 					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
@@ -48736,18 +48654,18 @@ CMD:shout(playerid, params[])
 			    	}
 			    }
 			}
-		}	    	    
+		}
 	}
 	foreach(new i : Business)
 	{
 	    if(IsPlayerInRangeOfPoint(playerid, 10.0, BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]))
-		{	
+		{
 			foreach(new p : Player)
 			{
 				if(IsPlayerInRangeOfPoint(p, 30.0, BusinessInfo[i][bIntX], BusinessInfo[i][bIntY], BusinessInfo[i][bIntZ]))
-				{		
-					if(GetPlayerVirtualWorld(p) == BusinessInfo[i][bWorld])	
-					{		
+				{
+					if(GetPlayerVirtualWorld(p) == BusinessInfo[i][bWorld])
+					{
 						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
 			        	SendClientMessage(p, COLOR_GREY1, string);
 			    	}
@@ -48755,13 +48673,13 @@ CMD:shout(playerid, params[])
 			}
 	    }
 	    if(IsPlayerInRangeOfPoint(playerid, 20.0, BusinessInfo[i][bIntX], BusinessInfo[i][bIntY], BusinessInfo[i][bIntZ]))
-	    {	
-	    	if(GetPlayerVirtualWorld(playerid) == BusinessInfo[i][bWorld])	
-	    	{	
+	    {
+	    	if(GetPlayerVirtualWorld(playerid) == BusinessInfo[i][bWorld])
+	    	{
 		    	foreach(new p : Player)
-				{	
+				{
 					if(IsPlayerInRangeOfPoint(p, 15.0, BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]))
-					{		
+					{
 						if(GetPlayerVirtualWorld(p) == 0)
 					    {
 					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
@@ -48773,29 +48691,29 @@ CMD:shout(playerid, params[])
 		}
 	}
 	foreach(new i : Entrance)
-	{				
+	{
 		if(IsPlayerInRangeOfPoint(playerid, 10.0, EntranceInfo[i][ePosX], EntranceInfo[i][ePosY], EntranceInfo[i][ePosZ]))
 		{
 			foreach(new p : Player)
 			{
-				if(IsPlayerInRangeOfPoint(p, 30.0, EntranceInfo[i][eIntX], EntranceInfo[i][eIntY], EntranceInfo[i][eIntZ]))	
-				{	
-					if(GetPlayerVirtualWorld(p) == EntranceInfo[i][eWorld])	
-					{		
+				if(IsPlayerInRangeOfPoint(p, 30.0, EntranceInfo[i][eIntX], EntranceInfo[i][eIntY], EntranceInfo[i][eIntZ]))
+				{
+					if(GetPlayerVirtualWorld(p) == EntranceInfo[i][eWorld])
+					{
 						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
 			        	SendClientMessage(p, COLOR_GREY1, string);
 			    	}
 			    }
 			}
 	    }
-	    if(IsPlayerInRangeOfPoint(playerid, 20.0, EntranceInfo[i][eIntX], EntranceInfo[i][eIntY], EntranceInfo[i][eIntZ]))	
-	    {	
-	    	if(GetPlayerVirtualWorld(playerid) == EntranceInfo[i][eWorld])	
-	    	{	
+	    if(IsPlayerInRangeOfPoint(playerid, 20.0, EntranceInfo[i][eIntX], EntranceInfo[i][eIntY], EntranceInfo[i][eIntZ]))
+	    {
+	    	if(GetPlayerVirtualWorld(playerid) == EntranceInfo[i][eWorld])
+	    	{
 		    	foreach(new p : Player)
-				{	
+				{
 					if(IsPlayerInRangeOfPoint(p, 15.0, EntranceInfo[i][ePosX], EntranceInfo[i][ePosY], EntranceInfo[i][ePosZ]))
-					{		
+					{
 						if(GetPlayerVirtualWorld(p) == 0)
 					    {
 					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
@@ -48804,19 +48722,19 @@ CMD:shout(playerid, params[])
 			    	}
 			    }
 			}
-		}	
+		}
 	}
 
 	foreach(new i : Garage)
-	{	
+	{
 		if(IsPlayerInRangeOfPoint(playerid, 10.0, GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]))
-		{	
+		{
 			foreach(new p : Player)
-			{	
+			{
 				if(IsPlayerInRangeOfPoint(playerid, 30.0, garageInteriors[GarageInfo[i][gType]][intVX], garageInteriors[GarageInfo[i][gType]][intVY], garageInteriors[GarageInfo[i][gType]][intVZ]))
-				{	
-					if(GetPlayerVirtualWorld(p) == GarageInfo[i][gWorld])	
-					{		
+				{
+					if(GetPlayerVirtualWorld(p) == GarageInfo[i][gWorld])
+					{
 						format(string, sizeof(string), "[OUTSIDE]: %s shouts: %s!", GetRPName(playerid), params);
 			        	SendClientMessage(p, COLOR_GREY1, string);
 			    	}
@@ -48824,13 +48742,13 @@ CMD:shout(playerid, params[])
 			}
 	    }
 	    if(IsPlayerInRangeOfPoint(playerid, 20.0, garageInteriors[GarageInfo[i][gType]][intVX], garageInteriors[GarageInfo[i][gType]][intVY], garageInteriors[GarageInfo[i][gType]][intVZ]))
-	    {	
+	    {
 	    	if(GetPlayerVirtualWorld(playerid) == GarageInfo[i][gWorld])
-	    	{	
+	    	{
 		    	foreach(new p : Player)
-				{	
+				{
 					if(IsPlayerInRangeOfPoint(p, 15.0, GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]))
-					{		
+					{
 						if(GetPlayerVirtualWorld(p) == 0)
 					    {
 					        format(string, sizeof(string), "[INSIDE]: %s shouts: %s!", GetRPName(playerid), params);
@@ -48839,7 +48757,7 @@ CMD:shout(playerid, params[])
 			    	}
 			    }
 			}
-		}	
+		}
 	}
 
 	return 1;
@@ -49068,7 +48986,7 @@ PrintNetWorthPlayer(playerid)
     {
         if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i))
         {
-            SendClientMessageEx(playerid, COLOR_GREY2, "- ShtÃ«pia: +{FF6347}%s", FormatNumber(pricehouse));
+            SendClientMessageEx(playerid, COLOR_GREY2, "- Shtëpia: +{FF6347}%s", FormatNumber(pricehouse));
             break;
 		}
 	}
@@ -49105,9 +49023,9 @@ PrintNetWorthPlayer(playerid)
             break;
 		}
 	}
-	
+
 	SendClientMessage(playerid, COLOR_GREEN, "_______________________________");
-	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj Ã«shtÃ«: %s", FormatNumber(total2));
+	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj është: %s", FormatNumber(total2));
 	return 1;
 }
 
@@ -49543,7 +49461,7 @@ func VehEngine(playerid)
 CMD:setforsale(playerid, params[])
 {
 	new askingprice, forsale[264], vehicleid = GetPlayerVehicleID(playerid);
-	
+
 	if(!vehicleid || !IsVehicleOwner(playerid, vehicleid))
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside any vehicle of yours.");
@@ -49563,7 +49481,7 @@ CMD:setforsale(playerid, params[])
 
     format(forsale, sizeof(forsale), "FOR SALE\n%s - %s\nPh: %i.", GetVehicleName(vehicleid), FormatNumber(VehicleInfo[vehicleid][vForSalePrice]), PlayerData[playerid][pPhone]);
     VehicleInfo[vehicleid][vForSaleLabel] = CreateDynamic3DTextLabel(forsale, COLOR_GREY2, 0.0, 0.0, 0.0, 10.0, INVALID_PLAYER_ID, vehicleid, 1, -1, 0, -1, 30.0);
-	
+
 	SendClientMessageEx(playerid, COLOR_WHITE, "You have set your %s for sale with an asking price of $%s.", GetVehicleName(vehicleid), FormatNumber(VehicleInfo[vehicleid][vForSalePrice]));
 	return 1;
 }
@@ -50751,1102 +50669,7 @@ CMD:selldynamicsmanagement(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, "** You have sell %i houses, %i garages and %i businesses.", houses, garages, businesses);
 	return 1;
 }
-CMD:agate(playerid, params[])
-{
-	new Float:X, Float:Y, Float:Z;
-	for(new i = 0; i < sizeof(GateInfo); i++)
-	{
-		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(IsPlayerInRangeOfPoint(playerid, 15, X, Y, Z) && PlayerData[playerid][pAdmin] >= JUNIOR_ADMIN)
-		{
-			MoveGate(playerid, i);
-		}
-	}
-	return 1;
-}
-CMD:gsave(playerid, params[])
-{
-    if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-        SendClientMessageEx(playerid, COLOR_YELLOW, "You have force saved the Gate database.");
-        SaveGates();
-    }
-    else
-	{
-        SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-    }
-    return 1;
-}
-CMD:hgate(playerid, params[])
-{
-	return callcmd::movegate(playerid, params);
-}
 
-CMD:movegate(playerid, params[])
-{
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /movegate [pass]");
-	new Float:X, Float:Y, Float:Z;
-	for(new i = 0; i < sizeof(GateInfo); i++)
-	{
-		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(GateInfo[i][gGroupID] == -1 && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW])
-		{
-			if(GateInfo[i][gLocked] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This gate is currently locked.");
-			if(GateInfo[i][gAutomate] == 1) return 1;
-			if(strcmp(params, GateInfo[i][gPass], true) == 0)
-			{
-				if(GateInfo[i][gStatus] == 0)
-				{
-					MoveDynamicObject(GateInfo[i][gGATE], GateInfo[i][gPosXM], GateInfo[i][gPosYM], GateInfo[i][gPosZM], GateInfo[i][gSpeed], GateInfo[i][gRotXM], GateInfo[i][gRotYM], GateInfo[i][gRotZM]);
-					GateInfo[i][gStatus] = 1;
-					if(GateInfo[i][gTimer] != 0)
-					{
-						switch(GateInfo[i][gTimer])
-						{
-							case 1: SetTimerEx("MoveTimerGate", 3000, false, "i", i);
-							case 2: SetTimerEx("MoveTimerGate", 5000, false, "i", i);
-							case 3: SetTimerEx("MoveTimerGate", 7000, false, "i", i);
-							case 4: SetTimerEx("MoveTimerGate", 10000, false, "i", i);
-						}
-					}
-				}
-				else if(GateInfo[i][gStatus] == 1 && GateInfo[i][gTimer] == 0)
-				{
-					MoveDynamicObject(GateInfo[i][gGATE], GateInfo[i][gPosX], GateInfo[i][gPosY], GateInfo[i][gPosZ], GateInfo[i][gSpeed], GateInfo[i][gRotX], GateInfo[i][gRotY], GateInfo[i][gRotZ]);
-					GateInfo[i][gStatus] = 0;
-				}
-			}
-		}
-	}
-	return 1;
-}
-
-CMD:admingatepw(playerid, params[])
-{
-	if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-		new string[128], gateid, pass[24];
-		if(sscanf(params, "ds[24]", gateid, pass)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /admingatepw [gateid] [pass]");
-
-		if(strlen(pass) > 24)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, " Must be 24 characters or less! ");
-			return 1;
-		}
-		format(string, sizeof(string), "Gate Password for gate %d changed to %s", gateid, pass);
-		format(GateInfo[gateid][gPass], 24, "%s", pass);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
-		SaveGate(gateid);
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-		return 1;
-	}
-	return 1;
-}
-
-CMD:housegatepw(playerid, params[])
-{
-	SendClientMessageEx(playerid, COLOR_GREY, "/housegatepw has been changed to /setgatepass!");
-	return 1;
-}
-
-CMD:setgatepass(playerid, params[])
-{
-	new Float:X, Float:Y, Float:Z, string[128];
-	new houseid = GetNearbyHouseEx(playerid);
-
-	if(houseid == -1 || !IsHouseOwner(playerid, houseid))
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not in range of any house of yours.");
-	}
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setgatepass [pass]");
-	if(strlen(params) > 24) return SendClientMessageEx(playerid, COLOR_GREY, " Must be 24 characters or less! ");
-
-	for(new i = 0; i < sizeof(GateInfo); i++)
-	{
-		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(IsPlayerInRangeOfPoint(playerid, GateInfo[i][gRange], X, Y, Z))
-		{
-			if(GateInfo[i][gHID] != -1 && PlayerData[playerid][pID] == HouseInfo[GateInfo[i][gHID]][hOwnerID] && GateInfo[i][gGroupID] == -1)
-			{
-				format(GateInfo[i][gPass], 24, "%s", params);
-				SaveGate(i);
-				format(string, sizeof(string), "House Gate Password for gate %d changed to: %s", i, params);
-				return SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-		}
-	}
-	SendClientMessageEx(playerid, COLOR_WHITE, "* You're not near a gate that you own!");
-	return 1;
-}
-
-CMD:lockgate(playerid, params[])
-{
-	new Float:X, Float:Y, Float:Z, string[56];
-    for(new i = 0; i < sizeof(GateInfo); i++)
-	{
-		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(IsPlayerInRangeOfPoint(playerid, GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW])
-		{
-			if(GateInfo[i][gGroupID] == -1)
-			{
-				if(GateInfo[i][gHID] != -1 && GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID])
-				{
-					if(GateInfo[i][gLocked] == 0)
-					{
-						GateInfo[i][gLocked] = 1;
-						format(string, sizeof(string), "* %s has locked their gate.", GetPlayerNameEx(playerid));
- 					}
-					else
-					{
-						GateInfo[i][gLocked] = 0;
-						format(string, sizeof(string), "* %s has unlocked their gate.", GetPlayerNameEx(playerid));
- 					}
-				}
-
-			}
-			else if(GateInfo[i][gGroupType] != 0)
-			{
-				if(PlayerData[playerid][pFactionMod] >= 1)
-				{
-					if(GateInfo[i][gLocked] == 0)
-					{
-						GateInfo[i][gLocked] = 1;
-						format(string, sizeof(string), "* %s has locked the gate.", GetPlayerNameEx(playerid));
-
-					}
-					else
-					{
-						GateInfo[i][gLocked] = 0;
-						format(string, sizeof(string), "* %s has unlocked the gate.", GetPlayerNameEx(playerid));
-
-					}
-				}
-			}
-		}
-	}
-	return 1;
-}
-
-CMD:gotogate(playerid, params[])
-{
-    if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-		new string[48], gatenum;
-		if(sscanf(params, "d", gatenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotogate [gatenumber]");
-
-		if(gatenum <= 0 || gatenum >= MAX_GATES)
-		{
-			format(string, sizeof(string), "Gate ID must be between 1 and %d.", MAX_GATES - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, string);
-		}
-
-		SetPlayerPos(playerid,GateInfo[gatenum][gPosX],GateInfo[gatenum][gPosY],GateInfo[gatenum][gPosZ] + 1);
-		GameTextForPlayer(playerid, "~w~Teleporting", 5000, 1);
-		SetPlayerInterior(playerid, GateInfo[gatenum][gInt]);
-		PlayerData[playerid][pInterior] = GateInfo[gatenum][gInt];
-		SetPlayerVirtualWorld(playerid,  GateInfo[gatenum][gVW]);
-		PlayerData[playerid][pWorld] =  GateInfo[gatenum][gVW];
-	}
-	return 1;
-}
-
-CMD:gstatus(playerid, params[])
-{
-	new gateid;
-	if(sscanf(params, "i", gateid))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gstatus [gateid]");
-		return 1;
-	}
-	if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-		new string[128], timertxt, distancetxt;
-
-		switch(GateInfo[gateid][gTimer])
-		{
-			case 1: timertxt = 1;
-			case 2: timertxt = 3;
-			case 3: timertxt = 5;
-			case 4: timertxt = 10;
-			default: timertxt = 0;
-		}
-		switch(GateInfo[gateid][gRenderHQ])
-		{
-			case 1: distancetxt = 100;
-			case 2: distancetxt = 150;
-			case 3: distancetxt = 200;
-			default: distancetxt = 60;
-		}
-
-		format(string,sizeof(string),"|___________ Gate Status (ID: %d) ___________|", gateid);
-		SendClientMessageEx(playerid, COLOR_GREEN, string);
-		format(string, sizeof(string), "X: %f | Y: %f | Z: %f | RotX: %f | RotY: %f | RotZ: %f", GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "XM: %f | YM: %f | ZM: %f | RotXM: %f | RotYM: %f | RotZM: %f", GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Model: %d | HID: %d | VW: %d | Int: %d | Allegiance: %d | Group Type: %d | Group: %d", GateInfo[gateid][gModel], GateInfo[gateid][gHID], GateInfo[gateid][gVW], GateInfo[gateid][gInt], GateInfo[gateid][gAllegiance], GateInfo[gateid][gGroupType], GateInfo[gateid][gGroupID]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Range: %.3f | Speed: %.3f | Timer: %d second(s) | Stream: %d | Automated: %d | Locked: %d | Pass: %s", GateInfo[gateid][gRange], GateInfo[gateid][gSpeed], timertxt, distancetxt, GateInfo[gateid][gAutomate], GateInfo[gateid][gLocked], GateInfo[gateid][gPass]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Assigned Facility: %d", GateInfo[gateid][gFacility]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		if(GateInfo[gateid][gTModel] != INVALID_OBJECT_ID)
-		{
-			format(string, sizeof(string), "Texture Replacement - Index: %d | Model: %d | TXD File: %s | Texture: %s | Color: %x", GateInfo[gateid][gTIndex], GateInfo[gateid][gTModel], GateInfo[gateid][gTTXD], GateInfo[gateid][gTTexture], GateInfo[gateid][gTColor]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-	return 1;
-}
-
-CMD:gnear(playerid, params[])
-{
-    if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-		new option;
-		if(!sscanf(params, "d", option))
-		{
-			new string[64];
-			format(string, sizeof(string), "* Listing all gates within 30 meters of you in VW %d...", option);
-			SendClientMessageEx(playerid, COLOR_RED, string);
-			for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
-			{
-				GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
-				if(option == -1)
-				{
-					if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]))
-					{
-						if(GateInfo[i][gModel] != 0 && GateInfo[i][gModel] != 18631)
-						{
-							format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-						}
-					}
-				}
-				else
-				{
-					if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]) && GateInfo[i][gVW] == option)
-					{
-						if(GateInfo[i][gModel] != 0 && GateInfo[i][gModel] != 18631)
-						{
-							format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_RED, "* Listing all gates within 30 meters of you...");
-			for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
-			{
-				GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
-				if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]) && GateInfo[i][gVW] == GetPlayerVirtualWorld(playerid))
-				{
-					if(GateInfo[i][gModel] != 0 && GateInfo[i][gModel] != 18631)
-					{
-						format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
-						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-	}
-	return 1;
-}
-
-CMD:gnext(playerid, params[])
-{
-    if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available gate...");
-		for(new x;x<MAX_GATES;x++)
-		{
-		    if(GateInfo[x][gModel] == 0)
-		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
-		        break;
-			}
-		}
-	}
-	else
-	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-		return 1;
-	}
-	return 1;
-}
-
-CMD:gedit(playerid, params[])
-{
-    if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-		new x_job[128], gateid, Float:ofloat, string[128];
-
-		if(sscanf(params, "s[128]iF", x_job, gateid, ofloat))
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gedit [name] [gateid] [value]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: HID, Model, VW, Int, Open, Closed, PosX(M), PosY(M), PosZ(M), RotX(M), RotZ(M), ToMe(M)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Range, Speed, Allegiance, GroupType, GroupID, Stream, Timer, Facility");
-			return 1;
-		}
-
-		if(strcmp(x_job, "hid", true) == 0)
-		{
-			new value = floatround(ofloat, floatround_round);
-		    if(value > MAX_HOUSES) return SendClientMessageEx(playerid, COLOR_WHITE, "* Invalid House ID!");
-		    GateInfo[gateid][gHID] = value;
-		    format(string, sizeof(string), "HID %d assigned to Gate %d", GateInfo[gateid][gHID], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's House ID to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "model", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-
-		    if(value == 0)
-		    {
-				GateInfo[gateid][gHID] = -1;
-		        GateInfo[gateid][gPosX] = 0.0;
-		        GateInfo[gateid][gPosY] = 0.0;
-		        GateInfo[gateid][gPosZ] = 0.0;
-		        GateInfo[gateid][gRotX] = 0.0;
-		        GateInfo[gateid][gRotY] = 0.0;
-				GateInfo[gateid][gRotZ] = 0.0;
-				GateInfo[gateid][gPosXM] = 0.0;
-				GateInfo[gateid][gPosYM] = 0.0;
-				GateInfo[gateid][gPosZM] = 0.0;
-				GateInfo[gateid][gRotXM] = 0.0;
-				GateInfo[gateid][gRotYM] = 0.0;
-				GateInfo[gateid][gRotZM] = 0.0;
-				GateInfo[gateid][gVW] = 0;
-				GateInfo[gateid][gInt] = 0;
-				GateInfo[gateid][gAllegiance] = 0;
-				GateInfo[gateid][gGroupType] = 0;
-				GateInfo[gateid][gGroupID] = -1;
-			}
-
-		    GateInfo[gateid][gModel] = value;
-		    format(string, sizeof(string), "Model %d assigned to Gate %d", GateInfo[gateid][gModel], gateid);
-            CreateGate(gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's Model to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "vw", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gVW] = value;
-		    format(string, sizeof(string), "Virtual World %d assigned to Gate %d", GateInfo[gateid][gVW], gateid);
-            CreateGate(gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's VW to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "int", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gInt] = value;
-		    format(string, sizeof(string), "Interior %d assigned to Gate %d", GateInfo[gateid][gInt], gateid);
-			CreateGate(gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's InteriorID to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "open", true) == 0)
-		{
-			foreach(new i:Player)
-			{
-				if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
-				{
-					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
-					return SendClientMessageEx(playerid, COLOR_WHITE, string);
-				}
-			}
-			SetPVarInt(playerid, "gEdit", 1);
-			SetPVarInt(playerid, "EditingGateID", gateid);
-			SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
-			SetDynamicObjectRot(GateInfo[gateid][gGATE], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-			EditDynamicObject(playerid, GateInfo[gateid][gGATE]);
-			format(string, sizeof(string), "You are now editing the open position of Gate %d.", gateid);
-			SendClientMessage(playerid, COLOR_WHITE, string);
-			SendClientMessage(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
-		}
-		else if(strcmp(x_job, "closed", true) == 0)
-		{
-			foreach(new i:Player)
-			{
-				if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
-				{
-					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
-					return SendClientMessageEx(playerid, COLOR_WHITE, string);
-				}
-			}
-			SetPVarInt(playerid, "gEdit", 2);
-			SetPVarInt(playerid, "EditingGateID", gateid);
-			EditDynamicObject(playerid, GateInfo[gateid][gGATE]);
-			format(string, sizeof(string), "You are now editing the closed position of Gate %d.", gateid);
-			SendClientMessage(playerid, COLOR_WHITE, string);
-			SendClientMessage(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
-		}
-		else if(strcmp(x_job, "range", true) == 0)
-		{
-		    GateInfo[gateid][gRange] = ofloat;
-		    format(string, sizeof(string), "Range of %.3f assigned to Gate %d", GateInfo[gateid][gRange], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's Range to %.3f.", GetPlayerNameEx(playerid), gateid, ofloat);
-		  //  //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "speed", true) == 0)
-		{
-		    GateInfo[gateid][gSpeed] = ofloat;
-		    format(string, sizeof(string), "Speed of %.3f assigned to Gate %d", GateInfo[gateid][gSpeed], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's Speed to %.3f.", GetPlayerNameEx(playerid), gateid, ofloat);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "posx", true) == 0)
-		{
-		    GateInfo[gateid][gPosX] = ofloat;
-		    format(string, sizeof(string), "PosX %f assigned to Gate %d", GateInfo[gateid][gPosX], gateid);
-		    SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "posy", true) == 0)
-		{
-		    GateInfo[gateid][gPosY] = ofloat;
-		    format(string, sizeof(string), "PosY %f assigned to Gate %d", GateInfo[gateid][gPosY], gateid);
-		    SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "posz", true) == 0)
-		{
-			GateInfo[gateid][gPosZ] = ofloat;
-		    format(string, sizeof(string), "PosZ %f assigned to Gate %d", GateInfo[gateid][gPosZ], gateid);
-		    SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "posxm", true) == 0)
-		{
-		    GateInfo[gateid][gPosXM] = ofloat;
-		    format(string, sizeof(string), "PosXM %f assigned to Gate %d", GateInfo[gateid][gPosXM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "posym", true) == 0)
-		{
-		    GateInfo[gateid][gPosYM] = ofloat;
-		    format(string, sizeof(string), "PosYM %f assigned to Gate %d", GateInfo[gateid][gPosYM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "poszm", true) == 0)
-		{
-		    GateInfo[gateid][gPosZM] = ofloat;
-		    format(string, sizeof(string), "PosZM %f assigned to Gate %d", GateInfo[gateid][gPosZM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "rotx", true) == 0)
-		{
-		    GateInfo[gateid][gRotX] = ofloat;
-		    format(string, sizeof(string), "RotX %f assigned to Gate %d", GateInfo[gateid][gRotX], gateid);
-		    SetDynamicObjectRot(GateInfo[gateid][gGATE], GateInfo[gateid][gRotX],GateInfo[gateid][gRotY],GateInfo[gateid][gRotZ]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "roty", true) == 0)
-		{
-		    GateInfo[gateid][gRotY] = ofloat;
-		    format(string, sizeof(string), "RotY %f assigned to Gate %d", GateInfo[gateid][gRotY], gateid);
-		    SetDynamicObjectRot(GateInfo[gateid][gGATE], GateInfo[gateid][gRotX],GateInfo[gateid][gRotY],GateInfo[gateid][gRotZ]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "rotz", true) == 0)
-		{
-			GateInfo[gateid][gRotZ] = ofloat;
-		    format(string, sizeof(string), "RotZ %f assigned to Gate %d", GateInfo[gateid][gRotZ], gateid);
-		    SetDynamicObjectRot(GateInfo[gateid][gGATE], GateInfo[gateid][gRotX],GateInfo[gateid][gRotY],GateInfo[gateid][gRotZ]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "rotxm", true) == 0)
-		{
-		    GateInfo[gateid][gRotXM] = ofloat;
-		    format(string, sizeof(string), "RotXM %f assigned to Gate %d", GateInfo[gateid][gRotXM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "rotym", true) == 0)
-		{
-		    GateInfo[gateid][gRotYM] = ofloat;
-		    format(string, sizeof(string), "RotYM %f assigned to Gate %d", GateInfo[gateid][gRotYM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-		else if(strcmp(x_job, "rotzm", true) == 0)
-		{
-		    GateInfo[gateid][gRotZM] = ofloat;
-		    format(string, sizeof(string), "RotZM %f assigned to Gate %d", GateInfo[gateid][gRotZM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		}
-        else if(strcmp(x_job, "tome", true) == 0)
-		{
-		    GetPlayerPos(playerid,GateInfo[gateid][gPosX],GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
-		    GateInfo[gateid][gVW] = GetPlayerVirtualWorld(playerid);
-		    GateInfo[gateid][gInt] = GetPlayerInterior(playerid);
-			format(string, sizeof(string), "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    if(GateInfo[gateid][gModel] == 0)
-			{
-			    GateInfo[gateid][gModel] = 18631;
-			    GateInfo[gateid][gRange] = 10;
-			    GateInfo[gateid][gSpeed] = 5.0;
-			}
-			CreateGate(gateid);
-			SaveGate(gateid);
-
-		//	format(string, sizeof(string), "%s has edited GateID %d's Position.", GetPlayerNameEx(playerid), gateid);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "tomem", true) == 0)
-		{
-		    GetPlayerPos(playerid,GateInfo[gateid][gPosXM],GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]);
-			format(string, sizeof(string), "Gate %d PosM moved to %f %f %f", gateid, GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-			SaveGate(gateid);
-
-			//format(string, sizeof(string), "%s has edited GateID %d's Moved Position.", GetPlayerNameEx(playerid), gateid);
-		    ////////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "allegiance", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gAllegiance] = value;
-		    format(string, sizeof(string), "Allegiance %d assigned to Gate %d", GateInfo[gateid][gAllegiance], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		    //format(string, sizeof(string), "%s has edited GateID %d's Allegiance to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "grouptype", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gGroupType] = value;
-		    format(string, sizeof(string), "Group Type %d assigned to Gate %d", GateInfo[gateid][gGroupType], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's Group Type to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "groupid", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gGroupID] = value;
-		    format(string, sizeof(string), "Group ID %d assigned to Gate %d", GateInfo[gateid][gGroupID], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		    //format(string, sizeof(string), "%s has edited GateID %d's Group ID to %d.", GetPlayerNameEx(playerid), gateid, value);
-		    ////////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "stream", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gRenderHQ] = value;
-		    format(string, sizeof(string), "Stream distance %d assigned to Gate %d", GateInfo[gateid][gRenderHQ], gateid);
-            CreateGate(gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		  //  format(string, sizeof(string), "%s has edited GateID %d's stream distance to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "timer", true) == 0)
-		{
-			new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gTimer] = value;
-		    format(string, sizeof(string), "Timer %d assigned to Gate %d", GateInfo[gateid][gTimer], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		  //  format(string, sizeof(string), "%s has edited GateID %d's timer to %d.", GetPlayerNameEx(playerid), gateid, value);
-		   // //////////Log("logs/gedit.log", string);
-		}
-
-	}
-	else
-	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-		return 1;
-	}
-	return 1;
-}
-
-CMD:gedittexture(playerid, params[])
-{
-	if(PlayerData[playerid][pAdmin] >= SENIOR_ADMIN)
-	{
-		new gateid, option[16], var[64], string[128];
-
-		if(sscanf(params, "is[16]s[64]", gateid, option, var))
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gedittexture [gateid] [name] [value]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Index, Model, TXD, Texture, Color, Delete");
-			return 1;
-		}
-
-		if(strcmp(option, "index", true) == 0)
-		{
-			new value = strval(var);
-		    GateInfo[gateid][gTIndex] = value;
-		    format(string, sizeof(string), "Texture index %d assigned to Gate %d", GateInfo[gateid][gTIndex], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		   // format(string, sizeof(string), "%s has edited GateID %d's texture index to %d.", GetPlayerNameEx(playerid), gateid, value);
-		  //  //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(option, "model", true) == 0)
-		{
-		    new value = strval(var);
-		    GateInfo[gateid][gTModel] = value;
-		    format(string, sizeof(string), "Texture model %d assigned to Gate %d", GateInfo[gateid][gTModel], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-			CreateGate(gateid);
-
-		  //  format(string, sizeof(string), "%s has edited GateID %d's texture model to %d.", GetPlayerNameEx(playerid), gateid, value);
-		  //  //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(option, "txd", true) == 0)
-		{
-		    format(GateInfo[gateid][gTTXD], 64, "%s", var);
-		    format(string, sizeof(string), "TXD file %s assigned to Gate %d", GateInfo[gateid][gTTXD], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		    //format(string, sizeof(string), "%s has edited GateID %d's TXD file to %s.", GetPlayerNameEx(playerid), gateid, var);
-		    ////////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(option, "texture", true) == 0)
-		{
-		    format(GateInfo[gateid][gTTexture], 64, "%s", var);
-		    format(string, sizeof(string), "Texture %s assigned to Gate %d", GateInfo[gateid][gTTexture], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		    //format(string, sizeof(string), "%s has edited GateID %d's texture to %s.", GetPlayerNameEx(playerid), gateid, var);
-		   // //////////Log("logs/gedit.log", string);
-		}
-		else if(strcmp(option, "color", true) == 0)
-		{
-			if(strlen(var) > 6 || !ishex(var)) return SendClientMessageEx(playerid, COLOR_GREY, "Color must be a valid hexadecimal color (ie: BCA3FF)");
-			new value;
-			sscanf(var, "h", value);
-		    GateInfo[gateid][gTColor] = value;
-		    format(string, sizeof(string), "Material color %d assigned to Gate %d", GateInfo[gateid][gTColor], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		  //  format(string, sizeof(string), "%s has edited GateID %d's material color to %d.", GetPlayerNameEx(playerid), gateid, value);
-		  //  //////////Log("logs/gedit.log", string);
-		}
-		if(strcmp(option, "delete", true) == 0)
-		{
-		    GateInfo[gateid][gTIndex] = -1;
-			GateInfo[gateid][gTModel] = INVALID_OBJECT_ID;
-			GateInfo[gateid][gTTXD] = EOS;
-			GateInfo[gateid][gTTexture] = EOS;
-			GateInfo[gateid][gTColor] = 0;
-		    format(string, sizeof(string), "Texture removed from Gate %d", gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-			CreateGate(gateid);
-
-		   // format(string, sizeof(string), "%s has removed GateID %d's texture.", GetPlayerNameEx(playerid), gateid);
-		   // //////////Log("logs/gedit.log", string);
-		}
-	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-	return 1;
-}
-
-CMD:listgates(playerid, params[])
-{
-	if(PlayerData[playerid][pAdmin] < SENIOR_ADMIN) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-	new hid, string[128];
-	if(sscanf(params, "d", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listgates [houseid]");
-	if(hid <= 0 || hid >= MAX_HOUSES)
-	{
-		format(string, sizeof(string), "House ID must be between 1 and %d.", MAX_HOUSES - 1);
-		return SendClientMessageEx(playerid, COLOR_GREY, string);
-	}
-	format(string, sizeof(string), "Listing gates linked to house id: %d", hid);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	for(new i = 0; i < MAX_GATES; i++)
-	{
-		if(GateInfo[i][gHID] == hid)
-		{
-			format(string, sizeof(string), "- %d", i);
-			SendClientMessageEx(playerid, COLOR_GREY, string);
-		}
-	}
-	return 1;
-}
-
-CMD:gmove(playerid, params[])
-{
-	if(PlayerData[playerid][pAdmin] < SENIOR_ADMIN) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	new gateid, giveplayerid, fee, minfee;
-	if(sscanf(params, "dudd", gateid, giveplayerid, fee, minfee))
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /gmove <Choice> <GateID> <playerid> <Fine (Percent)> <min. fine>");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
-		return 1;
-	}
-	new string[128];
-	new totalwealth = PlayerData[giveplayerid][pBank] + GetPlayerCash(giveplayerid);
- 	if(fee > 0)
-	{
-		fee = totalwealth / 100 * fee;
-		if(PlayerData[giveplayerid][pVIPPackage] == 3)
-		{
-			fee = fee / 100 * 95;
-		}
-		if(PlayerData[giveplayerid][pVIPPackage] >= 4)
-		{
-			fee = fee / 100 * 85;
-		}
-	}
-	GetPlayerPos(playerid,GateInfo[gateid][gPosX],GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
-	GateInfo[gateid][gVW] = GetPlayerVirtualWorld(playerid);
-	GateInfo[gateid][gInt] = GetPlayerInterior(playerid);
-	format(string, sizeof(string), "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	if(GateInfo[gateid][gModel] == 0)
-	{
-		GateInfo[gateid][gModel] = 18631;
-		GateInfo[gateid][gRange] = 10;
-		GateInfo[gateid][gSpeed] = 5.0;
-	}
-	CreateGate(gateid);
-	SaveGate(gateid);
-//	format(string, sizeof(string), "%s has edited GateID %d's Position.", GetPlayerNameEx(playerid), gateid);
-//	//////////Log("logs/gedit.log", string);
-	if(minfee > fee && minfee > 0)
-	{
-		GivePlayerCash(giveplayerid, -minfee);
-//		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-//		//////////Log("logs/admin.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-	}
-	else if(fee > 0)
-	{
-		GivePlayerCash(giveplayerid, -fee);
-	//	format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-	//	//////////Log("logs/admin.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-	}
-	return 1;
-}
-
-CMD:reloadgate(playerid, params[])
-{
-	if(PlayerData[playerid][pAdmin] < SENIOR_ADMIN) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-	new gateid, string[128];
-	if(sscanf(params, "d", gateid)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /reloadgate <gateid>");
-	CreateGate(gateid);
-	format(string, sizeof(string), "Reloading Gate ID %d...", gateid);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	return 1;
-}
-
-CreateGate(gateid) {
-	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
-	GateInfo[gateid][gGATE] = -1;
-	if(GateInfo[gateid][gPosX] == 0.0) return 1;
-	switch(GateInfo[gateid][gRenderHQ])
-	{
-		case 1: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 100.0);
-		case 2: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 150.0);
-		case 3: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 200.0);
-		default: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 60.0);
-	}
-	if(GateInfo[gateid][gTModel] != INVALID_OBJECT_ID) SetDynamicObjectMaterial(GateInfo[gateid][gGATE], GateInfo[gateid][gTIndex], GateInfo[gateid][gTModel], GateInfo[gateid][gTTXD], GateInfo[gateid][gTTexture], GateInfo[gateid][gTColor]);
-	return 1;
-}
-
-stock SaveGate(id) {
-
-	mysql_format(connectionID, szMiscArray, sizeof(szMiscArray), "UPDATE `gates` SET \
-		`HID`=%d, \
-		`Speed`=%f, \
-		`Range`=%f, \
-		`Model`=%d, \
-		`VW`=%d, \
-		`Int`=%d, \
-		`Pass`='%e', \
-		`PosX`=%f, \
-		`PosY`=%f, \
-		`PosZ`=%f, \
-		`RotX`=%f, \
-		`RotY`=%f, \
-		`RotZ`=%f, \
-		`PosXM`=%f, \
-		`PosYM`=%f, \
-		`PosZM`=%f, \
-		`RotXM`=%f, \
-		`RotYM`=%f, \
-		`RotZM`=%f, \
-		`Allegiance`=%d, \
-		`GroupType`=%d, \
-		`GroupID`=%d, \
-		`RenderHQ`=%d, \
-		`Timer`=%d, \
-		`Automate`=%d, \
-		`Locked`=%d, \
-		`TIndex`=%d, \
-		`TModel`=%d, \
-		`TTXD`='%e', \
-		`TTexture`='%e', \
-		`TColor`=%d, \
-		`Facility`=%d \
-		WHERE `ID` = %d",
-		GateInfo[id][gHID],
-		GateInfo[id][gSpeed],
-		GateInfo[id][gRange],
-		GateInfo[id][gModel],
-		GateInfo[id][gVW],
-		GateInfo[id][gInt],
-		GateInfo[id][gPass],
-		GateInfo[id][gPosX],
-		GateInfo[id][gPosY],
-		GateInfo[id][gPosZ],
-		GateInfo[id][gRotX],
-		GateInfo[id][gRotY],
-		GateInfo[id][gRotZ],
-		GateInfo[id][gPosXM],
-		GateInfo[id][gPosYM],
-		GateInfo[id][gPosZM],
-		GateInfo[id][gRotXM],
-		GateInfo[id][gRotYM],
-		GateInfo[id][gRotZM],
-		GateInfo[id][gAllegiance],
-		GateInfo[id][gGroupType],
-		GateInfo[id][gGroupID],
-		GateInfo[id][gRenderHQ],
-		GateInfo[id][gTimer],
-		GateInfo[id][gAutomate],
-		GateInfo[id][gLocked],
-		GateInfo[id][gTIndex],
-		GateInfo[id][gTModel],
-		GateInfo[id][gTTXD],
-		GateInfo[id][gTTexture],
-		GateInfo[id][gTColor],
-		GateInfo[id][gFacility],
-		id+1
-	);
-	mysql_tquery(connectionID, szMiscArray);
-	return 0;
-}
-
-stock SaveGates()
-{
-	for(new i = 0; i < MAX_GATES; i++)
-	{
-		SaveGate(i);
-	}
-	return 1;
-}
-
-forward MoveTimerGate(gateid);
-public MoveTimerGate(gateid)
-{
-	if(GateInfo[gateid][gTimer] != 0)
-	{
-		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-		GateInfo[gateid][gStatus] = 0;
-	}
-	return 1;
-}
-
-stock MoveGate(playerid, gateid)
-{
-//	new string[128];
-	if(GateInfo[gateid][gStatus] == 0)
-	{
-		ShowActionBubble(playerid,  "* %s uses their remote to open the gates.", GetRPName(playerid));
-		// ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
-		GateInfo[gateid][gStatus] = 1;
-		if(GateInfo[gateid][gTimer] != 0)
-		{
-			switch(GateInfo[gateid][gTimer])
-			{
-				case 1: SetTimerEx("MoveTimerGate", 3000, false, "i", gateid);
-				case 2: SetTimerEx("MoveTimerGate", 5000, false, "i", gateid);
-				case 3: SetTimerEx("MoveTimerGate", 8000, false, "i", gateid);
-				case 4: SetTimerEx("MoveTimerGate", 10000, false, "i", gateid);
-			}
-		}
-	}
-	else if(GateInfo[gateid][gStatus] == 1 && GateInfo[gateid][gTimer] == 0)
-	{
-		ShowActionBubble(playerid,  "* %s uses their remote to close the gates.", GetRPName(playerid));
-		// ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-		GateInfo[gateid][gStatus] = 0;
-	}
-	return 1;
-}
-
-stock MoveAutomaticGate(playerid, gateid)
-{
-	MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
-	GateInfo[gateid][gStatus] = 1;
-	switch(GateInfo[gateid][gTimer])
-	{
-		case 1: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-		case 2: SetTimerEx("AutomaticGateTimerClose", 5000, false, "ii", playerid, gateid);
-		case 3: SetTimerEx("AutomaticGateTimerClose", 8000, false, "ii", playerid, gateid);
-		case 4: SetTimerEx("AutomaticGateTimerClose", 10000, false, "ii", playerid, gateid);
-		default: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-	}
-	return 1;
-}
-
-forward AutomaticGateTimer(playerid, gateid);
-public AutomaticGateTimer(playerid, gateid)
-{
-	if(GateInfo[gateid][gLocked] == 0)
-	{
-		if(GateInfo[gateid][gStatus] == 0 && IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]))
-		{
-			if(GateInfo[gateid][gGroupID] != -1 && (0 <= PlayerData[playerid][pFaction] < MAX_FACTIONS) && PlayerData[playerid][pFaction] == GateInfo[gateid][gGroupID]) MoveAutomaticGate(playerid, gateid);
- 			else MoveAutomaticGate(playerid, gateid);
-		}
-		SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-	}
-	else
-	{
-		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
-		{
-			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-			GateInfo[gateid][gStatus] = 0;
-			return 1;
-		}
-	}
-	return 1;
-}
-
-forward AutomaticGateTimerClose(playerid, gateid);
-public AutomaticGateTimerClose(playerid, gateid)
-{
-	if(GateInfo[gateid][gLocked] == 0)
-	{
-		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
-		{
-			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-			GateInfo[gateid][gStatus] = 0;
-			return 1;
-		}
-		switch(GateInfo[gateid][gTimer])
-		{
-			case 1: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-			case 2: SetTimerEx("AutomaticGateTimerClose", 5000, false, "ii", playerid, gateid);
-			case 3: SetTimerEx("AutomaticGateTimerClose", 8000, false, "ii", playerid, gateid);
-			case 4: SetTimerEx("AutomaticGateTimerClose", 10000, false, "ii", playerid, gateid);
-			default: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-		}
-	}
-	else
-	{
-		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
-		{
-			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-			GateInfo[gateid][gStatus] = 0;
-			return 1;
-		}
-	}
-	return 1;
-}
-
-forward DeleteGate(gateid, adminid);
-public DeleteGate(gateid, adminid)
-{
-	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]), GateInfo[gateid][gGATE] = -1;
-	GateInfo[gateid][gHID] = -1;
-	GateInfo[gateid][gSpeed] = 1.0;
-	GateInfo[gateid][gRange] = 1.0;
-	GateInfo[gateid][gModel] = 0;
-	GateInfo[gateid][gVW] = 0;
-	GateInfo[gateid][gInt] = 0;
-	GateInfo[gateid][gPosX] = 0.0;
-	GateInfo[gateid][gPosY] = 0.0;
-	GateInfo[gateid][gPosZ] = 0.0;
-	GateInfo[gateid][gRotX] = 0.0;
-	GateInfo[gateid][gRotY] = 0.0;
-	GateInfo[gateid][gRotZ] = 0.0;
-	GateInfo[gateid][gPosXM] = 0.0;
-	GateInfo[gateid][gPosYM] = 0.0;
-	GateInfo[gateid][gPosZM] = 0.0;
-	GateInfo[gateid][gRotXM] = 0.0;
-	GateInfo[gateid][gRotYM] = 0.0;
-    GateInfo[gateid][gRotZM] = 0.0;
-    GateInfo[gateid][gStatus] = 0;
-    GateInfo[gateid][gPass][0] = 0;
-	GateInfo[gateid][gAllegiance] = 0;
-	GateInfo[gateid][gGroupType] = 0;
-	GateInfo[gateid][gGroupID] = -1;
-    GateInfo[gateid][gRenderHQ] = 0;
-	GateInfo[gateid][gTimer] = 0;
-	GateInfo[gateid][gAutomate] = 0;
-	GateInfo[gateid][gLocked] = 0;
-	GateInfo[gateid][gFacility] = -1;
-	szMiscArray[0] = 0;
-//	format(szMiscArray, sizeof(szMiscArray), "%s has deleted gate id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), gateid);
-	//("logs/gedit.log", szMiscArray);
-	return 1;
-}
 CMD:samphelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GLOBAL, "_____________________[ SA:MP 0.3.7 R2 CLIENT ]_________________________");
@@ -52975,19 +51798,26 @@ CMD:editdealercars(playerid, params[])
 CMD:furniture(playerid, params[])
 {
 	new id = GetInsideHouse(playerid);
+	if(id == -1)
+	{
+		id = GetFurnitureHouse(playerid);
+	}
     if (!IsHouseOwner(playerid, id) && PlayerData[playerid][pFurniturePerms] != id)
 	{
 		return SendErrorMessage(playerid, "You don't have permissions to furnish this house.");
 	}
     else
     {
-        if(!GetInsideHouse(playerid)) return SendErrorMessage(playerid, "You can not place the furniture outside.");
         PlayerData[playerid][pHouse] = id;
 	    Dialog_Show(playerid, HouseFurniture, DIALOG_STYLE_LIST, "{FFFFFF}Manage Furniture", "Purchase\nAdjustments", "Select", "Cancel");
 	}
 	return 1;
 }
-
+CMD:testfurn(playerid, params[])
+{
+	SelectObject(playerid);
+	return 1;
+}
 CMD:edit(playerid, params[])
 {
 	new
@@ -53016,7 +51846,7 @@ CMD:edit(playerid, params[])
 	else
 	{
 	    SetPVarInt(playerid, "FurnID", furniture);
-	    Dialog_Show(playerid, FurnEditConfirm, DIALOG_STYLE_MSGBOX, "Furniture Edit", "Please select a type:", "Position", "Texture");
+	    Dialog_Show(playerid, FurnEditConfirm, DIALOG_STYLE_LIST, "Furniture Edit", "Edit Position\nEdit Texture\nDuplicate Object\nDelete Object", "Select", "Cancel");
 		SendInfoMessage(playerid, "You are now editing ID: %i. Click the disk icon to save changes.", furniture);
 	}
 	return 1;
@@ -53186,7 +52016,7 @@ CMD:vehiclehelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_NAVYBLUE, "________________ Vehicle Help ________________");
     SendClientMessage(playerid, COLOR_WHITE, "*** VEHICLE HELP *** type a command for more information.");
-    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /lights /hood /boot /buy /carstorage /park /lock /findcar");
+    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /lights /hood /boot /buy /carstorage /park /lock /findcar, /setforsale, /cancelforsale");
     SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /vstash /neon /unmod /colorcar /paintcar /upgradevehicle /sellcar /sellmycar");
     SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /givekeys /takekeys /setradio /paytickets /carinfo /gascan /breakin");
     return 1;
@@ -53206,16 +52036,13 @@ CMD:viphelp(playerid, params[])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
-
     SendClientMessage(playerid, COLOR_NAVYBLUE, "__________________ VIP Help __________________");
     SendClientMessage(playerid, COLOR_WHITE, "*** VIP HELP *** type a command for more information.");
     SendClientMessage(playerid, COLOR_GREY, "*** VIP *** /(v)ip /vipinfo /viptag /vipcolor /vipinvite /vipnumber /vipmusic");
-
 	if(PlayerData[playerid][pVIPPackage] == 3)
 	{
 	    SendClientMessage(playerid, COLOR_GREY, "*** VIP *** /repair /nos /hyd /viprimkit");
 	}
-
 	return 1;
 }
 
@@ -55675,9 +54502,9 @@ CMD:accept(playerid, params[])
 		GangInfo[allyid][gAlliance] = gangid;
 		PlayerData[playerid][pAllianceOffer] = INVALID_PLAYER_ID;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = %i WHERE id = %i", allyid, gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = %i WHERE id = %i", allyid, gangid);
    		mysql_tquery(connectionID, queryBuffer);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = %i WHERE id = %i", gangid, allyid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = %i WHERE id = %i", gangid, allyid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		if(GangInfo[gangid][gColor] == -1 || GangInfo[gangid][gColor] == -256)
@@ -63677,26 +62504,73 @@ CMD:dynamichelp(playerid, params[])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	}
-
-	SendClientMessage(playerid, COLOR_GREEN, "HOUSES:{DDDDDD} /createhouse, /edithouse, /removehouse, /gotohouse, /asellhouse, /removefurniture.");
-	SendClientMessage(playerid, COLOR_GREEN, "GARAGES:{DDDDDD} /creategarage, /editgarage, /removegarage, /gotogarage, /asellgarage.");
-    SendClientMessage(playerid, COLOR_GREEN, "BUSINESSES:{DDDDDD} /createbiz, /editbiz, /removebiz, /gotobiz, /asellbiz.");
-	SendClientMessage(playerid, COLOR_GREEN, "ENTRANCES:{DDDDDD} /createentrance, /editentrance, /removeentrance, /gotoentrance.");
-	SendClientMessage(playerid, COLOR_GREEN, "LANDS:{DDDDDD} /createland, /landcancel, /removeland, /gotoland, /asellland, /removelandobjects.");
-	SendClientMessage(playerid, COLOR_GREEN, "FACTIONS:{DDDDDD} /createfaction, /editfaction, /removefaction, /switchfaction, /purgefaction.");
-    SendClientMessage(playerid, COLOR_GREEN, "GANGS:{DDDDDD} /creategang, /editgang, /removegang, /gangstrike, /switchgang, /caplimit, /setcooldown.");
-    SendClientMessage(playerid, COLOR_GREEN, "POINTS:{DDDDDD} /createpoint, /editpoint, /removepoint, /gotopoint.");
-    SendClientMessage(playerid, COLOR_GREEN, "TURFS:{DDDDDD} /createturf, /turfcancel, /editturf, /removeturf, /gototurf.");
-	SendClientMessage(playerid, COLOR_GREEN, "FIRES:{DDDDDD} /randomfire, /killfire, /spawnfire.");
-	SendClientMessage(playerid, COLOR_GREEN, "LOCKERS:{DDDDDD} /createlocker, /editlocker, /removelocker.");
-	SendClientMessage(playerid, COLOR_GREEN, "LOCATIONS:{DDDDDD} /createlocation, /editlocation, /removelocation.");
-	SendClientMessage(playerid, COLOR_GREEN, "ATMS:{DDDDDD} /createatm, /gotoatm, /editatm, /deleteatm.");
-	SendClientMessage(playerid, COLOR_GREEN, "Gun Racks:{DDDDDD} /createrack, /editrack, /destroyrack");
-	SendClientMessage(playerid, COLOR_GREEN, "Gang Tags:{DDDDDD} /creategangtag, /destroygangtag");
-	SendClientMessage(playerid, COLOR_GREEN, "Dynamic Gate:{DDDDDD} /gnext, /gedit");
-	SendClientMessage(playerid, COLOR_GREEN, "Payphones:{FFFFFF} /addpayphone, /gotopayphone, /editpayphone, /deletepayphone.");
-
-
+	else if (isnull(params))
+	{
+		SendSyntaxMessage(playerid, "/dynamichelp (type)");
+		SendClientMessage(playerid, COLOR_GREY, "Types: house, businesses, entrances, atms, lands, factions, gangs");
+		SendClientMessage(playerid, COLOR_GREY, "Types: locations, points, turfs, fires, lockers, payphones, gangtags");
+		return 1;
+	}
+	else if (!strcmp(params, "house", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "HOUSES:{DDDDDD} /createhouse, /edithouse, /removehouse, /gotohouse, /asellhouse, /removefurniture.");
+	}
+	else if (!strcmp(params, "garages", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "GARAGES:{DDDDDD} /creategarage, /editgarage, /removegarage, /gotogarage, /asellgarage.");
+	}
+    else if (!strcmp(params, "businesses", true))
+    {
+		SendClientMessage(playerid, COLOR_GREEN, "BUSINESSES:{DDDDDD} /createbiz, /editbiz, /removebiz, /gotobiz, /asellbiz.");
+	}
+	else if (!strcmp(params, "entrances", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "ENTRANCES:{DDDDDD} /createentrance, /editentrance, /removeentrance, /gotoentrance.");
+	}
+	else if (!strcmp(params, "lands", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "LANDS:{DDDDDD} /createland, /landcancel, /removeland, /gotoland, /asellland, /removelandobjects.");
+    }
+	else if (!strcmp(params, "factions", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "FACTIONS:{DDDDDD} /createfaction, /editfaction, /removefaction, /switchfaction, /purgefaction.");
+    }
+	else if (!strcmp(params, "gangs", true))
+	{
+	    SendClientMessage(playerid, COLOR_GREEN, "GANGS:{DDDDDD} /creategang, /editgang, /removegang, /gangstrike, /switchgang, /caplimit, /setcooldown.");
+    }
+	else if (!strcmp(params, "points", true))
+	{
+	    SendClientMessage(playerid, COLOR_GREEN, "POINTS:{DDDDDD} /createpoint, /editpoint, /removepoint, /gotopoint.");
+    }
+	else if (!strcmp(params, "turfs", true))
+	{
+	    SendClientMessage(playerid, COLOR_GREEN, "TURFS:{DDDDDD} /createturf, /turfcancel, /editturf, /removeturf, /gototurf.");
+    }
+	else if (!strcmp(params, "fires", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "FIRES:{DDDDDD} /randomfire, /killfire, /spawnfire.");
+    }
+	else if (!strcmp(params, "lockers", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "LOCKERS:{DDDDDD} /createlocker, /editlocker, /removelocker.");
+    }
+	else if (!strcmp(params, "locations", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "LOCATIONS:{DDDDDD} /createlocation, /editlocation, /removelocation.");
+    }
+	else if (!strcmp(params, "atms", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "ATMS:{DDDDDD} /createatm, /gotoatm, /editatm, /deleteatm.");
+    }
+	else if (!strcmp(params, "gangtags", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "Gang Tags:{DDDDDD} /creategangtag, /destroygangtag");
+    }
+	else if (!strcmp(params, "payphones", true))
+	{
+		SendClientMessage(playerid, COLOR_GREEN, "Payphones:{FFFFFF} /addpayphone, /gotopayphone, /editpayphone, /deletepayphone.");
+    }
 	return 1;
 }
 
@@ -64946,11 +63820,13 @@ CMD:makeadmin(playerid, params[])
 		PlayerData[playerid][pHelperManager] = 0;
 		PlayerData[playerid][pDynamicAdmin] = 0;
 		PlayerData[playerid][pAdminPersonnel] = 0;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET scripter = 0, gangmod = 0, banappealer = 0, factionmod = 0, webdev = 0, helpermanager = 0, dynamicadmin = 0, adminpersonnel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET removeddate = '%s' scripter = 0, gangmod = 0, banappealer = 0, factionmod = 0, webdev = 0, helpermanager = 0, dynamicadmin = 0, adminpersonnel = 0 WHERE uid = %i", GetDate(), PlayerData[targetid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	else
 	{
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET addeddate = '%s' WHERE uid = %i", GetDate(), PlayerData[playerid][pID]);
+        mysql_tquery(connectionID, queryBuffer);
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have set %s's admin level to {FF6347}%s{33CCFF} (%i).", GetRPName(targetid), GetAdminRank(targetid), level);
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has set your admin level to {FF6347}%s{33CCFF} (%i).", GetRPName(playerid), GetAdminRank(targetid), level);
 	}
@@ -74210,7 +73086,7 @@ CMD:editfaction(playerid, params[])
 
 		strcpy(FactionInfo[factionid][fName], param, 48);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET name = '%e' WHERE id = %i", param, factionid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET name = '%e' WHERE id = %i", param, factionid);
 		mysql_tquery(connectionID, queryBuffer);
 
   		ReloadLockers(factionid);
@@ -74225,7 +73101,7 @@ CMD:editfaction(playerid, params[])
 
 		strcpy(FactionInfo[factionid][fShortName], param, 24);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET shortname = '%e' WHERE id = %i", param, factionid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET shortname = '%e' WHERE id = %i", param, factionid);
 		mysql_tquery(connectionID, queryBuffer);
 
   		ReloadLockers(factionid);
@@ -74265,7 +73141,7 @@ CMD:editfaction(playerid, params[])
 
 		FactionInfo[factionid][fType] = type_id;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET type = %i WHERE id = %i", type_id, factionid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET type = %i WHERE id = %i", type_id, factionid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the type of faction ID %i to %s.", GetRPName(playerid), factionid, factionTypes[type_id]);
@@ -74281,7 +73157,7 @@ CMD:editfaction(playerid, params[])
 
 		FactionInfo[factionid][fColor] = color & ~0xff;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET color = %i WHERE id = %i", FactionInfo[factionid][fColor], factionid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET color = %i WHERE id = %i", FactionInfo[factionid][fColor], factionid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the {%06x}color{FF6347} of faction ID %i.", GetRPName(playerid), color >>> 8, factionid);
@@ -74301,7 +73177,7 @@ CMD:editfaction(playerid, params[])
 
 		FactionInfo[factionid][fRankCount] = ranks;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET rankcount = %i WHERE id = %i", ranks, factionid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET rankcount = %i WHERE id = %i", ranks, factionid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the rank count of faction ID %i to %i.", GetRPName(playerid), factionid, ranks);
@@ -74423,7 +73299,7 @@ CMD:editfaction(playerid, params[])
 
 		strcpy(FactionInfo[factionid][fLeader], leader, MAX_PLAYER_NAME);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET leader = '%e' WHERE id = %i", leader, factionid);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET leader = '%e' WHERE id = %i", leader, factionid);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the leader of faction ID %i to %s.", GetRPName(playerid), factionid, leader);
@@ -74448,7 +73324,7 @@ CMD:editfaction(playerid, params[])
 
 		FactionInfo[factionid][fTurfTokens] = amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET turftokens = %i WHERE id = %i", amount, factionid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET turftokens = %i WHERE id = %i", amount, factionid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the turf tokens of faction ID %i to %i.", GetRPName(playerid), factionid, amount);
@@ -74467,7 +73343,7 @@ CMD:editfaction(playerid, params[])
 		}
 		FactionInfo[factionid][fBudget] = amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET budget = %i WHERE id = %i", FactionInfo[factionid][fBudget], factionid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET budget = %i WHERE id = %i", FactionInfo[factionid][fBudget], factionid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set %s's faction budget to %i.", GetRPName(playerid), FactionInfo[factionid][fName], amount);
@@ -74507,7 +73383,7 @@ CMD:purgefaction(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET faction = -1, factionrank = 0, division = -1 WHERE faction = %i", factionid);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET leader = 'No-one' WHERE id = %i", factionid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET leader = 'No-one' WHERE id = %i", factionid);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has purged faction %s.", GetRPName(playerid), FactionInfo[factionid][fName]);
@@ -75095,7 +73971,7 @@ CMD:faction(playerid, params[])
 		strcpy(FactionInfo[PlayerData[playerid][pFaction]][fMOTD], param, 128);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have changed the MOTD for your faction.");
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET motd = '%e' WHERE id = %i", param, PlayerData[playerid][pFaction]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET motd = '%e' WHERE id = %i", param, PlayerData[playerid][pFaction]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 	if(!strcmp(option, "edit", true))
@@ -80341,7 +79217,7 @@ CMD:editgang(playerid, params[])
 
 		strcpy(GangInfo[gangid][gName], param, 32);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET name = '%e' WHERE id = %i", param, gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET name = '%e' WHERE id = %i", param, gangid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGang(gangid);
@@ -80356,7 +79232,7 @@ CMD:editgang(playerid, params[])
 
 		strcpy(GangInfo[gangid][gMOTD], param, 128);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET motd = '%e' WHERE id = %i", param, gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET motd = '%e' WHERE id = %i", param, gangid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGang(gangid);
@@ -80375,7 +79251,7 @@ CMD:editgang(playerid, params[])
 
 		strcpy(GangInfo[gangid][gLeader], leader, MAX_PLAYER_NAME);
 
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET leader = '%e' WHERE id = %i", leader, gangid);
+	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET leader = '%e' WHERE id = %i", leader, gangid);
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the leader of gang ID %i to %s.", GetRPName(playerid), gangid, leader);
@@ -80395,7 +79271,7 @@ CMD:editgang(playerid, params[])
 
 		GangInfo[gangid][gLevel] = value;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET level = %i WHERE id = %i", GangInfo[gangid][gLevel], gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET level = %i WHERE id = %i", GangInfo[gangid][gLevel], gangid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGang(gangid);
@@ -80412,7 +79288,7 @@ CMD:editgang(playerid, params[])
 
 		GangInfo[gangid][gColor] = color & ~0xff;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET color = %i WHERE id = %i", GangInfo[gangid][gColor], gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET color = %i WHERE id = %i", GangInfo[gangid][gColor], gangid);
 		mysql_tquery(connectionID, queryBuffer);
 
   		foreach(new i : Turf)
@@ -80436,7 +79312,7 @@ CMD:editgang(playerid, params[])
 
 		GangInfo[gangid][gPoints] = value;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET points = %i WHERE id = %i", GangInfo[gangid][gPoints], gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET points = %i WHERE id = %i", GangInfo[gangid][gPoints], gangid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the gang points of gang ID %i to %i.", GetRPName(playerid), gangid, value);
@@ -80452,7 +79328,7 @@ CMD:editgang(playerid, params[])
 
 		GangInfo[gangid][gTurfTokens] = value;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET turftokens = %i WHERE id = %i", GangInfo[gangid][gTurfTokens], gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET turftokens = %i WHERE id = %i", GangInfo[gangid][gTurfTokens], gangid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the turf tokens of gang ID %i to %i.", GetRPName(playerid), gangid, value);
@@ -80538,7 +79414,7 @@ CMD:editgang(playerid, params[])
 
 		GangInfo[gangid][gStrikes] = amount;
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET strikes = %i WHERE id = %i", amount, gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET strikes = %i WHERE id = %i", amount, gangid);
 		mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGang(gangid);
@@ -80557,14 +79433,14 @@ CMD:editgang(playerid, params[])
 		{
 		    if(GangInfo[gangid][gAlliance] >= 0)
 		    {
-		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = -1 WHERE id = %i", GangInfo[gangid][gAlliance]);
+		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = -1 WHERE id = %i", GangInfo[gangid][gAlliance]);
 				mysql_tquery(connectionID, queryBuffer);
 		        GangInfo[GangInfo[gangid][gAlliance]][gAlliance] = -1;
 			}
 
 			GangInfo[gangid][gAlliance] = -1;
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = -1 WHERE id = %i", gangid);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = -1 WHERE id = %i", gangid);
 			mysql_tquery(connectionID, queryBuffer);
 
 			ReloadGang(gangid);
@@ -80580,9 +79456,9 @@ CMD:editgang(playerid, params[])
 			GangInfo[gangid][gAlliance] = allyid;
 			GangInfo[allyid][gAlliance] = gangid;
 
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = %i WHERE id = %i", allyid, gangid);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = %i WHERE id = %i", allyid, gangid);
 			mysql_tquery(connectionID, queryBuffer);
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = %i WHERE id = %i", gangid, allyid);
+			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = %i WHERE id = %i", gangid, allyid);
 			mysql_tquery(connectionID, queryBuffer);
 
 			ReloadGang(gangid);
@@ -80716,7 +79592,7 @@ CMD:gangstrike(playerid, params[])
 
 	GangInfo[gangid][gStrikes]++;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET strikes = %i WHERE id = %i", GangInfo[gangid][gStrikes], gangid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET strikes = %i WHERE id = %i", GangInfo[gangid][gStrikes], gangid);
 	mysql_tquery(connectionID, queryBuffer);
 	Log_Write("log_gang", "%s (uid: %i) has striked gang %s (id: %i).", GetRPName(playerid), PlayerData[playerid][pID], GangInfo[gangid][gName], gangid);
 	if(GangInfo[gangid][gColor] == -1 || GangInfo[gangid][gColor] == -256)
@@ -80786,7 +79662,7 @@ CMD:switchgang(playerid, params[])
 	    {
 	        GetPlayerName(targetid, GangInfo[gangid][gLeader], MAX_PLAYER_NAME);
 
-	    	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET leader = '%e' WHERE id = %i", GangInfo[gangid][gLeader], gangid);
+	    	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET leader = '%e' WHERE id = %i", GangInfo[gangid][gLeader], gangid);
 			mysql_tquery(connectionID, queryBuffer);
 		}*/
 
@@ -81091,7 +79967,7 @@ CMD:ganglocker(playerid, params[])
 		GetPlayerPos(playerid, GangInfo[gangid][gStashX], GangInfo[gangid][gStashY], GangInfo[gangid][gStashZ]);
 		GangInfo[gangid][gStashInterior] = GetPlayerInterior(playerid);
 		GangInfo[gangid][gStashWorld] = GetPlayerVirtualWorld(playerid);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET stash_x = '%f', stash_y = '%f', stash_z = '%f', stashinterior = %i, stashworld = %i WHERE id = %i", GangInfo[gangid][gStashX], GangInfo[gangid][gStashY], GangInfo[gangid][gStashZ], GangInfo[gangid][gStashInterior], GangInfo[gangid][gStashWorld], gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET stash_x = '%f', stash_y = '%f', stash_z = '%f', stashinterior = %i, stashworld = %i WHERE id = %i", GangInfo[gangid][gStashX], GangInfo[gangid][gStashY], GangInfo[gangid][gStashZ], GangInfo[gangid][gStashInterior], GangInfo[gangid][gStashWorld], gangid);
 		mysql_tquery(connectionID, queryBuffer);
 		ReloadGang(gangid);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have moved %s's locker to your currently position.", GangInfo[gangid][gName]);
@@ -81101,7 +79977,7 @@ CMD:ganglocker(playerid, params[])
 		DestroyDynamic3DTextLabel(GangInfo[gangid][gText][0]);
 		DestroyDynamicPickup(GangInfo[gangid][gPickup]);
 		GangInfo[gangid][gText][0] = Text3D:INVALID_3DTEXT_ID;
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET stash_x = 0, stash_y = 0, stash_z = 0, stashinterior = 1, stashworld = 1 WHERE id = %i", gangid);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET stash_x = 0, stash_y = 0, stash_z = 0, stashinterior = 1, stashworld = 1 WHERE id = %i", gangid);
 		mysql_tquery(connectionID, queryBuffer);
 		ReloadGang(gangid);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have removed %s's locker.", GangInfo[gangid][gName]);
@@ -81385,7 +80261,7 @@ CMD:gang(playerid, params[])
 
 		strcpy(GangInfo[PlayerData[playerid][pGang]][gMOTD], param, 128);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET motd = '%e' WHERE id = %i", param, PlayerData[playerid][pGang]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET motd = '%e' WHERE id = %i", param, PlayerData[playerid][pGang]);
 		mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGang(PlayerData[playerid][pGang]);
@@ -82202,7 +81078,7 @@ CMD:claim(playerid, params[])
 			GangInfo[PlayerData[playerid][pGang]][gTurfTokens]--;
 			SendClientMessageToAllEx(COLOR_YELLOW, "Turf wars: %s has attempted to claim %s for %s. It will be their turf in 10 minutes!", GetRPName(playerid), TurfInfo[turfid][tName], GangInfo[PlayerData[playerid][pGang]][gName]);
             TurfInfo[turfid][tBeingCaptured] = turfid;
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET turftokens = turftokens - 1 WHERE id = %i", PlayerData[playerid][pGang]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET turftokens = turftokens - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 			mysql_tquery(connectionID, queryBuffer);
 		}
 	}
@@ -82216,7 +81092,7 @@ CMD:claim(playerid, params[])
 	    FactionInfo[PlayerData[playerid][pFaction]][fTurfTokens]--;
 	    SendClientMessageToAllEx(COLOR_YELLOW, "Turf wars: %s has attempted to claim back %s. It will be their turf in 10 minutes!", GetRPName(playerid), TurfInfo[turfid][tName]);
         TurfInfo[turfid][tBeingCaptured] = turfid;
-        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factions SET turftokens = turftokens - 1 WHERE id = %i", PlayerData[playerid][pFaction]);
+        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_FACTIONS" SET turftokens = turftokens - 1 WHERE id = %i", PlayerData[playerid][pFaction]);
 		mysql_tquery(connectionID, queryBuffer);
 	}
 
@@ -85254,10 +84130,10 @@ CMD:endalliance(playerid, params[])
 
 	SendClientMessageToAllEx(COLOR_WHITE, "(( Gang News: {%06x}%s{FFFFFF} has ended their alliance with {%06x}%s{FFFFFF} ))", color >>> 8, GangInfo[gangid][gName], color2 >>> 8, GangInfo[allyid][gName]);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = -1 WHERE id = %i", gangid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = -1 WHERE id = %i", gangid);
 	mysql_tquery(connectionID, queryBuffer);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE gangs SET alliance = -1 WHERE id = %i", allyid);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET alliance = -1 WHERE id = %i", allyid);
 	mysql_tquery(connectionID, queryBuffer);
 
 	GangInfo[allyid][gAlliance] = -1;
