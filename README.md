@@ -17,3 +17,4 @@
 * Logs for /edit(dynamics).
 * Update to latest mysql plugin.
 * Clothing colors.
+* Gang tag revamp, adding default gang tags + new fonts.
