@@ -38,7 +38,7 @@
 #include <foreach>
 #include <progress2>
 #include <sscanf2>
-
+#include <tp>
 #include <selection>
 #include <Pawn.CMD>
 #include <easyDialog>
@@ -70,6 +70,7 @@
 #endif
 // ---------------------------------------
 #define AC_DEFAULT_COLOR    -1
+#define COLOR_ADM   		0xFF6347FF
 #define COLOR_WHITE 		0xFFFFFFFF
 #define COLOR_SAMP     		0xAAC4E5FF
 #define COLOR_YELLOW    	0xFFD200FF
@@ -1109,6 +1110,7 @@ enum pEnum
 	pDistanceRan,
 	pWorkoutTime,
 	pLevel,
+	pChatstyle,
 	pEdit,
 	pEditID,
 	pHouseEdit,
@@ -10605,7 +10607,39 @@ public DecreasePower(playerid)
 	}
 }
 
+forward ReturnChatAnimation(playerid, text[]);
+public ReturnChatAnimation(playerid, text[])
+{
+	if(GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_CUFFED || PlayerData[playerid][pInjured] == 0 || PlayerData[playerid][pHospital] == 0 || PlayerData[playerid][pMiningTime] == 0 || PlayerData[playerid][pTazedTime] == 0 || PlayerData[playerid][pCuffed] == 0 || PlayerData[playerid][pLootTime] == 0)
+	{
+		switch(PlayerData[playerid][pChatstyle])
+		{
+			case 0: ApplyAnimation(playerid,"PED","IDLE_CHAT",4.0,1,1,0,1,1,1);
+			case 1: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKA",4.0,1,0,0,1,1,1);
+			case 2: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKB", 4.0,1,0,0,1,1,1);
+			case 3: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKD", 4.0,1,0,0,1,1,1);
+			case 4: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKE", 4.0,1,0,0,1,1,1);
+			case 5: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKF", 4.0,1,0,0,1,1,1);
+			case 6: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKG", 4.0,1,0,0,1,1,1);
+			case 7: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKH", 4.0,1,0,0,1,1,1);
+		}
+		if(strlen(text) <= 16) SetTimerEx("TIMER_EndChatAnim",2000, 0, "i", playerid);
+		else if(strlen(text) <= 32 && strlen(text) > 16) SetTimerEx("TIMER_EndChatAnim",3500, 0, "i", playerid);
+			else if(strlen(text) <= 64 && strlen(text) > 32) SetTimerEx("TIMER_EndChatAnim",4000, 0, "i", playerid);
+			else if(strlen(text) <= 96 && strlen(text) > 64) SetTimerEx("TIMER_EndChatAnim",4500, 0, "i", playerid);
+			else if(strlen(text) <= 128 && strlen(text) > 96) SetTimerEx("TIMER_EndChatAnim",5000, 0, "i", playerid);
+			else if(strlen(text) > 128) SetTimerEx("TIMER_EndChatAnim",5500, 0, "i", playerid);
+	}
+	return 1;
+}
 
+forward TIMER_EndChatAnim(playerid);
+public TIMER_EndChatAnim(playerid)
+{
+	if(PlayerData[playerid][pInjured] != 1)
+		return ApplyAnimation(playerid, "CARRY", "crry_prtial", 4, 0, 0, 0, 0, 0, 1);
+	return 1;
+}
 forward AnimationCameraView(playerid, viewid, bool:play);
 public AnimationCameraView(playerid, viewid,bool:play) {
 	if(play) {
@@ -15735,6 +15769,9 @@ public SavePlayerVariables(playerid)
 		mysql_tquery(connectionID, queryBuffer);
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gunlicense = %d, housealarm = %i where uid = %d", PlayerData[playerid][pGunLicense], PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
+		mysql_tquery(connectionID, queryBuffer);
+
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET chatstyle = %i WHERE id = %i", PlayerData[playerid][pChatstyle], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 	}
@@ -21943,6 +21980,7 @@ ResetPlayer(playerid)
 	PlayerData[playerid][pAcceptedHelp] = 0;
 	PlayerData[playerid][pMiningTime] = 0;
 	PlayerData[playerid][pMiningRock] = 0;
+	PlayerData[playerid][pChatstyle] = 0;
 	PlayerData[playerid][pSpeedTime] = 0;
 	PlayerData[playerid][pSweeping] = 0;
 	PlayerData[playerid][pGraffiti] = -1;
@@ -31085,6 +31123,7 @@ public OnQueryFinished(threadid, extraid)
                 PlayerData[extraid][pBank] = cache_get_field_content_int(0, "bank");
                 PlayerData[extraid][pPaycheck] = cache_get_field_content_int(0, "paycheck");
                 PlayerData[extraid][pLevel] = cache_get_field_content_int(0, "level");
+                PlayerData[extraid][pChatstyle] = cache_get_field_content_int(0, "chatstyle");
                 PlayerData[extraid][pTruckingXP] = cache_get_field_content_int(0, "truckingxp");
                 PlayerData[extraid][pTruckingLevel] = cache_get_field_content_int(0, "truckinglevel");
 
@@ -33388,7 +33427,7 @@ public OnPlayerConnect(playerid)
     PlayerData[playerid][pShowFooter] = 0;
 	DeletePVar(playerid, "MASK_ID");
 	DeletePVar(playerid, "MASK_USED");
-
+    PlayerData[playerid][pChatstyle] = 0;
 	mdc_LoadPlayerTextdraws(playerid);
 	PlayerData[playerid][pInTurf] = 0;
     PlayerData[playerid][pCalling] = 0;
@@ -36493,7 +36532,50 @@ stock CheckAdmin(playerid, level)
 		return false;
 }
 
+public OnPlayerTeleport(playerid, Float:distance)
+{
+	if((gAnticheat) && PlayerData[playerid][pAdmin] < 2 && !PlayerData[playerid][pKicked])
+	{
+	    if(!IsPlayerInRangeOfPoint(playerid, 3.0, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]))
+	    {
+		    PlayerData[playerid][pACWarns]++;
 
+		    if(PlayerData[playerid][pACWarns] < MAX_ANTICHEAT_WARNINGS)
+		    {
+	    	    SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s[%i] is possibly teleport hacking (distance: %.1f).", GetRPName(playerid), playerid, distance);
+	        	Log_Write("log_cheat", "%s (uid: %i) possibly teleport hacked (distance: %.1f)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], distance);
+			}
+			else
+			{
+		    	SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was autobanned by %s, reason: Teleport hacks", GetRPName(playerid), SERVER_ANTICHEAT);
+		    	BanPlayer(playerid, SERVER_ANTICHEAT, "Teleport hacks");
+			}
+		}
+	}
+
+	return 1;
+}
+
+public OnPlayerAirbreak(playerid)
+{
+	if((gAnticheat) && PlayerData[playerid][pAdmin] < 2 && !PlayerData[playerid][pKicked])
+	{
+	    PlayerData[playerid][pACWarns]++;
+
+	    if(PlayerData[playerid][pACWarns] < MAX_ANTICHEAT_WARNINGS)
+	    {
+	        SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s[%i] is possibly using airbreak.", GetRPName(playerid), playerid);
+	        Log_Write("log_cheat", "%s (uid: %i) possibly used airbreak.", GetPlayerNameEx(playerid), PlayerData[playerid][pID]);
+		}
+		else
+		{
+		    SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was autobanned by %s, reason: Airbreak", GetRPName(playerid), SERVER_ANTICHEAT);
+		    BanPlayer(playerid, SERVER_ANTICHEAT, "Airbreak");
+		}
+	}
+
+	return 1;
+}
 
 forward OnCheatDetected(playerid, ip_address[], type, code);
 public OnCheatDetected(playerid, ip_address[], type, code)
@@ -37023,9 +37105,6 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 	{
 	    return 0;
 	}
-
-
-
 	if(PlayerData[playerid][pCurrentAmmo] != GetPlayerAmmo(playerid))
 	{
 	    if(PlayerData[playerid][pCurrentAmmo] > GetPlayerAmmo(playerid))
@@ -37942,6 +38021,7 @@ public OnPlayerText(playerid, text[])
 					}
 					SendProximityFadeMessage(playerid, 20.0, string, COLOR_GREY1, COLOR_GREY2, COLOR_GREY3, COLOR_GREY4, COLOR_GREY5);
 				}
+				ReturnChatAnimation(playerid, text);
 			}
 		}
 	}
@@ -38103,17 +38183,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             }
         }
    	}
-   	if (PRESSED(KEY_FIRE) && GetPlayerWeapon(playerid) == 41 && PlayerData[playerid][pGang] != -1 && Graffiti_Nearest(playerid))
-	{
-		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || PlayerData[playerid][pInjured] > 0 || PlayerData[playerid][pHospital] > 0 || PlayerData[playerid][pMiningTime] > 0 || PlayerData[playerid][pTazedTime] > 0 || PlayerData[playerid][pCuffed] > 0 || PlayerData[playerid][pLootTime] > 0)
-		{
-		    return false;
-		}
-		if(Graffiti_Nearest(playerid))
-		{
-			Dialog_Show(playerid, Graffiti_Type, DIALOG_STYLE_LIST, "Graffiti Style", "Default Gang Tags\nCustom Text", "Select", "Close");
-		}
-	}
 	if(newkeys & KEY_SPRINT)
 	{
 	    if(PlayerData[playerid][pLoopAnim])
@@ -51244,16 +51313,14 @@ CMD:cw(playerid, params[])
 	{
 	    if(IsPlayerInAnyVehicle(playerid))
 		{
-		    if(IsPlayerInVehicle(i, vehicleid))
+		    if(IsPlayerInVehicle(i, vehicleid) && PlayerData[i][pSpectating] == playerid)
 		    {
             	if(isnull(params))
 				{
 				    return SendClientMessage(playerid, COLOR_WHITE, "Usage: /cw [in vehicle text]");
 				}
-
-				format(string, sizeof(string), "%s: %s", playerid, GetRPName(playerid), params);
+				format(string, sizeof(string), "%s whispers: %s", GetRPName(playerid), params);
 				SendProximityFadeMessage(i, 20.0, string, COLOR_GREY1, COLOR_GREY2, COLOR_GREY3, COLOR_GREY4, COLOR_GREY5);
-
 			}
 		}
 	}
@@ -52176,6 +52243,27 @@ CMD:cancel(playerid, params[])
 	    PlayerData[playerid][pHouseEdit] = -1;
 	    SendInfoMessage(playerid, "You are no longer editing furniture.");
 	}
+	return 1;
+}
+CMD:setstyle(playerid, params[])
+{
+	new pickid;
+	if(!PlayerData[playerid][pVIPPackage])
+		return SendClientMessage(playerid, COLOR_ADM, "ACCESS DENIED:{FFFFFF} You aren't a donator.");
+
+	if(sscanf(params, "i", pickid)){
+		SendClientMessage(playerid, COLOR_WHITE, "Chat Styles: 0 1 2 3 4");
+		SendClientMessage(playerid, COLOR_WHITE, "Chat Styles: 5 6 7");
+		SendClientMessage(playerid, COLOR_GREEN, "USAGE: /setstyle 2 [StyleID]");
+		return true;
+	}
+
+	if(pickid != -1 && pickid < 0 || pickid > 7)
+		return SendClientMessage(playerid, COLOR_ADM, "You specified an invalid chat.");
+
+	PlayerData[playerid][pChatstyle] = pickid;
+	SavePlayerVariables(playerid);
+	SendClientMessage(playerid, COLOR_YELLOW, "Enjoy your new chatstyle!");
 	return 1;
 }
 CMD:help(playerid, params[])
