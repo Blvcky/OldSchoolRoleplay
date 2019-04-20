@@ -8,6 +8,11 @@
 * Players can now furnish outside their houses.
 * Fixed a bug with player virtual world.
 * Fixed radio stations.
+* Added chatstyle onplayertext and /setstyle for vip.
+* Fixed /cw.
+* Fixed a bug with gang tags.
+* Fixed impound lot sys.
+* Gang tag revamp, adding default gang tags + new fonts.
 
 ### Unfinished & To do things.
 * Brand new tax system.
@@ -17,4 +22,4 @@
 * Logs for /edit(dynamics).
 * Update to latest mysql plugin.
 * Clothing colors.
-* Gang tag revamp, adding default gang tags + new fonts.
+ 
