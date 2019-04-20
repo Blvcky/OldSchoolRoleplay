@@ -109,6 +109,38 @@
 #define COLOR_TEAL 			0x00AAAAAA
 #define COLOR_OFFWHITE 		0xF5DEB3AA
 #define COLOR_DARKAQUA 		0x83BFBFAA
+#define ARGB_AQUA 			0xFF00FFFF
+#define ARGB_AQUAMARINE 	0xFF7FFFD4
+#define ARGB_BEIGE 			0xFFF5F5DC
+#define ARGB_BLACK 			0xFF000000
+#define ARGB_BLUE 			0xFF0000FF
+#define ARGB_BLUEVIOLET 	0xFF8A2BE2
+#define ARGB_BROWN 			0xFFA52A2A
+#define ARGB_CRIMSON 		0xFFDC143C
+#define ARGB_CYAN 			0xFF00FFFF
+#define ARGB_DARKBLUE 		0xFF00008B
+#define ARGB_DARKRED 		0xFF8B0000
+#define ARGB_DARKVIOLET 	0xFF9400D3
+#define ARGB_DEEPPINK 		0xFFFF1493
+#define ARGB_SKYBLUE 		0xFF00BFFF
+#define ARGB_DODGERBLUE 	0xFF1E90FF
+#define ARGB_GREEN 			0xFF008000
+#define ARGB_HOTPINK 		0xFFFF69B4
+#define ARGB_INDIGO 		0xFF4B0082
+#define ARGB_KHAKI 			0xFFF0E68C
+#define ARGB_LIMEGREEN 		0xFF32CD32
+#define ARGB_MAGENTA 		0xFFFF00FF
+#define ARGB_MIDNIGHTBLUE 	0xFF191970
+#define ARGB_NAVY 			0xFF000080
+#define ARGB_PERU 			0xFFCD853F
+#define ARGB_SADDLEBROWN 	0xFF8B4513
+#define ARGB_PURPLE 		0xFF800080
+#define ARGB_RED 			0xFFFF0000
+#define ARGB_SIENNA 		0xFFA0522D
+#define ARGB_SILVER 		0xFFC0C0C0
+#define ARGB_STEELBLUE 		0xFF4682B4
+#define ARGB_TOMATO 		0xFFFF6347
+#define ARGB_YELLOW 		0xFFFFFF00
 //----------------------------------------
 #define HOUSE_HEX           "{A3CC52}"
 // ---------------------------------------
@@ -544,27 +576,7 @@ static FloorNames[21][] =
 	"Nineteenth Floor",
 	"Penthouse"
 };
-new phone_RingtoneNames[][] = {
-	"Default Ringtone",
-	"Musical Ringtone 1",
-	"Musical Ringtone 2",
-	"Musical Ringtone 3",
-	"Musical Ringtone 4",
-	"Musical Ringtone 5",
-	"Musical Ringtone 6",
-	"Musical Ringtone 7"
-};
 
-new phone_RingtoneIDs[][] = {
-	{ 3600, 0 },
-	{ 1062, 1063 },
-	{ 1068, 1069 },
-	{ 1076, 1077 },
-	{ 1097, 1098 },
-	{ 1183, 1184 },
-	{ 1185, 1186 },
-	{ 1187, 1188 }
-};
 static Float:FloorZOffsets[21] =
 {
     0.0,		// 0.0,
@@ -589,7 +601,46 @@ static Float:FloorZOffsets[21] =
     106.67580,	// 8.5479 + (5.45155 * 18.0),
     112.12735	// 8.5479 + (5.45155 * 19.0)
 };
-
+enum ARGBEnum
+{
+	Name[24],
+	Hex
+}
+new ARGBColors[33][ARGBEnum] = {
+	{"None", 0},
+	{"{00FFFF}Aqua", ARGB_AQUA},
+	{"{7FFFD4}Aqua Marine", ARGB_AQUAMARINE},
+	{"{F5F5DC}Beige", ARGB_BEIGE},
+	{"{000000}Black", ARGB_BLACK},
+	{"{0000FF}Blue", ARGB_BLUE},
+	{"{8A2BE2}Blue Violet", ARGB_BLUEVIOLET},
+	{"{A52A2A}Brown", ARGB_BROWN},
+	{"{DC143C}Crimson", ARGB_CRIMSON},
+	{"{00FFFF}Cyan", ARGB_CYAN},
+	{"{00008B}Dark Blue", ARGB_DARKBLUE},
+	{"{8B0000}Dark Red", ARGB_DARKRED},
+	{"{9400D3}Dark Violet", ARGB_DARKVIOLET},
+	{"{FF1493}Deep Pink", ARGB_DEEPPINK},
+	{"{00BFFF}Sky Blue", ARGB_SKYBLUE},
+	{"{1E90FF}Dodger Blue", ARGB_DODGERBLUE},
+	{"{008000}Green", ARGB_GREEN},
+	{"{FF69B4}Hot Pink", ARGB_HOTPINK},
+	{"{4B0082}Indigo", ARGB_INDIGO},
+	{"{F0E68C}Khaki", ARGB_KHAKI},
+	{"{32CD32}Lime Green", ARGB_LIMEGREEN},
+	{"{FF00FF}Magenta", ARGB_MAGENTA},
+	{"{191970}Midnight Blue", ARGB_MIDNIGHTBLUE},
+	{"{000080}Navy", ARGB_NAVY},
+	{"{CD853F}Peru", ARGB_PERU},
+	{"{8B4513}Saddle Brown", ARGB_SADDLEBROWN},
+	{"{800080}Purple", ARGB_PURPLE},
+	{"{FF0000}Red", ARGB_RED},
+	{"{A0522D}Sienna", ARGB_SIENNA},
+	{"{C0C0C0}Silver", ARGB_SILVER},
+	{"{4682B4}Steel Blue", ARGB_STEELBLUE},
+	{"{FF6347}Tomato", ARGB_TOMATO},
+	{"{FFFF00}Yellow", ARGB_YELLOW}
+};
 
 //----------------------------------------
 
@@ -1907,7 +1958,9 @@ enum cEnum
 	Float:cScaleX,
 	Float:cScaleY,
 	Float:cScaleZ,
-	cAttachedIndex
+	cAttachedIndex,
+	cMatColor1,
+	cMatColor2
 };
 
 enum vEnum
@@ -8653,6 +8706,63 @@ Streamer_SetExtraFloat(objectid, type, Float:value)
 	setproperty(.id = objectid, .value = type, .string = string);
 	return 1;
 }
+
+Dialog:Clothing_MatColor1(playerid, response, listitem, inputtext[])
+{
+	if(!response) {
+		DeletePVar(playerid, "ColorToy");
+		return 1;
+	}
+
+	SetPVarInt(playerid, "ColorToyL", listitem);
+	new diatxt[564];
+	for (new i=0; i < sizeof(ARGBColors); i++) {
+		format(diatxt, 564, "%s%s\n", diatxt, ARGBColors[i][Name]);
+	}
+	Dialog_Show(playerid, Clothing_MatColor2, DIALOG_STYLE_LIST, "Choose a color.", diatxt, "Select", "Close");
+	return 1;
+}
+Dialog:Clothing_MatColor2(playerid, response, listitem, inputtext[])
+{
+	if(!response) {
+		DeletePVar(playerid, "ColorToy");
+		DeletePVar(playerid, "ColorToyL");
+		return 1;
+	}
+	SetToyColor(playerid, GetPVarInt(playerid, "ColorToy"), GetPVarInt(playerid, "ColorToyL"), listitem);
+	DeletePVar(playerid, "ColorToy");
+	DeletePVar(playerid, "ColorToyL");
+	return 1;
+}
+stock SetToyColor(playerid, slot, layer, color)
+{
+	if(ClothingInfo[playerid][slot][cModel] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, slot))
+	{
+		if (layer == 0)
+		{
+			ClothingInfo[playerid][slot][cMatColor1] = color;
+		}
+		else ClothingInfo[playerid][slot][cMatColor2] = color;
+		
+		RemovePlayerAttachedObject(playerid, slot);
+		
+ 		SetPlayerAttachedObject(playerid, slot, ClothingInfo[playerid][slot][cModel], ClothingInfo[playerid][slot][cBone],
+		ClothingInfo[playerid][slot][cPosX], ClothingInfo[playerid][slot][cPosY], ClothingInfo[playerid][slot][cPosZ],
+		ClothingInfo[playerid][slot][cRotX], ClothingInfo[playerid][slot][cRotY], ClothingInfo[playerid][slot][cRotZ],
+		ClothingInfo[playerid][slot][cScaleX], ClothingInfo[playerid][slot][cScaleY], ClothingInfo[playerid][slot][cScaleZ],
+		ARGBColors[ClothingInfo[playerid][slot][cMatColor1]][Hex], ARGBColors[ClothingInfo[playerid][slot][cMatColor2]][Hex]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE clothing SET `matcolor1` = %d, `matcolor2` = %d WHERE id = %i", ClothingInfo[playerid][slot][cMatColor1], ClothingInfo[playerid][slot][cMatColor2], ClothingInfo[playerid][slot][cID]);
+		mysql_tquery(connectionID, queryBuffer);
+		printf(queryBuffer);
+
+
+		new string[74];
+		format(string, sizeof(string), "Toy color layer %i successfully changed to %s %d.", layer, ARGBColors[color][Name], slot);
+		SendClientMessage(playerid, COLOR_WHITE, string);
+    }
+	return 1;
+}
+
 Dialog:Graffiti_Type(playerid, response, listitem, inputtext[])
 {
 	if(response)
@@ -9359,7 +9469,7 @@ DoorCheck(playerid)
 			return 1;
 		}
 	}
-	if(GetInsideHouse(playerid))
+	if(houseid)
 	{
 		if (IsValidFurnitureID(GetClosestDoor(playerid, 2.0)))
 		{
@@ -21345,7 +21455,7 @@ SetPlayerClothing(playerid)
 
 		    if(ClothingInfo[playerid][i][cAttachedIndex] >= 0)
 		    {
-		        SetPlayerAttachedObject(playerid, ClothingInfo[playerid][i][cAttachedIndex], ClothingInfo[playerid][i][cModel], ClothingInfo[playerid][i][cBone], ClothingInfo[playerid][i][cPosX], ClothingInfo[playerid][i][cPosY], ClothingInfo[playerid][i][cPosZ], ClothingInfo[playerid][i][cRotX], ClothingInfo[playerid][i][cRotY], ClothingInfo[playerid][i][cRotZ], ClothingInfo[playerid][i][cScaleX], ClothingInfo[playerid][i][cScaleY], ClothingInfo[playerid][i][cScaleZ]);
+		        SetPlayerAttachedObject(playerid, ClothingInfo[playerid][i][cAttachedIndex], ClothingInfo[playerid][i][cModel], ClothingInfo[playerid][i][cBone], ClothingInfo[playerid][i][cPosX], ClothingInfo[playerid][i][cPosY], ClothingInfo[playerid][i][cPosZ], ClothingInfo[playerid][i][cRotX], ClothingInfo[playerid][i][cRotY], ClothingInfo[playerid][i][cRotZ], ClothingInfo[playerid][i][cScaleX], ClothingInfo[playerid][i][cScaleY], ClothingInfo[playerid][i][cScaleZ], ARGBColors[ClothingInfo[playerid][i][cMatColor1]][Hex], ARGBColors[ClothingInfo[playerid][i][cMatColor2]][Hex]);
 			}
 			else
 			{
@@ -27104,8 +27214,13 @@ public SecondTimer()
 						else
 						{
 	                        new str[500];
+	                        new Float:x, Float:y, Float:z, Float:a;
+						    GetPlayerPos(i, x, y, z);
+							GetPlayerFacingAngle(i, a);
 						    strunpack(str, PlayerData[i][pGraffitiText]);
 		        	        format(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], 64, str);
+		        	        
+		        	        GraffitiData[PlayerData[i][pGraffiti]][graffitiPos][3] = a - 90.0;
 		        	        strreplace2(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], "(n)", "\n");
                             GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault] = 0;
                             gang_tag_chosen[i] = 0;
@@ -29673,8 +29788,7 @@ public OnPlayerBuyClothingItem(playerid, name[], price, businessid, clothingid)
     ClothingInfo[playerid][clothingid][cExists] = 1;
 	ClothingInfo[playerid][clothingid][cAttached] = 0;
 	ClothingInfo[playerid][clothingid][cAttachedIndex] = -1;
-
-	BusinessInfo[businessid][bCash] += price;
+ 	BusinessInfo[businessid][bCash] += price;
 	BusinessInfo[businessid][bProducts]--;
 
  	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
@@ -29682,7 +29796,8 @@ public OnPlayerBuyClothingItem(playerid, name[], price, businessid, clothingid)
 
 	GivePlayerCash(playerid, -price);
  	SendClientMessageEx(playerid, COLOR_AQUA, "%s purchased for {00AA00}$%i{33CCFF}. /clothing to find your new item.", name, price);
-
+	SetPVarInt(playerid, "ColorToy", clothingid);
+//	Dialog_Show(playerid, Clothing_MatColor1, DIALOG_STYLE_LIST, "Choose a layer.", "First\nSecond", "Select", "Close");
     format(string, sizeof(string), "~r~-$%i", price);
 	GameTextForPlayer(playerid, string, 5000, 1);
 }
@@ -32203,6 +32318,8 @@ public OnQueryFinished(threadid, extraid)
 		        ClothingInfo[extraid][i][cScaleX] = cache_get_field_content_float(i, "scale_x");
 		        ClothingInfo[extraid][i][cScaleY] = cache_get_field_content_float(i, "scale_y");
 		        ClothingInfo[extraid][i][cScaleZ] = cache_get_field_content_float(i, "scale_z");
+		        ClothingInfo[extraid][i][cMatColor1] = cache_get_field_content_int(i, "matcolor1");
+		        ClothingInfo[extraid][i][cMatColor2] = cache_get_field_content_int(i, "matcolor2");
 		        ClothingInfo[extraid][i][cExists] = 1;
 		        ClothingInfo[extraid][i][cAttachedIndex] = -1;
 		    }
@@ -32551,7 +32668,7 @@ public OnQueryFinished(threadid, extraid)
 		}
 		case THREAD_LOAD_VEHICLES:
 		{
-		    new modelid, Float:pos_x, Float:pos_y, Float:pos_z, Float:pos_a, color1, color2, respawndelay, siren, vehicleid, plate[24];
+		    new modelid, Float:pos_x, Float:pos_y, Float:pos_z, Float:pos_a, color1, color2, respawndelay, siren, vehicleid;
 
 		    for(new i = 0; i < rows; i ++)
 		    {
@@ -34132,6 +34249,8 @@ public OnPlayerConnect(playerid)
 	    ClothingInfo[playerid][i][cModel] = 0;
 	    ClothingInfo[playerid][i][cBone] = 0;
 	    ClothingInfo[playerid][i][cAttached] = 0;
+	    ClothingInfo[playerid][i][cMatColor1] = 0;
+	    ClothingInfo[playerid][i][cMatColor2] = 0;
 	    ClothingInfo[playerid][i][cAttachedIndex] = -1;
 	}
 
@@ -38591,7 +38710,8 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
 	                        ClothingInfo[playerid][i][cScaleX] = fScaleX;
 	                        ClothingInfo[playerid][i][cScaleY] = fScaleY;
 	                        ClothingInfo[playerid][i][cScaleZ] = fScaleZ;
-
+							ClothingInfo[playerid][i][cMatColor1] = 0;
+							ClothingInfo[playerid][i][cMatColor2] = 0;
 	                        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO clothing VALUES(null, %i, '%e', %i, %i, 0, '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f')", PlayerData[playerid][pID], clothingArray[PlayerData[playerid][pSelected]][clothingName], modelid, boneid, fOffsetX, fOffsetY, fOffsetZ, fRotX, fRotY, fRotZ, fScaleX, fScaleY, fScaleZ);
 							mysql_tquery(connectionID, queryBuffer, "OnPlayerBuyClothingItem", "isiii", playerid, clothingArray[PlayerData[playerid][pSelected]][clothingName], clothingArray[PlayerData[playerid][pSelected]][clothingPrice], businessid, i);
 							return 1;
@@ -38624,8 +38744,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
 		        ClothingInfo[playerid][clothingid][cScaleX] = fScaleX;
 		        ClothingInfo[playerid][clothingid][cScaleY] = fScaleY;
 		        ClothingInfo[playerid][clothingid][cScaleZ] = fScaleZ;
-
-		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE clothing SET pos_x = '%f', pos_y = '%f', pos_z = '%f', rot_x = '%f', rot_y = '%f', rot_z = '%f', scale_x = '%f', scale_y = '%f', scale_z = '%f' WHERE id = %i", fOffsetX, fOffsetY, fOffsetZ, fRotX, fRotY, fRotZ, fScaleX, fScaleY, fScaleZ, ClothingInfo[playerid][clothingid][cID]);
+ 		        mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE clothing SET pos_x = '%f', pos_y = '%f', pos_z = '%f', rot_x = '%f', rot_y = '%f', rot_z = '%f', scale_x = '%f', scale_y = '%f', scale_z = '%f' WHERE id = %i", fOffsetX, fOffsetY, fOffsetZ, fRotX, fRotY, fRotZ, fScaleX, fScaleY, fScaleZ, ClothingInfo[playerid][clothingid][cID]);
 		        mysql_tquery(connectionID, queryBuffer);
 
 		        SendClientMessageEx(playerid, COLOR_GREY, "Changes saved.");
@@ -52266,6 +52385,26 @@ CMD:setstyle(playerid, params[])
 	SendClientMessage(playerid, COLOR_YELLOW, "Enjoy your new chatstyle!");
 	return 1;
 }
+CMD:doublexp(playerid, params[])
+{
+	if(PlayerData[playerid][pAdmin] >= MANAGEMENT)
+	{
+	    SetRewardPlay(true);
+	    SetDoubleXP(true);
+		SendClientMessageToAllEx(COLOR_AQUA, "** %s enabled happy hours. You will now get random gifts and double xp for playing in the server.", GetRPName(playerid));
+	}
+	return 1;
+}
+
+CMD:enddoublexp(playerid, params[])
+{
+	if(PlayerData[playerid][pAdmin] >= MANAGEMENT)
+	{
+	    SetRewardPlay(false);
+	    SetDoubleXP(false);
+	}
+	return 1;
+}
 CMD:help(playerid, params[])
 {
 	if(PlayerData[playerid][pAdmin] > 2)
@@ -55228,7 +55367,7 @@ CMD:adminhelp(playerid, params[])
 	}
 	if(PlayerData[playerid][pAdmin] >= MANAGEMENT)
 	{
-		SendClientMessage(playerid, COLOR_VIP, "MANAGEMENT:{DDDDDD} /serversetting, /adminstrike");
+		SendClientMessage(playerid, COLOR_VIP, "MANAGEMENT:{DDDDDD} /serversetting, /adminstrike, /doublexp, /enddoublexp");
 	}
 
 	return 1;
@@ -62372,26 +62511,6 @@ CMD:deleteaccount(playerid, params[])
 	return 1;
 }
 
-CMD:doublexp(playerid, params[])
-{
-    if(PlayerData[playerid][pAdmin] < HEAD_ADMIN)
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	}
-
-	if(!gDoubleXP)
-	{
-      	SetDoubleXP(true);
-	    SendClientMessageToAllEx(COLOR_AQUA, "** %s enabled double XP. You will now gain double the respect points and job skill points.", GetRPName(playerid));
-	}
-	else
-	{
-		SetDoubleXP(false);
-	    SendClientMessageToAllEx(COLOR_AQUA, "** %s disabled double XP.", GetRPName(playerid));
-	}
-
-	return 1;
-}
 
 CMD:createhouse(playerid, params[])
 {
