@@ -1161,6 +1161,9 @@ enum pEnum
 	pDistanceRan,
 	pWorkoutTime,
 	pLevel,
+	pSpawnSelect,
+	pSpawnHouse,
+	pSpawnPrecinct,
 	pChatstyle,
 	pEdit,
 	pEditID,
@@ -1196,7 +1199,7 @@ enum pEnum
 	pIllegalTruckJob3,
 	pTruckingLevel,
 	pTruckingXP,
-
+	bool:pSWATduty,
     pEditRack,
 	pPVIPVoucher,
 	pPhoneRingTone[132],
@@ -8734,6 +8737,23 @@ Dialog:Clothing_MatColor2(playerid, response, listitem, inputtext[])
 	DeletePVar(playerid, "ColorToyL");
 	return 1;
 }
+stock CountPlayerHouses(playerid)
+{
+	new count = 0;
+
+	for(new i = 0; i < MAX_HOUSES; i++){
+
+		if(HouseInfo[i][hExists])
+		{
+			if(IsHouseOwner(playerid, i))
+			{
+				count++;
+			}
+		}
+	}
+
+	return count;
+}
 stock SetToyColor(playerid, slot, layer, color)
 {
 	if(ClothingInfo[playerid][slot][cModel] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, slot))
@@ -15882,6 +15902,9 @@ public SavePlayerVariables(playerid)
 		mysql_tquery(connectionID, queryBuffer);
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET chatstyle = %i WHERE id = %i", PlayerData[playerid][pChatstyle], PlayerData[playerid][pID]);
+		mysql_tquery(connectionID, queryBuffer);
+
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spawntype = %i, spawnhouse = %i WHERE id = %i", PlayerData[playerid][pSpawnSelect], PlayerData[playerid][pSpawnHouse], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 	}
@@ -31346,6 +31369,9 @@ public OnQueryFinished(threadid, extraid)
 				PlayerData[extraid][pVIPPackage] = cache_get_field_content_int(0, "vippackage");
 				PlayerData[extraid][pVIPTime] = cache_get_field_content_int(0, "viptime");
 				PlayerData[extraid][pVIPCooldown] = cache_get_field_content_int(0, "vipcooldown");
+                PlayerData[extraid][pSpawnSelect] = cache_get_field_content_int(0, "spawntype");
+				PlayerData[extraid][pSpawnHouse] = cache_get_field_content_int(0, "spawnhouse");
+
 				PlayerData[extraid][pMask] = cache_get_field_content_int(0, "mask");
 				if (!PlayerData[extraid][pMaskID])
 				    PlayerData[extraid][pMaskID] = random(90000) + 10000;
@@ -35094,31 +35120,71 @@ public OnPlayerSpawn(playerid)
 				PlayerData[PlayerData[playerid][pDueling]][pDueling] = INVALID_PLAYER_ID;
 				PlayerData[playerid][pDueling] = INVALID_PLAYER_ID;
 			}
-
-			if(PlayerData[playerid][pInterior] || PlayerData[playerid][pWorld])
+			switch(PlayerData[playerid][pSpawnSelect])
 			{
-			    SetTimerEx("StreamedCheck", 1000, false, "ifffii", playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ], PlayerData[playerid][pInterior], PlayerData[playerid][pWorld]);
-			}
-
-			SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
-			SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
-			SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
-	 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
-			SetPlayerWeapons(playerid);
-
-			if(!PlayerData[playerid][pInterior] && PlayerData[playerid][pLoginCamera] && !PlayerData[playerid][pToggleCam])
-			{
-			    SetPlayerCameraLookAt(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
-        		SetPlayerCameraPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ] + 100.0);
-
-			    TogglePlayerControllable(playerid, 0);
-				SetTimerEx("GrandTheftAutoV", 2000, false, "iifffffff", playerid, 1, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ], PlayerData[playerid][pPosA], PlayerData[playerid][pCameraX], PlayerData[playerid][pCameraY], PlayerData[playerid][pCameraZ]);
-
-				PlayerData[playerid][pLoginCamera] = 0;
-			}
-			else
-			{
-			    SetCameraBehindPlayer(playerid);
+			    case 0:
+			    {
+					if(PlayerData[playerid][pInterior] || PlayerData[playerid][pWorld])
+					{
+					    SetTimerEx("StreamedCheck", 1000, false, "ifffii", playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ], PlayerData[playerid][pInterior], PlayerData[playerid][pWorld]);
+					}
+					SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
+					SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
+					SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+			 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+					SetPlayerWeapons(playerid);
+					SetCameraBehindPlayer(playerid);
+				}
+				case 1:
+				{
+				    new houseid = PlayerData[playerid][pSpawnHouse];
+				    if(HouseInfo[houseid][hExists] && IsHouseOwner(playerid, houseid))
+				    {
+						SetPlayerPos(playerid, HouseInfo[playerid][hPosX], HouseInfo[playerid][hPosY], HouseInfo[playerid][hPosZ]);
+						SetPlayerFacingAngle(playerid, HouseInfo[playerid][hPosA]);
+						SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+				 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+						SetPlayerWeapons(playerid);
+						SetCameraBehindPlayer(playerid);
+					}
+					else
+					{
+						SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
+						SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
+						SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+				 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+						SetPlayerWeapons(playerid);
+						SetCameraBehindPlayer(playerid);
+					}
+				}
+				case 2:
+				{
+					new factionid = PlayerData[playerid][pFaction];
+					if(factionid != -1)
+					{
+						for(new i = 0; i < MAX_LOCKERS; i ++)
+						{
+						    if(LockerInfo[i][lExists] && LockerInfo[i][lFaction] == factionid)
+						    {
+								SetPlayerPos(playerid, LockerInfo[i][lPosX], LockerInfo[i][lPosY], LockerInfo[i][lPosZ]);
+      							SetPlayerFacingAngle(playerid, 90.0);
+								SetPlayerInterior(playerid, LockerInfo[playerid][lInterior]);
+								SetPlayerVirtualWorld(playerid, LockerInfo[playerid][lWorld]);
+								SetPlayerWeapons(playerid);
+								SetCameraBehindPlayer(playerid);
+							}
+						}
+					}
+					else
+					{
+						SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
+						SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
+						SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+				 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+						SetPlayerWeapons(playerid);
+						SetCameraBehindPlayer(playerid);
+					}
+				}
 			}
 		}
 	}
@@ -52642,14 +52708,70 @@ CMD:fmembers(playerid, params[])
 
 	return 1;
 }*/
+CMD:setspawn(playerid, params[])
+{
+	new spawn_id, optional;
 
+	if(sscanf(params, "dI(-1)", spawn_id, optional))
+	{
+		SendClientMessage(playerid, COLOR_ADM, "USAGE:{FFFFFF} /setspawn [spawn_id] ");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "1. Last Position | 2. House | 4. Faction");
+		return true;
+	}
+
+	switch ( spawn_id )
+	{
+		case 1:
+		{
+			PlayerData[playerid][pSpawnSelect] = 0;
+			SendClientMessage(playerid, COLOR_GREY, "You will now spawn at your last position.");
+			SavePlayerVariables(playerid);
+
+		}
+		case 2:
+		{
+			if(CountPlayerHouses(playerid) == 0)return SendClientMessage(playerid, COLOR_ADM, "ERROR:{FFFFFF} You don't own any houses.");
+
+			if(optional == -1){
+				SendClientMessage(playerid, COLOR_ADM, "USAGE:{FFFFFF} /setspawn 2 [house id] ");
+				SendClientMessage(playerid, COLOR_ADM, "You must specify your house ID by using /myassets to fetch the ID. ");
+				return true;
+			}
+
+			if(optional < 0 || !HouseInfo[optional][hExists]) return SendClientMessage(playerid, COLOR_ADM, "ERROR:{FFFFFF} You specified an invalid house ID.");
+
+			for(new i = 0; i < MAX_HOUSES; i++){
+				if(HouseInfo[optional][hExists]){
+					if(!IsHouseOwner(playerid, optional)){
+						SendClientMessage(playerid, COLOR_ADM, "ERROR:{FFFFFF} You don't own that house.");
+						return true;
+					}
+				}
+			}
+
+			SendClientMessage(playerid, COLOR_GREY, "You will now spawn at your house.");
+			PlayerData[playerid][pSpawnSelect] = 1;
+			PlayerData[playerid][pSpawnHouse] = optional;
+			SavePlayerVariables(playerid);
+		}
+		case 3:
+		{
+			if( !PlayerData[playerid][pFaction] )return SendClientMessage(playerid, COLOR_ADM, "ERROR:{FFFFFF} You aren't in any faction.");
+
+			SendClientMessage(playerid, COLOR_GREY, "You will now spawn at your faction spawn.");
+			PlayerData[playerid][pSpawnSelect] = 2;
+			PlayerData[playerid][pSpawnPrecinct] = 0;
+			SavePlayerVariables(playerid);
+		}
+	}
+	return true;
+}
 CMD:factionhelp(playerid, params[])
 {
 	if(PlayerData[playerid][pFaction] == -1)
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you're not apart of any faction.");
 	}
-
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
 	SendClientMessage(playerid, COLOR_WHITE, "*** FACTION HELP *** type a command for more information.");
 	SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /fc /d /(r)adio /div /faction /division /locker /showbadge /(m)egaphone");
@@ -52659,7 +52781,7 @@ CMD:factionhelp(playerid, params[])
 	    case FACTION_POLICE, FACTION_FEDERAL, FACTION_ARMY:
 	    {
 	        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /gate /door /cell /tazer /cuff /uncuff /drag /detain /charge /arrest");
-	        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup");
+	        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup /swat");
 	        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /mdc /clearwanted /siren /badge /vticket /vfrisk /vtake /seizeplant /mir /fpark");
 
 			if(FactionInfo[PlayerData[playerid][pFaction]][fType] == FACTION_FEDERAL)
@@ -63013,7 +63135,50 @@ CMD:dynamichelp(playerid, params[])
     }
 	return 1;
 }
+CMD:myassets(playerid, params[])
+{
 
+	if(!PlayerData[playerid][pLogged])
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "You are not logged in yet.");
+	}
+
+	SendClientMessageEx(playerid, COLOR_NAVYBLUE, "_____ %s's Assets _____", GetRPName(playerid));
+
+	foreach(new i : House)
+	{
+	    if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i))
+	    {
+	        SendClientMessageEx(playerid, COLOR_GREY2, "** {33CC33}House{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]), (gettime() - HouseInfo[i][hTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+		}
+	}
+
+ 	foreach(new i : Business)
+	{
+	    if(BusinessInfo[i][bExists] && IsBusinessOwner(playerid, i))
+	    {
+	        SendClientMessageEx(playerid, COLOR_GREY2, "** {FFD700}Business{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]), (gettime() - BusinessInfo[i][bTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+		}
+	}
+
+ 	foreach(new i : Garage)
+	{
+	    if(GarageInfo[i][gExists] && IsGarageOwner(playerid, i))
+	    {
+	        SendClientMessageEx(playerid, COLOR_GREY2, "** {004CFF}Garage{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]), (gettime() - GarageInfo[i][gTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+		}
+	}
+
+	foreach(new i : Land)
+	{
+	    if(LandInfo[i][lExists] && IsLandOwner(playerid, i))
+	    {
+	        SendClientMessageEx(playerid, COLOR_GREY2, "** {33CCFF}Land{C8C8C8} | ID: %i | Location: %s", i, GetZoneName(LandInfo[i][lHeightX], LandInfo[i][lHeightY], LandInfo[i][lHeightZ]));
+		}
+	}
+
+	return 1;
+}
 CMD:listassets(playerid, params[])
 {
 	new targetid;
@@ -74487,6 +74652,10 @@ CMD:faction(playerid, params[])
 		RemovePlayerFromVehicle(playerid);
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has kicked you from the faction.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have kicked %s from your faction.", GetRPName(targetid));
+		if(PlayerData[targetid][pSpawnSelect] == 2)
+		{
+		    PlayerData[targetid][pSpawnSelect] = 0;
+		}
 	}
 	else if(!strcmp(option, "rank", true))
 	{
@@ -75260,11 +75429,46 @@ CMD:mir(playerid, params[])
 	}
 	return 1;
 }
+CMD:swat(playerid, params[])
+{
+	if(!PlayerData[playerid][pLogged])return true;
+
+	new factionid = PlayerData[playerid][pFaction];
+
+    if(!IsLawEnforcement(playerid))
+    {
+        return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you aren't apart of law enforcement.");
+	}
+	if(!IsPlayerInRangeOfLocker(playerid, factionid))
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "You are not in range of any of your faction lockers.");
+	}
+	if(!PlayerData[playerid][pDuty])return SendClientMessage(playerid, COLOR_ADM, "ACCESS DENIED:{FFFFFF} You must be on duty before SWATing up.");
+
+	if(PlayerData[playerid][pSWATduty] == true)
+	{
+	    PlayerData[playerid][pSWATduty] = false;
+		SendFactionMessage(factionid, COLOR_FACTIONCHAT, "** HQ: %s %s is now off tactical duty! **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
+		PlayerData[playerid][pSWATduty] = true;
+		SetPlayerSkin(playerid, PlayerData[playerid][pSkin]);
+        GivePlayerHealth(playerid, 100);
+		SetScriptArmour(playerid, 40);
+	}
+	else
+	{
+		SetPlayerSkin(playerid, 285);
+		SetScriptArmour(playerid, 200);
+		GivePlayerHealth(playerid, 100);
+		SendFactionMessage(factionid, COLOR_FACTIONCHAT, "** HQ: %s %s is now ready for tactical duty! **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
+		PlayerData[playerid][pSWATduty] = true;
+	}
+	return true;
+}
 CMD:cuff(playerid, params[])
 {
 	new targetid;
 
-    if(!IsLawEnforcement(playerid) && GetFactionType(playerid) != FACTION_GOVERNMENT && GetFactionType(playerid) != FACTION_TERRORIST)
+    if(!IsLawEnforcement(playerid) && GetFactionType(playerid) != FACTION_GOVERNMENT)
     {
         return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you aren't apart of law enforcement.");
 	}
