@@ -15901,10 +15901,10 @@ public SavePlayerVariables(playerid)
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gunlicense = %d, housealarm = %i where uid = %d", PlayerData[playerid][pGunLicense], PlayerData[playerid][pHouseAlarm], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET chatstyle = %i WHERE id = %i", PlayerData[playerid][pChatstyle], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET chatstyle = %i WHERE uid = %i", PlayerData[playerid][pChatstyle], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spawntype = %i, spawnhouse = %i WHERE id = %i", PlayerData[playerid][pSpawnSelect], PlayerData[playerid][pSpawnHouse], PlayerData[playerid][pID]);
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spawntype = %i, spawnhouse = %i WHERE uid = %i", PlayerData[playerid][pSpawnSelect], PlayerData[playerid][pSpawnHouse], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
 	}
@@ -35120,10 +35120,8 @@ public OnPlayerSpawn(playerid)
 				PlayerData[PlayerData[playerid][pDueling]][pDueling] = INVALID_PLAYER_ID;
 				PlayerData[playerid][pDueling] = INVALID_PLAYER_ID;
 			}
-			switch(PlayerData[playerid][pSpawnSelect])
+			if(PlayerData[playerid][pInjured])
 			{
-			    case 0:
-			    {
 					if(PlayerData[playerid][pInterior] || PlayerData[playerid][pWorld])
 					{
 					    SetTimerEx("StreamedCheck", 1000, false, "ifffii", playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ], PlayerData[playerid][pInterior], PlayerData[playerid][pWorld]);
@@ -35134,21 +35132,17 @@ public OnPlayerSpawn(playerid)
 			 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
 					SetPlayerWeapons(playerid);
 					SetCameraBehindPlayer(playerid);
-				}
-				case 1:
+			}
+			else
+			{
+				switch(PlayerData[playerid][pSpawnSelect])
 				{
-				    new houseid = PlayerData[playerid][pSpawnHouse];
-				    if(HouseInfo[houseid][hExists] && IsHouseOwner(playerid, houseid))
+				    case 0:
 				    {
-						SetPlayerPos(playerid, HouseInfo[playerid][hPosX], HouseInfo[playerid][hPosY], HouseInfo[playerid][hPosZ]);
-						SetPlayerFacingAngle(playerid, HouseInfo[playerid][hPosA]);
-						SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
-				 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
-						SetPlayerWeapons(playerid);
-						SetCameraBehindPlayer(playerid);
-					}
-					else
-					{
+						if(PlayerData[playerid][pInterior] || PlayerData[playerid][pWorld])
+						{
+						    SetTimerEx("StreamedCheck", 1000, false, "ifffii", playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ], PlayerData[playerid][pInterior], PlayerData[playerid][pWorld]);
+						}
 						SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
 						SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
 						SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
@@ -35156,33 +35150,55 @@ public OnPlayerSpawn(playerid)
 						SetPlayerWeapons(playerid);
 						SetCameraBehindPlayer(playerid);
 					}
-				}
-				case 2:
-				{
-					new factionid = PlayerData[playerid][pFaction];
-					if(factionid != -1)
+					case 1:
 					{
-						for(new i = 0; i < MAX_LOCKERS; i ++)
+					    new houseid = PlayerData[playerid][pSpawnHouse];
+					    if(HouseInfo[houseid][hExists] && IsHouseOwner(playerid, houseid))
+					    {
+							SetPlayerPos(playerid, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ]);
+							SetPlayerFacingAngle(playerid, HouseInfo[houseid][hPosA]);
+							SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+					 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+							SetPlayerWeapons(playerid);
+							SetCameraBehindPlayer(playerid);
+						}
+						else
 						{
-						    if(LockerInfo[i][lExists] && LockerInfo[i][lFaction] == factionid)
-						    {
-								SetPlayerPos(playerid, LockerInfo[i][lPosX], LockerInfo[i][lPosY], LockerInfo[i][lPosZ]);
-      							SetPlayerFacingAngle(playerid, 90.0);
-								SetPlayerInterior(playerid, LockerInfo[playerid][lInterior]);
-								SetPlayerVirtualWorld(playerid, LockerInfo[playerid][lWorld]);
-								SetPlayerWeapons(playerid);
-								SetCameraBehindPlayer(playerid);
-							}
+							SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
+							SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
+							SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+					 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+							SetPlayerWeapons(playerid);
+							SetCameraBehindPlayer(playerid);
 						}
 					}
-					else
+					case 2:
 					{
-						SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
-						SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
-						SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
-				 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
-						SetPlayerWeapons(playerid);
-						SetCameraBehindPlayer(playerid);
+						new factionid = PlayerData[playerid][pFaction];
+						if(factionid != -1)
+						{
+							for(new i = 0; i < MAX_LOCKERS; i ++)
+							{
+							    if(LockerInfo[i][lExists] && LockerInfo[i][lFaction] == factionid)
+							    {
+									SetPlayerPos(playerid, LockerInfo[i][lPosX], LockerInfo[i][lPosY], LockerInfo[i][lPosZ]);
+	      							SetPlayerFacingAngle(playerid, 90.0);
+									SetPlayerInterior(playerid, LockerInfo[playerid][lInterior]);
+									SetPlayerVirtualWorld(playerid, LockerInfo[playerid][lWorld]);
+									SetPlayerWeapons(playerid);
+									SetCameraBehindPlayer(playerid);
+								}
+							}
+						}
+						else
+						{
+							SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
+							SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
+							SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+					 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+							SetPlayerWeapons(playerid);
+							SetCameraBehindPlayer(playerid);
+						}
 					}
 				}
 			}
@@ -36898,19 +36914,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 				PlayerData[playerid][pWarnGodMode] = 0;
 			}
 		}
-		case 26:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
 
-			PlayerData[playerid][pWarnRapidFire]++;
-
-			if (PlayerData[playerid][pWarnRapidFire] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be rapidfiring.", GetRPName(playerid));
-				PlayerData[playerid][pWarnRapidFire] = 0;
-			}
-		}
 		/*case 39:
 		{
 			PlayerData[playerid][pWarnDialogHack]++;
@@ -51501,7 +51505,7 @@ CMD:cw(playerid, params[])
 	{
 	    if(IsPlayerInAnyVehicle(playerid))
 		{
-		    if(IsPlayerInVehicle(i, vehicleid) && PlayerData[i][pSpectating] == playerid)
+		    if(IsPlayerInVehicle(i, vehicleid))
 		    {
             	if(isnull(params))
 				{
