@@ -39671,7 +39671,7 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
             case 0:
             {
 				SendClientMessage(playerid, COLOR_YELLOW, "Account: {C8C8C8}/stats, /buylevel, /b, /g, /me, /do, /(o)oc, /(s)hout, /(l)ow, /(w)hisper, /(n)ewbie.");
-				SendClientMessage(playerid, COLOR_YELLOW, "Account: {C8C8C8}/pay, /id, /time, /report, /upgrade, /charity, /stopmusic, /joinevent, /quitevent.");
+				SendClientMessage(playerid, COLOR_YELLOW, "Account: {C8C8C8}/pay, /id, /time, /report, /upgrade, /charity, /stopmusic, /joinevent, /quitevent, /setspawn.");
 			    SendClientMessage(playerid, COLOR_YELLOW, "General: {C8C8C8}/dice, /flipcoin, /accent, /helpers, /helpme, /accept, /activity, /skill, /quitjob.");
 			    SendClientMessage(playerid, COLOR_YELLOW, "General: {C8C8C8}/give, /sell, /toggle, /cancelcp, /afk, /(ad)vertise, /buy, /refuel, /phone, /sms.");
 			    SendClientMessage(playerid, COLOR_YELLOW, "General: {C8C8C8}/clothing, /locate, /frisk, /contract, /number, /boombox, /switchspeedo, /stuck.");
@@ -68463,10 +68463,7 @@ CMD:getmats(playerid, params[])
 CMD:sellgun(playerid, params[])
 {
 	new targetid, weapon[10], price;
-	if(PlayerData[playerid][pGunLicense] == 0)
-	{
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a gun license, you are not allowed to sell guns.");
-	}
+
     if(!PlayerHasJob(playerid, JOB_WEAPONDEALER) && PlayerData[playerid][pVIPPackage] < 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you're not a Weapons Dealer.");
