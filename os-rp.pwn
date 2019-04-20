@@ -38207,6 +38207,8 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 		return 0;
 	}
 	printf("[zcmd] [%s]:%s %s", GetPlayerNameEx(playerid), cmd, params);
+	Log_Write("log_command", "[zcmd] [%s](uid: %d):%s %s.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], cmd, params);
+
 //	Log_Write("log_chat", "[%s]:%s %s.", GetPlayerNameEx(playerid), cmd, params);
 
 	/*if((PlayerData[playerid][pAdmin] < GENERAL_MANAGER) && (!strcmp(cmd, "/ban", true, 3) || !strcmp(cmd, "/kick", true, 4) || !strcmp(cmd, "/sban", true, 4) || !strcmp(cmd, "/skick", true, 5) || !strcmp(cmd, "/permaban", true, 8) || !strcmp(cmd, "/rangeban", true, 8) || !strcmp(cmd, "/getip", true, 5) || !strcmp(cmd, "/traceip", true, 7)))
@@ -50084,6 +50086,7 @@ CMD:creategangtag(playerid, params[])
 
 	PlayerData[playerid][pEditGraffiti] = id;
 	SendClientMessageEx(playerid, COLOR_GREY, "You have successfully created graffiti ID: %d.", id);
+
 	return 1;
 }
 
@@ -62772,8 +62775,7 @@ CMD:edithouse(playerid, params[])
 		ReloadHouse(houseid);
 	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the ability to be to delivered of house %i to %i.", houseid, delivery);
 	}
-
-	return 1;
+ 	return 1;
 }
 
 
