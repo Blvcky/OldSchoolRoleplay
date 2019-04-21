@@ -27643,54 +27643,8 @@ public MinuteTimer()
 			}
 		}
 	 	AddToTaxVault(-budget);
-    	foreach(new i : Player)
-	    {
-	        if(PlayerData[i][pLogged] && !PlayerData[i][pKicked])
-	        {
-		        if(PlayerData[i][pAFK] && PlayerData[i][pAFKTime] > 900)
-		        {
-		            SendClientMessage(i, COLOR_LIGHTRED, "You didn't receive a paycheck this hour as you were AFK for more than 15 minutes.");
-		        }
-		        else if(PlayerData[i][pMinutes] < 25)
-		        {
-		            SendClientMessage(i, COLOR_LIGHTRED, "You are ineligible for a paycheck as you played less than 25 minutes this hour.");
-		        }
-		        else
-		        {
-		            new code = Random(100000, 999999);
-	  				PayCheckCode[i] = code;
-
-				//	SendClientMessage(i, COLOR_GREY,"_______________________________________________________________");
-					SendClientMessage(i, COLOR_WHITE,"Information for tax on paychecks: {33CCFF}/taxhelp");
-	  			//	SendClientMessage(i, COLOR_GREY,"_______________________________________________________________");
-	    			SendClientMessage(i, COLOR_WHITE,"Sign the check to receive your paycheck.");
-		    		SendClientMessage(i, COLOR_AQUA, "Type /paycheck");
-	    			SendClientMessage(i, COLOR_WHITE,"You have 5 minutes to sign the check before it becomes invalid.");
-		    	//	SendClientMessage(i, COLOR_GREY,"_______________________________________________________________");
-
-					ShowPlayerFooter(i, "~w~Type /paycheck");
-		  			SetTimerEx("LastAlertPayCheck", 240000, false, "i", i);
-				}
-                if(GetFactionType(i) == FACTION_GOVERNMENT)
-		  	    {
-		  			SendClientMessageEx(i, COLOR_YELLOW2, "%s were taken out of the tax vault for every faction's paycheck.", FormatNumber(budget));
-				}
-				if(PlayerData[i][pReportMuted])
-				{
-					PlayerData[i][pReportMuted]--;
-
-					if(PlayerData[i][pReportMuted] <= 0)
-					{
-					    PlayerData[i][pReportMuted] = 0;
-					    PlayerData[i][pReportWarns] = 0;
-
-					    SendClientMessage(i, COLOR_YELLOW, "Your report mute has automatically been lifted.");
-				    }
-				}
-			}
-	    }
-
-	    for(new i = 0; i < MAX_POINTS; i ++)
+    
+        for(new i = 0; i < MAX_POINTS; i ++)
 	    {
 	        if(PointInfo[i][pExists])
 	        {
@@ -27758,6 +27712,53 @@ public MinuteTimer()
 		        }
 		    }
 		}
+
+		foreach(new i : Player)
+	    {
+	        if(PlayerData[i][pLogged] && !PlayerData[i][pKicked])
+	        {
+		        if(PlayerData[i][pAFK] && PlayerData[i][pAFKTime] > 900)
+		        {
+		            SendClientMessage(i, COLOR_LIGHTRED, "You didn't receive a paycheck this hour as you were AFK for more than 15 minutes.");
+		        }
+		        else if(PlayerData[i][pMinutes] < 25)
+		        {
+		            SendClientMessage(i, COLOR_LIGHTRED, "You are ineligible for a paycheck as you played less than 25 minutes this hour.");
+		        }
+		        else
+		        {
+		            new code = Random(100000, 999999);
+	  				PayCheckCode[i] = code;
+
+					SendClientMessage(i, COLOR_GREY,"_______________________________________________________________");
+					SendClientMessage(i, COLOR_WHITE,"Information for tax on paychecks: {33CCFF}/taxhelp");
+	  				SendClientMessage(i, COLOR_GREY,"_______________________________________________________________");
+	    			SendClientMessage(i, COLOR_WHITE,"Sign the check to receive your paycheck.");
+		    		SendClientMessage(i, COLOR_AQUA, "Type /paycheck");
+	    			SendClientMessage(i, COLOR_WHITE,"You have 5 minutes to sign the check before it becomes invalid.");
+		    		SendClientMessage(i, COLOR_GREY,"_______________________________________________________________");
+
+					GameTextForPlayer(i, "~w~Type /paycheck", 2500, 1);
+		  			SetTimerEx("LastAlertPayCheck", 240000, false, "i", i);
+				}
+                if(GetFactionType(i) == FACTION_GOVERNMENT)
+		  	    {
+		  			SendClientMessageEx(i, COLOR_YELLOW2, "%s were taken out of the tax vault for every faction's paycheck.", FormatNumber(budget));
+				}
+				if(PlayerData[i][pReportMuted])
+				{
+					PlayerData[i][pReportMuted]--;
+
+					if(PlayerData[i][pReportMuted] <= 0)
+					{
+					    PlayerData[i][pReportMuted] = 0;
+					    PlayerData[i][pReportWarns] = 0;
+
+					    SendClientMessage(i, COLOR_YELLOW, "Your report mute has automatically been lifted.");
+				    }
+				}
+			}
+	    }
 
 		if(RobberyInfo[rTime] > 0)
 		{
