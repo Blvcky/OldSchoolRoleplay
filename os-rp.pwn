@@ -23760,6 +23760,7 @@ SetBusinessOwner(businessid, playerid)
 
 	ReloadBusiness(businessid);
 }
+/*
 stock GetBusinessDefaultPickup(business)
 {
 	switch (BusinessInfo[business][bType]) {
@@ -23780,27 +23781,44 @@ stock GetBusinessDefaultPickup(business)
 		default: return 1274;
 	}
 	return 1318;
-}
+}*/
+
 ReloadBusiness(businessid)
 {
 	if(BusinessInfo[businessid][bExists])
 	{
 	    new
-	        string[128];
+	        string[300];
 
 		DestroyDynamic3DTextLabel(BusinessInfo[businessid][bText]);
 		DestroyDynamicPickup(BusinessInfo[businessid][bPickup]);
+        //DestroyDynamicMapIcon(BusinessInfo[businessid][bMapIcon]);
 
         if(BusinessInfo[businessid][bOwnerID] == 0)
         {
-	        format(string, sizeof(string), "Price: %s\nType: %s\nEntry Fee: $%i\nStatus: %s", FormatNumber(BusinessInfo[businessid][bPrice]), bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], (BusinessInfo[businessid][bLocked]) ? ("{ffff00}Closed") : ("{00AA00}Opened"));
+	        format(string, sizeof(string), "{AAC4E5}[BUSINESS] (ID %i)\n{FFFFFF}\nType: {AAC4E5}%s\n{FFFFFF}Entry Fee: $%i\nPrice: {FFFFFF}%s\n%s", businessid, bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], FormatNumber(BusinessInfo[businessid][bPrice]), (BusinessInfo[businessid][bLocked]) ? ("{FFFF00}Closed") : ("{00AA00}Opened"));
 		}
 		else
 		{
-		    format(string, sizeof(string), "Owner: %s\nType: %s\nEntry Fee: $%i\nStatus: %s", BusinessInfo[businessid][bOwner], bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], (BusinessInfo[businessid][bLocked]) ? ("{FFFF00}Closed") : ("{00AA00}Open"));
+		    format(string, sizeof(string), "{AAC4E5}[BUSINESS] (ID %i)\n{FFFFFF}Owner: %s\nType: {AAC4E5}%s\n{FFFFFF}Entry Fee: $%i\n%s", businessid, BusinessInfo[businessid][bOwner], bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], (BusinessInfo[businessid][bLocked]) ? ("{FFFF00}Closed") : ("{00AA00}Opened"));
 		}
-		BusinessInfo[businessid][bText] = CreateDynamic3DTextLabel(string, COLOR_GREY1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ] + 0.1, 10.0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-        BusinessInfo[businessid][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(businessid), 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
+
+		BusinessInfo[businessid][bText] = CreateDynamic3DTextLabel(string, COLOR_GREY1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ] + 0.4, 20.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, BusinessInfo[businessid][bOutsideVW], BusinessInfo[businessid][bOutsideInt], -1 , 10.0);
+	    BusinessInfo[businessid][bPickup] = CreateDynamicPickup(1272, 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
+	    
+	    /*BusinessInfo[businessid][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(businessid), 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
+		
+		switch(BusinessInfo[businessid][bType])
+		{
+		    case BUSINESS_STORE: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 17, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		    //case BUSINESS_GUNSHOP: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 6, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		    case BUSINESS_CLOTHES: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 45, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		    //case BUSINESS_RESTAURANT: 	BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 10, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		    case BUSINESS_GYM: 			BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 54, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		    //case BUSINESS_AGENCY: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 58, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		    //case BUSINESS_BARCLUB: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 49, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		    //case BUSINESS_TOOLSHOP:     BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 11, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
+		}*/
 	}
 }
 
@@ -24321,7 +24339,7 @@ ReloadHouse(houseid)
 	if(HouseInfo[houseid][hExists])
 	{
 	    new
-	        string[128],
+	        string[268],
 			type[16];
 
 		DestroyDynamic3DTextLabel(HouseInfo[houseid][hText]);
@@ -24338,38 +24356,24 @@ ReloadHouse(houseid)
 
         if(HouseInfo[houseid][hOwnerID] == 0)
         {
-	        format(string, sizeof(string), "[For Sale - %i]\nPrice: %s\nClass: %s\nHouse Level: %i", houseid, FormatNumber(HouseInfo[houseid][hPrice]), type, HouseInfo[houseid][hLevel]);
+	        format(string, sizeof(string), "{AAC4E5}[HOUSE FOR SALE] ({FFFFFF}ID %i{AAC4E5})\n{FFFFFF}Class: {AAC4E5}%s\n{FFFFFF}House Level: {AAC4E5}%i\n{FFFFFF}Price: {AAC4E5}%s", houseid, type, HouseInfo[houseid][hLevel], FormatNumber(HouseInfo[houseid][hPrice]));
+            HouseInfo[houseid][hPickup] = CreateDynamicPickup(1273, 1, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], .worldid = HouseInfo[houseid][hOutsideVW], .interiorid = HouseInfo[houseid][hOutsideInt]);
 		}
 		else
 		{
 		    if(HouseInfo[houseid][hRentPrice] > 0)
 		    {
-		        format(string, sizeof(string), "House Owner:{ffffff} %s\n"HOUSE_HEX"Class:{ffffff} %s\n"HOUSE_HEX"Rent:{ffffff} $%i\n"HOUSE_HEX"Level:{ffffff} %i", HouseInfo[houseid][hOwner], type, HouseInfo[houseid][hRentPrice], HouseInfo[houseid][hLevel]);
-		    }
+		        format(string, sizeof(string), "{AAC4E5}[HOUSE] ({FFFFFF}ID %i{AAC4E5})\n{FFFFFF}Owner: {AAC4E5}%s\n{FFFFFF}Class: {AAC4E5}%s\n{FFFFFF}Rent: {AAC4E5}$%i\n{FFFFFF}House Level: {AAC4E5}%i", houseid, HouseInfo[houseid][hOwner], type, HouseInfo[houseid][hRentPrice], HouseInfo[houseid][hLevel]);
+			}
 		    else
 		    {
-			    format(string, sizeof(string), "House Owner:{ffffff} %s\n"HOUSE_HEX"Class:{ffffff} %s\n"HOUSE_HEX"House Level:{ffffff} %i", HouseInfo[houseid][hOwner], type, HouseInfo[houseid][hLevel]);
+			    format(string, sizeof(string), "{AAC4E5}[HOUSE] ({FFFFFF}ID %i{AAC4E5})\n{FFFFFF}Owner: {AAC4E5}%s\n{FFFFFF}Class: {AAC4E5}%s\n{FFFFFF}House Level: {AAC4E5}%i", houseid, HouseInfo[houseid][hOwner], type, HouseInfo[houseid][hLevel]);
 			}
+			HouseInfo[houseid][hPickup] = CreateDynamicPickup(19522, 1, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], .worldid = HouseInfo[houseid][hOutsideVW], .interiorid = HouseInfo[houseid][hOutsideInt]);
 		}
 
-		HouseInfo[houseid][hText] = CreateDynamic3DTextLabel(string, HOUSE_COLOR, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ] + 0.1, 10.0, .worldid = HouseInfo[houseid][hOutsideVW], .interiorid = HouseInfo[houseid][hOutsideInt]);
-		if(HouseInfo[houseid][hOwnerID] == 0)
-		{
-			HouseInfo[houseid][hPickup] = CreateDynamicPickup(1273, 1, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], .worldid = HouseInfo[houseid][hOutsideVW], .interiorid = HouseInfo[houseid][hOutsideInt]);
-		}
-		else
-		{
-			if(HouseInfo[houseid][hRentPrice] > 0)
-			{
-				HouseInfo[houseid][hPickup] = CreateDynamicPickup(1272, 1, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], .worldid = HouseInfo[houseid][hOutsideVW], .interiorid = HouseInfo[houseid][hOutsideInt]);
-			}
-			else
-			{
-				HouseInfo[houseid][hPickup] = CreateDynamicPickup(19522, 1, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], .worldid = HouseInfo[houseid][hOutsideVW], .interiorid = HouseInfo[houseid][hOutsideInt]);
-			}
-		}
-
-	//	HouseInfo[houseid][hMapIcon] = CreateDynamicMapIcon(HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], 31, 1, -1, -1, -1, 100.0);
+		HouseInfo[houseid][hText] = CreateDynamic3DTextLabel(string, COLOR_WHITE, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ]+0.3, 20.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, HouseInfo[houseid][hOutsideVW], HouseInfo[houseid][hOutsideInt], -1 , 10.0);
+  	    //HouseInfo[houseid][hMapIcon] = CreateDynamicMapIcon(HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], 31, 1, -1, -1, -1, 100.0);
 	}
 }
 
@@ -38249,7 +38253,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 					    GivePlayerCash(playerid, -g_FurnitureList[PlayerData[playerid][pPreviewIndex]][e_ModelPrice]);
 
 						ShowFurnitureCategories(playerid);
-					    SendInfoMessage(playerid, "Furniture purchased for {33CC33}%s{FFFFFF}. Use /house to manage your furniture.", FormatNumber(g_FurnitureList[PlayerData[playerid][pPreviewIndex]][e_ModelPrice]));
+					    SendInfoMessage(playerid, "Furniture purchased for {33CC33}%s{FFFFFF}. Use /edit to manage your furniture.", FormatNumber(g_FurnitureList[PlayerData[playerid][pPreviewIndex]][e_ModelPrice]));
 					}
 				}
 				DestroyDynamicObject(gPreviewFurniture[playerid]);
