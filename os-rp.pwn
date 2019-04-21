@@ -8466,9 +8466,9 @@ stock SetToyColor(playerid, slot, layer, color)
 			ClothingInfo[playerid][slot][cMatColor1] = color;
 		}
 		else ClothingInfo[playerid][slot][cMatColor2] = color;
-		
+
 		RemovePlayerAttachedObject(playerid, slot);
-		
+
  		SetPlayerAttachedObject(playerid, slot, ClothingInfo[playerid][slot][cModel], ClothingInfo[playerid][slot][cBone],
 		ClothingInfo[playerid][slot][cPosX], ClothingInfo[playerid][slot][cPosY], ClothingInfo[playerid][slot][cPosZ],
 		ClothingInfo[playerid][slot][cRotX], ClothingInfo[playerid][slot][cRotY], ClothingInfo[playerid][slot][cRotZ],
@@ -14334,7 +14334,7 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	}
 
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
-    format(string, sizeof(string), "{B5B5B5}Statistics of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", name, GetDateStats());
+    format(string, sizeof(string), "{B5B5B5}Statistics of: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", name, GetDateStats());
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
 
 	format(string, sizeof(string), "Level: %i | Gender: %s | Age: %i | Cash: %s | Bank: %s | Hours: %s | Ph: %i | Channel: %i",
@@ -14352,21 +14352,21 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	format(string, sizeof(string), "{B5B5B5}Job: %s | Job 2: %s | Crimes Commited: %s | Times Arrested: %s | Wanted Level: %i | Insurance: %s",
 	job, secondjob, FormatNumber(PlayerData[playerid][pCrimes], 0), FormatNumber(PlayerData[playerid][pArrested], 0), PlayerData[playerid][pWantedLevel], insurance);
     SendClientMessage(targetid, COLOR_WHITE, string);
-    
+
     format(string, sizeof(string), "Faction: %s | Rank: %s | Division: %s | Gang: %s | Rank: %s | Crew: %s",
 	faction, facrank, division, gang, gangrank, gangcrew);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
-    format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Orë | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
+    format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Or? | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
 	GetVIPRankEx(PlayerData[playerid][pVIPPackage]), PlayerData[playerid][pDoubleXP], FormatNumber(PlayerData[playerid][pCookies], 0), FormatNumber(PlayerData[playerid][pPaycheck]), PlayerData[playerid][pMinutes]);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "Weapon Restriction: %i hours | Married To: %s | DJ Rank: %d | Trucking XP: %d | Trucking Level: %d.",
-	PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);   
+	PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "{B5B5B5}Warnings: %i | DM Warnings: %i/3 | Report Warnings: %i/3 | Jail Type: %s | Jail Time: %s sec",
-	PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0));   
+	PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0));
     SendClientMessage(targetid, COLOR_WHITE, string);
 
 	if(PlayerData[targetid][pAdmin] > 0)
@@ -14384,35 +14384,35 @@ DisplayInventory(playerid, targetid = INVALID_PLAYER_ID)
 {
     new string[800];
 	if(targetid == INVALID_PLAYER_ID) targetid = playerid;
-	
+
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 
-	format(string, sizeof(string), "{B5B5B5}Inventory of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
+	format(string, sizeof(string), "{B5B5B5}Inventory of: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Weed: %i/%ig | Cocaine: %i/%ig | Meth: %i/%ig | Painkillers: %i/%i | Seeds: %i/%i", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED),
         PlayerData[playerid][pCocaine], GetPlayerCapacity(playerid, CAPACITY_COCAINE), PlayerData[playerid][pMeth], GetPlayerCapacity(playerid, CAPACITY_METH), PlayerData[playerid][pPainkillers], GetPlayerCapacity(playerid, CAPACITY_PAINKILLERS), PlayerData[playerid][pSeeds], GetPlayerCapacity(playerid, CAPACITY_SEEDS));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "{B5B5B5}Materials: %s/%s | Ephedrine: %i/%ig | Muriatic acid: %i/10 | Baking soda: %i/3", FormatNumber(PlayerData[playerid][pMaterials], 0), FormatNumber(GetPlayerCapacity(playerid, CAPACITY_MATERIALS), 0),
 		PlayerData[playerid][pEphedrine], GetPlayerCapacity(playerid, CAPACITY_EPHEDRINE), PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pBakingSoda]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Fishing rod: %s | Fish bait: %i/20 | Boombox: %s | MP3 player: %s | Phonebook: %s", (PlayerData[playerid][pFishingRod]) ? ("Yes") : ("No"), PlayerData[playerid][pFishingBait], (PlayerData[playerid][pBoombox]) ? ("Yes") : ("No"), (PlayerData[playerid][pMP3Player]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhonebook]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "{B5B5B5}Drivers license: %s | Components: %s | Cigars: %s | Spraycans: %i/20 | Bombs: %i/3", (PlayerData[playerid][pCarLicense]) ? ("Yes") : ("No"), FormatNumber(PlayerData[playerid][pComponents], 0), FormatNumber(PlayerData[playerid][pCigars], 0), PlayerData[playerid][pSpraycans], PlayerData[playerid][pBombs]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Walkie talkie: %s | Mobile phone: %s | First aid kits: %i/20 | Police scanner: %s", (PlayerData[playerid][pWalkieTalkie]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhone]) ? ("Yes") : ("No"), PlayerData[playerid][pFirstAid], (PlayerData[playerid][pPoliceScanner]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "{B5B5B5}Gasoline: %i/20L | Bodykits: %i/10 | Rimkits: %i/5 | Rope: %i/10 | Watch: %s | GPS: %s", PlayerData[playerid][pGasCan], PlayerData[playerid][pBodykits], PlayerData[playerid][pRimkits], PlayerData[playerid][pRope], (PlayerData[playerid][pWatch]) ? ("Yes") : ("No"), (PlayerData[playerid][pGPS]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Diamond: %s | Oil: %i/%iL | Skates: %s | Crowbar: %i/5", FormatNumber(PlayerData[playerid][pDiamonds], 0), PlayerData[playerid][pOil],  GetPlayerCapacity(playerid, CAPACITY_OIL), (PlayerData[playerid][pSkates]) ? ("Yes") : ("No"), PlayerData[playerid][pCrowbar]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 	return 1;
 }
@@ -23805,9 +23805,9 @@ ReloadBusiness(businessid)
 
 		BusinessInfo[businessid][bText] = CreateDynamic3DTextLabel(string, COLOR_GREY1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ] + 0.4, 20.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, BusinessInfo[businessid][bOutsideVW], BusinessInfo[businessid][bOutsideInt], -1 , 10.0);
 	    BusinessInfo[businessid][bPickup] = CreateDynamicPickup(1272, 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-	    
+
 	    /*BusinessInfo[businessid][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(businessid), 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-		
+
 		switch(BusinessInfo[businessid][bType])
 		{
 		    case BUSINESS_STORE: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 17, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
@@ -26665,7 +26665,7 @@ public SecondTimer()
 							GetPlayerFacingAngle(i, a);
 						    strunpack(str, PlayerData[i][pGraffitiText]);
 		        	        format(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], 64, str);
-		        	        
+
 		        	        GraffitiData[PlayerData[i][pGraffiti]][graffitiPos][3] = a - 90.0;
 		        	        strreplace2(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], "(n)", "\n");
                             GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault] = 0;
@@ -27643,7 +27643,7 @@ public MinuteTimer()
 			}
 		}
 	 	AddToTaxVault(-budget);
-    
+
         for(new i = 0; i < MAX_POINTS; i ++)
 	    {
 	        if(PointInfo[i][pExists])
@@ -30985,22 +30985,22 @@ public OnQueryFinished(threadid, extraid)
 						{
 							SendClientMessageEx(extraid, 0xE65A5AAA, "Admin Motd: %s", adminMOTD);
 						}
-					
+
 						if(!isnull(helperMOTD) && PlayerData[extraid][pHelper] > 0)
 						{
 							SendClientMessageEx(extraid, COLOR_AQUA, "Helper Motd: %s", helperMOTD);
 						}
-				
+
 						if(PlayerData[extraid][pFaction] >= 0 && strcmp(FactionInfo[PlayerData[extraid][pFaction]][fMOTD], "None", true) != 0)
 						{
 							SendClientMessageEx(extraid, COLOR_YELLOW, "Faction Motd: %s", FactionInfo[PlayerData[extraid][pFaction]][fMOTD]);
-						}	
+						}
 
 						if(PlayerData[extraid][pGang] >= 0 && strcmp(GangInfo[PlayerData[extraid][pGang]][gMOTD], "None", true) != 0)
 						{
 							SendClientMessageEx(extraid, COLOR_YELLOW, "Gang MOTD: %s", GangInfo[PlayerData[extraid][pGang]][gMOTD]);
 						}
-				
+
 						if(!isnull(gServerMOTD))
 						{
 							SendClientMessageEx(extraid, COLOR_WHITE, "Global Motd: %s", gServerMOTD);
@@ -31008,7 +31008,7 @@ public OnQueryFinished(threadid, extraid)
 
 					    format(string, sizeof(string), "~w~Welcome ~n~~y~   %s", GetPlayerNameEx(extraid));
         	        	GameTextForPlayer(extraid, string, 5000, 1);
-						
+
 					    /*if(PlayerData[extraid][pAdmin] && !PlayerData[extraid][pAdminHide])
 					    {
 					        SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has logged in.", GetAdmCmdRank(extraid), GetRPName(extraid));
@@ -36318,7 +36318,7 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 	            new houseid = GetInsideHouse(playerid);
 				if(houseid == -1)
 				    houseid = GetFurnitureHouse(playerid);
-				    
+
 	            if(houseid >= 0 && HasFurniturePerms(playerid, houseid))
 	            {
 		            PreviewFurniture(playerid, listitem + PlayerData[playerid][pPreviewIndex]);
@@ -38558,7 +38558,7 @@ Dialog:PhoneMusic(playerid, response, listitem, inputtext[])
 {
 	if(response)
 	{
-	
+
 	}
 	return 1;
 }
@@ -48520,7 +48520,7 @@ PrintNetWorthPlayer(playerid)
     {
         if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i))
         {
-            SendClientMessageEx(playerid, COLOR_GREY2, "- Shtëpia: +{FF6347}%s", FormatNumber(pricehouse));
+            SendClientMessageEx(playerid, COLOR_GREY2, "- Sht?pia: +{FF6347}%s", FormatNumber(pricehouse));
             break;
 		}
 	}
@@ -48559,7 +48559,7 @@ PrintNetWorthPlayer(playerid)
 	}
 
 	SendClientMessage(playerid, COLOR_GREEN, "_______________________________");
-	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj është: %s", FormatNumber(total2));
+	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj ?sht?: %s", FormatNumber(total2));
 	return 1;
 }
 
