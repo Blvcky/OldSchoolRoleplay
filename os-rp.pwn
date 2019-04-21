@@ -1,6 +1,6 @@
-/*				     **********************************************************************
-				     **********************************************************************
-				     **********************************************************************
+/*				     ******************************************************************
+				     ******************************************************************
+				     ******************************************************************
 
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
 							OOOOOOOOOOOOOOOOOOOOOOOOOO    SSSSSSSSSSSSSSSSSSSSSS
@@ -21,9 +21,9 @@
 				                    |__/ |  | |    |___ |__] |    |__|  \_/
 				                    |  \ |__| |___ |___ |    |___ |  |   |
 
-                     **********************************************************************
-				     **********************************************************************
-				     **********************************************************************
+                     ******************************************************************
+				     ******************************************************************
+				     ******************************************************************
 											Copyright (c) 2018 - 2019
 											 	Old School Roleplay
 										    Pedro & Hernandez & MMilot
@@ -6953,6 +6953,17 @@ GetDate()
 	return string;
 }
 
+GetDateStats()
+{
+	new date[5], string[24];
+
+	getdate(date[0], date[1], date[2]);
+	gettime(date[3], date[4]);
+
+	format(string, sizeof(string), "%02d:%02d %02d-%02d-%i", date[3], date[4], date[2], date[1], date[0]);
+	return string;
+}
+
 GetDateFromTimestamp(timestamp, _form=0)
 {
     new year=1970, day=0, month=0, hourt=0, mins=0, sec=0;
@@ -7341,6 +7352,22 @@ GetVIPRank(level)
 
 	return string;
 }
+
+GetVIPRankEx(level)
+{
+	new string[50];
+
+	switch(level)
+	{
+	    case 0: string = "{FFFFFF}None";
+	    case 1: string = "{3284FF}Silver";
+	    case 2: string = "{FF6BEF}Gold";
+	    case 3: string = "{FFBD30}Legendary";
+	}
+
+	return string;
+}
+
 GetJobName(jobid)
 {
 	new
@@ -8491,7 +8518,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 1:
 			{
@@ -8502,7 +8529,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 
 			}
 			case 2:
@@ -8514,7 +8541,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 3:
 			{
@@ -8525,7 +8552,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 4:
 			{
@@ -8536,7 +8563,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 5:
 			{
@@ -8547,7 +8574,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 6:
 			{
@@ -8558,7 +8585,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 7:
 			{
@@ -8569,7 +8596,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 8:
 			{
@@ -8580,7 +8607,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 			case 9:
 			{
@@ -8591,7 +8618,7 @@ Dialog:Dialog_Tag_Default(playerid, response, listitem, inputtext[])
 				ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 				SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+				SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 			}
 	    }
 	}
@@ -9038,13 +9065,13 @@ GateCheck(playerid)
 
 		if(!Streamer_GetExtraInt(gPDGates[0], E_OBJECT_OPENED))
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to open the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to open the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gPDGates[0], 1544.689941, -1630.818481, 13.116797, 0.2, 0.000000, 0.000000, 90.000000);
 		    Streamer_SetExtraInt(gPDGates[0], E_OBJECT_OPENED, 1);
 		}
 		else
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to close the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to close the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gPDGates[0], 1544.639892, -1631.008666, 13.252797, 0.2, 0.000000, 90.000000, 90.000000);
 		    Streamer_SetExtraInt(gPDGates[0], E_OBJECT_OPENED, 0);
 		}
@@ -9060,13 +9087,13 @@ GateCheck(playerid)
 
 		if(!Streamer_GetExtraInt(gPDGates[1], E_OBJECT_OPENED))
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to open the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to open the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gPDGates[1], 1597.332763, -1638.079956, 14.602818, 3.0);
 		    Streamer_SetExtraInt(gPDGates[1], E_OBJECT_OPENED, 1);
 		}
 		else
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to close the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to close the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gPDGates[1], 1588.042602, -1638.079956, 14.602818, 3.0);
 		    Streamer_SetExtraInt(gPDGates[1], E_OBJECT_OPENED, 0);
 		}
@@ -9082,13 +9109,13 @@ GateCheck(playerid)
 
 		if(!Streamer_GetExtraInt(gFBIGates[0], E_OBJECT_OPENED))
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to open the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to open the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gFBIGates[0], 327.033508, -1492.691650, 25.281988, 3.0);
 		    Streamer_SetExtraInt(gFBIGates[0], E_OBJECT_OPENED, 1);
 		}
 		else
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to close the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to close the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gFBIGates[0], 321.255279, -1488.601318, 25.281988, 3.0);
 		    Streamer_SetExtraInt(gFBIGates[0], E_OBJECT_OPENED, 0);
 		}
@@ -9104,13 +9131,13 @@ GateCheck(playerid)
 
 		if(!Streamer_GetExtraInt(gFBIGates[1], E_OBJECT_OPENED))
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to open the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to open the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gFBIGates[1], 289.593841, -1547.023071, 25.281988, 3.0);
 		    Streamer_SetExtraInt(gFBIGates[1], E_OBJECT_OPENED, 1);
 		}
 		else
 		{
-		    ShowActionBubble(playerid, "** %s uses their remote to close the gate.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s uses their remote to close the gate.", GetRPName(playerid));
 		    MoveDynamicObject(gFBIGates[1], 283.590423, -1542.835083, 25.281988, 3.0);
 		    Streamer_SetExtraInt(gFBIGates[1], E_OBJECT_OPENED, 0);
 		}
@@ -9151,13 +9178,13 @@ DoorCheck(playerid)
 
 			if(!Streamer_GetExtraInt(gPDDoors[i], E_OBJECT_OPENED))
 			{
-			    ShowActionBubble(playerid, "** %s uses their card to open the door.", GetRPName(playerid));
+			    ShowActionBubble(playerid, "* %s uses their card to open the door.", GetRPName(playerid));
 			    SetDynamicObjectRot(gPDDoors[i], 0.0000, 0.0000, angle + 90.0);
 			    Streamer_SetExtraInt(gPDDoors[i], E_OBJECT_OPENED, 1);
 			}
 			else
 			{
-			    ShowActionBubble(playerid, "** %s uses their card to close the door.", GetRPName(playerid));
+			    ShowActionBubble(playerid, "* %s uses their card to close the door.", GetRPName(playerid));
 			    SetDynamicObjectRot(gPDDoors[i], 0.0000, 0.0000, angle - 90.0);
 			    Streamer_SetExtraInt(gPDDoors[i], E_OBJECT_OPENED, 0);
 			}
@@ -9240,11 +9267,11 @@ EnterCheck(playerid)
 		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET timestamp = %i WHERE id = %i", gettime(), HouseInfo[id][hID]);
 		    mysql_tquery(connectionID, queryBuffer);
 
-		    ShowActionBubble(playerid, "** %s has entered their house.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s has entered their house.", GetRPName(playerid));
 		}
 		else
 		{
-			ShowActionBubble(playerid, "** %s has entered the house.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s has entered the house.", GetRPName(playerid));
 		}
 
         PlayerData[playerid][pLastEnter] = gettime();
@@ -9279,11 +9306,11 @@ EnterCheck(playerid)
 		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE garages SET timestamp = %i WHERE id = %i", gettime(), GarageInfo[id][gID]);
 		    mysql_tquery(connectionID, queryBuffer);
 
-		    ShowActionBubble(playerid, "** %s has entered their garage.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s has entered their garage.", GetRPName(playerid));
 		}
 		else
 		{
-			ShowActionBubble(playerid, "** %s has entered the garage.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s has entered the garage.", GetRPName(playerid));
 		}
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
@@ -9317,7 +9344,7 @@ EnterCheck(playerid)
 		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET timestamp = %i WHERE id = %i", gettime(), BusinessInfo[id][bID]);
 		    mysql_tquery(connectionID, queryBuffer);
 
-		    ShowActionBubble(playerid, "** %s has entered their business.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s has entered their business.", GetRPName(playerid));
 		}
 		else
 		{
@@ -9338,7 +9365,7 @@ EnterCheck(playerid)
 		    	mysql_tquery(connectionID, queryBuffer);
 		    }
 
-			ShowActionBubble(playerid, "** %s has entered the business.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s has entered the business.", GetRPName(playerid));
 
 			switch(BusinessInfo[id][bType])
 			{
@@ -9402,7 +9429,7 @@ EnterCheck(playerid)
 		}
 
         PlayerData[playerid][pLastEnter] = gettime();
-		ShowActionBubble(playerid, "** %s has entered the building.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s has entered the building.", GetRPName(playerid));
 
 		if(EntranceInfo[id][eType] == 1)
 		{
@@ -9474,7 +9501,7 @@ EnterCheck(playerid)
 				}
 
                 PlayerData[playerid][pLastEnter] = gettime();
-	            ShowActionBubble(playerid, "** %s has entered the building.", GetRPName(playerid));
+	            ShowActionBubble(playerid, "* %s has entered the building.", GetRPName(playerid));
 	            SetPlayerFacingAngle(playerid, staticEntrances[i][eIntA]);
 	            SetPlayerInterior(playerid, staticEntrances[i][eInterior]);
 				SetPlayerVirtualWorld(playerid, staticEntrances[i][eWorld]);
@@ -9520,7 +9547,7 @@ ExitCheck(playerid)
 	{
 
 	    PlayerData[playerid][pLastEnter] = gettime();
-		ShowActionBubble(playerid, "** %s has exited the house.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s has exited the house.", GetRPName(playerid));
 		SetPlayerPos(playerid, HouseInfo[id][hPosX], HouseInfo[id][hPosY], HouseInfo[id][hPosZ]);
 		SetFreezePos(playerid, HouseInfo[id][hPosX], HouseInfo[id][hPosY], HouseInfo[id][hPosZ]);
 		SetPlayerFacingAngle(playerid, HouseInfo[id][hPosA]);
@@ -9537,7 +9564,7 @@ ExitCheck(playerid)
 			((GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) && (IsPlayerInRangeOfPoint(playerid, 2.0, garageInteriors[GarageInfo[id][gType]][intPX], garageInteriors[GarageInfo[id][gType]][intPY], garageInteriors[GarageInfo[id][gType]][intPZ]) || IsPlayerInRangeOfPoint(playerid, 4.0, garageInteriors[GarageInfo[id][gType]][intVX], garageInteriors[GarageInfo[id][gType]][intVY], garageInteriors[GarageInfo[id][gType]][intVZ]))))
 		{
 
-		    ShowActionBubble(playerid, "** %s has exited the garage.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s has exited the garage.", GetRPName(playerid));
 
 			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 			{
@@ -9561,7 +9588,7 @@ ExitCheck(playerid)
 	    PlayerData[playerid][pLastEnter] = gettime();
 
 
-		ShowActionBubble(playerid, "** %s has exited the business.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s has exited the business.", GetRPName(playerid));
 
 		SetPlayerPos(playerid, BusinessInfo[id][bPosX], BusinessInfo[id][bPosY], BusinessInfo[id][bPosZ]);
 		SetPlayerFacingAngle(playerid, BusinessInfo[id][bPosA]);
@@ -9579,7 +9606,7 @@ ExitCheck(playerid)
 
 	    PlayerData[playerid][pLastEnter] = gettime();
 
-	    ShowActionBubble(playerid, "** %s has exited the building.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s has exited the building.", GetRPName(playerid));
 
 		if(EntranceInfo[id][eVehicles] && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 		{
@@ -9628,7 +9655,7 @@ ExitCheck(playerid)
 
                 PlayerData[playerid][pLastEnter] = gettime();
 
-			    ShowActionBubble(playerid, "** %s has exited the building.", GetRPName(playerid));
+			    ShowActionBubble(playerid, "* %s has exited the building.", GetRPName(playerid));
 
 	            SetPlayerFacingAngle(playerid, staticEntrances[i][ePosA]);
 	            SetPlayerInterior(playerid, 0);
@@ -13683,11 +13710,11 @@ CallNumber(playerid, number, payphone = -1)
 		{
 			if (PlayerData[targetid][pTogglePhone])
 			{
-				return SendClientMessage(playerid, COLOR_GREY, "** The phone is switched off. The number would automatically forward to voicemail. **");
+				return SendClientMessage(playerid, COLOR_GREY, "* The phone is switched off. The number would automatically forward to voicemail. *");
 			}
 			else if (PlayerData[targetid][pCalling] > 0)
 			{
-				return SendClientMessage(playerid, COLOR_GREY, "** The other line is currently busy. **");
+				return SendClientMessage(playerid, COLOR_GREY, "* The other line is currently busy. *");
 			}
 			else
 			{
@@ -14168,12 +14195,12 @@ FriskPlayer(playerid, targetid)
 		}
 	}
 
-    ShowActionBubble(playerid, "** %s searches for illegal items on %s.", GetRPName(playerid), GetRPName(targetid));
+    ShowActionBubble(playerid, "* %s searches for illegal items on %s.", GetRPName(playerid), GetRPName(targetid));
 }
 DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 {
 	if(targetid == INVALID_PLAYER_ID) targetid = playerid;
-	new super[268], str[3000], titlestring[250];
+	new string[3000];
     new name[24], gender[8], faction[48], facrank[32], gang[32], gangrank[32], gangcrew[32], division[32], insurance[24], Float:health, Float:armor;
     new job[32], secondjob[32], jailtype[32];
 
@@ -14306,63 +14333,89 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	    case 3: jailtype = "IC prison";
 	}
 
-	format(super, sizeof(super), "%s [%s]", name, GetDate());
-	strcat(titlestring, super);
-	format(super, sizeof(super), "{FFFFFF}Level: %i - Gender: %s - Age: %i - Cash: %s - Bank: %s - Hours: %s - Ph: %i\n", PlayerData[playerid][pLevel], gender, PlayerData[playerid][pAge], FormatNumber(PlayerData[playerid][pCash]), FormatNumber(PlayerData[playerid][pBank]), FormatNumber(PlayerData[playerid][pHours], 0), PlayerData[playerid][pPhone]);
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Total Wealth: %s - Experience: %s/%s - Next Level: %s - Upgrade Points: %i\n\n", FormatNumber(totalwealth), FormatNumber(PlayerData[playerid][pEXP], 0), FormatNumber((PlayerData[playerid][pLevel] * 4), 0), FormatNumber((PlayerData[playerid][pLevel] + 1) * 5000), PlayerData[playerid][pUpgradePoints]);
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Inventory Skill: %i/5 - Addict Skill: %i/3 - Trader Skill: %i/3 - Asset Skill: %i/4 - Labor Skill: %i/5\n", PlayerData[playerid][pInventoryUpgrade], PlayerData[playerid][pAddictUpgrade], PlayerData[playerid][pTraderUpgrade], PlayerData[playerid][pAssetUpgrade], PlayerData[playerid][pLaborUpgrade]);
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Job: %s - Job 2: %s - Crimes Commited: %s - Times Arrested: %s - Wanted Level: %i\n\n", job, secondjob, FormatNumber(PlayerData[playerid][pCrimes], 0), FormatNumber(PlayerData[playerid][pArrested], 0), PlayerData[playerid][pWantedLevel]);
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Warnings: %i - DM Warnings: %i/3 - Report Warnings: %i/3 - Weapon Restriction: %i hours\n", PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], PlayerData[playerid][pWeaponRestricted]);
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Faction: %s - Rank: %s - Division: %s - Gang: %s - Rank: %s - Crew: %s\n\n", faction, facrank, division, gang, gangrank, gangcrew);
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Paycheck: %s - Insurance: %s - Channel: %i - {ffff00}Cookies: %s {ffffff}- VIP Package: %s\n", FormatNumber(PlayerData[playerid][pPaycheck]), insurance, PlayerData[playerid][pChannel], FormatNumber(PlayerData[playerid][pCookies], 0), GetVIPRank(PlayerData[playerid][pVIPPackage]));
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Playing Time: %i/60 mins - Jail Type: %s - Jail Time: %s sec - Double XP: %i hours\n\n", PlayerData[playerid][pMinutes], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0), PlayerData[playerid][pDoubleXP]);
-	strcat(str, super);
-	format(super, sizeof(super), "{FFFFFF}Married To: %s - DJ Rank: %d - Trucking XP: %d - Trucking Level: %d\n", PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);
-    strcat(str, super);
+	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
+    format(string, sizeof(string), "{B5B5B5}Statistics of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", name, GetDateStats());
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+
+	format(string, sizeof(string), "Level: %i | Gender: %s | Age: %i | Cash: %s | Bank: %s | Hours: %s | Ph: %i | Channel: %i",
+	PlayerData[playerid][pLevel], gender, PlayerData[playerid][pAge], FormatNumber(PlayerData[playerid][pCash]), FormatNumber(PlayerData[playerid][pBank]), FormatNumber(PlayerData[playerid][pHours], 0), PlayerData[playerid][pPhone], PlayerData[playerid][pChannel]);
+    SendClientMessage(targetid, COLOR_WHITE, string);
+
+	format(string, sizeof(string), "{B5B5B5}Total Wealth: %s | Experience: %s/%s | Next Level: %s | Upgrade Points: %i",
+	FormatNumber(totalwealth), FormatNumber(PlayerData[playerid][pEXP], 0), FormatNumber((PlayerData[playerid][pLevel] * 4), 0), FormatNumber((PlayerData[playerid][pLevel] + 1) * 5000), PlayerData[playerid][pUpgradePoints]);
+    SendClientMessage(targetid, COLOR_WHITE, string);
+
+	format(string, sizeof(string), "Inventory Skill: %i/5 | Addict Skill: %i/3 | Trader Skill: %i/3 | Asset Skill: %i/4 | Labor Skill: %i/5",
+	PlayerData[playerid][pInventoryUpgrade], PlayerData[playerid][pAddictUpgrade], PlayerData[playerid][pTraderUpgrade], PlayerData[playerid][pAssetUpgrade], PlayerData[playerid][pLaborUpgrade]);
+    SendClientMessage(targetid, COLOR_WHITE, string);
+
+	format(string, sizeof(string), "{B5B5B5}Job: %s | Job 2: %s | Crimes Commited: %s | Times Arrested: %s | Wanted Level: %i | Insurance: %s",
+	job, secondjob, FormatNumber(PlayerData[playerid][pCrimes], 0), FormatNumber(PlayerData[playerid][pArrested], 0), PlayerData[playerid][pWantedLevel], insurance);
+    SendClientMessage(targetid, COLOR_WHITE, string);
+    
+    format(string, sizeof(string), "Faction: %s | Rank: %s | Division: %s | Gang: %s | Rank: %s | Crew: %s",
+	faction, facrank, division, gang, gangrank, gangcrew);
+    SendClientMessage(targetid, COLOR_WHITE, string);
+
+    format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Orë | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
+	GetVIPRankEx(PlayerData[playerid][pVIPPackage]), PlayerData[playerid][pDoubleXP], FormatNumber(PlayerData[playerid][pCookies], 0), FormatNumber(PlayerData[playerid][pPaycheck]), PlayerData[playerid][pMinutes]);
+    SendClientMessage(targetid, COLOR_WHITE, string);
+
+    format(string, sizeof(string), "Weapon Restriction: %i hours | Married To: %s | DJ Rank: %d | Trucking XP: %d | Trucking Level: %d.",
+	PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);   
+    SendClientMessage(targetid, COLOR_WHITE, string);
+
+    format(string, sizeof(string), "{B5B5B5}Warnings: %i | DM Warnings: %i/3 | Report Warnings: %i/3 | Jail Type: %s | Jail Time: %s sec",
+	PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0));   
+    SendClientMessage(targetid, COLOR_WHITE, string);
+
 	if(PlayerData[targetid][pAdmin] > 0)
 	{
-	    format(super, sizeof(super), "Interior: %i - Virtual: %i - FPS: %i - AFK: %s - Reports: %s - Help Requests: %s - Newbie Replies: %s\n", (playerid == MAX_PLAYERS) ? (PlayerData[playerid][pInterior]) : (GetPlayerInterior(playerid)), (playerid == MAX_PLAYERS) ? (PlayerData[playerid][pWorld]) : (GetPlayerVirtualWorld(playerid)), (playerid == MAX_PLAYERS) ? (0) : (PlayerData[playerid][pFPS]), (playerid == MAX_PLAYERS) ? ("No") : ((PlayerData[playerid][pAFK]) ? ("Yes") : ("No")),
-			FormatNumber(PlayerData[playerid][pReports], 0), FormatNumber(PlayerData[playerid][pHelpRequests], 0), FormatNumber(PlayerData[playerid][pNewbies], 0));
-		strcat(str, super);
+	    format(string, sizeof(string), "Interior: %i | Virtual: %i | FPS: %i | AFK: %s | Raports: %s | Help Requests: %s | Newbie Replies: %s.",
+		(playerid == MAX_PLAYERS) ? (PlayerData[playerid][pInterior]) : (GetPlayerInterior(playerid)), (playerid == MAX_PLAYERS) ? (PlayerData[playerid][pWorld]) : (GetPlayerVirtualWorld(playerid)), (playerid == MAX_PLAYERS) ? (0) : (PlayerData[playerid][pFPS]), (playerid == MAX_PLAYERS) ? ("No") : ((PlayerData[playerid][pAFK]) ? ("Yes") : ("No")), FormatNumber(PlayerData[playerid][pReports], 0), FormatNumber(PlayerData[playerid][pHelpRequests], 0), FormatNumber(PlayerData[playerid][pNewbies], 0));
+        SendClientMessage(targetid, COLOR_LIGHTRED, string);
 	}
-	Dialog_Show(targetid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, titlestring, str, "Okay", "");
+
+    SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 
 }
 
 DisplayInventory(playerid, targetid = INVALID_PLAYER_ID)
 {
+    new string[800];
 	if(targetid == INVALID_PLAYER_ID) targetid = playerid;
-	new super[268], str[3000], titlestring[250];
-	//SendClientMessage(targetid, COLOR_GREEN, "______________________________________________________________________");
-	format(super, sizeof(super), "%s [%s]", GetRPName(playerid), GetDate());
-	strcat(titlestring, super);
-	format(super, sizeof(super), "{ffffff}Weed: %i/%ig - Cocaine: %i/%ig - Meth: %i/%ig - Painkillers: %i/%i - Seeds: %i/%i\n", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED),
-	PlayerData[playerid][pCocaine], GetPlayerCapacity(playerid, CAPACITY_COCAINE), PlayerData[playerid][pMeth], GetPlayerCapacity(playerid, CAPACITY_METH), PlayerData[playerid][pPainkillers], GetPlayerCapacity(playerid, CAPACITY_PAINKILLERS), PlayerData[playerid][pSeeds], GetPlayerCapacity(playerid, CAPACITY_SEEDS));
-	strcat(str, super);
-	format(super, sizeof(super), "{ffffff}Materials: %s/%s - Ephedrine: %i/%ig - Muriatic acid: %i/10 - Baking soda: %i/3\n\n", FormatNumber(PlayerData[playerid][pMaterials], 0), FormatNumber(GetPlayerCapacity(playerid, CAPACITY_MATERIALS), 0),
-	PlayerData[playerid][pEphedrine], GetPlayerCapacity(playerid, CAPACITY_EPHEDRINE), PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pBakingSoda]);
-	strcat(str, super);
-	format(super, sizeof(super), "{ffffff}Fishing rod: %s - Fish bait: %i/20 - Boombox: %s - MP3 player: %s - Phonebook: %s\n", (PlayerData[playerid][pFishingRod]) ? ("Yes") : ("No"), PlayerData[playerid][pFishingBait], (PlayerData[playerid][pBoombox]) ? ("Yes") : ("No"), (PlayerData[playerid][pMP3Player]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhonebook]) ? ("Yes") : ("No"));
-	strcat(str, super);
-	format(super, sizeof(super), "{ffffff}Drivers license: %s - Components: %s - Cigars: %s - Spraycans: %i/20 - Bombs: %i/3\n\n", (PlayerData[playerid][pCarLicense]) ? ("Yes") : ("No"), FormatNumber(PlayerData[playerid][pComponents], 0), FormatNumber(PlayerData[playerid][pCigars], 0), PlayerData[playerid][pSpraycans], PlayerData[playerid][pBombs]);
-	strcat(str, super);
-	format(super, sizeof(super), "{ffffff}Walkie talkie: %s - Mobile phone: %s - First aid kits: %i/20 - Police scanner: %s\n", (PlayerData[playerid][pWalkieTalkie]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhone]) ? ("Yes") : ("No"), PlayerData[playerid][pFirstAid], (PlayerData[playerid][pPoliceScanner]) ? ("Yes") : ("No"));
-	strcat(str, super);
-	format(super, sizeof(super), "{ffffff}Gasoline: %i/20L - Bodykits: %i/10 - Rimkits: %i/5 - Rope: %i/10 - Watch: %s - GPS: %s\n\n", PlayerData[playerid][pGasCan], PlayerData[playerid][pBodykits], PlayerData[playerid][pRimkits], PlayerData[playerid][pRope], (PlayerData[playerid][pWatch]) ? ("Yes") : ("No"), (PlayerData[playerid][pGPS]) ? ("Yes") : ("No"));
-	strcat(str, super);
-	format(super, sizeof(super), "{ffffff}Diamond: %s - Oil: %i/%iL - Skates: %s - Crowbar: %i/5", FormatNumber(PlayerData[playerid][pDiamonds], 0), PlayerData[playerid][pOil],  GetPlayerCapacity(playerid, CAPACITY_OIL), (PlayerData[playerid][pSkates]) ? ("Yes") : ("No"), PlayerData[playerid][pCrowbar]);
-	strcat(str, super);
-	Dialog_Show(targetid, 0, DIALOG_STYLE_MSGBOX, titlestring, str, "Okay", "");
+	
+	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 
+	format(string, sizeof(string), "{B5B5B5}Inventory of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	format(string, sizeof(string), "Weed: %i/%ig | Cocaine: %i/%ig | Meth: %i/%ig | Painkillers: %i/%i | Seeds: %i/%i", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED),
+        PlayerData[playerid][pCocaine], GetPlayerCapacity(playerid, CAPACITY_COCAINE), PlayerData[playerid][pMeth], GetPlayerCapacity(playerid, CAPACITY_METH), PlayerData[playerid][pPainkillers], GetPlayerCapacity(playerid, CAPACITY_PAINKILLERS), PlayerData[playerid][pSeeds], GetPlayerCapacity(playerid, CAPACITY_SEEDS));
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	format(string, sizeof(string), "{B5B5B5}Materials: %s/%s | Ephedrine: %i/%ig | Muriatic acid: %i/10 | Baking soda: %i/3", FormatNumber(PlayerData[playerid][pMaterials], 0), FormatNumber(GetPlayerCapacity(playerid, CAPACITY_MATERIALS), 0),
+		PlayerData[playerid][pEphedrine], GetPlayerCapacity(playerid, CAPACITY_EPHEDRINE), PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pBakingSoda]);
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	format(string, sizeof(string), "Fishing rod: %s | Fish bait: %i/20 | Boombox: %s | MP3 player: %s | Phonebook: %s", (PlayerData[playerid][pFishingRod]) ? ("Yes") : ("No"), PlayerData[playerid][pFishingBait], (PlayerData[playerid][pBoombox]) ? ("Yes") : ("No"), (PlayerData[playerid][pMP3Player]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhonebook]) ? ("Yes") : ("No"));
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	format(string, sizeof(string), "{B5B5B5}Drivers license: %s | Components: %s | Cigars: %s | Spraycans: %i/20 | Bombs: %i/3", (PlayerData[playerid][pCarLicense]) ? ("Yes") : ("No"), FormatNumber(PlayerData[playerid][pComponents], 0), FormatNumber(PlayerData[playerid][pCigars], 0), PlayerData[playerid][pSpraycans], PlayerData[playerid][pBombs]);
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	format(string, sizeof(string), "Walkie talkie: %s | Mobile phone: %s | First aid kits: %i/20 | Police scanner: %s", (PlayerData[playerid][pWalkieTalkie]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhone]) ? ("Yes") : ("No"), PlayerData[playerid][pFirstAid], (PlayerData[playerid][pPoliceScanner]) ? ("Yes") : ("No"));
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	format(string, sizeof(string), "{B5B5B5}Gasoline: %i/20L | Bodykits: %i/10 | Rimkits: %i/5 | Rope: %i/10 | Watch: %s | GPS: %s", PlayerData[playerid][pGasCan], PlayerData[playerid][pBodykits], PlayerData[playerid][pRimkits], PlayerData[playerid][pRope], (PlayerData[playerid][pWatch]) ? ("Yes") : ("No"), (PlayerData[playerid][pGPS]) ? ("Yes") : ("No"));
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	format(string, sizeof(string), "Diamond: %s | Oil: %i/%iL | Skates: %s | Crowbar: %i/5", FormatNumber(PlayerData[playerid][pDiamonds], 0), PlayerData[playerid][pOil],  GetPlayerCapacity(playerid, CAPACITY_OIL), (PlayerData[playerid][pSkates]) ? ("Yes") : ("No"), PlayerData[playerid][pCrowbar]);
+	SendClientMessageEx(targetid, COLOR_WHITE, string);
+	
+	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
+	return 1;
 }
-
 
 stock LoginTDControl( playerid, bool:show ) {
 
@@ -21182,7 +21235,7 @@ AFKCheck(playerid)
 
 	    if(!PlayerData[playerid][pAFK] && PlayerData[playerid][pAFKTime] >= 60)
 	    {
-		    //SendClientMessage(playerid, COLOR_LIGHTORANGE, "** You are now marked as {00AA00}Away from keyboard{F7A763} as you haven't moved in one minute.");
+		    //SendClientMessage(playerid, COLOR_LIGHTORANGE, "* You are now marked as {00AA00}Away from keyboard{F7A763} as you haven't moved in one minute.");
 		//	SendClientMessage(playerid, COLOR_LIGHTRED, ">>{ffffff} You have been marked as AFK as you haven't moved in one minute.");
 		    PlayerData[playerid][pAFK] = 1;
 		}
@@ -21192,10 +21245,10 @@ AFKCheck(playerid)
 		if(PlayerData[playerid][pAFK])
 		{
 		    if(PlayerData[playerid][pAFKTime] < 120) {
-		    	//SendClientMessageEx(playerid, COLOR_LIGHTORANGE, "** You are no longer marked as Away from Keyboard after %i seconds.", PlayerData[playerid][pAFKTime]);
+		    	//SendClientMessageEx(playerid, COLOR_LIGHTORANGE, "* You are no longer marked as Away from Keyboard after %i seconds.", PlayerData[playerid][pAFKTime]);
 		    //	SendClientMessageEx(playerid, COLOR_LIGHTRED, ">>{ffffff} You are no longer marked as AFK after %i seconds.", PlayerData[playerid][pAFKTime]);
 			} else {
-			    //SendClientMessageEx(playerid, COLOR_LIGHTORANGE, "** You are no longer marked as Away from Keyboard after %i minutes.", PlayerData[playerid][pAFKTime] / 60);
+			    //SendClientMessageEx(playerid, COLOR_LIGHTORANGE, "* You are no longer marked as Away from Keyboard after %i minutes.", PlayerData[playerid][pAFKTime] / 60);
 			//    SendClientMessageEx(playerid, COLOR_LIGHTRED, ">>{ffffff} You are no longer marked as AFK after %i minutes.", PlayerData[playerid][pAFKTime] / 60);
 			}
 
@@ -21648,12 +21701,12 @@ SendNewbieChatMessage(playerid, text[])
 	    {
 	        if(strlen(text) > MAX_SPLIT_LENGTH)
 	        {
-				SendClientMessageEx(i, COLOR_NEWBIE, "** %s: %.*s...", string, MAX_SPLIT_LENGTH, text);
-				SendClientMessageEx(i, COLOR_NEWBIE, "** %s: ...%s", string, text[MAX_SPLIT_LENGTH]);
+				SendClientMessageEx(i, COLOR_NEWBIE, "* %s: %.*s...", string, MAX_SPLIT_LENGTH, text);
+				SendClientMessageEx(i, COLOR_NEWBIE, "* %s: ...%s", string, text[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-			    SendClientMessageEx(i, COLOR_NEWBIE, "** %s: %s", string, text);
+			    SendClientMessageEx(i, COLOR_NEWBIE, "* %s: %s", string, text);
 			}
 		}
 	}
@@ -21750,11 +21803,11 @@ SellWeapon(playerid, targetid, weaponid, price = 0)
 		if(targetid == playerid)
 		{
 		    SendClientMessageEx(playerid, COLOR_AQUA, "You have crafted yourself a {FF6347}%s{33CCFF}.", GetWeaponNameEx(weaponid));
-		    ShowActionBubble(playerid, "** %s puts together some materials and crafts themselves a %s.", GetRPName(playerid), GetWeaponNameEx(weaponid));
+		    ShowActionBubble(playerid, "* %s puts together some materials and crafts themselves a %s.", GetRPName(playerid), GetWeaponNameEx(weaponid));
 		}
 		else
 		{
-			ShowActionBubble(playerid, "** %s puts together some materials and crafts a %s for %s.", GetRPName(playerid), GetWeaponNameEx(weaponid), GetRPName(targetid));
+			ShowActionBubble(playerid, "* %s puts together some materials and crafts a %s for %s.", GetRPName(playerid), GetWeaponNameEx(weaponid), GetRPName(targetid));
 			SendClientMessageEx(playerid, COLOR_AQUA, "You have sold %s a {FF6347}%s{33CCFF} for {00AA00}%s{33CCFF}.", GetRPName(targetid), GetWeaponNameEx(weaponid), FormatNumber(price));
 			SendClientMessageEx(targetid, COLOR_AQUA, "%s has sold you a {FF6347}%s{33CCFF} for {00AA00}%s{33CCFF}.", GetRPName(playerid), GetWeaponNameEx(weaponid), FormatNumber(price));
 			GivePlayerCash(playerid, price);
@@ -26528,7 +26581,7 @@ public SecondTimer()
 		            Float:y,
 		            Float:z;
 
-		        SendProximityMessage(i, 20.0, COLOR_PURPLE, "** %s slipped off the top of the vehicle.", GetRPName(i));
+		        SendProximityMessage(i, 20.0, COLOR_PURPLE, "* %s slipped off the top of the vehicle.", GetRPName(i));
 		        GetPlayerPos(i, x, y, z);
 		        SetPlayerPos(i, x + 1, y, z + 3.0);
 		        ApplyAnimation(i, "PED", "BIKE_fallR", 4.1, 0, 1, 1, 0, 0);
@@ -26596,7 +26649,7 @@ public SecondTimer()
 							Graffiti_Refresh(PlayerData[i][pGraffiti]);
 						    Graffiti_Save(PlayerData[i][pGraffiti]);
 						    ClearAnimations(i, 1);
-							SendProximityMessage(i, 30.0, COLOR_PURPLE, "** %s puts their can of spray paint away.", GetRPName(i));
+							SendProximityMessage(i, 30.0, COLOR_PURPLE, "* %s puts their can of spray paint away.", GetRPName(i));
 			   	            PlayerData[i][pGraffiti] = -1;
 			   	            PlayerData[i][pGraffitiTime] = 0;
 						}
@@ -26617,7 +26670,7 @@ public SecondTimer()
 							Graffiti_Refresh(PlayerData[i][pGraffiti]);
 						    Graffiti_Save(PlayerData[i][pGraffiti]);
 						    ClearAnimations(i, 1);
-							SendProximityMessage(i, 30.0, COLOR_PURPLE, "** %s puts their can of spray paint away.", GetRPName(i));
+							SendProximityMessage(i, 30.0, COLOR_PURPLE, "* %s puts their can of spray paint away.", GetRPName(i));
 			   	            PlayerData[i][pGraffiti] = -1;
 			   	            PlayerData[i][pGraffitiTime] = 0;
 						}
@@ -27159,7 +27212,7 @@ public SecondTimer()
 
 						if(count == 0 && VehicleInfo[PlayerData[i][pCocaineTrunk]][vCocaine] == 0 && VehicleInfo[PlayerData[i][pCocaineTrunk]][vMeth] == 0 && VehicleInfo[PlayerData[i][pCocaineTrunk]][vWeed] == 0 && VehicleInfo[PlayerData[i][pCocaineTrunk]][vPainkillers] == 0 && VehicleInfo[PlayerData[i][pCocaineTrunk]][vMaterials] == 0 && VehicleInfo[PlayerData[i][pCocaineTrunk]][vCash] == 0)
 						{
-						    SendProximityMessage(i, 20.0, COLOR_PURPLE, "** %s cracks open the trunk of the %s and finds nothing.", GetRPName(i), GetVehicleName(PlayerData[i][pCocaineTrunk]));
+						    SendProximityMessage(i, 20.0, COLOR_PURPLE, "* %s cracks open the trunk of the %s and finds nothing.", GetRPName(i), GetVehicleName(PlayerData[i][pCocaineTrunk]));
 						}
 						else
 						{
@@ -27945,7 +27998,7 @@ public FuelTimer()
 			    {
 			        case 15, 10, 5:
 			        {
-			            SendClientMessage(driverid, COLOR_LIGHTRED, "** This vehicle is running low on fuel. Visit the nearest gas station to fill up. (/refuel)");
+			            SendClientMessage(driverid, COLOR_LIGHTRED, "* This vehicle is running low on fuel. Visit the nearest gas station to fill up. (/refuel)");
 					}
 				}
 			}
@@ -28009,13 +28062,13 @@ public RandomFire(check)
 	                    {
 	                        if(IsPlayerInRangeOfPoint(x, 30.0, randomFireSpawns[i][fireX], randomFireSpawns[i][fireY], randomFireSpawns[i][fireZ]))
 	                        {
-	                            SendClientMessage(x, COLOR_PURPLE, "** An explosion can be heard. Smoke is rising from a building nearby.");
+	                            SendClientMessage(x, COLOR_PURPLE, "* An explosion can be heard. Smoke is rising from a building nearby.");
 	                        }
 	                        if(GetFactionType(x) == FACTION_MEDIC)
 	                        {
 	                            PlayerData[x][pCP] = CHECKPOINT_MISC;
 	                            SetPlayerCheckpoint(x, randomFireSpawns[i][fireX], randomFireSpawns[i][fireY], randomFireSpawns[i][fireZ], 3.0);
-	                            SendClientMessageEx(x, COLOR_DOCTOR, "** All units, a fire has been reported in %s. Please head to the beacon on your map. **", GetZoneName(randomFireSpawns[i][fireX], randomFireSpawns[i][fireY], randomFireSpawns[i][fireZ]));
+	                            SendClientMessageEx(x, COLOR_DOCTOR, "* All units, a fire has been reported in %s. Please head to the beacon on your map. *", GetZoneName(randomFireSpawns[i][fireX], randomFireSpawns[i][fireY], randomFireSpawns[i][fireZ]));
 							}
 	                    }
 
@@ -28205,13 +28258,13 @@ public Radio_PlayStation(playerid)
 	    {
 	        case MUSIC_MP3PLAYER:
 	        {
-			    ShowActionBubble(playerid, "** %s changes the radio station on their MP3 player.", GetRPName(playerid));
+			    ShowActionBubble(playerid, "* %s changes the radio station on their MP3 player.", GetRPName(playerid));
 	    		SendClientMessageEx(playerid, COLOR_AQUA, "You are now tuned in to {00AA00}%s{33CCFF}.", name);
 				SetMusicStream(MUSIC_MP3PLAYER, playerid, url);
 			}
 			case MUSIC_BOOMBOX:
 			{
-			    ShowActionBubble(playerid, "** %s changes the radio station on their boombox.", GetRPName(playerid));
+			    ShowActionBubble(playerid, "* %s changes the radio station on their boombox.", GetRPName(playerid));
 	    		SendClientMessageEx(playerid, COLOR_AQUA, "Your boombox is now tuned in to {00AA00}%s{33CCFF}.", name);
 				SetMusicStream(MUSIC_BOOMBOX, playerid, url);
 			}
@@ -28219,7 +28272,7 @@ public Radio_PlayStation(playerid)
 			{
 			    if(IsPlayerInAnyVehicle(playerid))
 			    {
-				    ShowActionBubble(playerid, "** %s changes the radio station in their vehicle.", GetRPName(playerid));
+				    ShowActionBubble(playerid, "* %s changes the radio station in their vehicle.", GetRPName(playerid));
 		    		SendClientMessageEx(playerid, COLOR_AQUA, "Your radio is now tuned in to {00AA00}%s{33CCFF}.", name);
 					SetMusicStream(MUSIC_VEHICLE, GetPlayerVehicleID(playerid), url);
 				}
@@ -28317,7 +28370,7 @@ public MDC_ClearCharges(playerid)
             }
         }
 
-        SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "** HQ: %s %s has cleared %s's charges and wanted level.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), username);
+        SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "* HQ: %s %s has cleared %s's charges and wanted level.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), username);
 	}
 }
 
@@ -28603,8 +28656,8 @@ public OnPlayerAttemptBuyVehicleEx(playerid, offeredby, vehicleid, price)
 	    GivePlayerCash(offeredby, price);
 	    GivePlayerCash(playerid, -price);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's vehicle offer and paid %s for their %s.", GetRPName(offeredby), FormatNumber(price), GetVehicleName(vehicleid));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your vehicle offer and paid %s for your %s.", GetRPName(playerid), FormatNumber(price), GetVehicleName(vehicleid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's vehicle offer and paid %s for their %s.", GetRPName(offeredby), FormatNumber(price), GetVehicleName(vehicleid));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your vehicle offer and paid %s for your %s.", GetRPName(playerid), FormatNumber(price), GetVehicleName(vehicleid));
         Log_Write("log_property", "%s (uid: %i) (IP: %s) sold their %s (id: %i) for $%i to %s (uid: %i) (IP: %s)", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerIP(offeredby), GetVehicleName(vehicleid), VehicleInfo[vehicleid][vID], price, GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerIP(playerid));
 	}
 }
@@ -28729,7 +28782,7 @@ public OnPlayerRamLandDoor(playerid, objectid, id)
 			Float:ry,
 			Float:rz;
 
-		ShowActionBubble(playerid, "** %s rams the door down.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s rams the door down.", GetRPName(playerid));
 
         GetDynamicObjectRot(objectid, rx, ry, rz);
         rz -= 90.0;
@@ -28746,9 +28799,9 @@ public OnPlayerLockLandDoor(playerid, id)
 	new status = !cache_get_field_content_int(0, "door_locked");
 
 	if(status) {
-	    ShowActionBubble(playerid, "** %s locks the door.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s locks the door.", GetRPName(playerid));
 	} else {
-	    ShowActionBubble(playerid, "** %s unlocks the door.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s unlocks the door.", GetRPName(playerid));
 	}
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE landobjects SET door_locked = %i WHERE id = %i", status, id);
@@ -28772,14 +28825,14 @@ public OnPlayerUseLandGate(playerid, objectid, id)
 	    else
 	    {
 			MoveDynamicObject(objectid, x, y, z, 3.0, cache_get_field_content_float(0, "move_rx"), cache_get_field_content_float(0, "move_ry"), cache_get_field_content_float(0, "move_rz"));
-			ShowActionBubble(playerid, "** %s uses their remote to open the gate.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s uses their remote to open the gate.", GetRPName(playerid));
 			Streamer_SetExtraInt(objectid, E_OBJECT_OPENED, 1);
 		}
 	}
 	else
 	{
 		MoveDynamicObject(objectid, cache_get_field_content_float(0, "pos_x"), cache_get_field_content_float(0, "pos_y"), cache_get_field_content_float(0, "pos_z"), 3.0, cache_get_field_content_float(0, "rot_x"), cache_get_field_content_float(0, "rot_y"), cache_get_field_content_float(0, "rot_z"));
-		ShowActionBubble(playerid, "** %s uses their remote to close the gate.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s uses their remote to close the gate.", GetRPName(playerid));
 		Streamer_SetExtraInt(objectid, E_OBJECT_OPENED, 0);
 	}
 }
@@ -28813,9 +28866,9 @@ public OnPlayerUseLandDoor(playerid, objectid, id)
 		mysql_tquery(connectionID, queryBuffer);
 
 		if(status)
-		    ShowActionBubble(playerid, "** %s opens the door.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s opens the door.", GetRPName(playerid));
 		else
-		    ShowActionBubble(playerid, "** %s closes the door.", GetRPName(playerid));
+		    ShowActionBubble(playerid, "* %s closes the door.", GetRPName(playerid));
 	}
 }
 
@@ -29214,8 +29267,8 @@ public OnPlayerSendTextMessage(playerid, number, msg[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO texts VALUES(null, %i, %i, '%s', NOW(), '%e')", PlayerData[playerid][pPhone], number, GetPlayerNameEx(playerid), msg);
 	    mysql_tquery(connectionID, queryBuffer);
 
-        ShowActionBubble(playerid, "** %s takes out a cellphone and sends a message.", GetRPName(playerid));
-	    SendClientMessageEx(playerid, COLOR_YELLOW, "** SMS to %s (%i): %s **", username, number, msg);
+        ShowActionBubble(playerid, "* %s takes out a cellphone and sends a message.", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_YELLOW, "* SMS to %s (%i): %s *", username, number, msg);
 	    SendClientMessage(playerid, COLOR_WHITE, "The player who owns the number is offline, but will receive your text when they log in.");
 
         GivePlayerCash(playerid, -1);
@@ -29574,7 +29627,7 @@ public OnAdminCreateLocker(playerid, lockerid, factionid, Float:x, Float:y, Floa
     LockerInfo[lockerid][lPickup] = -1;
 
     ReloadLocker(lockerid);
-    SendClientMessageEx(playerid, COLOR_GREEN, "** Locker %i created for %s.", lockerid, FactionInfo[factionid][fName]);
+    SendClientMessageEx(playerid, COLOR_GREEN, "* Locker %i created for %s.", lockerid, FactionInfo[factionid][fName]);
 }
 
 forward OnAdminCreateLocation(playerid, location, name[], Float:x, Float:y, Float:z);
@@ -29587,7 +29640,7 @@ public OnAdminCreateLocation(playerid, location, name[], Float:x, Float:y, Float
     LocationInfo[location][locPosY] = y;
     LocationInfo[location][locPosZ] = z;
 
-    SendClientMessageEx(playerid, COLOR_GREEN, "** Location [%i] %s created at %.1f, %.1f, %.1f.", location, name, x, y, z);
+    SendClientMessageEx(playerid, COLOR_GREEN, "* Location [%i] %s created at %.1f, %.1f, %.1f.", location, name, x, y, z);
 }
 
 forward OnAdminOfflineCheck(playerid, username[]);
@@ -29934,7 +29987,7 @@ public OnAdminCreateTurf(playerid, turfid, name[], type, Float:minx, Float:miny,
     Iter_Add(Turf, turfid);
 
 	ReloadTurf(turfid);
-	SendClientMessageEx(playerid, COLOR_GREEN, "** Turf %i created successfully.", turfid);
+	SendClientMessageEx(playerid, COLOR_GREEN, "* Turf %i created successfully.", turfid);
 }
 
 forward OnAdminCreateLand(playerid, landid, price, Float:minx, Float:miny, Float:maxx, Float:maxy, Float:heightx, Float:heighty, Float:heightz);
@@ -29959,7 +30012,7 @@ public OnAdminCreateLand(playerid, landid, price, Float:minx, Float:miny, Float:
     Iter_Add(Land, landid);
 
     ReloadLand(landid);
-    SendClientMessageEx(playerid, COLOR_GREEN, "** Land %i created successfully.", landid);
+    SendClientMessageEx(playerid, COLOR_GREEN, "* Land %i created successfully.", landid);
 }
 
 forward OnAdminCreateEntrance(playerid, entranceid, name[], Float:x, Float:y, Float:z, Float:angle);
@@ -30006,7 +30059,7 @@ public OnAdminCreateEntrance(playerid, entranceid, name[], Float:x, Float:y, Flo
 	mysql_tquery(connectionID, queryBuffer);
 
 	ReloadEntrance(entranceid);
-	SendClientMessageEx(playerid, COLOR_GREEN, "** Entrance %i created successfully.", entranceid);
+	SendClientMessageEx(playerid, COLOR_GREEN, "* Entrance %i created successfully.", entranceid);
 }
 
 forward OnAdminCreateBusiness(playerid, businessid, type, Float:x, Float:y, Float:z, Float:angle);
@@ -30046,7 +30099,7 @@ public OnAdminCreateBusiness(playerid, businessid, type, Float:x, Float:y, Float
 
 	ReloadBusiness(businessid);
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has created a business id %i, type %i.",GetAdmCmdRank(playerid), GetRPName(playerid), businessid, BusinessInfo[businessid][bType]);
-	SendClientMessageEx(playerid, COLOR_GREEN, "** Business %i created successfully.", businessid);
+	SendClientMessageEx(playerid, COLOR_GREEN, "* Business %i created successfully.", businessid);
 }
 
 forward OnAdminCreateGarage(playerid, garageid, type, Float:x, Float:y, Float:z, Float:angle);
@@ -30076,7 +30129,7 @@ public OnAdminCreateGarage(playerid, garageid, type, Float:x, Float:y, Float:z, 
 	mysql_tquery(connectionID, queryBuffer);
 
 	ReloadGarage(garageid);
-	SendClientMessageEx(playerid, COLOR_GREEN, "** Garage %i created successfully.", garageid);
+	SendClientMessageEx(playerid, COLOR_GREEN, "* Garage %i created successfully.", garageid);
 }
 
 forward OnAdminCreateHouse(playerid, houseid, type, Float:x, Float:y, Float:z, Float:angle);
@@ -30127,7 +30180,7 @@ public OnAdminCreateHouse(playerid, houseid, type, Float:x, Float:y, Float:z, Fl
 
 	ReloadHouse(houseid);
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has created house id %i, type %i.",GetAdmCmdRank(playerid), GetRPName(playerid), houseid, HouseInfo[houseid][hType]);
-	SendClientMessageEx(playerid, COLOR_GREEN, "** House %i created successfully.", houseid);
+	SendClientMessageEx(playerid, COLOR_GREEN, "* House %i created successfully.", houseid);
 }
 
 forward OnAdminDeleteAccount(playerid, username[]);
@@ -30581,7 +30634,7 @@ public OnQueryFinished(threadid, extraid)
 		    }
 	        else if(cache_get_field_content_int(0, "locked"))
          	{
-          		SendClientMessage(extraid, COLOR_LIGHTRED, "** This account is currently locked. Post an administrative request to have it lifted.");
+          		SendClientMessage(extraid, COLOR_LIGHTRED, "* This account is currently locked. Post an administrative request to have it lifted.");
           		Dialog_Show(extraid, DIALOG_NONE, DIALOG_STYLE_MSGBOX, "{00aa00}OS:RP{FFFFFF} | Unable to Login", "{FFFFFF}This account is currently locked.\n\nYou can post an administrative request on {00aa00}os-rp.net{FFFFFF} to have it lifted.", "Cancel", "");
             	SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s tried to login with a locked account.", GetRPName(extraid));
              	KickPlayer(extraid);
@@ -30592,7 +30645,7 @@ public OnQueryFinished(threadid, extraid)
    			    {
    					ResetPlayerWeaponsEx(extraid);
    				}
-	            new date[64];
+	            new date[64], string[128];
 	            cache_get_field_content(0, "login_date", date);
 	            cache_get_field_content(0, "accent", PlayerData[extraid][pAccent], connectionID, 16);
 	            cache_get_field_content(0, "adminname", PlayerData[extraid][pAdminName], connectionID, MAX_PLAYER_NAME);
@@ -30921,27 +30974,37 @@ public OnQueryFinished(threadid, extraid)
 				    }
 				    else
 				    {
-				        if(!isnull(gServerMOTD))
-						{
-							SendClientMessageEx(extraid, COLOR_YELLOW, ">{ff0000} News:{ffffff} %s", gServerMOTD);
-						}
+				    	SendClientMessageEx(extraid, COLOR_WHITE, "SERVER: Welcome %s", GetPlayerNameEx(extraid));
+
 						if(!isnull(adminMOTD) && PlayerData[extraid][pAdmin] > 0)
 						{
-							SendClientMessageEx(extraid, COLOR_LIGHTRED, "** Admin MOTD: %s", adminMOTD);
+							SendClientMessageEx(extraid, 0xE65A5AAA, "Admin Motd: %s", adminMOTD);
 						}
+					
 						if(!isnull(helperMOTD) && PlayerData[extraid][pHelper] > 0)
 						{
-							SendClientMessageEx(extraid, COLOR_AQUA, "** Helper MOTD: %s", helperMOTD);
+							SendClientMessageEx(extraid, COLOR_AQUA, "Helper Motd: %s", helperMOTD);
 						}
+				
+						if(PlayerData[extraid][pFaction] >= 0 && strcmp(FactionInfo[PlayerData[extraid][pFaction]][fMOTD], "None", true) != 0)
+						{
+							SendClientMessageEx(extraid, COLOR_YELLOW, "Faction Motd: %s", FactionInfo[PlayerData[extraid][pFaction]][fMOTD]);
+						}	
+
 						if(PlayerData[extraid][pGang] >= 0 && strcmp(GangInfo[PlayerData[extraid][pGang]][gMOTD], "None", true) != 0)
 						{
 							SendClientMessageEx(extraid, COLOR_YELLOW, "Gang MOTD: %s", GangInfo[PlayerData[extraid][pGang]][gMOTD]);
 						}
-						if(PlayerData[extraid][pFaction] >= 0 && strcmp(FactionInfo[PlayerData[extraid][pFaction]][fMOTD], "None", true) != 0)
+				
+						if(!isnull(gServerMOTD))
 						{
-							SendClientMessageEx(extraid, COLOR_YELLOW, "Faction MOTD: %s", FactionInfo[PlayerData[extraid][pFaction]][fMOTD]);
+							SendClientMessageEx(extraid, COLOR_WHITE, "Global Motd: %s", gServerMOTD);
 						}
-					    if(PlayerData[extraid][pAdmin] && !PlayerData[extraid][pAdminHide])
+
+					    format(string, sizeof(string), "~w~Welcome ~n~~y~   %s", GetPlayerNameEx(extraid));
+        	        	GameTextForPlayer(extraid, string, 5000, 1);
+						
+					    /*if(PlayerData[extraid][pAdmin] && !PlayerData[extraid][pAdminHide])
 					    {
 					        SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has logged in.", GetAdmCmdRank(extraid), GetRPName(extraid));
 					    }
@@ -30967,6 +31030,8 @@ public OnQueryFinished(threadid, extraid)
 						}
 
 					    SendClientMessageEx(extraid, COLOR_NAVYBLUE, "Your last login was on the %s (server time).", GetDate());
+					   	*/
+
 					    StopAudioStreamForPlayer(extraid);
 					}
 
@@ -31733,7 +31798,7 @@ public OnQueryFinished(threadid, extraid)
 
 		    if(rows)
 		    {
-		        SendClientMessageEx(extraid, COLOR_YELLOW, "** You have %i unread text messages. (/texts)", rows);
+		        SendClientMessageEx(extraid, COLOR_YELLOW, "* You have %i unread text messages. (/texts)", rows);
 			}
 		}
 		case THREAD_VIEW_TEXTS:
@@ -32027,7 +32092,7 @@ public OnQueryFinished(threadid, extraid)
 
 		    //SendClientMessage(extraid, COLOR_NAVYBLUE, "_______ My Land _______");
 			//SendClientMessageEx(extraid, COLOR_GREY2, "(ID: %i) - (Value: $%i) - (Objects: %i/%i) - (Location: %s)", landid, LandInfo[landid][lPrice], cache_get_row_int(0, 0), GetLandObjectCapacity(landid), GetZoneName(LandInfo[landid][lMinX], LandInfo[landid][lMinY], LandInfo[landid][lHeight]));
-			SendClientMessageEx(extraid, COLOR_WHITE, "** Your level %i/3 land in %s is worth {00AA00}%s{FFFFFF} and contains %i/%i objects.", LandInfo[landid][lLevel], GetZoneName(LandInfo[landid][lHeightX], LandInfo[landid][lHeightY], LandInfo[landid][lHeightZ]), FormatNumber(LandInfo[landid][lPrice]), cache_get_row_int(0, 0), GetLandObjectCapacity(LandInfo[landid][lLevel]));
+			SendClientMessageEx(extraid, COLOR_WHITE, "* Your level %i/3 land in %s is worth {00AA00}%s{FFFFFF} and contains %i/%i objects.", LandInfo[landid][lLevel], GetZoneName(LandInfo[landid][lHeightX], LandInfo[landid][lHeightY], LandInfo[landid][lHeightZ]), FormatNumber(LandInfo[landid][lPrice]), cache_get_row_int(0, 0), GetLandObjectCapacity(LandInfo[landid][lLevel]));
 		}
 		case THREAD_LOAD_VEHICLES:
 		{
@@ -32148,7 +32213,7 @@ public OnQueryFinished(threadid, extraid)
 				}
 				else
 				{
-		        	SendClientMessageEx(extraid, COLOR_WHITE, "** %s's IP: %s **", username, ip);
+		        	SendClientMessageEx(extraid, COLOR_WHITE, "* %s's IP: %s *", username, ip);
 				}
 
 		    }
@@ -32278,7 +32343,7 @@ public OnQueryFinished(threadid, extraid)
 		    {
 		        if(flags[i] > 0)
 		        {
-		            SendClientMessageEx(extraid, COLOR_GREY3, "** %s[%i] has %i active flags.", GetRPName(i), i, flags[i]);
+		            SendClientMessageEx(extraid, COLOR_GREY3, "* %s[%i] has %i active flags.", GetRPName(i), i, flags[i]);
 				}
 			}
 		}
@@ -32854,7 +32919,7 @@ public OnPhoneResponse(playerid, number)
 		case 911:
 		{
 			PlayerData[playerid][pCalling] = 911;
-			ShowActionBubble(playerid, "** %s dials a number on their keypad and begins a call.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s dials a number on their keypad and begins a call.", GetRPName(playerid));
 			SendClientMessage(playerid, COLOR_YELLOW, "Dispatch: 911, what is your emergency? Enter 'police' or 'medic'.");
 		}
 		case 8294:
@@ -32875,12 +32940,12 @@ public OnPhoneResponse(playerid, number)
 
 			if (targetid == INVALID_PLAYER_ID)
 			{
-				SendClientMessage(playerid, COLOR_GREY, "** This cellphone number is currently not in service. **");
+				SendClientMessage(playerid, COLOR_GREY, "* This cellphone number is currently not in service. *");
 				HangupCall(playerid);
 			}
 			else if (IsPhoneBusy(number))
 			{
-				SendClientMessage(playerid, COLOR_GREY, "** You would hear a busy tone. **");
+				SendClientMessage(playerid, COLOR_GREY, "* You would hear a busy tone. *");
 				HangupCall(playerid);
 			}
 		}
@@ -34401,11 +34466,11 @@ public OnPlayerSpawn(playerid)
 
 	    if(PlayerData[playerid][pJailType] == 2)
 	    {
-	        SendClientMessageEx(playerid, COLOR_LIGHTRED, "** You were placed in admin prison by %s, reason: %s", PlayerData[playerid][pPrisonedBy], PlayerData[playerid][pPrisonReason]);
+	        SendClientMessageEx(playerid, COLOR_LIGHTRED, "* You were placed in admin prison by %s, reason: %s", PlayerData[playerid][pPrisonedBy], PlayerData[playerid][pPrisonReason]);
 		}
 		else
 		{
-			SendClientMessage(playerid, COLOR_LIGHTRED, "** You haven't completed your jail sentence yet.");
+			SendClientMessage(playerid, COLOR_LIGHTRED, "* You haven't completed your jail sentence yet.");
 		}
 	}
 	else if(PlayerData[playerid][pPaintball] > 0)
@@ -34881,7 +34946,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	        {
 	            if(!(testVehicles[0] <= GetPlayerVehicleID(playerid) <= testVehicles[4]))
 	            {
-					SendClientMessage(playerid, COLOR_LIGHTRED, "** You failed the test as you exited your vehicle.");
+					SendClientMessage(playerid, COLOR_LIGHTRED, "* You failed the test as you exited your vehicle.");
 	                DisablePlayerCheckpoint(playerid);
 		    		SetVehicleToRespawn(PlayerData[playerid][pTestVehicle]);
 
@@ -34903,7 +34968,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			    if(health < 900.0)
 			    {
 			        GameTextForPlayer(playerid, "~r~Failed", 5000, 1);
-			        SendClientMessage(playerid, COLOR_LIGHTRED, "** You brought back the vehicle damaged and therefore failed your test.");
+			        SendClientMessage(playerid, COLOR_LIGHTRED, "* You brought back the vehicle damaged and therefore failed your test.");
 			    }
 			    else
 			    {
@@ -35154,7 +35219,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	    }
 	    case CHECKPOINT_HOUSE:
 	    {
-            ShowActionBubble(playerid, "** %s has entered the house.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s has entered the house.", GetRPName(playerid));
 			SetPlayerPos(playerid, HouseInfo[PlayerData[playerid][pInviteHouse]][hIntX], HouseInfo[PlayerData[playerid][pInviteHouse]][hIntY], HouseInfo[PlayerData[playerid][pInviteHouse]][hIntZ]);
 			SetPlayerFacingAngle(playerid, HouseInfo[PlayerData[playerid][pInviteHouse]][hIntA]);
 			SetPlayerInterior(playerid, HouseInfo[PlayerData[playerid][pInviteHouse]][hInterior]);
@@ -35651,7 +35716,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		ApplyAnimation(damagedid, "PED", "KO_skid_front", 4.1, 0, 0, 0, 1, 0);
 		GameTextForPlayer(damagedid, "~r~Tazed", 5000, 3);
 
-		ShowActionBubble(playerid, "** %s aims their tazer full of electricity at %s and stuns them.", GetRPName(playerid), GetRPName(damagedid));
+		ShowActionBubble(playerid, "* %s aims their tazer full of electricity at %s and stuns them.", GetRPName(playerid), GetRPName(damagedid));
 		SendClientMessageEx(damagedid, COLOR_AQUA, "You've been {FF6347}stunned{33CCFF} with electricity by %s's tazer.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have stunned %s with electricity. They are disabled for 10 seconds.", GetRPName(damagedid));
 		return 0;
@@ -35772,7 +35837,7 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 		{
 		    if(IsLawEnforcement(i))
 		    {
-		        SendClientMessageEx(i, COLOR_OLDSCHOOL, "** HQ: A robbery is occurring at the %s. There are %i confirmed robbers.", bank, GetBankRobbers());
+		        SendClientMessageEx(i, COLOR_OLDSCHOOL, "* HQ: A robbery is occurring at the %s. There are %i confirmed robbers.", bank, GetBankRobbers());
 			}
 		}
 
@@ -35913,7 +35978,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		        //ApplyAnimation(playerid, "SWORD", "sword_block", 4.0, 0, 0, 0, 0, 0, 1);
 		        //SetPlayerHealth(playerid, GetPlayerHealthEx(playerid) - 30.0);
 		        //GameTextForPlayer(playerid, "~r~C-bug is not allowed", 3000, 3);
- 	        	//SendClientMessage(playerid, COLOR_LIGHTRED, "** Please do not abuse the C-Bug glitch. This action has been reported to the admins.");
+ 	        	//SendClientMessage(playerid, COLOR_LIGHTRED, "* Please do not abuse the C-Bug glitch. This action has been reported to the admins.");
 
 				GameTextForPlayer(playerid, "~r~C-bug is not allowed", 3000, 3);
 		        ApplyAnimation(playerid, "SWORD", "sword_block", 4.0, 0, 0, 0, 0, 0, 1);
@@ -35963,7 +36028,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	        //ApplyAnimation(playerid, "SWORD", "sword_block", 4.0, 0, 0, 0, 0, 0, 1);
 	        //SetPlayerHealth(playerid, GetPlayerHealthEx(playerid) - 30.0);
 	        //GameTextForPlayer(playerid, "~r~C-bug is not allowed", 3000, 3);
-        	//SendClientMessage(playerid, COLOR_LIGHTRED, "** Please do not abuse the C-Bug glitch. This action has been reported to the admins.");
+        	//SendClientMessage(playerid, COLOR_LIGHTRED, "* Please do not abuse the C-Bug glitch. This action has been reported to the admins.");
 
 			GameTextForPlayer(playerid, "~r~C-bug is not allowed", 3000, 3);
 	        ApplyAnimation(playerid, "SWORD", "sword_block", 4.0, 0, 0, 0, 0, 0, 1);
@@ -36229,7 +36294,7 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 	                	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
 	                	mysql_tquery(connectionID, queryBuffer);
 
-	                	ShowActionBubble(playerid, "** %s paid %s to the shopkeeper and received a new set of clothes.", GetRPName(playerid), FormatNumber(price));
+	                	ShowActionBubble(playerid, "* %s paid %s to the shopkeeper and received a new set of clothes.", GetRPName(playerid), FormatNumber(price));
 	             		SendClientMessageEx(playerid, COLOR_WHITE, "You've changed your clothes for $%i.", price);
 	                }
 	                else
@@ -36723,7 +36788,7 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 						        PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
 
 								GameTextForPlayer(playerid, "~g~Vehicle unlocked!", 3000, 6);
-								ShowActionBubble(playerid, "** %s successfully kicked down the door of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+								ShowActionBubble(playerid, "* %s successfully kicked down the door of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 
 								CancelBreakIn(playerid);
 								UpdateVehicleDamageStatus(vehicleid, damage[0], 262144, damage[2], damage[3]);
@@ -36744,14 +36809,14 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 		      					    	{
 		      					        	if(IsVehicleOwner(i, vehicleid))
 		      					        	{
-		      					        	    SendClientMessageEx(i, COLOR_YELLOW, "** SMS from OnStar: The alarm was activated on your %s located in %s, Ph: 999 **", GetVehicleName(vehicleid), GetVehicleZoneName(vehicleid));
+		      					        	    SendClientMessageEx(i, COLOR_YELLOW, "* SMS from OnStar: The alarm was activated on your %s located in %s, Ph: 999 *", GetVehicleName(vehicleid), GetVehicleZoneName(vehicleid));
 											}
 
 											if(GetFactionType(i) == FACTION_POLICE)
 											{
 												if(VehicleInfo[vehicleid][vAlarm] == 2)
 												{
-												    SendClientMessageEx(i, COLOR_OLDSCHOOL, "** HQ: The alarm was activated on %s's %s in %s. **", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), GetVehicleZoneName(vehicleid));
+												    SendClientMessageEx(i, COLOR_OLDSCHOOL, "* HQ: The alarm was activated on %s's %s in %s. *", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), GetVehicleZoneName(vehicleid));
 			      					            }
 			      					            else if(VehicleInfo[vehicleid][vAlarm] == 3)
 												{
@@ -36770,7 +36835,7 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 												        }
 												    }
 
-												    SendClientMessageEx(i, COLOR_OLDSCHOOL, "** HQ: The alarm was activated on %s's %s in %s (marked on map). **", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), GetVehicleZoneName(vehicleid));
+												    SendClientMessageEx(i, COLOR_OLDSCHOOL, "* HQ: The alarm was activated on %s's %s in %s (marked on map). *", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), GetVehicleZoneName(vehicleid));
 			      					            }
 		      					            }
 		      					        }
@@ -37228,17 +37293,17 @@ public OnPlayerText(playerid, text[])
 	    text[0] = toupper(text[0]);
 	    if(PlayerData[playerid][pTutorial])
 	    {
-	        SendClientMessage(playerid, COLOR_LIGHTRED, "** You are currently in the tutorial. Chatting is disabled.");
+	        SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently in the tutorial. Chatting is disabled.");
 	        return 0;
 		}
 		if(PlayerData[playerid][pHospital])
 	    {
-	        SendClientMessage(playerid, COLOR_LIGHTRED, "** You are currently in the hospital. Chatting is disabled.");
+	        SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently in the hospital. Chatting is disabled.");
 	        return 0;
 		}
 		if(PlayerData[playerid][pMuted])
 		{
-		    SendClientMessage(playerid, COLOR_LIGHTRED, "** You are currently muted. Chatting is disabled.");
+		    SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently muted. Chatting is disabled.");
 	        return 0;
 		}
 		if(++PlayerData[playerid][pSpamTime] >= 4 && PlayerData[playerid][pAdmin] < JUNIOR_ADMIN)
@@ -37323,7 +37388,7 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_GREY2, "Caller: %s, Number: %i", GetRPName(playerid), PlayerData[playerid][pPhone]);
 						            SendClientMessageEx(i, COLOR_GREY2, "Location: %s", GetPlayerZoneName(playerid));
 						            SendClientMessageEx(i, COLOR_GREY2, "Emergency: %s", text);
-						            SendClientMessageEx(i, COLOR_WHITE, "** Use '/trackcall %i' to track the caller's location.", playerid);
+						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/trackcall %i' to track the caller's location.", playerid);
 						        }
 						    }
 
@@ -37345,7 +37410,7 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_GREY2, "Caller: %s, Number: %i", GetRPName(playerid), PlayerData[playerid][pPhone]);
 						            SendClientMessageEx(i, COLOR_GREY2, "Location: %s", GetPlayerZoneName(playerid));
 						            SendClientMessageEx(i, COLOR_GREY2, "Emergency: %s", text);
-						            SendClientMessageEx(i, COLOR_WHITE, "** Use '/trackcall %i' to track the caller's location.", playerid);
+						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/trackcall %i' to track the caller's location.", playerid);
 						        }
 						    }
 
@@ -37381,7 +37446,7 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_NAVYBLUE, "______ Mechanic Hotline ______");
 						            SendClientMessageEx(i, COLOR_GREY2, "Caller: %s, Number: %i", GetRPName(playerid), PlayerData[playerid][pPhone]);
 						            SendClientMessageEx(i, COLOR_GREY2, "Situation: %s", text);
-						            SendClientMessageEx(i, COLOR_WHITE, "** Use '/takecall %i' in order to take this call.", playerid);
+						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/takecall %i' in order to take this call.", playerid);
 						        }
 						    }
 
@@ -37398,7 +37463,7 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_NAVYBLUE, "______ Taxi Hotline ______");
 						            SendClientMessageEx(i, COLOR_GREY2, "Caller: %s, Number: %i", GetRPName(playerid), PlayerData[playerid][pPhone]);
 						            SendClientMessageEx(i, COLOR_GREY2, "Location: %s", text);
-						            SendClientMessageEx(i, COLOR_WHITE, "** Use '/takecall %i' in order to take this call.", playerid);
+						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/takecall %i' in order to take this call.", playerid);
 						        }
 						    }
 
@@ -37487,17 +37552,17 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 	}
 	if(PlayerData[playerid][pTutorial])// && strcmp(cmd, "/report", true, 6))
  	{
-  		SendClientMessage(playerid, COLOR_LIGHTRED, "** You are currently in the tutorial. Commands are disabled.");
+  		SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently in the tutorial. Commands are disabled.");
     	return 0;
 	}
 	if(GetPlayerState(playerid) == PLAYER_STATE_WASTED)
 	{
-	    SendClientMessage(playerid, COLOR_LIGHTRED, "** You are currently dead. Commands are disabled.");
+	    SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently dead. Commands are disabled.");
     	return 0;
 	}
 	if(PlayerData[playerid][pMuted])
 	{
-	    SendClientMessage(playerid, COLOR_LIGHTRED, "** You are currently muted. Commands are disabled.");
+	    SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently muted. Commands are disabled.");
         return 0;
 	}
 	if(++PlayerData[playerid][pSpamTime] >= 4 && PlayerData[playerid][pAdmin] < JUNIOR_ADMIN)
@@ -37523,12 +37588,12 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 
 	/*if((PlayerData[playerid][pAdmin] < GENERAL_MANAGER) && (!strcmp(cmd, "/ban", true, 3) || !strcmp(cmd, "/kick", true, 4) || !strcmp(cmd, "/sban", true, 4) || !strcmp(cmd, "/skick", true, 5) || !strcmp(cmd, "/permaban", true, 8) || !strcmp(cmd, "/rangeban", true, 8) || !strcmp(cmd, "/getip", true, 5) || !strcmp(cmd, "/traceip", true, 7)))
 	{
-		SendClientMessage(playerid, COLOR_LIGHTRED, "** These commands cannot be used during beta testing.");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "* These commands cannot be used during beta testing.");
 		return 0;
 	}
 	if((PlayerData[playerid][pAdmin] < HEAD_ADMIN) && (!strcmp(cmd, "/adminname")))
 	{
-		SendClientMessage(playerid, COLOR_LIGHTRED, "** These commands cannot be used during beta testing.");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "* These commands cannot be used during beta testing.");
 		return 0;
 	}*/
 
@@ -37875,7 +37940,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 		/*if(isnull(vehicleStream[vehicleid]))
 		{
-		    SendClientMessage(playerid, COLOR_WHITE, "** Use {C8C8C8}/setradio{FFFFFF} to change the radio station in this vehicle.");
+		    SendClientMessage(playerid, COLOR_WHITE, "* Use {C8C8C8}/setradio{FFFFFF} to change the radio station in this vehicle.");
 		}*/
 	}
 	else if(oldstate == PLAYER_STATE_DRIVER)
@@ -37901,7 +37966,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	    {
          	PlayerData[playerid][pDrivingTest] = 0;
          	SetVehicleToRespawn(PlayerData[playerid][pTestVehicle]);
-         	SendClientMessage(playerid, COLOR_LIGHTRED, "** You have exited the vehicle and therefore failed the test.");
+         	SendClientMessage(playerid, COLOR_LIGHTRED, "* You have exited the vehicle and therefore failed the test.");
 		}
 
 //	    PlayerTextDrawHide(playerid, PlayerData[playerid][pText][1]);
@@ -37925,7 +37990,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			PlayerData[driverid][pTaxiBill] = PlayerData[driverid][pTaxiFare];
 			PlayerData[driverid][pTaxiTime] = 0;
 
-			ShowActionBubble(playerid, "** %s enters %s's taxi cab.", GetRPName(playerid), GetRPName(driverid));
+			ShowActionBubble(playerid, "* %s enters %s's taxi cab.", GetRPName(playerid), GetRPName(driverid));
 			SendClientMessageEx(playerid, COLOR_YELLOW, "You will be charged the fare price of {FF6347}$%i{33CCFF} every 15 seconds during your ride.", PlayerData[driverid][pTaxiFare]);
 			SendClientMessageEx(driverid, COLOR_AQUA, "*%s has entered your taxi. You will earn {00AA00}$%i{33CCFF} every 15 seconds during the ride.", GetRPName(playerid), PlayerData[driverid][pTaxiFare]);
 		}
@@ -38900,20 +38965,20 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 				switch(PlayerData[playerid][pJob])
 				{
 					//case JOB_NONE: SendClientMessage(playerid, COLOR_GREY, "You have no job and therefore no job commands to view.");
-					case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /getpizza, /cancelcp.");
-					case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /load, /deliver, /cancelcp.");
-					case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /fish, /myfish, /sellfish.");
-					case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /sellvest, /frisk.");
-					case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /smugglemats, /sellgun.");
-					case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buycomps, /repair, /refill, /nos, /hyd, /takecall.");
-					case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /mine, /cancelcp.");
-					case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /startsweeping, /stopsweeping.");
-					case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /setfare, /takecall.");
-			        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
-			        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /defend, /free, /wanted.");
-			        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /find.");
-			        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /garbage");
-			        case JOB_FARMER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /harvest");
+					case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "* JOB * /getpizza, /cancelcp.");
+					case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "* JOB * /load, /deliver, /cancelcp.");
+					case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "* JOB * /fish, /myfish, /sellfish.");
+					case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "* JOB * /sellvest, /frisk.");
+					case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "* JOB * /smugglemats, /sellgun.");
+					case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "* JOB * /buycomps, /repair, /refill, /nos, /hyd, /takecall.");
+					case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "* JOB * /mine, /cancelcp.");
+					case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "* JOB * /startsweeping, /stopsweeping.");
+					case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "* JOB * /setfare, /takecall.");
+			        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "* JOB * /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
+			        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /defend, /free, /wanted.");
+			        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /find.");
+			        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /garbage");
+			        case JOB_FARMER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /harvest");
 			 	}
 
 			 	if(PlayerData[playerid][pSecondJob] != JOB_NONE)
@@ -38921,19 +38986,19 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 			 	    switch(PlayerData[playerid][pSecondJob])
 					{
 						//case JOB_NONE: SendClientMessage(playerid, COLOR_GREY, "You have no job and therefore no job commands to view.");
-						case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /getpizza.");
-						case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /load, /deliver.");
-						case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /fish, /myfish, /sellfish.");
-						case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /sellvest, /frisk.");
-						case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /smugglemats, /sellgun.");
-						case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buycomps, /repair, /refill, /nos, /hyd.");
-						case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /mine.");
-						case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /startsweeping, /stopsweeping.");
-						case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /setfare.");
-				        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
-				        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /defend, /free, /wanted.");
-				        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /find.");
-				        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /garbage");
+						case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /getpizza.");
+						case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /load, /deliver.");
+						case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /fish, /myfish, /sellfish.");
+						case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /sellvest, /frisk.");
+						case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /smugglemats, /sellgun.");
+						case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /buycomps, /repair, /refill, /nos, /hyd.");
+						case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /mine.");
+						case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /startsweeping, /stopsweeping.");
+						case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /setfare.");
+				        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
+				        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /defend, /free, /wanted.");
+				        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /find.");
+				        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /garbage");
 				 	}
 				}
 			}
@@ -38945,10 +39010,10 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 				}
 
 			    SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-			    SendClientMessage(playerid, COLOR_WHITE, "*** GANG HELP *** type a command for more information.");
-				SendClientMessage(playerid, COLOR_GREY, "*** GANG *** /f /gang /gstash /gbackup /bandana /capture /claim /reclaim /turfinfo /points");
-			    SendClientMessage(playerid, COLOR_GREY, "*** GANG *** /gbuyvehicle /gpark /gfindcar /grespawncars /gsellcar /gunmod /lock, /endalliance, /gspray");
-			    SendClientMessage(playerid, COLOR_GREY, "*** CREW *** /managecrew /crew");
+			    SendClientMessage(playerid, COLOR_WHITE, "** GANG HELP ** type a command for more information.");
+				SendClientMessage(playerid, COLOR_GREY, "** GANG ** /f /gang /gstash /gbackup /bandana /capture /claim /reclaim /turfinfo /points");
+			    SendClientMessage(playerid, COLOR_GREY, "** GANG ** /gbuyvehicle /gpark /gfindcar /grespawncars /gsellcar /gunmod /lock, /endalliance, /gspray");
+			    SendClientMessage(playerid, COLOR_GREY, "** CREW ** /managecrew /crew");
 
 			}
 			case 3:
@@ -38959,40 +39024,40 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 				}
 
 			    SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-				SendClientMessage(playerid, COLOR_WHITE, "*** FACTION HELP *** type a command for more information.");
-				SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /fc /d /(r)adio /div /faction /division /locker /showbadge /(m)egaphone");
+				SendClientMessage(playerid, COLOR_WHITE, "** FACTION HELP ** type a command for more information.");
+				SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /fc /d /(r)adio /div /faction /division /locker /showbadge /(m)egaphone");
 
 				switch(FactionInfo[PlayerData[playerid][pFaction]][fType])
 				{
 				    case FACTION_POLICE, FACTION_FEDERAL, FACTION_ARMY:
 				    {
-				        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /gate /door /cell /tazer /cuff /uncuff /drag /detain /charge /arrest");
-				        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup");
-				        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /mdc /clearwanted /siren /badge /vticket /vfrisk /vtake /seizeplant /mir /fpark");
+				        SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /gate /door /cell /tazer /cuff /uncuff /drag /detain /charge /arrest");
+				        SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup");
+				        SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /mdc /clearwanted /siren /badge /vticket /vfrisk /vtake /seizeplant /mir /fpark");
 
 						if(FactionInfo[PlayerData[playerid][pFaction]][fType] == FACTION_FEDERAL)
-							SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /listcallers /trackcall /cells /passport /callsign /bug /listbugs /tog bugged");
+							SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /listcallers /trackcall /cells /passport /callsign /bug /listbugs /tog bugged");
 						else
-						    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /listcallers /trackcall /cells /claim /callsign /fpark");
+						    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /listcallers /trackcall /cells /claim /callsign /fpark");
 					}
 					case FACTION_MEDIC:
 					{
-					    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /heal /drag /stretcher /deliverpt /getpt /listpt /injuries /deploy /undeploy /undeployall");
-					    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /badge /gov /backup /listcallers /trackcall /callsign /fpark");
+					    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /heal /drag /stretcher /deliverpt /getpt /listpt /injuries /deploy /undeploy /undeployall");
+					    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /badge /gov /backup /listcallers /trackcall /callsign /fpark");
 					}
 					case FACTION_NEWS:
 					{
-					    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /news /live /endlive /liveban /badge /addeposit /adwithdraw /fpark");
+					    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /news /live /endlive /liveban /badge /addeposit /adwithdraw /fpark");
 					}
 					case FACTION_GOVERNMENT:
 					{
-					    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /gov /settax /factionpay /tazer /cuff /uncuff /detain /taxdeposit /taxwithdraw /fpark");
-					    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /backup /badge");
+					    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /gov /settax /factionpay /tazer /cuff /uncuff /detain /taxdeposit /taxwithdraw /fpark");
+					    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /backup /badge");
 					}
 					case FACTION_HITMAN:
 					{
-					    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /contracts /takehit /profile /passport /plantbomb /pickupbomb /detonate");
-					    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /hfind, /noknife, /hm /fpark");
+					    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /contracts /takehit /profile /passport /plantbomb /pickupbomb /detonate");
+					    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /hfind, /noknife, /hm /fpark");
 					}
 				}
 			}
@@ -39004,33 +39069,33 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 				}
 
 			    SendClientMessage(playerid, COLOR_NAVYBLUE, "__________________ VIP Help __________________");
-			    SendClientMessage(playerid, COLOR_WHITE, "*** VIP HELP *** type a command for more information.");
-			    SendClientMessage(playerid, COLOR_GREY, "*** VIP *** /(v)ip /vipinfo /vipcolor /vipinvite /vipnumber /vipmusic");
+			    SendClientMessage(playerid, COLOR_WHITE, "** VIP HELP ** type a command for more information.");
+			    SendClientMessage(playerid, COLOR_GREY, "** VIP ** /(v)ip /vipinfo /vipcolor /vipinvite /vipnumber /vipmusic");
 
 				if(PlayerData[playerid][pVIPPackage] == 3)
 				{
-				    SendClientMessage(playerid, COLOR_GREY, "*** VIP *** /repair /nos /hyd /viprimkit");
+				    SendClientMessage(playerid, COLOR_GREY, "** VIP ** /repair /nos /hyd /viprimkit");
 				}
 			}
 			case 5:
 			{
-			    SendClientMessage(playerid, COLOR_WHITE, "*** HOUSE HELP *** type a command for more information.");
-			    SendClientMessage(playerid, COLOR_GREY, "*** HOUSE *** /buyhouse /lock /stash /furniture /upgradehouse /sellhouse /sellmyhouse");
-				SendClientMessage(playerid, COLOR_GREY, "*** HOUSE *** /door /renthouse /unrent /setrent /tenants /evict /evictall /houseinfo");
-				SendClientMessage(playerid, COLOR_GREY, "*** HOUSE *** /houseinvite /hlights /installhousealarm (/iha), /uninstallhousealarm (/uha)");
+			    SendClientMessage(playerid, COLOR_WHITE, "** HOUSE HELP ** type a command for more information.");
+			    SendClientMessage(playerid, COLOR_GREY, "** HOUSE ** /buyhouse /lock /stash /furniture /upgradehouse /sellhouse /sellmyhouse");
+				SendClientMessage(playerid, COLOR_GREY, "** HOUSE ** /door /renthouse /unrent /setrent /tenants /evict /evictall /houseinfo");
+				SendClientMessage(playerid, COLOR_GREY, "** HOUSE ** /houseinvite /hlights /installhousealarm (/iha), /uninstallhousealarm (/uha)");
 			}
 			case 6:
 			{
-			    SendClientMessage(playerid, COLOR_WHITE, "*** VEHICLE HELP *** type a command for more information.");
-			    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /lights /hood /boot /buy /carstorage /park /lock /findcar");
-			    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /vstash /neon /unmod /colorcar /paintcar /upgradevehicle /sellcar /sellmycar");
-			    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /givekeys /takekeys /setradio /paytickets /carinfo /gascan /breakin");
+			    SendClientMessage(playerid, COLOR_WHITE, "** VEHICLE HELP ** type a command for more information.");
+			    SendClientMessage(playerid, COLOR_GREY, "** VEHICLE ** /lights /hood /boot /buy /carstorage /park /lock /findcar");
+			    SendClientMessage(playerid, COLOR_GREY, "** VEHICLE ** /vstash /neon /unmod /colorcar /paintcar /upgradevehicle /sellcar /sellmycar");
+			    SendClientMessage(playerid, COLOR_GREY, "** VEHICLE ** /givekeys /takekeys /setradio /paytickets /carinfo /gascan /breakin");
 			}
 			case 7:
 			{
-			    SendClientMessage(playerid, COLOR_WHITE, "*** BUSINESS HELP *** type a command for more information.");
-				SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /buybiz /lock /bwithdraw /bdeposit /entryfee /sellbiz /sellmybiz /bizinfo");
-				SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /bdepositmats /bwithdrawmats");
+			    SendClientMessage(playerid, COLOR_WHITE, "** BUSINESS HELP ** type a command for more information.");
+				SendClientMessage(playerid, COLOR_GREY, "** BUSINESS ** /buybiz /lock /bwithdraw /bdeposit /entryfee /sellbiz /sellmybiz /bizinfo");
+				SendClientMessage(playerid, COLOR_GREY, "** BUSINESS ** /bdepositmats /bwithdrawmats");
             }
             case 8:
             {
@@ -39399,7 +39464,7 @@ Dialog:DIALOG_PM(playerid, response, listitem, inputtext[])
 		SendClientMessageEx(GetPVarInt(playerid, "pClickedID"), COLOR_GREEN, "(( PM to %s: %s ))", GetRPName(GetPVarInt(playerid, "pClickedID")), inputtext);
 		if(PlayerData[GetPVarInt(playerid, "pClickedID")][pWhisperFrom] == INVALID_PLAYER_ID)
 		{
-		    SendClientMessage(GetPVarInt(playerid, "pClickedID"), COLOR_WHITE, "** You can use '/rpm [message]' to reply to this private message.");
+		    SendClientMessage(GetPVarInt(playerid, "pClickedID"), COLOR_WHITE, "* You can use '/rpm [message]' to reply to this private message.");
 		}
 		PlayerData[GetPVarInt(playerid, "pClickedID")][pWhisperFrom] = playerid;
 	}
@@ -39648,37 +39713,37 @@ Dialog:DIALOG_FOOD(playerid, response, listitem, inputtext[])
         {
             GivePlayerCash(playerid, -50);
             GivePlayerHealth(playerid, 25.0);
-            ShowActionBubble(playerid, "** %s pays $50 to the vendor and receives a can of sprunk.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s pays $50 to the vendor and receives a can of sprunk.", GetRPName(playerid));
         }
         else if(listitem == 1) //Burger
         {
             GivePlayerCash(playerid, -15);
             GivePlayerHealth(playerid, 10.0);
-            ShowActionBubble(playerid, "** %s pays $15 to the vendor and receives a piece of burger.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s pays $15 to the vendor and receives a piece of burger.", GetRPName(playerid));
         }
         else if(listitem == 2) //Cigar
         {
             GivePlayerCash(playerid, -35);
             PlayerData[playerid][pCigars]++;
-            ShowActionBubble(playerid, "** %s pays $35 to the vendor and receives a piece of cigar.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s pays $35 to the vendor and receives a piece of cigar.", GetRPName(playerid));
         }
         else if(listitem == 3) //Hot dog
         {
             GivePlayerCash(playerid, -25);
             GivePlayerHealth(playerid, 17.0);
-            ShowActionBubble(playerid, "** %s pays $25 to the vendor and receives a piece of hot dog.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s pays $25 to the vendor and receives a piece of hot dog.", GetRPName(playerid));
         }
    	    else if(listitem == 4) //Rope
         {
             GivePlayerCash(playerid, -20);
             PlayerData[playerid][pRope] += 2;
-            ShowActionBubble(playerid, "** %s pays $20 to the vendor and receives 2 ropes.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s pays $20 to the vendor and receives 2 ropes.", GetRPName(playerid));
         }
         else if(listitem == 5) //Chocolate
         {
             GivePlayerCash(playerid, -15);
             GivePlayerHealth(playerid, 12.0);
-            ShowActionBubble(playerid, "** %s pays $15 to the vendor and receives a bar of chocolate.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s pays $15 to the vendor and receives a bar of chocolate.", GetRPName(playerid));
         }
     }
     return 1;
@@ -40115,9 +40180,9 @@ Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 					return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you're not a gang member.");
 				}
 
-				format(sstring, sizeof(sstring), "*** GANG *** /f /gang /gstash /gbackup /bandana /capture /claim /reclaim /turfinfo /points\n");
-			    strcat(sstring, "*** GANG *** /gbuyvehicle /gpark /gfindcar /grespawncars /gsellcar /gunmod /lock, /endalliance, /gspray\n");
-			    strcat(sstring, "*** CREW *** /managecrew /crew\n");
+				format(sstring, sizeof(sstring), "** GANG ** /f /gang /gstash /gbackup /bandana /capture /claim /reclaim /turfinfo /points\n");
+			    strcat(sstring, "** GANG ** /gbuyvehicle /gpark /gfindcar /grespawncars /gsellcar /gunmod /lock, /endalliance, /gspray\n");
+			    strcat(sstring, "** CREW ** /managecrew /crew\n");
                 Dialog_Show(playerid, DIALOG_HELP, DIALOG_STYLE_MSGBOX, "Help | Gang Commands", sstring, "Ok","");
 
 			}//gang
@@ -40128,39 +40193,39 @@ Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 					return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you're not apart of any faction.");
 				}
 
-				format(sstring, sizeof(sstring), "*** FACTION *** /fc /d /(r)adio /div /faction /division /locker /showbadge /(m)egaphone\n");
+				format(sstring, sizeof(sstring), "** FACTION ** /fc /d /(r)adio /div /faction /division /locker /showbadge /(m)egaphone\n");
 
 				switch(FactionInfo[PlayerData[playerid][pFaction]][fType])
 				{
 				    case FACTION_POLICE, FACTION_FEDERAL, FACTION_ARMY:
 				    {
-				        strcat(sstring, "*** FACTION *** /gate /door /cell /tazer /cuff /uncuff /drag /detain /charge /arrest\n");
-				        strcat(sstring, "*** FACTION *** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup\n");
-				        strcat(sstring, "*** FACTION *** /mdc /clearwanted /siren /badge /vticket /vfrisk /vtake /seizeplant /mir\n");
+				        strcat(sstring, "** FACTION ** /gate /door /cell /tazer /cuff /uncuff /drag /detain /charge /arrest\n");
+				        strcat(sstring, "** FACTION ** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup\n");
+				        strcat(sstring, "** FACTION ** /mdc /clearwanted /siren /badge /vticket /vfrisk /vtake /seizeplant /mir\n");
 
 						if(FactionInfo[PlayerData[playerid][pFaction]][fType] == FACTION_FEDERAL)
-							strcat(sstring, "*** FACTION *** /listcallers /trackcall /cells /passport /callsign /bug /listbugs /tog bugged\n");
+							strcat(sstring, "** FACTION ** /listcallers /trackcall /cells /passport /callsign /bug /listbugs /tog bugged\n");
 						else
-						    strcat(sstring, "*** FACTION *** /listcallers /trackcall /cells /claim /callsign\n");
+						    strcat(sstring, "** FACTION ** /listcallers /trackcall /cells /claim /callsign\n");
 					}
 					case FACTION_MEDIC:
 					{
-					    strcat(sstring, "*** FACTION *** /heal /drag /stretcher /deliverpt /getpt /listpt /injuries /deploy /undeploy /undeployall\n");
-					    strcat(sstring, "*** FACTION *** /badge /gov /backup /listcallers /trackcall /callsign\n");
+					    strcat(sstring, "** FACTION ** /heal /drag /stretcher /deliverpt /getpt /listpt /injuries /deploy /undeploy /undeployall\n");
+					    strcat(sstring, "** FACTION ** /badge /gov /backup /listcallers /trackcall /callsign\n");
 					}
 					case FACTION_NEWS:
 					{
-					    format(sstring, sizeof(sstring), "*** FACTION *** /news /live /endlive /liveban /badge /addeposit /adwithdraw\n");
+					    format(sstring, sizeof(sstring), "** FACTION ** /news /live /endlive /liveban /badge /addeposit /adwithdraw\n");
 					}
 					case FACTION_GOVERNMENT:
 					{
-					    strcat(sstring, "*** FACTION *** /gov /settax /factionpay /tazer /cuff /uncuff /detain /taxdeposit /taxwithdraw\n");
-					    strcat(sstring, "*** FACTION *** /backup /badge\n");
+					    strcat(sstring, "** FACTION ** /gov /settax /factionpay /tazer /cuff /uncuff /detain /taxdeposit /taxwithdraw\n");
+					    strcat(sstring, "** FACTION ** /backup /badge\n");
 					}
 					case FACTION_HITMAN:
 					{
-					    strcat(sstring, "*** FACTION *** /contracts /takehit /profile /passport /plantbomb /pickupbomb /detonate\n");
-					    strcat(sstring, "*** FACTION *** /hfind /noknife\n");
+					    strcat(sstring, "** FACTION ** /contracts /takehit /profile /passport /plantbomb /pickupbomb /detonate\n");
+					    strcat(sstring, "** FACTION ** /hfind /noknife\n");
 					}
 				}
                 Dialog_Show(playerid, DIALOG_HELP, DIALOG_STYLE_MSGBOX, "Help | Faction Commands", sstring, "Ok","");
@@ -40171,11 +40236,11 @@ Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 				{
 					return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.\n");
 				}
-			    format(sstring, sizeof(sstring), "*** VIP *** /(v)ip /vipinfo /viptag /vipcolor /vipinvite /vipnumber /vipmusic\n");
+			    format(sstring, sizeof(sstring), "** VIP ** /(v)ip /vipinfo /viptag /vipcolor /vipinvite /vipnumber /vipmusic\n");
 
 				if(PlayerData[playerid][pVIPPackage] == 3)
 				{
-				    strcat(sstring, "*** VIP *** /repair /nos /hyd\n");
+				    strcat(sstring, "** VIP ** /repair /nos /hyd\n");
 				}
                 Dialog_Show(playerid, DIALOG_HELP, DIALOG_STYLE_MSGBOX, "Help | VIP Commands", sstring, "Ok","");
 
@@ -40189,20 +40254,20 @@ Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 				switch(PlayerData[playerid][pJob])
 				{
 					//case JOB_NONE: SendClientMessage(playerid, COLOR_GREY, "You have no job and therefore no job commands to view.");
-					case JOB_PIZZAMAN: format(sstring, sizeof(sstring), "*** JOB *** /getpizza, /cancelcp.\n");
-					case JOB_COURIER: strcat(sstring, "*** JOB *** /load, /deliver, /cancelcp.\n");
-					case JOB_FISHERMAN: strcat(sstring, "*** JOB *** /fish, /myfish, /sellfish.\n");
-					case JOB_BODYGUARD: strcat(sstring, "*** JOB *** /sellvest, /frisk.\n");
-					case JOB_WEAPONDEALER: strcat(sstring, "*** JOB *** /smugglemats, /sellgun.\n");
-					case JOB_MECHANIC: strcat(sstring, "*** JOB *** /buycomps, /repair, /refill, /nos, /hyd, /takecall.\n");
-					case JOB_MINER: strcat(sstring, "*** JOB *** /mine, /cancelcp.\n");
-					case JOB_SWEEPER: strcat(sstring, "*** JOB *** /startsweeping, /stopsweeping.\n");
-					case JOB_TAXIDRIVER: strcat(sstring, "*** JOB *** /setfare, /takecall.\n");
-			        case JOB_DRUGDEALER: strcat(sstring, "*** JOB *** /buydrug, /planthelp, /cookmeth, /smuggledrugs.\n");
-			        case JOB_LAWYER: strcat(sstring, "*** JOB *** /defend, /free, /wanted.\n");
-			        case JOB_DETECTIVE: strcat(sstring, "*** JOB *** /find.\n");
-			        case JOB_GARBAGEMAN: strcat(sstring, "*** JOB *** /garbage\n");
-			        case JOB_FARMER: strcat(sstring, "*** JOB *** /harvest\n");
+					case JOB_PIZZAMAN: format(sstring, sizeof(sstring), "** JOB ** /getpizza, /cancelcp.\n");
+					case JOB_COURIER: strcat(sstring, "** JOB ** /load, /deliver, /cancelcp.\n");
+					case JOB_FISHERMAN: strcat(sstring, "** JOB ** /fish, /myfish, /sellfish.\n");
+					case JOB_BODYGUARD: strcat(sstring, "** JOB ** /sellvest, /frisk.\n");
+					case JOB_WEAPONDEALER: strcat(sstring, "** JOB ** /smugglemats, /sellgun.\n");
+					case JOB_MECHANIC: strcat(sstring, "** JOB ** /buycomps, /repair, /refill, /nos, /hyd, /takecall.\n");
+					case JOB_MINER: strcat(sstring, "** JOB ** /mine, /cancelcp.\n");
+					case JOB_SWEEPER: strcat(sstring, "** JOB ** /startsweeping, /stopsweeping.\n");
+					case JOB_TAXIDRIVER: strcat(sstring, "** JOB ** /setfare, /takecall.\n");
+			        case JOB_DRUGDEALER: strcat(sstring, "** JOB ** /buydrug, /planthelp, /cookmeth, /smuggledrugs.\n");
+			        case JOB_LAWYER: strcat(sstring, "** JOB ** /defend, /free, /wanted.\n");
+			        case JOB_DETECTIVE: strcat(sstring, "** JOB ** /find.\n");
+			        case JOB_GARBAGEMAN: strcat(sstring, "** JOB ** /garbage\n");
+			        case JOB_FARMER: strcat(sstring, "** JOB ** /harvest\n");
 			 	}
 
 			 	if(PlayerData[playerid][pSecondJob] != JOB_NONE)
@@ -40210,19 +40275,19 @@ Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 			 	    switch(PlayerData[playerid][pSecondJob])
 					{
 						//case JOB_NONE: SendClientMessage(playerid, COLOR_GREY, "You have no job and therefore no job commands to view.");
-						case JOB_PIZZAMAN: strcat(sstring, "*** JOB *** /getpizza.\n");
-						case JOB_COURIER: strcat(sstring, "*** JOB *** /load, /deliver.\n");
-						case JOB_FISHERMAN: strcat(sstring, "*** JOB *** /fish, /myfish, /sellfish.\n");
-						case JOB_BODYGUARD: strcat(sstring, "*** JOB *** /sellvest, /frisk.\n");
-						case JOB_WEAPONDEALER: strcat(sstring, "*** JOB *** /smugglemats, /sellgun.\n");
-						case JOB_MECHANIC: strcat(sstring, "*** JOB *** /buycomps, /repair, /refill, /nos, /hyd.\n");
-						case JOB_MINER: strcat(sstring, "*** JOB *** /mine.\n");
-						case JOB_SWEEPER: strcat(sstring, "*** JOB *** /startsweeping, /stopsweeping.\n");
-						case JOB_TAXIDRIVER: strcat(sstring, "*** JOB *** /setfare.\n");
-				        case JOB_DRUGDEALER: strcat(sstring, "*** JOB *** /buydrug, /planthelp, /cookmeth, /smuggledrugs.\n");
-				        case JOB_LAWYER: strcat(sstring, "*** JOB *** /defend, /free, /wanted.\n");
-				        case JOB_DETECTIVE: strcat(sstring, "*** JOB *** /find.\n");
-				        case JOB_GARBAGEMAN: strcat(sstring, "*** JOB *** /garbage\n");
+						case JOB_PIZZAMAN: strcat(sstring, "** JOB ** /getpizza.\n");
+						case JOB_COURIER: strcat(sstring, "** JOB ** /load, /deliver.\n");
+						case JOB_FISHERMAN: strcat(sstring, "** JOB ** /fish, /myfish, /sellfish.\n");
+						case JOB_BODYGUARD: strcat(sstring, "** JOB ** /sellvest, /frisk.\n");
+						case JOB_WEAPONDEALER: strcat(sstring, "** JOB ** /smugglemats, /sellgun.\n");
+						case JOB_MECHANIC: strcat(sstring, "** JOB ** /buycomps, /repair, /refill, /nos, /hyd.\n");
+						case JOB_MINER: strcat(sstring, "** JOB ** /mine.\n");
+						case JOB_SWEEPER: strcat(sstring, "** JOB ** /startsweeping, /stopsweeping.\n");
+						case JOB_TAXIDRIVER: strcat(sstring, "** JOB ** /setfare.\n");
+				        case JOB_DRUGDEALER: strcat(sstring, "** JOB ** /buydrug, /planthelp, /cookmeth, /smuggledrugs.\n");
+				        case JOB_LAWYER: strcat(sstring, "** JOB ** /defend, /free, /wanted.\n");
+				        case JOB_DETECTIVE: strcat(sstring, "** JOB ** /find.\n");
+				        case JOB_GARBAGEMAN: strcat(sstring, "** JOB ** /garbage\n");
 				 	}
 				}
                 Dialog_Show(playerid, DIALOG_HELP, DIALOG_STYLE_MSGBOX, "Help | Job Commands", sstring, "Ok","");
@@ -40391,7 +40456,7 @@ Dialog:DIALOG_NEWBIE(playerid, response, listitem, inputtext[])
 		if(strlen(inputtext) > 110) return SendClientMessageEx(playerid, COLOR_GREY, "That message is too long!");
 		format(string, sizeof(string), "{FF0000}New Question! {FFFFFF}%s(%d): %s", GetPlayerNameEx(playerid), playerid, inputtext);
 		SendQuestionToStaff(COLOR_RED, string);
-		SendQuestionToStaff(COLOR_WHITE, "** /nanswer (/na) to asnwer | /trashnewb (/tn) to trash **");
+		SendQuestionToStaff(COLOR_WHITE, "* /nanswer (/na) to asnwer | /trashnewb (/tn) to trash *");
 		SetPVarInt(playerid, "SendQuestion", 1);
 		SetPVarString(playerid, "Question", inputtext);
 		SendClientMessage(playerid, COLOR_WHITE, "Your question was successfully submitted, please wait. An helper will reply shortly.");
@@ -40613,7 +40678,7 @@ Dialog:Graffiti_Text(playerid, response, listitem, inputtext[])
 		ApplyAnimationEx(playerid, "GRAFFITI", "spraycan_fire", 4.1, 1, 0, 0, 0, 0);
 		SendAdminMessage(COLOR_LIGHTRED, "%s[ID %i] has started spraying a gang tag %s", GetRPName(playerid), playerid, inputtext);
 		GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Spraying...~w~ please wait!", 15000, 3);
-		SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "** %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
+		SendProximityMessage(playerid, 30.0, COLOR_PURPLE, "* %s takes out a can of spray paint and sprays the wall.", GetRPName(playerid));
 	}
 	return 1;
 }
@@ -40628,7 +40693,7 @@ Dialog:DIALOG_REGISTER(playerid, response, listitem, inputtext[])
 		}
         if(strlen(inputtext) < 4)
         {
-            SendClientMessage(playerid, COLOR_LIGHTRED, "** Please choose a password containing at least 4 characters.");
+            SendClientMessage(playerid, COLOR_LIGHTRED, "* Please choose a password containing at least 4 characters.");
             ShowDialogToPlayer(playerid, DIALOG_REGISTER);
             return 1;
         }
@@ -40667,7 +40732,7 @@ Dialog:DIALOG_CONFIRMPASS(playerid, response, listitem, inputtext[])
 		else
 		{
 		    ShowDialogToPlayer(playerid, DIALOG_REGISTER);
-		    SendClientMessage(playerid, COLOR_LIGHTRED, "** Your repeated password does not match your chosen password. Please try again.");
+		    SendClientMessage(playerid, COLOR_LIGHTRED, "* Your repeated password does not match your chosen password. Please try again.");
 		}
     }
     else
@@ -40747,7 +40812,7 @@ Dialog:DIALOG_AGE(playerid, response, listitem, inputtext[])
         //PlayerData[playerid][pTutorial] = 1;
         //PlayerData[playerid][pTutorialTimer] = SetTimerEx("TutorialTimer", 3000, false, "ii", playerid, 1);
 
-        //SendClientMessage(playerid, COLOR_GREEN, "** Good stuff! That's all we need right now. The tutorial will start in a moment.");
+        //SendClientMessage(playerid, COLOR_GREEN, "* Good stuff! That's all we need right now. The tutorial will start in a moment.");
         //SetPlayerToSpawn(playerid);
 
        // SendClientMessageEx(playerid, COLOR_YELLOW, "Wow! your character is %i years old. Have you been referred to the server by anyone?", age);
@@ -40836,7 +40901,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phone = %i WHERE uid = %i", PlayerData[playerid][pPhone], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a mobile phone.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a mobile phone.", GetRPName(playerid), price);
                     SendClientMessageEx(playerid, COLOR_WHITE, "Mobile phone purchased. Your new phone number is %i.", PlayerData[playerid][pPhone]);
 				}
 				case 1:
@@ -40870,7 +40935,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET walkietalkie = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a walkie talkie.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a walkie talkie.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Walkie talkie purchased. Use /wt to speak and /channel to change the frequency.");
 				}
 				case 2:
@@ -40904,7 +40969,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a pack of cigars.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a pack of cigars.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Cigars purchased. Use /usecigar to smoke a cigar.");
 				}
 				case 3:
@@ -40938,7 +41003,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 10 spraycans.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received 10 spraycans.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Spraycans purchased. Use /colorcar and /paintcar in a vehicle to use them.");
 				}
 			/*	case 4:
@@ -40972,7 +41037,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET phonebook = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a phonebook.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a phonebook.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Phonebook purchased. Use /number to lookup a player's number.");
 				}*/
 				case 4:
@@ -40999,7 +41064,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a camera.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a camera.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Camera purchased.");
 				}
 				case 5:
@@ -41033,7 +41098,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET mp3player = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received an MP3 player.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received an MP3 player.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "MP3 player purchased. Use /mp3 for a list of options.");
 				}
 				case 6:
@@ -41067,7 +41132,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingrod = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a fishing rod.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a fishing rod.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Fishing rod purchased. Use /fish at the pier or in a boat to begin fishing.");
 				}
 				case 7:
@@ -41101,7 +41166,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingbait = %i WHERE uid = %i", PlayerData[playerid][pFishingBait], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received fish bait.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received fish bait.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Fishing bait purchased. Bait increases the odds of catching bigger fish.");
 				}
 				case 8:
@@ -41135,7 +41200,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET muriaticacid = %i WHERE uid = %i", PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottle of muriatic acid.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a bottle of muriatic acid.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Muriatic acid purchased.");
 				}
 				case 9:
@@ -41169,7 +41234,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bakingsoda = %i WHERE uid = %i", PlayerData[playerid][pBakingSoda], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottle of baking soda.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a bottle of baking soda.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Baking soda purchased.");
 				}
 				case 10:
@@ -41203,7 +41268,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET watch = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a pocket watch.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a pocket watch.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Pocket watch purchased. Use /watch to toggle it.");
 				}
 				case 11:
@@ -41237,7 +41302,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gps = 1 WHERE uid = %i", PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a GPS.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a GPS.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "GPS purchased. Use /gps to toggle it.");
 				}
 				case 12:
@@ -41271,7 +41336,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 5 liters of gasoline.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received 5 liters of gasoline.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Gas can purchased. Use /gascan in a vehicle to refill its fuel.");
 				}
 				case 13:
@@ -41305,7 +41370,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET rope = %i WHERE uid = %i", PlayerData[playerid][pRope], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 2 ropes.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received 2 ropes.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Ropes purchased. Use /tie to tie people in your vehicle.");
 				}
 				case 14:
@@ -41339,7 +41404,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET boombox = %i WHERE uid = %i", PlayerData[playerid][pBoombox], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a boombox.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a boombox.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Boombox purchased. Use /boombox for more information.");
 				}
 				case 15:
@@ -41373,7 +41438,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET blindfold = %i WHERE uid = %i", PlayerData[playerid][pBlindfold], PlayerData[playerid][pID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received 2 blindfolds.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received 2 blindfolds.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "2 blindfolds purchased. Use /blindfold to blind people in your vehicle.");
 				}
 			}
@@ -41419,7 +41484,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a 9mm pistol.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a 9mm pistol.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "9mm pistol purchased.");
 		        }
 		        case 1:
@@ -41450,7 +41515,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a shotgun.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a shotgun.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Shotgun purchased.");
 		        }
 		        case 2:
@@ -41481,7 +41546,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a country rifle.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a country rifle.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Country rifle purchased.");
 		        }
 		        case 3:
@@ -41508,7 +41573,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received light armor.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received light armor.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Light armor of 35 armor points purchased.");
 		        }
 		        case 4:
@@ -41535,7 +41600,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received medium armor.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received medium armor.", GetRPName(playerid), price);
                     SendClientMessage(playerid, COLOR_WHITE, "Light armor of 60 armor points purchased.");
 		        }
 			}
@@ -41772,7 +41837,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottled water.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a bottled water.", GetRPName(playerid), price);
 				}
 				case 1:
 		        {
@@ -41798,7 +41863,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a can of sprunk.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a can of sprunk.", GetRPName(playerid), price);
 				}
 				case 2:
 		        {
@@ -41824,7 +41889,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received french fries.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received french fries.", GetRPName(playerid), price);
 				}
 				case 3:
 		        {
@@ -41850,7 +41915,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a hamburger.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a hamburger.", GetRPName(playerid), price);
 				}
 				case 4:
 		        {
@@ -41876,7 +41941,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a cheeseburger.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a cheeseburger.", GetRPName(playerid), price);
 				}
 				case 5:
 		        {
@@ -41902,7 +41967,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a mac & cheese.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a mac & cheese.", GetRPName(playerid), price);
 				}
 				case 6:
 		        {
@@ -41928,7 +41993,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a club sandwich.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a club sandwich.", GetRPName(playerid), price);
 				}
 				case 7:
 		        {
@@ -41954,7 +42019,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received fish & chips.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received fish & chips.", GetRPName(playerid), price);
 				}
 				case 8:
 		        {
@@ -41980,7 +42045,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a pan pizza.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a pan pizza.", GetRPName(playerid), price);
 				}
 		    }
 		}
@@ -42012,7 +42077,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottled water.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a bottled water.", GetRPName(playerid), price);
 				}
 				case 1:
 		        {
@@ -42038,7 +42103,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a can of sprunk.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a can of sprunk.", GetRPName(playerid), price);
 				}
 				case 2:
 		        {
@@ -42064,7 +42129,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottle of beer.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a bottle of beer.", GetRPName(playerid), price);
 				}
 				case 3:
 		        {
@@ -42090,7 +42155,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottle of wine.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a bottle of wine.", GetRPName(playerid), price);
 				}
 				case 4:
 		        {
@@ -42116,7 +42181,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
                     mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s paid $%i to the shopkeeper and received a bottle of whiskey.", GetRPName(playerid), price);
+                    ShowActionBubble(playerid, "* %s paid $%i to the shopkeeper and received a bottle of whiskey.", GetRPName(playerid), price);
 				}
 			}
 		}
@@ -42149,7 +42214,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s exchanged 500 materials to the shopkeeper and received a first aid kit.", GetRPName(playerid));
+                    ShowActionBubble(playerid, "* %s exchanged 500 materials to the shopkeeper and received a first aid kit.", GetRPName(playerid));
                     SendClientMessage(playerid, COLOR_WHITE, "HINT: Use /firstaid to in order to use a first aid kit.");
 				}
 				case 1:
@@ -42175,7 +42240,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s exchanged 1000 materials to the shopkeeper and received a bodywork kit.", GetRPName(playerid));
+                    ShowActionBubble(playerid, "* %s exchanged 1000 materials to the shopkeeper and received a bodywork kit.", GetRPName(playerid));
                     SendClientMessage(playerid, COLOR_WHITE, "HINT: Use /bodykit in a vehicle to repair its bodywork and health.");
 				}
 				case 2:
@@ -42201,7 +42266,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s exchanged 2000 materials to the shopkeeper and received a police scanner.", GetRPName(playerid));
+                    ShowActionBubble(playerid, "* %s exchanged 2000 materials to the shopkeeper and received a police scanner.", GetRPName(playerid));
                     SendClientMessage(playerid, COLOR_WHITE, "HINT: Use /scanner to listen to emergency and department chats.");
 				}
 				case 3:
@@ -42227,7 +42292,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s exchanged 4000 materials to the shopkeeper and received a rimkit.", GetRPName(playerid));
+                    ShowActionBubble(playerid, "* %s exchanged 4000 materials to the shopkeeper and received a rimkit.", GetRPName(playerid));
                     SendClientMessage(playerid, COLOR_WHITE, "HINT: Use /rimkit in your vehicle to install a new set of rims.");
 				}
 				case 4:
@@ -42263,7 +42328,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s exchanged 2500 materials to the shopkeeper and received a house alarm.", GetRPName(playerid));
+                    ShowActionBubble(playerid, "* %s exchanged 2500 materials to the shopkeeper and received a house alarm.", GetRPName(playerid));
                     SendClientMessage(playerid, COLOR_WHITE, "HINT: Use /usehousealarm in your house to install the alarm.");
 				}
 				case 6: //pVehicleCMD
@@ -42288,7 +42353,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s exchanged 4500 materials to the shopkeeper and received a auto vehicle command.", GetRPName(playerid));
+                    ShowActionBubble(playerid, "* %s exchanged 4500 materials to the shopkeeper and received a auto vehicle command.", GetRPName(playerid));
                     SendClientMessage(playerid, COLOR_WHITE, "HINT: Press '2' while you are driving an vehicle to activate.");
 				}
 				case 7: //pCrowbar
@@ -42313,7 +42378,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET materials = %i, products = %i WHERE id = %i", BusinessInfo[businessid][bMaterials], BusinessInfo[businessid][bProducts], BusinessInfo[businessid][bID]);
                     mysql_tquery(connectionID, queryBuffer);
 
-                    ShowActionBubble(playerid, "** %s exchanged 2500 materials to the shopkeeper and received a crowbar.", GetRPName(playerid));
+                    ShowActionBubble(playerid, "* %s exchanged 2500 materials to the shopkeeper and received a crowbar.", GetRPName(playerid));
                     SendClientMessage(playerid, COLOR_WHITE, "HINT: Use '/breakcuffs' to break cuffs from anybody's hand.");
 				}
 			}
@@ -42440,7 +42505,7 @@ Dialog:DIALOG_ATMDEPOSIT(playerid, response, listitem, inputtext[])
         mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
         mysql_tquery(connectionID, queryBuffer);
 
-        ShowActionBubble(playerid, "** %s presses a button and deposits some cash into the ATM.", GetRPName(playerid));
+        ShowActionBubble(playerid, "* %s presses a button and deposits some cash into the ATM.", GetRPName(playerid));
         SendClientMessageEx(playerid, COLOR_AQUA, "You have deposited %s into your account. Your new balance is %s.", FormatNumber(amount), FormatNumber(PlayerData[playerid][pBank]));
 
 		if(fee)
@@ -42491,7 +42556,7 @@ Dialog:DIALOG_ATMWITHDRAW(playerid, response, listitem, inputtext[])
         mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bank = %i WHERE uid = %i", PlayerData[playerid][pBank], PlayerData[playerid][pID]);
         mysql_tquery(connectionID, queryBuffer);
 
-        ShowActionBubble(playerid, "** %s presses a button and withdraws some cash from the ATM.", GetRPName(playerid));
+        ShowActionBubble(playerid, "* %s presses a button and withdraws some cash from the ATM.", GetRPName(playerid));
         SendClientMessageEx(playerid, COLOR_AQUA, "You have withdrawn %s from your account. Your new balance is %s.", FormatNumber(amount), FormatNumber(PlayerData[playerid][pBank]));
 
 		if(fee)
@@ -42825,11 +42890,11 @@ Dialog:DIALOG_FACTIONLOCKER(playerid, response, listitem, inputtext[])
 			        {
 			            if(IsLawEnforcement(playerid))
 			            {
-			                ShowActionBubble(playerid, "** %s clocks in and grabs their police issued equipment from the locker.", GetRPName(playerid));
+			                ShowActionBubble(playerid, "* %s clocks in and grabs their police issued equipment from the locker.", GetRPName(playerid));
 						}
 						else if(FactionInfo[PlayerData[playerid][pFaction]][fType] == FACTION_MEDIC)
 			            {
-			                ShowActionBubble(playerid, "** %s clocks in and grabs their medical supplies from the locker.", GetRPName(playerid));
+			                ShowActionBubble(playerid, "* %s clocks in and grabs their medical supplies from the locker.", GetRPName(playerid));
 						}
 
                         PlayerData[playerid][pDuty] = 1;
@@ -42843,7 +42908,7 @@ Dialog:DIALOG_FACTIONLOCKER(playerid, response, listitem, inputtext[])
 					    //ResetPlayerWeaponsEx(playerid);
 
 					    //SetScriptArmour(playerid, 0.0);
-						ShowActionBubble(playerid, "** %s clocks out and puts their equipment back in the locker.", GetRPName(playerid));
+						ShowActionBubble(playerid, "* %s clocks out and puts their equipment back in the locker.", GetRPName(playerid));
 					}
 				}
 				else if(listitem == 1) // Equipment
@@ -42877,7 +42942,7 @@ Dialog:DIALOG_FACTIONLOCKER(playerid, response, listitem, inputtext[])
 					    mysql_tquery(connectionID, queryBuffer);
 
 					    SetPlayerSkin(playerid, PlayerData[playerid][pSkin]);
-					    ShowActionBubble(playerid, "** %s switches back to their old outfit.", GetRPName(playerid));
+					    ShowActionBubble(playerid, "* %s switches back to their old outfit.", GetRPName(playerid));
 					}
 					else
 					{
@@ -42922,7 +42987,7 @@ Dialog:DIALOG_FACTIONLOCKER(playerid, response, listitem, inputtext[])
 					    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = -1 WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
 					    mysql_tquery(connectionID, queryBuffer);
 
-					    ShowActionBubble(playerid, "** %s switches back to their old outfit.", GetRPName(playerid));
+					    ShowActionBubble(playerid, "* %s switches back to their old outfit.", GetRPName(playerid));
 					}
 					else
 					{
@@ -42963,52 +43028,52 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			        case 0:
 			        {
 			            SetScriptArmour(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
 			        }
 			        case 1:
 			        {
 			            SetPlayerHealth(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
 			        }
 			        case 2:
 			        {
                         GivePlayerWeaponEx(playerid, 3);
-			            ShowActionBubble(playerid, "** %s grabs a nitestick from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a nitestick from the locker.", GetRPName(playerid));
 			        }
 			        case 3:
 			        {
                         GivePlayerWeaponEx(playerid, 41);
-			            ShowActionBubble(playerid, "** %s grabs a can of pepper spray from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a can of pepper spray from the locker.", GetRPName(playerid));
 			        }
 			        case 4:
 			        {
 						GivePlayerWeaponEx(playerid, 24);
-			            ShowActionBubble(playerid, "** %s grabs a Desert Eagle from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a Desert Eagle from the locker.", GetRPName(playerid));
 			        }
 			        case 5:
 			        {
 			            GivePlayerWeaponEx(playerid, 25);
-			            ShowActionBubble(playerid, "** %s grabs a Shotgun from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a Shotgun from the locker.", GetRPName(playerid));
 			        }
 			        case 6:
 			        {
 			            GivePlayerWeaponEx(playerid, 29);
-			            ShowActionBubble(playerid, "** %s grabs an MP5 from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs an MP5 from the locker.", GetRPName(playerid));
 			        }
 			        case 7:
 			        {
 			            GivePlayerWeaponEx(playerid, 31);
-			            ShowActionBubble(playerid, "** %s grabs an M4 from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs an M4 from the locker.", GetRPName(playerid));
 			        }
 			        case 8:
 			        {
 			            GivePlayerWeaponEx(playerid, 27);
-			            ShowActionBubble(playerid, "** %s grabs a SPAS-12 from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a SPAS-12 from the locker.", GetRPName(playerid));
 			        }
 			        case 9:
 			        {
 			            GivePlayerWeaponEx(playerid, 34);
-			            ShowActionBubble(playerid, "** %s grabs a Sniper Rifle from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a Sniper Rifle from the locker.", GetRPName(playerid));
 			        }
 				}
 			}
@@ -43019,27 +43084,27 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			        case 0:
 			        {
 			            SetScriptArmour(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
 			        }
 			        case 1:
 			        {
 			            SetPlayerHealth(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
 			        }
 			        case 2:
 			        {
                         GivePlayerWeaponEx(playerid, 42);
-			            ShowActionBubble(playerid, "** %s grabs a fire extinguisher from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a fire extinguisher from the locker.", GetRPName(playerid));
 			        }
 			        case 3:
 			        {
          				GivePlayerWeaponEx(playerid, 24);
-			            ShowActionBubble(playerid, "** %s grabs a Desert Eagle from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a Desert Eagle from the locker.", GetRPName(playerid));
 			        }
 			        case 4:
 			        {
 			            PlayerData[playerid][pPainkillers] = 5;
-			            ShowActionBubble(playerid, "** %s grabs a five pack of painkillers from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a five pack of painkillers from the locker.", GetRPName(playerid));
 
 			            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			            mysql_tquery(connectionID, queryBuffer);
@@ -43053,42 +43118,42 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			        case 0:
 			        {
 			            SetScriptArmour(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
 			        }
 			        case 1:
 			        {
 			            SetPlayerHealth(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
 			        }
 			        case 2:
 			        {
 			            GivePlayerWeaponEx(playerid, 24);
-			            ShowActionBubble(playerid, "** %s grabs a Desert Eagle from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a Desert Eagle from the locker.", GetRPName(playerid));
 			        }
 			        case 3:
 			        {
 			            GivePlayerWeaponEx(playerid, 25);
-			            ShowActionBubble(playerid, "** %s grabs a Shotgun from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a Shotgun from the locker.", GetRPName(playerid));
 			        }
 			        case 4:
 			        {
 			            GivePlayerWeaponEx(playerid, 29);
-			            ShowActionBubble(playerid, "** %s grabs an MP5 from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs an MP5 from the locker.", GetRPName(playerid));
 			        }
 			        case 5:
 			        {
 			            GivePlayerWeaponEx(playerid, 31);
-			            ShowActionBubble(playerid, "** %s grabs an M4 from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs an M4 from the locker.", GetRPName(playerid));
 			        }
 			        case 6:
 			        {
 			            GivePlayerWeaponEx(playerid, 27);
-			            ShowActionBubble(playerid, "** %s grabs a SPAS-12 from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a SPAS-12 from the locker.", GetRPName(playerid));
 			        }
 			        case 7:
 			        {
 			            GivePlayerWeaponEx(playerid, 34);
-			            ShowActionBubble(playerid, "** %s grabs a Sniper Rifle from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a Sniper Rifle from the locker.", GetRPName(playerid));
 			        }
 			    }
 			}
@@ -43099,17 +43164,17 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			        case 0:
 			        {
 			            SetScriptArmour(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a kevlar vest from the locker and puts it on.", GetRPName(playerid));
 			        }
 			        case 1:
 			        {
 			            SetPlayerHealth(playerid, 100.0);
-			            ShowActionBubble(playerid, "** %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a medkit from the locker and opens it.", GetRPName(playerid));
 			        }
 			        case 2:
 			        {
 			            GivePlayerWeaponEx(playerid, 43);
-			            ShowActionBubble(playerid, "** %s grabs a digital camera from the locker.", GetRPName(playerid));
+			            ShowActionBubble(playerid, "* %s grabs a digital camera from the locker.", GetRPName(playerid));
 			        }
 			    }
 			}*/
@@ -43127,7 +43192,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			            GivePlayerCash(playerid, -1000);
 			            SetScriptArmour(playerid, 100.0);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a kevlar vest for $1,000.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a kevlar vest for $1,000.");
 			            GameTextForPlayer(playerid, "~r~-$1000", 5000, 1);
 			    	}
 					case 1:
@@ -43140,7 +43205,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 			            GivePlayerWeaponEx(playerid, 4);
 			            GivePlayerCash(playerid, -1500);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a knife for $1,500.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a knife for $1,500.");
 			            GameTextForPlayer(playerid, "~r~-$1500", 5000, 1);
 			    	}
 			    	case 2:
@@ -43153,7 +43218,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 23);
 			            GivePlayerCash(playerid, -1000);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a silenced pistol for $1,000.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a silenced pistol for $1,000.");
 			            GameTextForPlayer(playerid, "~r~-$1000", 5000, 1);
 			    	}
 			    	case 3:
@@ -43166,7 +43231,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 25);
 			            GivePlayerCash(playerid, -1500);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a shotgun for $1,500.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a shotgun for $1,500.");
 			            GameTextForPlayer(playerid, "~r~-$1500", 5000, 1);
 			    	}
 			    	case 4:
@@ -43179,7 +43244,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 24);
 			            GivePlayerCash(playerid, -2000);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a Desert Eagle for $2,000.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a Desert Eagle for $2,000.");
 			            GameTextForPlayer(playerid, "~r~-$2000", 5000, 1);
 			    	}
 			    	case 5:
@@ -43192,7 +43257,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 29);
 			            GivePlayerCash(playerid, -2500);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered an MP5 for $2,500.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered an MP5 for $2,500.");
 			            GameTextForPlayer(playerid, "~r~-$2500", 5000, 1);
 			    	}
 			    	case 6:
@@ -43205,7 +43270,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 33);
 			            GivePlayerCash(playerid, -4000);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a country rifle for $4,000.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a country rifle for $4,000.");
 			            GameTextForPlayer(playerid, "~r~-$4000", 5000, 1);
 			    	}
 			    	case 7:
@@ -43218,7 +43283,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 30);
 			            GivePlayerCash(playerid, -6000);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered an AK-47 for $6,000.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered an AK-47 for $6,000.");
 			            GameTextForPlayer(playerid, "~r~-$6000", 5000, 1);
 			    	}
 			    	case 8:
@@ -43231,7 +43296,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 31);
 			            GivePlayerCash(playerid, -8000);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered an M4 for $8,000.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered an M4 for $8,000.");
 			            GameTextForPlayer(playerid, "~r~-$8000", 5000, 1);
 			    	}
 			    	case 9:
@@ -43244,7 +43309,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 27);
 			            GivePlayerCash(playerid, -8500);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a SPAS-12 for $8,500.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a SPAS-12 for $8,500.");
 			            GameTextForPlayer(playerid, "~r~-$8500", 5000, 1);
 			    	}
 			    	case 10:
@@ -43257,7 +43322,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						GivePlayerWeaponEx(playerid, 34);
 			            GivePlayerCash(playerid, -9000);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a sniper rifle for $9,000.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a sniper rifle for $9,000.");
 			            GameTextForPlayer(playerid, "~r~-$9000", 5000, 1);
 			    	}
 			    	case 11:
@@ -43277,7 +43342,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 						mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
 						mysql_tquery(connectionID, queryBuffer);
 
-			            SendClientMessageEx(playerid, COLOR_AQUA, "** You ordered a bomb for $15,000. /plantbomb to place the bomb.");
+			            SendClientMessageEx(playerid, COLOR_AQUA, "* You ordered a bomb for $15,000. /plantbomb to place the bomb.");
 			            GameTextForPlayer(playerid, "~r~-$15000", 5000, 1);
 			    	}
 			    }
@@ -43296,7 +43361,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					SetScriptArmour(playerid, 100.0);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a kevlar vest for $%i.", amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a kevlar vest for $%i.", amount);
 				}
 				else if(strfind(inputtext, "Medkit", true) != -1)
 				{
@@ -43309,7 +43374,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					SetPlayerHealth(playerid, 100.0);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a medkit for $%i.", amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a medkit for $%i.", amount);
 				}
 				else if(strfind(inputtext, "Nitestick", true) != -1)
 				{
@@ -43322,7 +43387,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "Mace", true) != -1)
 				{
@@ -43335,7 +43400,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
                 else if(strfind(inputtext, "Deagle", true) != -1)
 				{
@@ -43348,7 +43413,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "Shotgun", true) != -1)
 				{
@@ -43361,7 +43426,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "MP5", true) != -1)
 				{
@@ -43374,7 +43439,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "M4", true) != -1)
 				{
@@ -43387,7 +43452,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "SPAS-12", true) != -1)
 				{
@@ -43400,7 +43465,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "Sniper", true) != -1)
 				{
@@ -43413,7 +43478,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "Camera", true) != -1)
 				{
@@ -43426,7 +43491,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "Fire Extinguisher", true) != -1)
 				{
@@ -43439,7 +43504,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
 					GivePlayerWeaponEx(playerid, weapon);
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received a %s for $%i.", GetWeaponNameEx(weapon), amount);
 				}
 				else if(strfind(inputtext, "Painkillers", true) != -1)
 				{
@@ -43452,7 +43517,7 @@ Dialog:DIALOG_FACTIONEQUIPMENT(playerid, response, listitem, inputtext[])
                     PlayerData[playerid][pPainkillers] = 5;
 		            GivePlayerCash(playerid, -amount);
 
-		            SendClientMessageEx(playerid, COLOR_AQUA, "** You received painkillers for $%i.", amount);
+		            SendClientMessageEx(playerid, COLOR_AQUA, "* You received painkillers for $%i.", amount);
 				}
 			}
 		}
@@ -43512,7 +43577,7 @@ Dialog:DIALOG_FACTIONSKINS(playerid, response, listitem, inputtext[])
             mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pClothes], PlayerData[playerid][pID]);
             mysql_tquery(connectionID, queryBuffer);
 
-            ShowActionBubble(playerid, "** %s takes a uniform out of the locker and puts it on.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s takes a uniform out of the locker and puts it on.", GetRPName(playerid));
 		}
     }
     return 1;
@@ -44224,19 +44289,19 @@ Dialog:DIALOG_MP3PLAYER(playerid, response, listitem, inputtext[])
 					case MUSIC_MP3PLAYER:
 					{
 					   	SetMusicStream(MUSIC_MP3PLAYER, playerid, "");
-            			ShowActionBubble(playerid, "** %s turns off their MP3 player.", GetRPName(playerid));
+            			ShowActionBubble(playerid, "* %s turns off their MP3 player.", GetRPName(playerid));
 					}
 					case MUSIC_BOOMBOX:
 					{
 					    SetMusicStream(MUSIC_BOOMBOX, playerid, "");
-						ShowActionBubble(playerid, "** %s turns off their boombox.", GetRPName(playerid));
+						ShowActionBubble(playerid, "* %s turns off their boombox.", GetRPName(playerid));
 					}
 					case MUSIC_VEHICLE:
 					{
 					    if(IsPlayerInAnyVehicle(playerid))
 					    {
 						    SetMusicStream(MUSIC_VEHICLE, GetPlayerVehicleID(playerid), "");
-							ShowActionBubble(playerid, "** %s turns off the radio in the vehicle.", GetRPName(playerid));
+							ShowActionBubble(playerid, "* %s turns off the radio in the vehicle.", GetRPName(playerid));
 						}
 					}
 				}
@@ -44287,19 +44352,19 @@ Dialog:DIALOG_MP3MUSIC(playerid, response, listitem, inputtext[])
             case MUSIC_MP3PLAYER:
             {
                 SetMusicStream(MUSIC_MP3PLAYER, playerid, url);
-		  		ShowActionBubble(playerid, "** %s changes the song on their MP3 player.", GetRPName(playerid));
+		  		ShowActionBubble(playerid, "* %s changes the song on their MP3 player.", GetRPName(playerid));
 			}
 			case MUSIC_BOOMBOX:
 			{
 			    SetMusicStream(MUSIC_BOOMBOX, playerid, url);
-				ShowActionBubble(playerid, "** %s changes the song on their boombox.", GetRPName(playerid));
+				ShowActionBubble(playerid, "* %s changes the song on their boombox.", GetRPName(playerid));
 			}
 			case MUSIC_VEHICLE:
 			{
 			    if(IsPlayerInAnyVehicle(playerid))
 			    {
 				    SetMusicStream(MUSIC_VEHICLE, GetPlayerVehicleID(playerid), url);
-					ShowActionBubble(playerid, "** %s changes the song on the radio.", GetRPName(playerid));
+					ShowActionBubble(playerid, "* %s changes the song on the radio.", GetRPName(playerid));
 				}
 			}
 		}
@@ -44345,19 +44410,19 @@ Dialog:DIALOG_VIPMUSIC(playerid, response, listitem, inputtext[])
             case MUSIC_MP3PLAYER:
             {
                 SetMusicStream(MUSIC_MP3PLAYER, playerid, url);
-		  		ShowActionBubble(playerid, "** %s changes the song on their MP3 player.", GetRPName(playerid));
+		  		ShowActionBubble(playerid, "* %s changes the song on their MP3 player.", GetRPName(playerid));
 			}
 			case MUSIC_BOOMBOX:
 			{
 			    SetMusicStream(MUSIC_BOOMBOX, playerid, url);
-				ShowActionBubble(playerid, "** %s changes the song on their boombox.", GetRPName(playerid));
+				ShowActionBubble(playerid, "* %s changes the song on their boombox.", GetRPName(playerid));
 			}
 			case MUSIC_VEHICLE:
 			{
 			    if(IsPlayerInAnyVehicle(playerid))
 			    {
 				    SetMusicStream(MUSIC_VEHICLE, GetPlayerVehicleID(playerid), url);
-					ShowActionBubble(playerid, "** %s changes the song on the radio.", GetRPName(playerid));
+					ShowActionBubble(playerid, "* %s changes the song on the radio.", GetRPName(playerid));
 				}
 			}
 		}
@@ -44388,19 +44453,19 @@ Dialog:DIALOG_MP3URL(playerid, response, listitem, inputtext[])
             case MUSIC_MP3PLAYER:
             {
                 SetMusicStream(MUSIC_MP3PLAYER, playerid, inputtext);
-		  		ShowActionBubble(playerid, "** %s changes the song on their MP3 player.", GetRPName(playerid));
+		  		ShowActionBubble(playerid, "* %s changes the song on their MP3 player.", GetRPName(playerid));
 			}
 			case MUSIC_BOOMBOX:
 			{
 			    SetMusicStream(MUSIC_BOOMBOX, playerid, inputtext);
-				ShowActionBubble(playerid, "** %s changes the song on their boombox.", GetRPName(playerid));
+				ShowActionBubble(playerid, "* %s changes the song on their boombox.", GetRPName(playerid));
 			}
 			case MUSIC_VEHICLE:
 			{
 			    if(IsPlayerInAnyVehicle(playerid))
 			    {
 				    SetMusicStream(MUSIC_VEHICLE, GetPlayerVehicleID(playerid), inputtext);
-					ShowActionBubble(playerid, "** %s changes the song on the radio.", GetRPName(playerid));
+					ShowActionBubble(playerid, "* %s changes the song on the radio.", GetRPName(playerid));
 				}
 			}
 		}
@@ -44627,7 +44692,7 @@ Dialog:DIALOG_GANGSTASHVEST(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s takes a kevlar vest from the gang stash.", GetRPName(playerid));
+				ShowActionBubble(playerid, "* %s takes a kevlar vest from the gang stash.", GetRPName(playerid));
 				SendClientMessage(playerid, COLOR_AQUA, "You crafted a kevlar vest using 200 materials from the safe.");
 			}
 			case 1:
@@ -44725,7 +44790,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_9mm = weapon_9mm - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws a 9mm from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws a 9mm from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws a 9mm from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
                 case GANGWEAPON_SDPISTOL:
@@ -44749,7 +44814,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sdpistol = weapon_sdpistol - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws a silenced pistol from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws a silenced pistol from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws a silenced pistol from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_DEAGLE:
@@ -44773,7 +44838,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_deagle = weapon_deagle - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws a Desert Eagle from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws a Desert Eagle from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws a Desert Eagle from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_SHOTGUN:
@@ -44797,7 +44862,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_shotgun = weapon_shotgun - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws a shotgun from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws a shotgun from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws a shotgun from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
                 case GANGWEAPON_TEC9:
@@ -44821,7 +44886,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_tec9 = weapon_tec9 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws a Tec-9 from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws a Tec-9 from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws a Tec-9 from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_UZI:
@@ -44845,7 +44910,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_uzi = weapon_uzi - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws a Micro Uzi from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws a Micro Uzi from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws a Micro Uzi from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_MP5:
@@ -44869,7 +44934,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_mp5 = weapon_mp5 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws an MP5 from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws an MP5 from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws an MP5 from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_AK47:
@@ -44893,7 +44958,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_ak47 = weapon_ak47 - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws an AK-47 from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws an AK-47 from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws an AK-47 from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_RIFLE:
@@ -44917,7 +44982,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_rifle = weapon_rifle - 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s withdraws a rifle from the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s withdraws a rifle from the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) withdraws a rifle from the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 			}
@@ -44948,7 +45013,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_9mm = weapon_9mm + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a 9mm in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a 9mm in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a 9mm in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
                 case GANGWEAPON_SDPISTOL:
@@ -44964,7 +45029,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sdpistol = weapon_sdpistol + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a silenced pistol in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a silenced pistol in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a silenced pistol in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_DEAGLE:
@@ -44980,7 +45045,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_deagle = weapon_deagle + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a Desert Eagle in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a Desert Eagle in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a Desert Eagle in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_SHOTGUN:
@@ -44996,7 +45061,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_shotgun = weapon_shotgun + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a shotgun in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a shotgun in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a shotgun in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 			/*	case GANGWEAPON_SPAS12:
@@ -45012,7 +45077,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_spas12 = weapon_spas12 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a SPAS-12 in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a SPAS-12 in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a SPAS-12 in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_SAWNOFF:
@@ -45028,7 +45093,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sawnoff = weapon_sawnoff + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a sawnoff shotgun in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a sawnoff shotgun in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a sawnoff shotgun in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}*/
                 case GANGWEAPON_TEC9:
@@ -45044,7 +45109,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_tec9 = weapon_tec9 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a Tec-9 in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a Tec-9 in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a Tec-9 in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_UZI:
@@ -45060,7 +45125,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_uzi = weapon_uzi + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a Micro Uzi in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a Micro Uzi in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a Micro Uzi in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_MP5:
@@ -45076,7 +45141,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_mp5 = weapon_mp5 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits an MP5 in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits an MP5 in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits an MP5 in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_AK47:
@@ -45092,7 +45157,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_ak47 = weapon_ak47 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits an AK-47 in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits an AK-47 in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits an AK-47 in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 /*						case GANGWEAPON_M4:
@@ -45108,7 +45173,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_m4 = weapon_m4 + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits an M4 in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits an M4 in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits an M4 in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}*/
 				case GANGWEAPON_RIFLE:
@@ -45124,7 +45189,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_rifle = weapon_rifle + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a rifle in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a rifle in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a rifle in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 /*						case GANGWEAPON_SNIPER:
@@ -45140,7 +45205,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_sniper = weapon_sniper + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a sniper rifle in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a sniper rifle in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a sniper rifle in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}
 				case GANGWEAPON_MOLOTOV:
@@ -45156,7 +45221,7 @@ Dialog:DIALOG_GANGSTASHWEAPONS2(playerid, response, listitem, inputtext[])
 		            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET weapon_molotov = weapon_molotov + 1 WHERE id = %i", PlayerData[playerid][pGang]);
 		            mysql_tquery(connectionID, queryBuffer);
 
-		            ShowActionBubble(playerid, "** %s deposits a molotov in the gang stash.", GetRPName(playerid));
+		            ShowActionBubble(playerid, "* %s deposits a molotov in the gang stash.", GetRPName(playerid));
 		            Log_Write("log_gang", "%s (uid: %i) deposits a molotov in the %s (id: %i) gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GangInfo[PlayerData[playerid][pGang]][gName], PlayerData[playerid][pGang]);
 				}*/
 			}
@@ -45364,8 +45429,8 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s withdraws some weed from the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %i grams of weed from the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s withdraws some weed from the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %i grams of weed from the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) withdraws %i grams of weed from the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_COCAINE:
@@ -45390,8 +45455,8 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s withdraws some cocaine from the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %i grams of cocaine from the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s withdraws some cocaine from the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %i grams of cocaine from the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) withdraws %i grams of cocaine from the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
             case ITEM_METH:
@@ -45416,8 +45481,8 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s withdraws some meth from the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %i grams of meth from the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s withdraws some meth from the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %i grams of meth from the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) withdraws %i grams of meth from the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_PAINKILLERS:
@@ -45442,8 +45507,8 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s withdraws some painkillers from the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %i painkillers from the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s withdraws some painkillers from the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %i painkillers from the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) withdraws %i painkillers from the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_MATERIALS:
@@ -45468,8 +45533,8 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s withdraws some materials from the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %i materials from the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s withdraws some materials from the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %i materials from the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) withdraws %i materials from the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_CASH:
@@ -45486,8 +45551,8 @@ Dialog:DIALOG_GANGWITHDRAW(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCash], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s withdraws some cash from the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %s from the gang stash.", FormatNumber(amount));
+				ShowActionBubble(playerid, "* %s withdraws some cash from the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %s from the gang stash.", FormatNumber(amount));
 				Log_Write("log_gang", "%s (uid: %i) withdraws $%i from the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 		}
@@ -45544,8 +45609,8 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s deposits some weed in the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i grams of weed in the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s deposits some weed in the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %i grams of weed in the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) deposits %i grams of weed in the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_COCAINE:
@@ -45570,8 +45635,8 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s deposits some cocaine in the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i grams of cocaine in the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s deposits some cocaine in the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %i grams of cocaine in the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) deposits %i grams of cocaine in the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
             case ITEM_METH:
@@ -45596,8 +45661,8 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s deposits some meth in the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i grams of meth in the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s deposits some meth in the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %i grams of meth in the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) deposits %i grams of meth in the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_PAINKILLERS:
@@ -45622,8 +45687,8 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s deposits some painkillers in the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i painkillers in the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s deposits some painkillers in the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %i painkillers in the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) deposits %i painkillers in the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_MATERIALS:
@@ -45648,8 +45713,8 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s deposits some materials in the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i materials in the gang stash.", amount);
+				ShowActionBubble(playerid, "* %s deposits some materials in the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %i materials in the gang stash.", amount);
 				Log_Write("log_gang", "%s (uid: %i) deposits %i materials in the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 			case ITEM_CASH:
@@ -45671,8 +45736,8 @@ Dialog:DIALOG_GANGDEPOSIT(playerid, response, listitem, inputtext[])
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET cash = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gCash], PlayerData[playerid][pGang]);
 				mysql_tquery(connectionID, queryBuffer);
 
-				ShowActionBubble(playerid, "** %s deposits some cash in the gang stash.", GetRPName(playerid));
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i in the gang stash.", FormatNumber(amount));
+				ShowActionBubble(playerid, "* %s deposits some cash in the gang stash.", GetRPName(playerid));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %i in the gang stash.", FormatNumber(amount));
 				Log_Write("log_gang", "%s (uid: %i) deposited $%i in the gang stash.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 			}
 		}
@@ -45708,7 +45773,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_9mm = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_9MM], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a 9mm and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a 9mm and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 100 materials from your gang stash to craft a 9mm.");
                 Log_Write("log_gang", "%s (uid: %i) crafts a 9mm using 100 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45727,7 +45792,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_sdpistol = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SDPISTOL], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a silenced pistol and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a silenced pistol and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 150 materials from your gang stash to craft a silenced pistol.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a silenced pistol using 150 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45746,7 +45811,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_shotgun = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SHOTGUN], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a shotgun and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a shotgun and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 200 materials from your gang stash to craft a shotgun.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a shotgun using 200 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45765,7 +45830,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_uzi = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_UZI], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a Micro SMG and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a Micro SMG and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 500 materials from your gang stash to craft a Micro SMG.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a Micro SMG using 500 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45784,7 +45849,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_tec9 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_TEC9], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a Tec-9 and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a Tec-9 and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 500 materials from your gang stash to craft a Tec-9.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a Tec-9 using 500 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45803,7 +45868,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_mp5 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MP5], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts an MP5 and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts an MP5 and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 1000 materials from your gang stash to craft an MP5.");
             	Log_Write("log_gang", "%s (uid: %i) crafts an MP5 using 1000 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45822,7 +45887,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_rifle = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_RIFLE], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a rifle and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a rifle and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 1000 materials from your gang stash to craft a rifle.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a rifle using 1000 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45841,7 +45906,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_deagle = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_DEAGLE], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a Desert Eagle and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a Desert Eagle and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 2000 materials from your gang stash to craft a Desert Eagle.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a Desert Eagle using 2000 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45860,7 +45925,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_molotov = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_MOLOTOV], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a molotov and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a molotov and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 5000 materials from your gang stash to craft a molotov.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a molotov using 5000 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45879,7 +45944,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_ak47 = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_AK47], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts an AK-47 and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts an AK-47 and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 3000 materials from your gang stash to craft an AK-47.");
             	Log_Write("log_gang", "%s (uid: %i) crafts an AK-47 using 3000 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -45898,7 +45963,7 @@ Dialog:DIALOG_GANGSTASHCRAFT(playerid, response, listitem, inputtext[])
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_GANGS" SET materials = %i, weapon_sawnoff = %i WHERE id = %i", GangInfo[PlayerData[playerid][pGang]][gMaterials], GangInfo[PlayerData[playerid][pGang]][gWeapons][GANGWEAPON_SAWNOFF], PlayerData[playerid][pGang]);
                 mysql_tquery(connectionID, queryBuffer);
 
-                ShowActionBubble(playerid, "** %s crafts a sawnoff shotgun and stores it to the gang stash.", GetRPName(playerid));
+                ShowActionBubble(playerid, "* %s crafts a sawnoff shotgun and stores it to the gang stash.", GetRPName(playerid));
                 SendClientMessage(playerid, COLOR_AQUA, "You used 3000 materials from your gang stash to craft a sawnoff shotgun.");
             	Log_Write("log_gang", "%s (uid: %i) crafts a sawnoff shotgun using 3000 materials from the gang stash.", GetRPName(playerid), PlayerData[playerid][pID]);
 
@@ -46009,7 +46074,7 @@ Dialog:DIALOG_GANGSKINS(playerid, response, listitem, inputtext[])
             PlayerData[playerid][pSkinSelected] = -1;
 
 			SetScriptSkin(playerid, GetPlayerSkin(playerid));
-            ShowActionBubble(playerid, "** %s changes their clothes.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s changes their clothes.", GetRPName(playerid));
 		}
     }
     return 1;
@@ -46428,7 +46493,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 28);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received a micro uzi.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received a micro uzi.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased a {00AA00}micro uzi{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 1:
@@ -46451,7 +46516,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 32);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received a Tec-9.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received a Tec-9.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased a {00AA00}Tec-9{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 2:
@@ -46474,7 +46539,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 29);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received an MP5.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received an MP5.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased an {00AA00}MP5{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 3:
@@ -46497,7 +46562,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 24);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received a Desert Eagle.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received a Desert Eagle.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased a {00AA00}Desert Eagle{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 4:
@@ -46520,7 +46585,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 18);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received a molotov.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received a molotov.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased a {00AA00}molotov{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 5:
@@ -46543,7 +46608,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 30);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received an AK-47.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received an AK-47.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased an {00AA00}AK-47{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 6:
@@ -46566,7 +46631,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 31);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received an M4.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received an M4.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased an {00AA00}M4{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 7:
@@ -46589,7 +46654,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 34);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received a sniper.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received a sniper.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased a {00AA00}sniper{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 	        case 8:
@@ -46612,7 +46677,7 @@ Dialog:DIALOG_GANGARMSWEAPONS(playerid, response, listitem, inputtext[])
 	            GivePlayerCash(playerid, -GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            GivePlayerWeaponEx(playerid, 26);
 
-	            ShowActionBubble(playerid, "** %s paid $%i to the arms dealer and received a sawnoff shotgun.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
+	            ShowActionBubble(playerid, "* %s paid $%i to the arms dealer and received a sawnoff shotgun.", GetRPName(playerid), GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	            SendClientMessageEx(playerid, COLOR_AQUA, "You have purchased a {00AA00}sawnoff shotgun{33CCFF} for $%i.", GangInfo[PlayerData[playerid][pDealerGang]][gArmsPrices][listitem]);
 	        }
 		}
@@ -46978,7 +47043,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			ShowActionBubble(playerid, "** %s steals %i grams of weed from the trunk.", GetRPName(playerid), amount);
+  			ShowActionBubble(playerid, "* %s steals %i grams of weed from the trunk.", GetRPName(playerid), amount);
         }
         else if(strfind(inputtext, "Cocaine") != -1 && (amount = VehicleInfo[vehicleid][vCocaine]/20) > 0)
         {
@@ -46997,7 +47062,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			ShowActionBubble(playerid, "** %s steals %i grams of cocaine from the trunk.", GetRPName(playerid), amount);
+  			ShowActionBubble(playerid, "* %s steals %i grams of cocaine from the trunk.", GetRPName(playerid), amount);
         }
         else if(strfind(inputtext, "Meth") != -1 && (amount = VehicleInfo[vehicleid][vMeth]/20) > 0)
         {
@@ -47016,7 +47081,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			ShowActionBubble(playerid, "** %s steals %i grams of meth from the trunk.", GetRPName(playerid), amount);
+  			ShowActionBubble(playerid, "* %s steals %i grams of meth from the trunk.", GetRPName(playerid), amount);
         }
         else if(strfind(inputtext, "Painkillers") != -1 && (amount = VehicleInfo[vehicleid][vPainkillers]/20) > 0)
         {
@@ -47035,7 +47100,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			ShowActionBubble(playerid, "** %s steals %i painkillers from the trunk.", GetRPName(playerid), amount);
+  			ShowActionBubble(playerid, "* %s steals %i painkillers from the trunk.", GetRPName(playerid), amount);
         }
         else if(strfind(inputtext, "Materials") != -1 && (amount = VehicleInfo[vehicleid][vMaterials]/20) > 0)
         {
@@ -47054,7 +47119,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			ShowActionBubble(playerid, "** %s steals %i materials from the trunk.", GetRPName(playerid), amount);
+  			ShowActionBubble(playerid, "* %s steals %i materials from the trunk.", GetRPName(playerid), amount);
         }
         else if(strfind(inputtext, "Cash") != -1 && (amount = VehicleInfo[vehicleid][vCash]/20) > 0)
         {
@@ -47067,7 +47132,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
   			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cash = %i WHERE uid = %i", PlayerData[playerid][pCash], PlayerData[playerid][pID]);
   			mysql_tquery(connectionID, queryBuffer);
 
-  			ShowActionBubble(playerid, "** %s steals %s worth of cash from the trunk.", GetRPName(playerid), FormatNumber(amount));
+  			ShowActionBubble(playerid, "* %s steals %s worth of cash from the trunk.", GetRPName(playerid), FormatNumber(amount));
         }
         else
         {
@@ -47082,7 +47147,7 @@ Dialog:DIALOG_CRACKTRUNK(playerid, response, listitem, inputtext[])
 					}
 
 					GivePlayerWeaponEx(playerid, VehicleInfo[vehicleid][vWeapons][i]);
-					ShowActionBubble(playerid, "** %s steals a %s from the trunk.", GetRPName(playerid), GetWeaponNameEx(VehicleInfo[vehicleid][vWeapons][i]));
+					ShowActionBubble(playerid, "* %s steals a %s from the trunk.", GetRPName(playerid), GetWeaponNameEx(VehicleInfo[vehicleid][vWeapons][i]));
 
 					mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET weapon_%i = 0 WHERE id = %i", i + 1, VehicleInfo[vehicleid][vID]);
 					mysql_tquery(connectionID, queryBuffer);
@@ -47151,7 +47216,7 @@ Dialog:DIALOG_NEWBWELCOME(playerid, response, listitem, inputtext[])
         	new string[30];
         	format(string, sizeof(string), "Show me around LS please, I am new.");
 			strcpy(PlayerData[playerid][pHelpRequest], string, 128);
-			SendHelperMessage(COLOR_AQUA, "** Help Request: New Player %s (ID:%d) is requesting a helper to show them around. **", GetRPName(playerid), playerid);
+			SendHelperMessage(COLOR_AQUA, "* Help Request: New Player %s (ID:%d) is requesting a helper to show them around. *", GetRPName(playerid), playerid);
 
 			PlayerData[playerid][pLastRequest] = gettime();
 			SendClientMessage(playerid, COLOR_GREEN, "Your help request was sent to all helpers. Please wait for a response.");
@@ -47194,7 +47259,7 @@ Dialog:DIALOG_USERIMKIT(playerid, response, listitem, inputtext[])
 			mysql_tquery(connectionID, queryBuffer);
 
 			PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
-			ShowActionBubble(playerid, "** %s installs a set of %s rims on the vehicle.", GetRPName(playerid), inputtext);
+			ShowActionBubble(playerid, "* %s installs a set of %s rims on the vehicle.", GetRPName(playerid), inputtext);
 		}
     }
     return 1;
@@ -47489,7 +47554,7 @@ Dialog:DIALOG_LOCATETURFS(playerid, response, listitem, inputtext[])
 	        {
 		   	 	PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 		    	SetPlayerCheckpoint(playerid, TurfInfo[i][tMinX], TurfInfo[i][tMinY], TurfInfo[i][tHeight], 3.0);
-		    	SendClientMessageEx(playerid, COLOR_WHITE, "** Checkpoint marked at the location of %s.", TurfInfo[i][tName]);
+		    	SendClientMessageEx(playerid, COLOR_WHITE, "* Checkpoint marked at the location of %s.", TurfInfo[i][tName]);
 		    	break;
 			}
 		}
@@ -47504,7 +47569,7 @@ Dialog:DIALOG_LOCATEPOINTS(playerid, response, listitem, inputtext[])
 	    {
             PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 		    SetPlayerCheckpoint(playerid, PointInfo[listitem][pPointX], PointInfo[listitem][pPointY], PointInfo[listitem][pPointZ], 3.0);
-		    SendClientMessageEx(playerid, COLOR_WHITE, "** Checkpoint marked at the location of %s.", PointInfo[listitem][pName]);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "* Checkpoint marked at the location of %s.", PointInfo[listitem][pName]);
 	    }
 	}
 	return 1;
@@ -47627,7 +47692,7 @@ Dialog:DIALOG_PAINTBALL(playerid, response, listitem, inputtext[])
 {
     if(response)
     {
-	    ShowActionBubble(playerid, "** %s has entered the paintball arena.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s has entered the paintball arena.", GetRPName(playerid));
 		SetPlayerInPaintball(playerid, listitem+1);
 
 		foreach(new i : Player)
@@ -48236,12 +48301,12 @@ CMD:my(playerid, params[])
 
 	if(strlen(params) > MAX_SPLIT_LENGTH)
 	{
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} %s's %.*s...", GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} ...%s", params[MAX_SPLIT_LENGTH]);
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* %s's %.*s...", GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* ...%s", params[MAX_SPLIT_LENGTH]);
 	}
 	else
 	{
-    	SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} %s's %s", GetRPName(playerid), params);
+    	SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* %s's %s", GetRPName(playerid), params);
 	}
 
 	return 1;
@@ -48257,12 +48322,12 @@ CMD:me(playerid, params[])
 
 	if(strlen(params) > MAX_SPLIT_LENGTH)
 	{
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} %s %.*s...", GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} ...%s", params[MAX_SPLIT_LENGTH]);
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* %s %.*s...", GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* ...%s", params[MAX_SPLIT_LENGTH]);
 	}
 	else
 	{
-    	SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} %s %s", GetRPName(playerid), params);
+    	SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* %s %s", GetRPName(playerid), params);
 	}
 
 	return 1;
@@ -48295,16 +48360,16 @@ CMD:ame(playerid, params[])
 	{
 	    PlayerData[playerid][aMeStatus] =1;
 
-		format(string, sizeof(string), "**{C2A2DA} %s %s", GetRPName(playerid), message);
-		PlayerData[playerid][aMeID] = CreateDynamic3DTextLabel(string, COLOR_GLOBAL, 0.0, 0.0, 0.0, 20.0, playerid);
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, string);
+		format(string, sizeof(string), "* %s %s", GetRPName(playerid), message);
+		PlayerData[playerid][aMeID] = CreateDynamic3DTextLabel(string, COLOR_PURPLE, 0.0, 0.0, 0.0, 20.0, playerid);
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, string);
 		return 1;
 	}
 	else
 	{
-		format(string, sizeof(string), "**{C2A2DA} %s %s", GetRPName(playerid), message);
-		UpdateDynamic3DTextLabelText(PlayerData[playerid][aMeID], COLOR_GLOBAL, string);
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, string);
+		format(string, sizeof(string), "* %s %s", GetRPName(playerid), message);
+		UpdateDynamic3DTextLabelText(PlayerData[playerid][aMeID], COLOR_PURPLE, string);
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, string);
 		return 1;
 	}
 
@@ -48336,16 +48401,16 @@ CMD:ado(playerid, params[])
 	{
         PlayerData[playerid][aMeStatus] = 1;
 
-		format(string, sizeof(string), "**{C2A2DA} %s (( %s ))", message, GetRPName(playerid));
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, string);
+		format(string, sizeof(string), "* %s (( %s ))", message, GetRPName(playerid));
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, string);
 
 		PlayerData[playerid][aMeID] = CreateDynamic3DTextLabel(string, COLOR_PURPLE, 0.0, 0.0, 0.0, 20.0, playerid);
 		return 1;
 	}
 	else
 	{
-		format(string, sizeof(string), "**{C2A2DA} %s (( %s ))", message, GetRPName(playerid));
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, string);
+		format(string, sizeof(string), "* %s (( %s ))", message, GetRPName(playerid));
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, string);
 
 		UpdateDynamic3DTextLabelText(PlayerData[playerid][aMeID], COLOR_PURPLE, string);
 		return 1;
@@ -48361,15 +48426,15 @@ CMD:do(playerid, params[])
 
 	if(strlen(params) > MAX_SPLIT_LENGTH)
 	{
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} %.*s...", MAX_SPLIT_LENGTH, params);
-		SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} ...%s (( %s ))", params[MAX_SPLIT_LENGTH], GetRPName(playerid));
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "*%.*s...", MAX_SPLIT_LENGTH, params);
+		SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* ...%s (( %s ))", params[MAX_SPLIT_LENGTH], GetRPName(playerid));
 	}
 	else
 	{
-    	SendProximityMessage(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} %s (( %s ))", params, GetRPName(playerid));
+    	SendProximityMessage(playerid, 20.0, COLOR_PURPLE, "* %s (( %s ))", params, GetRPName(playerid));
 	}
 
-	SetPlayerBubbleText(playerid, 20.0, COLOR_GLOBAL, "**{C2A2DA} %s (( %s ))", params, GetRPName(playerid));
+	SetPlayerBubbleText(playerid, 20.0, COLOR_PURPLE, "* %s (( %s ))", params, GetRPName(playerid));
 	return 1;
 }
 
@@ -48548,8 +48613,8 @@ CMD:whisper(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player has disabled incoming whispers.");
 	}
 
-	SendClientMessageEx(targetid, COLOR_YELLOW, "** Whisper from %s: %s **", GetRPName(playerid), text);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "** Whisper to %s: %s **", GetRPName(targetid), text);
+	SendClientMessageEx(targetid, COLOR_YELLOW, "* Whisper from %s: %s *", GetRPName(playerid), text);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "* Whisper to %s: %s *", GetRPName(targetid), text);
 	if(PlayerData[playerid][pBugged])
 	{
 		foreach(new i : Player)
@@ -48563,7 +48628,7 @@ CMD:whisper(playerid, params[])
 
 	if(PlayerData[targetid][pWhisperFrom] == INVALID_PLAYER_ID)
 	{
-	    SendClientMessage(targetid, COLOR_WHITE, "** You can use '/rw [message]' to reply to this whisper.");
+	    SendClientMessage(targetid, COLOR_WHITE, "* You can use '/rw [message]' to reply to this whisper.");
 	}
 
 	PlayerData[targetid][pWhisperFrom] = playerid;
@@ -48602,7 +48667,7 @@ CMD:pm(playerid, params[])
 
 	if(PlayerData[targetid][pWhisperFrom] == INVALID_PLAYER_ID)
 	{
-	    SendClientMessage(targetid, COLOR_WHITE, "** You can use '/rpm [message]' to reply to this private message.");
+	    SendClientMessage(targetid, COLOR_WHITE, "* You can use '/rpm [message]' to reply to this private message.");
 	}
 
 	PlayerData[targetid][pWhisperFrom] = playerid;
@@ -48642,8 +48707,8 @@ CMD:rw(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You must be near that player to whisper them.");
 	}
 
-	SendClientMessageEx(PlayerData[playerid][pWhisperFrom], COLOR_YELLOW, "** Whisper from %s: %s **", GetRPName(playerid), params);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "** Whisper to %s: %s **", GetRPName(PlayerData[playerid][pWhisperFrom]), params);
+	SendClientMessageEx(PlayerData[playerid][pWhisperFrom], COLOR_YELLOW, "* Whisper from %s: %s *", GetRPName(playerid), params);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "* Whisper to %s: %s *", GetRPName(PlayerData[playerid][pWhisperFrom]), params);
 	return 1;
 }
 CMD:lights(playerid, params[])
@@ -48662,12 +48727,12 @@ CMD:lights(playerid, params[])
 	if(!GetVehicleParams(vehicleid, VEHICLE_LIGHTS))
 	{
 	    SetVehicleParams(vehicleid, VEHICLE_LIGHTS, true);
-	    ShowActionBubble(playerid, "** %s turns on the headlights of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s turns on the headlights of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 	else
 	{
 	    SetVehicleParams(vehicleid, VEHICLE_LIGHTS, false);
-	    ShowActionBubble(playerid, "** %s turns off the headlights of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s turns off the headlights of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 
 	return 1;
@@ -48693,12 +48758,12 @@ CMD:hood(playerid, params[])
 	if(!GetVehicleParams(vehicleid, VEHICLE_BONNET))
 	{
 	    SetVehicleParams(vehicleid, VEHICLE_BONNET, true);
-	    ShowActionBubble(playerid, "** %s opens the hood of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s opens the hood of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 	else
 	{
 	    SetVehicleParams(vehicleid, VEHICLE_BONNET, false);
-	    ShowActionBubble(playerid, "** %s closes the hood of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s closes the hood of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 
 	return 1;
@@ -48729,12 +48794,12 @@ CMD:boot(playerid, params[])
 	if(!GetVehicleParams(vehicleid, VEHICLE_BOOT))
 	{
 	    SetVehicleParams(vehicleid, VEHICLE_BOOT, true);
-	    ShowActionBubble(playerid, "** %s opens the boot of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s opens the boot of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 	else
 	{
 	    SetVehicleParams(vehicleid, VEHICLE_BOOT, false);
-	    ShowActionBubble(playerid, "** %s closes the boot of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s closes the boot of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 
 	return 1;
@@ -48894,13 +48959,13 @@ CMD:engine(playerid, params[])
 
 //	    SetVehicleParams(vehicleid, VEHICLE_ENGINE, true);
 	    SetTimerEx("VehEngine", 500, false, "i", playerid);
-	    ShowActionBubble(playerid, "** %s twists the key in the ignition...", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s twists the key in the ignition...", GetRPName(playerid));
 	}
 	else
 	{
 //	    SetVehicleParams(vehicleid, VEHICLE_ENGINE, false);
 	    SetTimerEx("VehEngine", 500, false, "i", playerid);
-	    ShowActionBubble(playerid, "** %s twists the key in the ignition...", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s twists the key in the ignition...", GetRPName(playerid));
 	}
 
 	return 1;
@@ -48911,12 +48976,12 @@ func VehEngine(playerid)
 	if(!GetVehicleParams(vehicleid, VEHICLE_ENGINE))
 	{
 		SetVehicleParams(vehicleid, VEHICLE_ENGINE, true);
-		ShowActionBubble(playerid, "** %s's engine was turned on (( %s )).", GetVehicleName(vehicleid), GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s's engine was turned on (( %s )).", GetVehicleName(vehicleid), GetRPName(playerid));
 	}
 	else
 	{
 		SetVehicleParams(vehicleid, VEHICLE_ENGINE, false);
-		ShowActionBubble(playerid, "** %s's engine was turned off (( %s )).", GetVehicleName(vehicleid), GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s's engine was turned off (( %s )).", GetVehicleName(vehicleid), GetRPName(playerid));
 
 	}
 	return 1;
@@ -49702,7 +49767,7 @@ CMD:helmet(playerid, params[])
 		if (HelmetEnabled[playerid] == 1)
 		{
 		    HelmetEnabled[playerid] = 0;
-			ShowActionBubble(playerid, "{FF8000}** {C2A2DA}%s reaches for their helmet and takes it off.", GetPlayerNameEx(playerid));
+			ShowActionBubble(playerid, "{FF8000}* {C2A2DA}%s reaches for their helmet and takes it off.", GetPlayerNameEx(playerid));
 			RemovePlayerAttachedObject(playerid, 3);
 		}
 		else if (HelmetEnabled[playerid] == 0)
@@ -49710,7 +49775,7 @@ CMD:helmet(playerid, params[])
 			if(IsanewBike(vehicleid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 			{
 			    HelmetEnabled[playerid] = 1;
-				ShowActionBubble(playerid, "{FF8000}** {C2A2DA}%s reaches for their helmet and puts it on.", GetPlayerNameEx(playerid));
+				ShowActionBubble(playerid, "{FF8000}* {C2A2DA}%s reaches for their helmet and puts it on.", GetPlayerNameEx(playerid));
 				SetPlayerAttachedObject(playerid, 3, GetPlayerHelmet(playerid), 2, 0.101, -0.0, 0.0, 5.50, 84.60, 83.7, 1, 1, 1);
 			}
 			else return SendClientMessage(playerid, COLOR_GREY, "You must be in a bike to use this command");
@@ -49757,7 +49822,7 @@ CMD:graphicchat(playerid, params[])
 			else if(PlayerData[playerid][pGraphic] == GRAPHICRANK_SENIOR) str = "Video Editor";
 			else if(PlayerData[playerid][pGraphic] == GRAPHICRANK_MANAGER) str = "Graphic Manager";
 
-			format(str, sizeof(str), "** %s %s: %s **", str, GetRPName(playerid), msg);
+			format(str, sizeof(str), "* %s %s: %s *", str, GetRPName(playerid), msg);
 			SendGraphicMessage(0xFA58ACFF, str);
 		}
 		else
@@ -49841,7 +49906,7 @@ CMD:ap(playerid, params[])
 		new str[128];
 		if(!sscanf(params, "s[128]", msg))
 		{
-			format(str, sizeof(str), "** [AP]{FFFFFF} %s: %s **", GetRPName(playerid), msg);
+			format(str, sizeof(str), "* [AP]{FFFFFF} %s: %s *", GetRPName(playerid), msg);
 			SendAPMessage(COLOR_AQUA, str);
 		}
 		else
@@ -49863,7 +49928,7 @@ CMD:dga(playerid, params[])
 		new str[128];
 		if(!sscanf(params, "s[128]", msg))
 		{
-			format(str, sizeof(str), "** [DGA]{FFFFFF} %s: %s **", GetRPName(playerid), msg);
+			format(str, sizeof(str), "* [DGA]{FFFFFF} %s: %s *", GetRPName(playerid), msg);
 			SendDGAMessage(COLOR_GLOBAL, str);
 		}
 		else
@@ -49886,7 +49951,7 @@ CMD:wd(playerid, params[])
 		new str[128];
 		if(!sscanf(params, "s[128]", msg))
 		{
-			format(str, sizeof(str), "** [DGA]{FFFFFF} %s: %s **", GetRPName(playerid), msg);
+			format(str, sizeof(str), "* [DGA]{FFFFFF} %s: %s *", GetRPName(playerid), msg);
 			SendWDMessage(COLOR_GLOBAL, str);
 		}
 		else
@@ -49909,7 +49974,7 @@ CMD:fm(playerid, params[])
 		new str[128];
 		if(!sscanf(params, "s[128]", msg))
 		{
-			format(str, sizeof(str), "** [FM]{FFFFFF} %s: %s **", GetRPName(playerid), msg);
+			format(str, sizeof(str), "* [FM]{FFFFFF} %s: %s *", GetRPName(playerid), msg);
 			SendFMMessage(COLOR_BLUE, str);
 		}
 		else
@@ -49931,7 +49996,7 @@ CMD:gm(playerid, params[])
 		new str[128];
 		if(!sscanf(params, "s[128]", msg))
 		{
-			format(str, sizeof(str), "** [GM]{FFFFFF} %s: %s **", GetRPName(playerid), msg);
+			format(str, sizeof(str), "* [GM]{FFFFFF} %s: %s *", GetRPName(playerid), msg);
 			SendGMMessage(COLOR_GREEN, str);
 		}
 		else
@@ -49989,13 +50054,13 @@ CMD:windows(playerid, params[])
 	if(CarWindows[vehicleid] == 0)
 	{
 	    CarWindows[vehicleid] = 1;
-	    SendProximityMessage(playerid, 20.0, 0xFFA500FF, "**{C2A2DA} %s rolls down the vehicle windows of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    SendProximityMessage(playerid, 20.0, 0xFFA500FF, "*{C2A2DA} %s rolls down the vehicle windows of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 
  	}
 	else
 	{
 	    CarWindows[vehicleid] = 0;
-        SendProximityMessage(playerid, 20.0, 0xFFA500FF, "**{C2A2DA} %s rolls up the vehicle windows of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+        SendProximityMessage(playerid, 20.0, 0xFFA500FF, "*{C2A2DA} %s rolls up the vehicle windows of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 	return 1;
 }
@@ -50081,15 +50146,15 @@ CMD:selldynamicsmanagement(playerid, params[])
 	}
 
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has sold all properties.", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, "** You have sell %i houses, %i garages and %i businesses.", houses, garages, businesses);
+	SendClientMessageEx(playerid, COLOR_WHITE, "* You have sell %i houses, %i garages and %i businesses.", houses, garages, businesses);
 	return 1;
 }
 
 CMD:samphelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GLOBAL, "_____________________[ SA:MP 0.3.7 R2 CLIENT ]_________________________");
-	SendClientMessageEx(playerid, COLOR_GREY, "*** CLIENT *** /interior /save /headmove /timestamp /dl");
-	SendClientMessageEx(playerid, COLOR_GREY, "*** CLIENT *** /pagesize /rs /fpslimit");
+	SendClientMessageEx(playerid, COLOR_GREY, "** CLIENT ** /interior /save /headmove /timestamp /dl");
+	SendClientMessageEx(playerid, COLOR_GREY, "** CLIENT ** /pagesize /rs /fpslimit");
 	return 1;
 }
 
@@ -50347,14 +50412,14 @@ CMD:vcode(playerid, params[])
 
 		if(!strcmp(params, "none", true))
 		{
-			SendClientMessage(playerid, COLOR_WHITE, "** Car text removed from the vehicle.");
+			SendClientMessage(playerid, COLOR_WHITE, "* Car text removed from the vehicle.");
 		}
 	}
 
 	if(strcmp(params, "none", true) != 0)
 	{
 		DonatorCallSign[vehicleid] = CreateDynamic3DTextLabel(params, COLOR_VIP, 0.0, -3.0, 0.0, 10.0, .attachedvehicle = vehicleid);
- 		SendClientMessage(playerid, COLOR_WHITE, "** Car text attached. '/vcode none' to detach the Car text.");
+ 		SendClientMessage(playerid, COLOR_WHITE, "* Car text attached. '/vcode none' to detach the Car text.");
 	}
 
 	return 1;
@@ -50792,8 +50857,8 @@ CMD:arrest(playerid, params[])
 			mysql_tquery(connectionID, queryBuffer);
 
 			SendClientMessageToAllEx(COLOR_LIGHTRED, "<< %s %s has completed their arrest. %s has been sent to jail for %i days. >>", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetRPName(targetid), minutes);
-			//SendFactionMessage(PlayerData[playerid][pFaction], COLOR_ROYALBLUE, "** HQ: %s %s has arrested %s for %i minutes, fine: $%i.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetRPName(targetid), minutes, fine);
-    		SendClientMessageEx(targetid, COLOR_AQUA, "** You've been arrested for %i minutes, fine: $%i.", minutes, fine);
+			//SendFactionMessage(PlayerData[playerid][pFaction], COLOR_ROYALBLUE, "* HQ: %s %s has arrested %s for %i minutes, fine: $%i.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetRPName(targetid), minutes, fine);
+    		SendClientMessageEx(targetid, COLOR_AQUA, "* You've been arrested for %i minutes, fine: $%i.", minutes, fine);
     		Log_Write("log_faction", "%s (uid: %i) has arrested %s (uid: %i) for %i minutes, fine: $%i.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], minutes, fine);
     		return 1;
 		}
@@ -51218,7 +51283,7 @@ CMD:doublexp(playerid, params[])
 	{
 	    SetRewardPlay(true);
 	    SetDoubleXP(true);
-		SendClientMessageToAllEx(COLOR_AQUA, "** %s enabled happy hours. You will now get random gifts and double xp for playing in the server.", GetRPName(playerid));
+		SendClientMessageToAllEx(COLOR_AQUA, "* %s enabled happy hours. You will now get random gifts and double xp for playing in the server.", GetRPName(playerid));
 	}
 	return 1;
 }
@@ -51252,25 +51317,25 @@ CMD:jobhelp(playerid, params[])
 	}
 
 	SendClientMessage(playerid, COLOR_NAVYBLUE, "__________________ Job Help __________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** JOB HELP *** type a command for more information.");
+    SendClientMessage(playerid, COLOR_WHITE, "** JOB HELP ** type a command for more information.");
 
 	switch(PlayerData[playerid][pJob])
 	{
 		//case JOB_NONE: SendClientMessage(playerid, COLOR_GREY, "You have no job and therefore no job commands to view.");
-		case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /getpizza, /cancelcp.");
-		case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /load, /deliver, /cancelcp.");
-		case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /fish, /myfish, /sellfish.");
-		case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /sellvest, /frisk.");
-		case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /smugglemats, /sellgun.");
-		case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buycomps, /repair, /refill, /nos, /hyd, /takecall.");
-		case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /mine, /cancelcp.");
-		case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /startsweeping, /stopsweeping.");
-		case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /setfare, /takecall.");
-        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
-        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /defend, /free, /wanted.");
-        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /find.");
-        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /garbage");
-        case JOB_FARMER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /harvest");
+		case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /getpizza, /cancelcp.");
+		case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /load, /deliver, /cancelcp.");
+		case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /fish, /myfish, /sellfish.");
+		case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /sellvest, /frisk.");
+		case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /smugglemats, /sellgun.");
+		case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /buycomps, /repair, /refill, /nos, /hyd, /takecall.");
+		case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /mine, /cancelcp.");
+		case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /startsweeping, /stopsweeping.");
+		case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /setfare, /takecall.");
+        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
+        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /defend, /free, /wanted.");
+        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /find.");
+        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /garbage");
+        case JOB_FARMER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /harvest");
  	}
 
  	if(PlayerData[playerid][pSecondJob] != JOB_NONE)
@@ -51278,19 +51343,19 @@ CMD:jobhelp(playerid, params[])
  	    switch(PlayerData[playerid][pSecondJob])
 		{
 			//case JOB_NONE: SendClientMessage(playerid, COLOR_GREY, "You have no job and therefore no job commands to view.");
-			case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /getpizza.");
-			case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /load, /deliver.");
-			case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /fish, /myfish, /sellfish.");
-			case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /sellvest, /frisk.");
-			case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /smugglemats, /sellgun.");
-			case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buycomps, /repair, /refill, /nos, /hyd.");
-			case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /mine.");
-			case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /startsweeping, /stopsweeping.");
-			case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /setfare.");
-	        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
-	        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /defend, /free, /wanted.");
-	        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /find.");
-	        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "*** JOB *** /garbage");
+			case JOB_PIZZAMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /getpizza.");
+			case JOB_COURIER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /load, /deliver.");
+			case JOB_FISHERMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /fish, /myfish, /sellfish.");
+			case JOB_BODYGUARD: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /sellvest, /frisk.");
+			case JOB_WEAPONDEALER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /smugglemats, /sellgun.");
+			case JOB_MECHANIC: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /buycomps, /repair, /refill, /nos, /hyd.");
+			case JOB_MINER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /mine.");
+			case JOB_SWEEPER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /startsweeping, /stopsweeping.");
+			case JOB_TAXIDRIVER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /setfare.");
+	        case JOB_DRUGDEALER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /buydrug, /planthelp, /cookmeth, /smuggledrugs.");
+	        case JOB_LAWYER: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /defend, /free, /wanted.");
+	        case JOB_DETECTIVE: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /find.");
+	        case JOB_GARBAGEMAN: SendClientMessage(playerid, COLOR_GREY, "** JOB ** /garbage");
 	 	}
 	}
 
@@ -51300,18 +51365,18 @@ CMD:jobhelp(playerid, params[])
 CMD:vehiclehelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_NAVYBLUE, "________________ Vehicle Help ________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** VEHICLE HELP *** type a command for more information.");
-    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /lights /hood /boot /buy /carstorage /park /lock /findcar, /setforsale, /cancelforsale");
-    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /vstash /neon /unmod /colorcar /paintcar /upgradevehicle /sellcar /sellmycar");
-    SendClientMessage(playerid, COLOR_GREY, "*** VEHICLE *** /givekeys /takekeys /setradio /paytickets /carinfo /gascan /breakin");
+    SendClientMessage(playerid, COLOR_WHITE, "** VEHICLE HELP ** type a command for more information.");
+    SendClientMessage(playerid, COLOR_GREY, "** VEHICLE ** /lights /hood /boot /buy /carstorage /park /lock /findcar, /setforsale, /cancelforsale");
+    SendClientMessage(playerid, COLOR_GREY, "** VEHICLE ** /vstash /neon /unmod /colorcar /paintcar /upgradevehicle /sellcar /sellmycar");
+    SendClientMessage(playerid, COLOR_GREY, "** VEHICLE ** /givekeys /takekeys /setradio /paytickets /carinfo /gascan /breakin");
     return 1;
 }
 
 CMD:bankhelp(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_NAVYBLUE, "__________________ Banking Help __________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** BANKING HELP *** type a command for more information.");
-    SendClientMessage(playerid, COLOR_GREY, "*** BANKING *** /withdraw /deposit /wiretransfer /balance /robbank /robinvite /bombvault /robbers");
+    SendClientMessage(playerid, COLOR_WHITE, "** BANKING HELP ** type a command for more information.");
+    SendClientMessage(playerid, COLOR_GREY, "** BANKING ** /withdraw /deposit /wiretransfer /balance /robbank /robinvite /bombvault /robbers");
 	return 1;
 }
 
@@ -51322,11 +51387,11 @@ CMD:viphelp(playerid, params[])
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
     SendClientMessage(playerid, COLOR_NAVYBLUE, "__________________ VIP Help __________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** VIP HELP *** type a command for more information.");
-    SendClientMessage(playerid, COLOR_GREY, "*** VIP *** /(v)ip /vipinfo /viptag /vipcolor /vipinvite /vipnumber /vipmusic");
+    SendClientMessage(playerid, COLOR_WHITE, "** VIP HELP ** type a command for more information.");
+    SendClientMessage(playerid, COLOR_GREY, "** VIP ** /(v)ip /vipinfo /viptag /vipcolor /vipinvite /vipnumber /vipmusic");
 	if(PlayerData[playerid][pVIPPackage] == 3)
 	{
-	    SendClientMessage(playerid, COLOR_GREY, "*** VIP *** /repair /nos /hyd /viprimkit");
+	    SendClientMessage(playerid, COLOR_GREY, "** VIP ** /repair /nos /hyd /viprimkit");
 	}
 	return 1;
 }
@@ -51531,40 +51596,40 @@ CMD:factionhelp(playerid, params[])
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you're not apart of any faction.");
 	}
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-	SendClientMessage(playerid, COLOR_WHITE, "*** FACTION HELP *** type a command for more information.");
-	SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /fc /d /(r)adio /div /faction /division /locker /showbadge /(m)egaphone");
+	SendClientMessage(playerid, COLOR_WHITE, "** FACTION HELP ** type a command for more information.");
+	SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /fc /d /(r)adio /div /faction /division /locker /showbadge /(m)egaphone");
 
 	switch(FactionInfo[PlayerData[playerid][pFaction]][fType])
 	{
 	    case FACTION_POLICE, FACTION_FEDERAL, FACTION_ARMY:
 	    {
-	        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /gate /door /cell /tazer /cuff /uncuff /drag /detain /charge /arrest");
-	        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup /swat");
-	        SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /mdc /clearwanted /siren /badge /vticket /vfrisk /vtake /seizeplant /mir /fpark");
+	        SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /gate /door /cell /tazer /cuff /uncuff /drag /detain /charge /arrest");
+	        SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /wanted /frisk /take /ticket /gov /ram /deploy /undeploy /undeployall /backup /swat");
+	        SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /mdc /clearwanted /siren /badge /vticket /vfrisk /vtake /seizeplant /mir /fpark");
 
 			if(FactionInfo[PlayerData[playerid][pFaction]][fType] == FACTION_FEDERAL)
-				SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /listcallers /trackcall /cells /passport /callsign /bug /listbugs /tog bugged");
+				SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /listcallers /trackcall /cells /passport /callsign /bug /listbugs /tog bugged");
 			else
-			    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /listcallers /trackcall /cells /claim /callsign /fpark");
+			    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /listcallers /trackcall /cells /claim /callsign /fpark");
 		}
 		case FACTION_MEDIC:
 		{
-		    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /heal /drag /stretcher /deliverpt /getpt /listpt /injuries /deploy /undeploy /undeployall");
-		    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /badge /gov /backup /listcallers /trackcall /callsign /fpark");
+		    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /heal /drag /stretcher /deliverpt /getpt /listpt /injuries /deploy /undeploy /undeployall");
+		    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /badge /gov /backup /listcallers /trackcall /callsign /fpark");
 		}
 		case FACTION_NEWS:
 		{
-		    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /news /live /endlive /liveban /badge /addeposit /adwithdraw /fpark");
+		    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /news /live /endlive /liveban /badge /addeposit /adwithdraw /fpark");
 		}
 		case FACTION_GOVERNMENT:
 		{
-		    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /gov /settax /factionpay /tazer /cuff /uncuff /detain /taxdeposit /taxwithdraw /fpark");
-		    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /backup /badge");
+		    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /gov /settax /factionpay /tazer /cuff /uncuff /detain /taxdeposit /taxwithdraw /fpark");
+		    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /backup /badge");
 		}
 		case FACTION_HITMAN:
 		{
-		    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /contracts /takehit /profile /passport /plantbomb /pickupbomb /detonate");
-		    SendClientMessage(playerid, COLOR_GREY, "*** FACTION *** /hfind, /noknife, /hm /fpark");
+		    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /contracts /takehit /profile /passport /plantbomb /pickupbomb /detonate");
+		    SendClientMessage(playerid, COLOR_GREY, "** FACTION ** /hfind, /noknife, /hm /fpark");
 		}
 	}
 
@@ -51579,27 +51644,27 @@ CMD:ganghelp(playerid, params[])
 	}
 
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** GANG HELP *** type a command for more information.");
-	SendClientMessage(playerid, COLOR_GREY, "*** GANG *** /f /gang /gstash /gbackup /bandana /capture /claim /reclaim /turfinfo /points");
-    SendClientMessage(playerid, COLOR_GREY, "*** GANG *** /gbuyvehicle /gpark /gfindcar /grespawncars /gsellcar /gunmod /lock, /endalliance, /gspray");
-    SendClientMessage(playerid, COLOR_GREY, "*** CREW *** /managecrew /crew");
+    SendClientMessage(playerid, COLOR_WHITE, "** GANG HELP ** type a command for more information.");
+	SendClientMessage(playerid, COLOR_GREY, "** GANG ** /f /gang /gstash /gbackup /bandana /capture /claim /reclaim /turfinfo /points");
+    SendClientMessage(playerid, COLOR_GREY, "** GANG ** /gbuyvehicle /gpark /gfindcar /grespawncars /gsellcar /gunmod /lock, /endalliance, /gspray");
+    SendClientMessage(playerid, COLOR_GREY, "** CREW ** /managecrew /crew");
 	return 1;
 }
 
 CMD:landhelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** LAND HELP *** type a command for more information.");
-	SendClientMessage(playerid, COLOR_GREY, "*** LAND *** /buyland /lock /door /landinfo /land /sellmyland /sellland /droplandkeys");
-    SendClientMessage(playerid, COLOR_GREY, "*** LAND *** '/toggle lands' to show or hide lands on your mini-map.");
+    SendClientMessage(playerid, COLOR_WHITE, "** LAND HELP ** type a command for more information.");
+	SendClientMessage(playerid, COLOR_GREY, "** LAND ** /buyland /lock /door /landinfo /land /sellmyland /sellland /droplandkeys");
+    SendClientMessage(playerid, COLOR_GREY, "** LAND ** '/toggle lands' to show or hide lands on your mini-map.");
     return 1;
 }
 
 CMD:planthelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** PLANT HELP *** type a command for more information.");
-	SendClientMessage(playerid, COLOR_GREY, "*** PLANT *** /plantweed /plantinfo /pickplant /seizeplant");
+    SendClientMessage(playerid, COLOR_WHITE, "** PLANT HELP ** type a command for more information.");
+	SendClientMessage(playerid, COLOR_GREY, "** PLANT ** /plantweed /plantinfo /pickplant /seizeplant");
     return 1;
 }
 
@@ -51893,7 +51958,7 @@ CMD:pay(playerid, params[])
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	PlayerPlaySound(targetid, 1052, 0.0, 0.0, 0.0);
 
-	ShowActionBubble(playerid, "** %s takes out %s and gives it to %s.", GetRPName(playerid), FormatNumber(amount), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s takes out %s and gives it to %s.", GetRPName(playerid), FormatNumber(amount), GetRPName(targetid));
 	Log_Write("log_give", "%s (uid: %i) (IP: %s) gives $%i to %s (uid: %i) (IP: %s)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerIP(playerid), amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID], GetPlayerIP(targetid));
 
     SendClientMessageEx(targetid, COLOR_AQUA, "You have been given {00AA00}%s{33CCFF} by %s.", FormatNumber(amount), GetRPName(playerid));
@@ -51974,7 +52039,7 @@ CMD:give(playerid, params[])
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you their %s.", GetRPName(playerid), GetWeaponNameEx(weaponid));
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have given %s your %s.", GetRPName(targetid), GetWeaponNameEx(weaponid));
 
-	    ShowActionBubble(playerid, "** %s passes over their %s to %s.", GetRPName(playerid), GetWeaponNameEx(weaponid), GetRPName(targetid));
+	    ShowActionBubble(playerid, "* %s passes over their %s to %s.", GetRPName(playerid), GetWeaponNameEx(weaponid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives their %s to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetWeaponNameEx(weaponid), GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "materials", true))
@@ -52004,7 +52069,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i materials.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i materials to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some materials to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some materials to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i materials to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "weed", true))
@@ -52033,7 +52098,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of weed.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i grams of weed to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some weed to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some weed to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i grams of weed to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "cocaine", true))
@@ -52062,7 +52127,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of cocaine.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i grams of cocaine to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some cocaine to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some cocaine to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i grams of cocaine to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "meth", true))
@@ -52091,7 +52156,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of meth.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i grams of meth to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some meth to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some meth to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i grams of meth to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "painkillers", true))
@@ -52121,7 +52186,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i painkillers.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i painkillers to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some painkillers to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some painkillers to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i painkillers to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "cigars", true))
@@ -52147,7 +52212,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i cigars.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i cigars to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some cigars to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some cigars to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i cigars to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "spraycans", true))
@@ -52173,7 +52238,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i spraycans.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i spraycans to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some spraycans to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some spraycans to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i spraycans to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "gascan", true))
@@ -52199,7 +52264,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i liters of gasoline.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i liters of gasoline to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some gasoline to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some gasoline to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i liters of gasoline to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "seeds", true))
@@ -52229,7 +52294,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i seeds.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i seeds to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some seeds to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some seeds to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i seeds to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "ephedrine", true))
@@ -52259,7 +52324,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i grams of ephedrine.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i grams of ephedrine to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some ephedrine to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some ephedrine to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i grams of ephedrine to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "firstaid", true))
@@ -52289,7 +52354,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i first aid kits.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i first aid kits to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some first aid kits to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some first aid kits to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i first aid kits to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "bodykits", true))
@@ -52319,7 +52384,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i bodywork kits.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i bodywork kits to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some bodywork kits to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some bodywork kits to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i bodywork kits to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "rimkits", true))
@@ -52349,7 +52414,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i rimkits.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i rimkits to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some rimkits to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some rimkits to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i rimkits to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 	else if(!strcmp(option, "diamonds", true))
@@ -52379,7 +52444,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you %i diamonds.", GetRPName(playerid), amount);
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have given %i diamonds to %s.", amount, GetRPName(targetid));
 
-		ShowActionBubble(playerid, "** %s gives some rimkits to %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s gives some rimkits to %s.", GetRPName(playerid), GetRPName(targetid));
 	    Log_Write("log_give", "%s (uid: %i) gives %i diamonds to %s (uid: %i)", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	}
 
@@ -52460,8 +52525,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = weaponid;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you their %s for $%i. (/accept item)", GetRPName(playerid), GetWeaponNameEx(weaponid), price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %s for $%i.", GetRPName(targetid), GetWeaponNameEx(weaponid), price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you their %s for $%i. (/accept item)", GetRPName(playerid), GetWeaponNameEx(weaponid), price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %s for $%i.", GetRPName(targetid), GetWeaponNameEx(weaponid), price);
 	}
 	else if(!strcmp(option, "materials", true))
 	{
@@ -52484,8 +52549,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = amount;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you %i materials for $%i. (/accept item)", GetRPName(playerid), amount, price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %i materials for $%i.", GetRPName(targetid), amount, price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you %i materials for $%i. (/accept item)", GetRPName(playerid), amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %i materials for $%i.", GetRPName(targetid), amount, price);
 	}
 	else if(!strcmp(option, "weed", true))
 	{
@@ -52508,8 +52573,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = amount;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you %i grams of weed for $%i. (/accept item)", GetRPName(playerid), amount, price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %i grams of weed for $%i.", GetRPName(targetid), amount, price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you %i grams of weed for $%i. (/accept item)", GetRPName(playerid), amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %i grams of weed for $%i.", GetRPName(targetid), amount, price);
 	}
     else if(!strcmp(option, "cocaine", true))
 	{
@@ -52532,8 +52597,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = amount;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you %i grams of cocaine for $%i. (/accept item)", GetRPName(playerid), amount, price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %i grams of cocaine for $%i.", GetRPName(targetid), amount, price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you %i grams of cocaine for $%i. (/accept item)", GetRPName(playerid), amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %i grams of cocaine for $%i.", GetRPName(targetid), amount, price);
 	}
 	else if(!strcmp(option, "meth", true))
 	{
@@ -52556,8 +52621,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = amount;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you %i grams of meth for $%i. (/accept item)", GetRPName(playerid), amount, price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %i grams of meth for $%i.", GetRPName(targetid), amount, price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you %i grams of meth for $%i. (/accept item)", GetRPName(playerid), amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %i grams of meth for $%i.", GetRPName(targetid), amount, price);
 	}
 	else if(!strcmp(option, "painkillers", true))
 	{
@@ -52580,8 +52645,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = amount;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you %i painkillers for $%i. (/accept item)", GetRPName(playerid), amount, price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %i painkillers for $%i.", GetRPName(targetid), amount, price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you %i painkillers for $%i. (/accept item)", GetRPName(playerid), amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %i painkillers for $%i.", GetRPName(targetid), amount, price);
 	}
 	else if(!strcmp(option, "seeds", true))
 	{
@@ -52604,8 +52669,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = amount;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you %i seeds for $%i. (/accept item)", GetRPName(playerid), amount, price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %i seeds for $%i.", GetRPName(targetid), amount, price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you %i seeds for $%i. (/accept item)", GetRPName(playerid), amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %i seeds for $%i.", GetRPName(targetid), amount, price);
 	}
 	else if(!strcmp(option, "ephedrine", true))
 	{
@@ -52628,8 +52693,8 @@ CMD:sell(playerid, params[])
 		PlayerData[targetid][pSellExtra] = amount;
 		PlayerData[targetid][pSellPrice] = price;
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you %i grams of ephedrine for $%i. (/accept item)", GetRPName(playerid), amount, price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s your %i grams of ephedrine for $%i.", GetRPName(targetid), amount, price);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you %i grams of ephedrine for $%i. (/accept item)", GetRPName(playerid), amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s your %i grams of ephedrine for $%i.", GetRPName(targetid), amount, price);
 	}
 
 	return 1;
@@ -52738,13 +52803,13 @@ CMD:accent(playerid, params[])
 
 CMD:dice(playerid, params[])
 {
-	SendProximityMessage(playerid, 20.0, COLOR_WHITE, "** %s rolls a dice which lands on the number %i.", GetRPName(playerid), random(6) + 1);
+	SendProximityMessage(playerid, 20.0, COLOR_WHITE, "* %s rolls a dice which lands on the number %i.", GetRPName(playerid), random(6) + 1);
 	return 1;
 }
 
 CMD:flipcoin(playerid, params[])
 {
-	SendProximityMessage(playerid, 20.0, COLOR_WHITE, "** %s flips a coin which lands on %s.", GetRPName(playerid), (random(2)) ? ("Heads") : ("Tails"));
+	SendProximityMessage(playerid, 20.0, COLOR_WHITE, "* %s flips a coin which lands on %s.", GetRPName(playerid), (random(2)) ? ("Heads") : ("Tails"));
 	return 1;
 }
 
@@ -52781,7 +52846,7 @@ CMD:time(playerid, params[])
 	}
 
 	GameTextForPlayer(playerid, string, 5000, 1);
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Paychecks occur at every hour. The next paycheck is at %02d:00 which is in %i minutes.", date[3]+1, (60 - date[4]));
+	SendClientMessageEx(playerid, COLOR_WHITE, "* Paychecks occur at every hour. The next paycheck is at %02d:00 which is in %i minutes.", date[3]+1, (60 - date[4]));
 	return 1;
 }
 
@@ -52844,7 +52909,7 @@ CMD:helpme(playerid, params[])
 	}
 
 	strcpy(PlayerData[playerid][pHelpRequest], params, 128);
-	SendHelperMessage(COLOR_AQUA, "** Help Request from %s[%i]: %s **", GetRPName(playerid), playerid, params);
+	SendHelperMessage(COLOR_AQUA, "* Help Request from %s[%i]: %s *", GetRPName(playerid), playerid, params);
 
 	PlayerData[playerid][pLastRequest] = gettime();
 	SendClientMessage(playerid, COLOR_GREEN, "Your help request was sent to all helpers. Please wait for a response.");
@@ -52886,8 +52951,8 @@ CMD:accept(playerid, params[])
 	    GivePlayerCash(offeredby, price);
 	    GivePlayerCash(playerid, -price);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's house offer and paid %s for their house.", GetRPName(offeredby), FormatNumber(price));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your house offer and paid %s for your house.", GetRPName(playerid), FormatNumber(price));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's house offer and paid %s for their house.", GetRPName(offeredby), FormatNumber(price));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your house offer and paid %s for your house.", GetRPName(playerid), FormatNumber(price));
 	    Log_Write("log_property", "%s (uid: %i) (IP: %s) sold their house (id: %i) for $%i to %s (uid: %i) (IP: %s)", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerIP(offeredby), HouseInfo[houseid][hID], price, GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerIP(playerid));
 
 	    PlayerData[playerid][pHouseOffer] = INVALID_PLAYER_ID;
@@ -52925,8 +52990,8 @@ CMD:accept(playerid, params[])
 	    GivePlayerCash(offeredby, price);
 	    GivePlayerCash(playerid, -price);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's garage offer and paid %s for their garage.", GetRPName(offeredby), FormatNumber(price));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your garage offer and paid %s for your garage.", GetRPName(playerid), FormatNumber(price));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's garage offer and paid %s for their garage.", GetRPName(offeredby), FormatNumber(price));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your garage offer and paid %s for your garage.", GetRPName(playerid), FormatNumber(price));
         Log_Write("log_property", "%s (uid: %i) (IP: %s) sold their %s garage (id: %i) for $%i to %s (uid: %i) (IP: %s)", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerIP(offeredby), garageInteriors[GarageInfo[garageid][gType]][intName], GarageInfo[garageid][gID], price, GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerIP(playerid));
 
 	    PlayerData[playerid][pGarageOffer] = INVALID_PLAYER_ID;
@@ -52964,8 +53029,8 @@ CMD:accept(playerid, params[])
 	    GivePlayerCash(offeredby, price);
 	    GivePlayerCash(playerid, -price);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's business offer and paid %s for their %s.", GetRPName(offeredby), FormatNumber(price), bizInteriors[BusinessInfo[businessid][bType]][intType]);
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your business offer and paid %s for your %s.", GetRPName(playerid), FormatNumber(price), bizInteriors[BusinessInfo[businessid][bType]][intType]);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's business offer and paid %s for their %s.", GetRPName(offeredby), FormatNumber(price), bizInteriors[BusinessInfo[businessid][bType]][intType]);
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your business offer and paid %s for your %s.", GetRPName(playerid), FormatNumber(price), bizInteriors[BusinessInfo[businessid][bType]][intType]);
         Log_Write("log_property", "%s (uid: %i) (IP: %s) sold their %s business (id: %i) for $%i to %s (uid: %i) (IP: %s)", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerIP(offeredby), bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bID], price, GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerIP(playerid));
 
 	    PlayerData[playerid][pBizOffer] = INVALID_PLAYER_ID;
@@ -52999,8 +53064,8 @@ CMD:accept(playerid, params[])
 	    GivePlayerCash(offeredby, price);
 	    GivePlayerCash(playerid, -price);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's land offer and paid %s for their land.", GetRPName(offeredby), FormatNumber(price));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your land offer and paid %s for your land.", GetRPName(playerid), FormatNumber(price));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's land offer and paid %s for their land.", GetRPName(offeredby), FormatNumber(price));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your land offer and paid %s for your land.", GetRPName(playerid), FormatNumber(price));
 	    Log_Write("log_property", "%s (uid: %i) (IP: %s) sold their land (id: %i) for $%i to %s (uid: %i) (IP: %s)", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerIP(offeredby), LandInfo[landid][lID], price, GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerIP(playerid));
 
 	    PlayerData[playerid][pLandOffer] = INVALID_PLAYER_ID;
@@ -53045,8 +53110,8 @@ CMD:accept(playerid, params[])
 		GivePlayerCash(offeredby, price);
 	    GivePlayerCash(playerid, -price);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's vest and paid %s for %.1f armor points.", GetRPName(offeredby), FormatNumber(price), armor);
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your vest offer and paid %s for %.1f armor points.", GetRPName(playerid), FormatNumber(price), armor);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's vest and paid %s for %.1f armor points.", GetRPName(offeredby), FormatNumber(price), armor);
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your vest offer and paid %s for %.1f armor points.", GetRPName(playerid), FormatNumber(price), armor);
 
 	    TurfTaxCheck(offeredby, price);
 	    IncreaseJobSkill(offeredby, JOB_BODYGUARD);
@@ -53103,8 +53168,8 @@ CMD:accept(playerid, params[])
 
 	    SetPlayerFaction(playerid, factionid, 0);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's faction offer to join {00AA00}%s{33CCFF}.", GetRPName(offeredby), FactionInfo[factionid][fName]);
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your faction offer and is now apart of your faction.", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's faction offer to join {00AA00}%s{33CCFF}.", GetRPName(offeredby), FactionInfo[factionid][fName]);
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your faction offer and is now apart of your faction.", GetRPName(playerid));
 
 		Log_Write("log_faction", "%s (uid: %i) has invited %s (uid: %i) to %s (id: %i).", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerNameEx(playerid), PlayerData[playerid][pID], FactionInfo[factionid][fName], factionid);
 	    PlayerData[playerid][pFactionOffer] = INVALID_PLAYER_ID;
@@ -53131,8 +53196,8 @@ CMD:accept(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gang = %i, gangrank = 0, crew = -1 WHERE uid = %i", gangid, PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's gang offer to join {00AA00}%s{33CCFF}.", GetRPName(offeredby), GangInfo[gangid][gName]);
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s accepted your gang offer and is now apart of your gang.", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's gang offer to join {00AA00}%s{33CCFF}.", GetRPName(offeredby), GangInfo[gangid][gName]);
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s accepted your gang offer and is now apart of your gang.", GetRPName(playerid));
 	    if(gacooldown)
 	    {
 	        GangInfo[gangid][gInvCooldown] = gacooldown;
@@ -53181,8 +53246,8 @@ CMD:accept(playerid, params[])
 	    AddToTaxVault(price);
 	    GivePlayerCash(playerid, -price);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have paid the %s ticket written by %s.", FormatNumber(price), GetRPName(offeredby));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has paid the %s ticket which was written to them.", GetRPName(playerid), FormatNumber(price));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have paid the %s ticket written by %s.", FormatNumber(price), GetRPName(offeredby));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has paid the %s ticket which was written to them.", GetRPName(playerid), FormatNumber(price));
         Log_Write("log_faction", "%s (uid: %i) has given %s (uid: %i) a ticket for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 		new query[516], year, month, day, hour, minute, second;
 		getdate(year, month, day);
@@ -53213,8 +53278,8 @@ CMD:accept(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "You or the offerer can't be on a phone call during a live interview.");
 	    }
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's live interview offer. Speak in IC chat to begin the interview!", GetRPName(offeredby));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has accepted your live interview offer. Speak in IC chat to begin the interview!", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's live interview offer. Speak in IC chat to begin the interview!", GetRPName(offeredby));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has accepted your live interview offer. Speak in IC chat to begin the interview!", GetRPName(playerid));
         Log_Write("log_faction", "%s (uid: %i) has started a live interview with %s (uid: %i)", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetPlayerNameEx(playerid), PlayerData[playerid][pID]);
 
 		PlayerData[playerid][pLiveBroadcast] = offeredby;
@@ -53277,8 +53342,8 @@ CMD:accept(playerid, params[])
         AwardAchievement(playerid, "Meeting people");
         AwardAchievement(offeredby, "Meeting people");
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's handshake offer.", GetRPName(offeredby));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has accepted your handshake offer.", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's handshake offer.", GetRPName(offeredby));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has accepted your handshake offer.", GetRPName(playerid));
 
   		PlayerData[playerid][pShakeOffer] = INVALID_PLAYER_ID;
 	}
@@ -53320,8 +53385,8 @@ CMD:accept(playerid, params[])
 	            GivePlayerWeaponEx(playerid, weaponid);
 	            RemovePlayerWeapon(offeredby, weaponid);
 
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %s's %s for %s.", GetRPName(offeredby), GetWeaponNameEx(weaponid), FormatNumber(price));
-				SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %s for %s.", GetRPName(playerid), GetWeaponNameEx(weaponid), FormatNumber(price));
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %s's %s for %s.", GetRPName(offeredby), GetWeaponNameEx(weaponid), FormatNumber(price));
+				SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %s for %s.", GetRPName(playerid), GetWeaponNameEx(weaponid), FormatNumber(price));
 				Log_Write("log_give", "%s (uid: %i) has sold their %s to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], GetWeaponNameEx(weaponid), GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
 				TurfTaxCheck(offeredby, price);
@@ -53350,8 +53415,8 @@ CMD:accept(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[offeredby][pMaterials], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i materials from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
-			    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %i materials for %s.", GetRPName(playerid), amount, FormatNumber(price));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i materials from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
+			    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %i materials for %s.", GetRPName(playerid), amount, FormatNumber(price));
 			    Log_Write("log_give", "%s (uid: %i) has sold their %i materials to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], amount, GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
                 TurfTaxCheck(offeredby, price);
@@ -53383,8 +53448,8 @@ CMD:accept(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[offeredby][pWeed], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of weed from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
-			    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %i grams of weed for %s.", GetRPName(playerid), amount, FormatNumber(price));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i grams of weed from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
+			    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %i grams of weed for %s.", GetRPName(playerid), amount, FormatNumber(price));
 			    Log_Write("log_give", "%s (uid: %i) has sold their %i grams of weed to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], amount, GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
                 TurfTaxCheck(offeredby, price);
@@ -53417,8 +53482,8 @@ CMD:accept(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[offeredby][pCocaine], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of cocaine from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
-			    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %i grams of cocaine for %s.", GetRPName(playerid), amount, FormatNumber(price));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i grams of cocaine from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
+			    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %i grams of cocaine for %s.", GetRPName(playerid), amount, FormatNumber(price));
 			    Log_Write("log_give", "%s (uid: %i) has sold their %i grams of cocaine to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], amount, GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
 			    TurfTaxCheck(offeredby, price);
@@ -53451,8 +53516,8 @@ CMD:accept(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[offeredby][pMeth], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of meth from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
-			    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %i grams of meth for %s.", GetRPName(playerid), amount, FormatNumber(price));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i grams of meth from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
+			    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %i grams of meth for %s.", GetRPName(playerid), amount, FormatNumber(price));
 			    Log_Write("log_give", "%s (uid: %i) has sold their %i grams of meth to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], amount, GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
 			    TurfTaxCheck(offeredby, price);
@@ -53485,8 +53550,8 @@ CMD:accept(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[offeredby][pPainkillers], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i painkillers from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
-			    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %i painkillers for %s.", GetRPName(playerid), amount, FormatNumber(price));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i painkillers from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
+			    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %i painkillers for %s.", GetRPName(playerid), amount, FormatNumber(price));
 			    Log_Write("log_give", "%s (uid: %i) has sold their %i painkillers to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], amount, GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
 			    TurfTaxCheck(offeredby, price);
@@ -53519,8 +53584,8 @@ CMD:accept(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i WHERE uid = %i", PlayerData[offeredby][pSeeds], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i seeds from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
-			    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %i seeds for %s.", GetRPName(playerid), amount, FormatNumber(price));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i seeds from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
+			    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %i seeds for %s.", GetRPName(playerid), amount, FormatNumber(price));
 			    Log_Write("log_give", "%s (uid: %i) has sold their %i seeds to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], amount, GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
 			    TurfTaxCheck(offeredby, price);
@@ -53553,8 +53618,8 @@ CMD:accept(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = %i WHERE uid = %i", PlayerData[offeredby][pEphedrine], PlayerData[offeredby][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i grams of ephedrine from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
-			    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has purchased your %i grams of ephedrine for %s.", GetRPName(playerid), amount, FormatNumber(price));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i grams of ephedrine from %s for %s.", amount, GetRPName(offeredby), FormatNumber(price));
+			    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has purchased your %i grams of ephedrine for %s.", GetRPName(playerid), amount, FormatNumber(price));
 			    Log_Write("log_give", "%s (uid: %i) has sold their %i grams of ephedrine to %s (uid: %i) for $%i.", GetPlayerNameEx(offeredby), PlayerData[offeredby][pID], amount, GetPlayerNameEx(playerid), PlayerData[playerid][pID], price);
 
 			    TurfTaxCheck(offeredby, price);
@@ -53608,8 +53673,8 @@ CMD:accept(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = wantedlevel - 1 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's offer to reduce your wanted level for %s.", GetRPName(offeredby), FormatNumber(price));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has accepted your offer to reduce their wanted level for %s.", GetRPName(playerid), FormatNumber(price));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's offer to reduce your wanted level for %s.", GetRPName(offeredby), FormatNumber(price));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has accepted your offer to reduce their wanted level for %s.", GetRPName(playerid), FormatNumber(price));
 
 		IncreaseJobSkill(offeredby, JOB_LAWYER);
 	    PlayerData[playerid][pDefendOffer] = INVALID_PLAYER_ID;
@@ -53657,8 +53722,8 @@ CMD:accept(playerid, params[])
 			}
 		}
 
-		SendProximityMessage(offeredby, 20.0, COLOR_WHITE, "** %s rolls a dice which lands on the number %i.", GetRPName(offeredby), rand[0]);
-		SendProximityMessage(playerid, 20.0, COLOR_WHITE, "** %s rolls a dice which lands on the number %i.", GetRPName(playerid), rand[1]);
+		SendProximityMessage(offeredby, 20.0, COLOR_WHITE, "* %s rolls a dice which lands on the number %i.", GetRPName(offeredby), rand[0]);
+		SendProximityMessage(playerid, 20.0, COLOR_WHITE, "* %s rolls a dice which lands on the number %i.", GetRPName(playerid), rand[1]);
 
 		if(rand[0] > rand[1])
 		{
@@ -53666,8 +53731,8 @@ CMD:accept(playerid, params[])
 		    GivePlayerCash(offeredby, amount);
 		    GivePlayerCash(playerid, -amount);
 
-		    SendClientMessageEx(offeredby, COLOR_AQUA, "** You have won $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(playerid));
-		    SendClientMessageEx(playerid, COLOR_RED, "** You have lost $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(offeredby));
+		    SendClientMessageEx(offeredby, COLOR_AQUA, "* You have won $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(playerid));
+		    SendClientMessageEx(playerid, COLOR_RED, "* You have lost $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(offeredby));
 
 			if(amount > 10000 && !strcmp(GetPlayerIP(offeredby), GetPlayerIP(playerid)))
 			{
@@ -53677,16 +53742,16 @@ CMD:accept(playerid, params[])
 		}
 		else if(rand[0] == rand[1])
 		{
-			SendClientMessageEx(offeredby, COLOR_AQUA, "** The bet of %s was a tie. You kept your money as a result!", FormatNumber(amount));
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** The bet of %s was a tie. You kept your money as a result!", FormatNumber(amount));
+			SendClientMessageEx(offeredby, COLOR_AQUA, "* The bet of %s was a tie. You kept your money as a result!", FormatNumber(amount));
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* The bet of %s was a tie. You kept your money as a result!", FormatNumber(amount));
 		}
 		else
 		{
 		    GivePlayerCash(offeredby, -amount);
 		    GivePlayerCash(playerid, amount);
 
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You have won $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(offeredby));
-		    SendClientMessageEx(offeredby, COLOR_RED, "** You have lost $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(playerid));
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You have won $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(offeredby));
+		    SendClientMessageEx(offeredby, COLOR_RED, "* You have lost $%s from your dice bet with %s.", FormatNumber(amount), GetRPName(playerid));
 
 			if(amount > 10000 && !strcmp(GetPlayerIP(offeredby), GetPlayerIP(playerid)))
 			{
@@ -53711,8 +53776,8 @@ CMD:accept(playerid, params[])
 		PlayerData[playerid][pCP] = CHECKPOINT_HOUSE;
 		SetPlayerCheckpoint(playerid, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], 3.0);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's invitation to their house.", GetRPName(offeredby));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has accepted your invitation to your house.", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's invitation to their house.", GetRPName(offeredby));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has accepted your invitation to your house.", GetRPName(playerid));
 
 	    PlayerData[playerid][pInviteOffer] = INVALID_PLAYER_ID;
 	}
@@ -53739,8 +53804,8 @@ CMD:accept(playerid, params[])
 
 		AddToBankRobbery(playerid);
 
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's bank robbery invitation.", GetRPName(offeredby));
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has accepted your bank robbery invitation.", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's bank robbery invitation.", GetRPName(offeredby));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has accepted your bank robbery invitation.", GetRPName(playerid));
 
 	    PlayerData[playerid][pRobberyOffer] = INVALID_PLAYER_ID;
 	}
@@ -53816,8 +53881,8 @@ CMD:accept(playerid, params[])
 		PlayerData[playerid][pDueling] = offeredby;
 		PlayerData[offeredby][pDueling] = playerid;
 
-	    SendClientMessageEx(offeredby, COLOR_AQUA, "** %s has accepted the duel offer.", GetRPName(playerid));
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's duel offer.", GetRPName(offeredby));
+	    SendClientMessageEx(offeredby, COLOR_AQUA, "* %s has accepted the duel offer.", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's duel offer.", GetRPName(offeredby));
 
 	    PlayerData[playerid][pDuelOffer] = INVALID_PLAYER_ID;
 	}
@@ -53977,7 +54042,7 @@ CMD:e(playerid, params[])
 	{
 	    if((PlayerData[i][pAdmin] > 5) && !PlayerData[i][pToggleAdmin])
 	    {
-			SendClientMessageEx(i, 0xA077BFFF, "** [%s] %s: %s **", GetAdminRank(playerid), GetRPName(playerid), params);
+			SendClientMessageEx(i, 0xA077BFFF, "* [%s] %s: %s *", GetAdminRank(playerid), GetRPName(playerid), params);
 		}
 	}
 
@@ -54003,7 +54068,7 @@ CMD:ha(playerid, params[])
 	{
 	    if((PlayerData[i][pAdmin] > 4) && !PlayerData[i][pToggleAdmin])
 	    {
-			SendClientMessageEx(i, 0x5C80FFFF, "** [%s] %s: %s **", GetAdminRank(playerid), GetRPName(playerid), params);
+			SendClientMessageEx(i, 0x5C80FFFF, "* [%s] %s: %s *", GetAdminRank(playerid), GetRPName(playerid), params);
 		}
 	}
 
@@ -54040,12 +54105,12 @@ CMD:a(playerid, params[])
 			}
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-	            SendClientMessageEx(i, COLOR_YELLOW, "** [%s %s{FFFF00}] %s: %.*s... **", GetAdminDivision(playerid), GetAdminRank1(playerid), adminname, MAX_SPLIT_LENGTH, params);
-	            SendClientMessageEx(i, COLOR_YELLOW, "** [%s %s{FFFF00}] %s: ...%s **", GetAdminDivision(playerid), GetAdminRank1(playerid), adminname, params[MAX_SPLIT_LENGTH]);
+	            SendClientMessageEx(i, COLOR_YELLOW, "* [%s %s{FFFF00}] %s: %.*s... *", GetAdminDivision(playerid), GetAdminRank1(playerid), adminname, MAX_SPLIT_LENGTH, params);
+	            SendClientMessageEx(i, COLOR_YELLOW, "* [%s %s{FFFF00}] %s: ...%s *", GetAdminDivision(playerid), GetAdminRank1(playerid), adminname, params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-				SendClientMessageEx(i, COLOR_YELLOW, "** [%s %s{FFFF00}] %s: %s **", GetAdminDivision(playerid), GetAdminRank1(playerid), adminname, params);
+				SendClientMessageEx(i, COLOR_YELLOW, "* [%s %s{FFFF00}] %s: %s *", GetAdminDivision(playerid), GetAdminRank1(playerid), adminname, params);
 			}
 		}
 	}
@@ -54073,12 +54138,12 @@ CMD:fa(playerid, params[])
 	    {
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-	            SendClientMessageEx(i, COLOR_RETIRED, "** [%s] %s: %.*s... **", GetAdminRank(playerid), GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-	            SendClientMessageEx(i, COLOR_RETIRED, "** [%s] %s: ...%s **", GetAdminRank(playerid), GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+	            SendClientMessageEx(i, COLOR_RETIRED, "* [%s] %s: %.*s... *", GetAdminRank(playerid), GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+	            SendClientMessageEx(i, COLOR_RETIRED, "* [%s] %s: ...%s *", GetAdminRank(playerid), GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-				SendClientMessageEx(i, COLOR_RETIRED, "** [%s] %s: %s **", GetAdminRank(playerid), GetRPName(playerid), params);
+				SendClientMessageEx(i, COLOR_RETIRED, "* [%s] %s: %s *", GetAdminRank(playerid), GetRPName(playerid), params);
 			}
 		}
 	}
@@ -54127,7 +54192,7 @@ public OnUndercover(playerid, tog, name[], level, Float:hp, Float:armor)
 		else
 		{
 		    Log_Write("log_admin", "(undercover) %s (uid: %i) changed their name to %s.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], name);
-			SendClientMessageEx(playerid, COLOR_WHITE, "** You changed your name from %s to %s.", GetRPName(playerid), name);
+			SendClientMessageEx(playerid, COLOR_WHITE, "* You changed your name from %s to %s.", GetRPName(playerid), name);
 			PlayerData[playerid][pUndercover][0] = 1;
 			PlayerData[playerid][pUndercover][1] = PlayerData[playerid][pLevel];
 			PlayerData[playerid][pUndercoverHP] = PlayerData[playerid][pHealth];
@@ -54165,7 +54230,7 @@ CMD:undercover(playerid, params[])
 	    if(PlayerData[playerid][pUndercover][0])
 	    {
      		OnUndercover(playerid, 0, "", 0, 0.0, 0.0);
-     		SendClientMessageEx(playerid, COLOR_WHITE, "** You are no longer undercover.", GetRPName(playerid), name);
+     		SendClientMessageEx(playerid, COLOR_WHITE, "* You are no longer undercover.", GetRPName(playerid), name);
 	    }
 	    else if(!strcmp(name, "random", true)) {
 			strcpy(name, getRandomRPName());
@@ -54273,7 +54338,7 @@ CMD:reports(playerid, params[])
 		}
 	}
 
-	SendClientMessage(playerid, COLOR_YELLOW, "** Use /ar [rid] or /tr [rid] to handle these reports.");
+	SendClientMessage(playerid, COLOR_YELLOW, "* Use /ar [rid] or /tr [rid] to handle these reports.");
 	return 1;
 }
 
@@ -54330,7 +54395,7 @@ CMD:sth(playerid, params[])
 	SendClientMessageEx(ReportInfo[reportid][rReporter], COLOR_GREEN, "%s has redirected your report to all helpers online.", GetRPName(playerid));
 
     strcpy(PlayerData[ReportInfo[reportid][rReporter]][pHelpRequest], ReportInfo[reportid][rText], 128);
-	SendHelperMessage(COLOR_AQUA, "** Help Request from %s[%i]: %s **", GetRPName(ReportInfo[reportid][rReporter]), ReportInfo[reportid][rReporter], ReportInfo[reportid][rText]);
+	SendHelperMessage(COLOR_AQUA, "* Help Request from %s[%i]: %s *", GetRPName(ReportInfo[reportid][rReporter]), ReportInfo[reportid][rReporter], ReportInfo[reportid][rText]);
 
 	PlayerData[playerid][pLastRequest] = gettime();
 	ReportInfo[reportid][rExists] = 0;
@@ -54412,7 +54477,7 @@ CMD:tr(playerid, params[])
 	}
 
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has trashed report %i from %s, reason: %s", GetRPName(playerid), reportid, GetRPName(ReportInfo[reportid][rReporter]), reason);
-	SendClientMessageEx(ReportInfo[reportid][rReporter], COLOR_LIGHTRED, "** %s has trashed your report, reason: %s", GetRPName(playerid), reason);
+	SendClientMessageEx(ReportInfo[reportid][rReporter], COLOR_LIGHTRED, "* %s has trashed your report, reason: %s", GetRPName(playerid), reason);
 	ReportInfo[reportid][rExists] = 0;
 	return 1;
 }
@@ -54595,13 +54660,13 @@ CMD:rr(playerid, params[])
 
 	if(ReportInfo[reportid][rReporter] == playerid)
 	{
-	    SendClientMessageEx(ReportInfo[reportid][rHandledBy], COLOR_YELLOW, "** Player %s (ID %i): %s **", GetRPName(playerid), playerid, params);
-	    SendClientMessageEx(playerid, COLOR_YELLOW, "** Reply to %s (ID %i): %s **", GetRPName(ReportInfo[reportid][rHandledBy]), ReportInfo[reportid][rHandledBy], params);
+	    SendClientMessageEx(ReportInfo[reportid][rHandledBy], COLOR_YELLOW, "* Player %s (ID %i): %s *", GetRPName(playerid), playerid, params);
+	    SendClientMessageEx(playerid, COLOR_YELLOW, "* Reply to %s (ID %i): %s *", GetRPName(ReportInfo[reportid][rHandledBy]), ReportInfo[reportid][rHandledBy], params);
 	}
 	else
 	{
-	    SendClientMessageEx(ReportInfo[reportid][rReporter], COLOR_YELLOW, "** Admin %s (ID %i): %s **", GetRPName(playerid), playerid, params);
-	    SendClientMessageEx(playerid, COLOR_YELLOW, "** Reply to %s (ID %i): %s **", GetRPName(ReportInfo[reportid][rReporter]), ReportInfo[reportid][rReporter], params);
+	    SendClientMessageEx(ReportInfo[reportid][rReporter], COLOR_YELLOW, "* Admin %s (ID %i): %s *", GetRPName(playerid), playerid, params);
+	    SendClientMessageEx(playerid, COLOR_YELLOW, "* Reply to %s (ID %i): %s *", GetRPName(ReportInfo[reportid][rReporter]), ReportInfo[reportid][rReporter], params);
 	}
 
 	return 1;
@@ -54618,12 +54683,12 @@ CMD:cr(playerid, params[])
 
 	if(ReportInfo[reportid][rReporter] == playerid)
 	{
-	    SendClientMessageEx(ReportInfo[reportid][rHandledBy], COLOR_YELLOW, "** Player %s has closed the report. **", GetRPName(playerid));
+	    SendClientMessageEx(ReportInfo[reportid][rHandledBy], COLOR_YELLOW, "* Player %s has closed the report. *", GetRPName(playerid));
 	    SendClientMessageEx(playerid, COLOR_GREEN, "You have closed the report and ended your conversation with the admin.");
 	}
 	else
 	{
-	    SendClientMessageEx(ReportInfo[reportid][rReporter], COLOR_YELLOW, "** Administrator %s has closed the report. **", GetRPName(playerid));
+	    SendClientMessageEx(ReportInfo[reportid][rReporter], COLOR_YELLOW, "* Administrator %s has closed the report. *", GetRPName(playerid));
 	    SendClientMessageEx(playerid, COLOR_GREEN, "You have closed the report and ended your conversation with the reporter.");
 	}
 
@@ -54738,7 +54803,7 @@ CMD:sjail(playerid, params[])
 
 	Log_Write("log_punishments", "%s (uid: %i) silently jailed %s (uid: %i) for %i minutes, reason: %s", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], minutes, reason);
     SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was jailed for %i minutes by an Admin, reason: %s", GetRPName(targetid), minutes, reason);
-    SendClientMessageEx(targetid, COLOR_AQUA, "** You have been jailed for %i minutes by an admin.", minutes);
+    SendClientMessageEx(targetid, COLOR_AQUA, "* You have been jailed for %i minutes by an admin.", minutes);
     return 1;
 }
 
@@ -55476,7 +55541,7 @@ CMD:charity(playerid, params[])
 		SendClientMessage(playerid, COLOR_GREY3, "You can also donate to globally play a song of your choice using '{FFD700}/charity song{AAAAAA}'.");
 		SendClientMessage(playerid, COLOR_GREY3, "You can also donate your money the traditional way using '{FFD700}/charity [amount]{AAAAAA}'.");
 		SendClientMessage(playerid, COLOR_GREY3, "Once the charity bank hits a milestone, some of it will be given back to the community!");
-		SendClientMessageEx(playerid, COLOR_AQUA, "** %s has been donated to charity so far.", FormatNumber(gCharity));
+		SendClientMessageEx(playerid, COLOR_AQUA, "* %s has been donated to charity so far.", FormatNumber(gCharity));
 		return 1;
 	}
  	else if(!strcmp(option, "health", true))
@@ -55971,7 +56036,7 @@ CMD:getip(playerid, params[])
 
  //   SendClientMessageEx(playerid, COLOR_WHITE, "%s: {FF3300}%s {FFFFFF}| {1975FF}%s {33CC00}| %s", GetRPName(targetid), country, isp, city);
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "** %s[%i]'s IP: %s **", GetRPName(targetid), targetid, GetPlayerIP(targetid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "* %s[%i]'s IP: %s *", GetRPName(targetid), targetid, GetPlayerIP(targetid));
 	return 1;
 }
 
@@ -56080,7 +56145,7 @@ CMD:prisoninfo(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is not in OOC prison.");
 	}
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "** %s was prisoned by %s, reason: %s (%i seconds left.) **", GetRPName(targetid), PlayerData[targetid][pPrisonedBy], PlayerData[targetid][pPrisonReason], PlayerData[targetid][pJailTime]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "* %s was prisoned by %s, reason: %s (%i seconds left.) *", GetRPName(targetid), PlayerData[targetid][pPrisonedBy], PlayerData[targetid][pPrisonReason], PlayerData[targetid][pJailTime]);
 	return 1;
 }
 
@@ -56571,10 +56636,10 @@ CMD:jetpack(playerid, params[])
 
 	switch(random(4))
 	{
-	    case 0: SendClientMessage(playerid, COLOR_WHITE, "** Random Fact: The jetpack is part of an experiment conducted at the Area 69 facility.");
-	    case 1: SendClientMessage(playerid, COLOR_WHITE, "** Random Fact: You stole this from Area 69 in that one single player mission. Remember?");
-	    case 2: SendClientMessage(playerid, COLOR_WHITE, "** Random Fact: You probably don't need this anyway. All you admins seem to do is airbreak around the map.");
-	    case 3: SendClientMessage(playerid, COLOR_WHITE, "** Random Fact: You probably aren't reading this anyway. Fuck you.");
+	    case 0: SendClientMessage(playerid, COLOR_WHITE, "* Random Fact: The jetpack is part of an experiment conducted at the Area 69 facility.");
+	    case 1: SendClientMessage(playerid, COLOR_WHITE, "* Random Fact: You stole this from Area 69 in that one single player mission. Remember?");
+	    case 2: SendClientMessage(playerid, COLOR_WHITE, "* Random Fact: You probably don't need this anyway. All you admins seem to do is airbreak around the map.");
+	    case 3: SendClientMessage(playerid, COLOR_WHITE, "* Random Fact: You probably aren't reading this anyway. Fuck you.");
 	}
 
 	return 1;
@@ -56842,7 +56907,7 @@ CMD:jail(playerid, params[])
 
     Log_Write("log_punishments", "%s (uid: %i) jailed %s (uid: %i) for %i minutes, reason: %s", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], minutes, reason);
     SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was jailed for %i minutes by %s, reason: %s", GetRPName(targetid), minutes, GetRPName(playerid), reason);
-    SendClientMessageEx(targetid, COLOR_AQUA, "** You have been admin jailed for %i minutes by %s.", minutes, GetRPName(playerid));
+    SendClientMessageEx(targetid, COLOR_AQUA, "* You have been admin jailed for %i minutes by %s.", minutes, GetRPName(playerid));
     return 1;
 }
 
@@ -56869,13 +56934,13 @@ CMD:rwarn(playerid, params[])
 
 	PlayerData[targetid][pReportWarns]++;
 
-	SendClientMessageEx(targetid, COLOR_LIGHTRED, "** %s issued you a report warning, reason: %s (%i/3)", GetRPName(playerid), reason, PlayerData[targetid][pReportWarns]);
+	SendClientMessageEx(targetid, COLOR_LIGHTRED, "* %s issued you a report warning, reason: %s (%i/3)", GetRPName(playerid), reason, PlayerData[targetid][pReportWarns]);
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s was given a report warning by %s, reason: %s", GetRPName(targetid), GetRPName(playerid), reason);
 
 	if(PlayerData[targetid][pReportWarns] >= 3)
 	{
 	    PlayerData[targetid][pReportMuted] = 12;
-	    SendClientMessage(targetid, COLOR_LIGHTRED, "** You have been muted from reports for 12 playing hours.");
+	    SendClientMessage(targetid, COLOR_LIGHTRED, "* You have been muted from reports for 12 playing hours.");
 	}
 
 	return 1;
@@ -57439,7 +57504,7 @@ CMD:prison(playerid, params[])
 
 	Log_Write("log_punishments", "%s (uid: %i) prisoned %s (uid: %i) for %i minutes, reason: %s", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], minutes, reason);
     SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was prisoned for %i minutes by %s, reason: %s", GetRPName(targetid), minutes, GetRPName(playerid), reason);
-    SendClientMessageEx(targetid, COLOR_AQUA, "** You have been admin prisoned for %i minutes by %s.", minutes, GetRPName(playerid));
+    SendClientMessageEx(targetid, COLOR_AQUA, "* You have been admin prisoned for %i minutes by %s.", minutes, GetRPName(playerid));
     return 1;
 }
 
@@ -57727,12 +57792,12 @@ CMD:tognewbie(playerid, params[])
 	if(!enabledNewbie)
 	{
 	    enabledNewbie = 1;
-	    SendClientMessageToAllEx(COLOR_NEWBIE, "** Administrator %s enabled the newbie channel.", GetRPName(playerid));
+	    SendClientMessageToAllEx(COLOR_NEWBIE, "* Administrator %s enabled the newbie channel.", GetRPName(playerid));
 	}
 	else
 	{
 	    enabledNewbie = 0;
-	    SendClientMessageToAllEx(COLOR_NEWBIE, "** Administrator %s disabled the newbie channel.", GetRPName(playerid));
+	    SendClientMessageToAllEx(COLOR_NEWBIE, "* Administrator %s disabled the newbie channel.", GetRPName(playerid));
 	}
 	return 1;
 }
@@ -58015,7 +58080,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET pos_x = '%f', pos_y = '%f', pos_z = '%f', pos_a = '%f', interior = %i, world = %i WHERE id = %i", VehicleInfo[vehicleid][vPosX], VehicleInfo[vehicleid][vPosY], VehicleInfo[vehicleid][vPosZ], VehicleInfo[vehicleid][vPosA], VehicleInfo[vehicleid][vInterior], VehicleInfo[vehicleid][vWorld], id);
 		mysql_tquery(connectionID, queryBuffer);
 
-	 	SendClientMessageEx(playerid, COLOR_AQUA, "** You have moved the spawn point for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
+	 	SendClientMessageEx(playerid, COLOR_AQUA, "* You have moved the spawn point for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
 	 	SendClientMessage(playerid, COLOR_WHITE, "Note: The vehicle's ID may have changed in the mean time.");
 	 	DespawnVehicle(vehicleid, false);
 
@@ -58040,7 +58105,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET price = %i WHERE id = %i", VehicleInfo[vehicleid][vPrice], VehicleInfo[vehicleid][vID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the price of %s's %s (ID %i) to $%i.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the price of %s's %s (ID %i) to $%i.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, value);
 	    Log_Write("log_admin", "%s (uid: %i) has edited vehicle id %d price to $%d", GetPlayerNameEx(playerid), vehicleid, value);
 
 	}
@@ -58060,7 +58125,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET type = %i WHERE id = %i", VehicleInfo[vehicleid][vType], VehicleInfo[vehicleid][vID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the type of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the type of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, value);
 	}
 	else if(!strcmp(option, "tickets", true))
 	{
@@ -58078,7 +58143,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET tickets = %i WHERE id = %i", VehicleInfo[vehicleid][vTickets], VehicleInfo[vehicleid][vID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the tickets of %s's %s (ID %i) to $%i.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the tickets of %s's %s (ID %i) to $%i.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, value);
 	}
 	else if(!strcmp(option, "locked", true))
 	{
@@ -58097,7 +58162,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_tquery(connectionID, queryBuffer);
 
 		SetVehicleParams(vehicleid, VEHICLE_DOORS, value);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the locked state of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the locked state of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, value);
 	}
 
     else if(!strcmp(option, "color", true))
@@ -58120,7 +58185,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_tquery(connectionID, queryBuffer);
 
 		ChangeVehicleColor(vehicleid, color1, color2);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the colors of %s (ID %i) to %i, %i.", GetVehicleName(vehicleid), vehicleid, color1, color2);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the colors of %s (ID %i) to %i, %i.", GetVehicleName(vehicleid), vehicleid, color1, color2);
 	}
 	else if(!strcmp(option, "paintjob", true))
 	{
@@ -58145,7 +58210,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_tquery(connectionID, queryBuffer);
 
 		ChangeVehiclePaintjob(vehicleid, paintjobid);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the paintjob of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, paintjobid);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the paintjob of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, paintjobid);
 	}
 	else if(!strcmp(option, "impound", true))
 	{
@@ -58164,7 +58229,7 @@ CMD:editvehicle(playerid, params[])
 		VehicleInfo[vehicleid][carImpoundPrice] = -1;
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE `vehicles` SET `carImpounded` = '%i', `carImpoundPrice` = '100' WHERE `id` = '%i'", paintjobid, VehicleInfo[vehicleid][vID]);
 		mysql_tquery(connectionID, queryBuffer);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the neon type of %s's %s (ID %i) to %s.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, param);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the neon type of %s's %s (ID %i) to %s.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, param);
 	}
 	else if(!strcmp(option, "neon", true))
 	{
@@ -58197,7 +58262,7 @@ CMD:editvehicle(playerid, params[])
 		    return SendClientMessage(playerid, COLOR_GREY, "Invalid color.");
 		}
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the neon type of %s's %s (ID %i) to %s.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, param);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the neon type of %s's %s (ID %i) to %s.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, param);
 	}
 	else if(!strcmp(option, "trunk", true))
 	{
@@ -58215,7 +58280,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET trunk = %i WHERE id = %i", VehicleInfo[vehicleid][vTrunk], VehicleInfo[vehicleid][vID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the trunk of %s's %s (ID %i) to level %i/3.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the trunk of %s's %s (ID %i) to level %i/3.", VehicleInfo[vehicleid][vOwner], GetVehicleName(vehicleid), vehicleid, value);
 	}
 	else if(!strcmp(option, "health", true))
 	{
@@ -58236,7 +58301,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_tquery(connectionID, queryBuffer);
 
 		SetVehicleHealth(vehicleid, amount);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the health of %s (ID %i) to %.2f.", GetVehicleName(vehicleid), vehicleid, amount);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the health of %s (ID %i) to %.2f.", GetVehicleName(vehicleid), vehicleid, amount);
 	}
 	else if(!strcmp(option, "gang", true))
 	{
@@ -58261,9 +58326,9 @@ CMD:editvehicle(playerid, params[])
 		mysql_tquery(connectionID, queryBuffer);
 
 		if(gangid == -1)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You have reset the gang for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You have reset the gang for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
 		else
-			SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the gang of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, GangInfo[gangid][gName], gangid);
+			SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the gang of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, GangInfo[gangid][gName], gangid);
 	}
  	else if(!strcmp(option, "faction", true))
 	{
@@ -58290,9 +58355,9 @@ CMD:editvehicle(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		if(type == FACTION_NONE)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've reset the faction type for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've reset the faction type for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
 		else
-	    	SendClientMessageEx(playerid, COLOR_AQUA, "** You've set the faction type of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, factionTypes[type], type);
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "* You've set the faction type of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, factionTypes[type], type);
 	}
 	else if(!strcmp(option, "job", true))
 	{
@@ -58318,9 +58383,9 @@ CMD:editvehicle(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		if(value == JOB_NONE)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've reset the job type for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've reset the job type for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
 		else
-	    	SendClientMessageEx(playerid, COLOR_AQUA, "** You've set the job type of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, GetJobName(value), value);
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "* You've set the job type of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, GetJobName(value), value);
 	}
 	else if(!strcmp(option, "vip", true))
 	{
@@ -58343,9 +58408,9 @@ CMD:editvehicle(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		if(value == 0)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've reset the VIP restriction for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've reset the VIP restriction for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
 		else
-	    	SendClientMessageEx(playerid, COLOR_AQUA, "** You've set the VIP restriction of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, GetVIPRank(value), value);
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "* You've set the VIP restriction of %s (ID %i) to %s (%i).", GetVehicleName(vehicleid), vehicleid, GetVIPRank(value), value);
 	}
     else if(!strcmp(option, "respawndelay", true))
 	{
@@ -58365,7 +58430,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET respawndelay = %i WHERE id = %i", VehicleInfo[vehicleid][vRespawnDelay], id);
 		mysql_tquery(connectionID, queryBuffer);
 
-	 	SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the respawn delay of %s (ID %i) to %i seconds.", GetVehicleName(vehicleid), vehicleid, value);
+	 	SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the respawn delay of %s (ID %i) to %i seconds.", GetVehicleName(vehicleid), vehicleid, value);
 	 	SendClientMessage(playerid, COLOR_WHITE, "Note: The vehicle's ID may have changed in the mean time.");
 	 	DespawnVehicle(vehicleid, false);
 
@@ -58388,7 +58453,7 @@ CMD:editvehicle(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET siren = %i WHERE id = %i", value, id);
 		mysql_tquery(connectionID, queryBuffer);
 
-	 	SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the siren of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, value);
+	 	SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the siren of %s (ID %i) to %i.", GetVehicleName(vehicleid), vehicleid, value);
 	 	SendClientMessage(playerid, COLOR_WHITE, "Note: The vehicle's ID may have changed in the mean time.");
 	 	DespawnVehicle(vehicleid, false);
 
@@ -58416,9 +58481,9 @@ CMD:editvehicle(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		if(value == 0)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've reset the rank restriction for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've reset the rank restriction for %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
 		else
-	    	SendClientMessageEx(playerid, COLOR_AQUA, "** You've set the rank restriction of %s (ID %i) to %i (%i).", GetVehicleName(vehicleid), vehicleid, VehicleInfo[vehicleid][vRank], value);
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "* You've set the rank restriction of %s (ID %i) to %i (%i).", GetVehicleName(vehicleid), vehicleid, VehicleInfo[vehicleid][vRank], value);
 	}
 
 	return 1;
@@ -58571,7 +58636,7 @@ CMD:removedm(playerid, params[])
 		SetPlayerWeapons(targetid);
 	}
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** Your DM punishment has been reversed by %s.", GetRPName(playerid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* Your DM punishment has been reversed by %s.", GetRPName(playerid));
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has reversed %s's DM punishment.", GetRPName(playerid), GetRPName(targetid));
 	Log_Write("log_admin", "%s (uid: %i) reversed %s's (uid: %i) DM punishment.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 
@@ -59314,7 +59379,7 @@ CMD:sprison(playerid, params[])
 
     Log_Write("log_punishments", "%s (uid: %i) silently prisoned %s (uid: %i) for %i minutes, reason: %s", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], minutes, reason);
     SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was prisoned for %i minutes by an Admin, reason: %s", GetRPName(targetid), minutes, reason);
-    SendClientMessageEx(targetid, COLOR_AQUA, "** You have been admin prisoned for %i minutes by an admin.", minutes);
+    SendClientMessageEx(targetid, COLOR_AQUA, "* You have been admin prisoned for %i minutes by an admin.", minutes);
     return 1;
 }
 
@@ -60802,14 +60867,14 @@ CMD:setvip(playerid, params[])
 	if(days >= 30)
 	{
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has given a {D909D9}%s{FF6347} VIP package to %s for %i months.", GetRPName(playerid), GetVIPRank(rank), GetRPName(targetid), days / 30);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have given %s a {D909D9}%s{33CCFF} VIP package for %i months.", GetRPName(targetid), GetVIPRank(rank), days / 30);
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s has given you a {D909D9}%s{33CCFF} VIP package for %i months.", GetRPName(playerid), GetVIPRank(rank), days / 30);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have given %s a {D909D9}%s{33CCFF} VIP package for %i months.", GetRPName(targetid), GetVIPRank(rank), days / 30);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s has given you a {D909D9}%s{33CCFF} VIP package for %i months.", GetRPName(playerid), GetVIPRank(rank), days / 30);
 	}
 	else
 	{
 		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has given a {D909D9}%s{FF6347} VIP package to %s for %i days.", GetRPName(playerid), GetVIPRank(rank), GetRPName(targetid), days);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have given %s a {D909D9}%s{33CCFF} VIP package for %i days.", GetRPName(targetid), GetVIPRank(rank), days);
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s has given you a {D909D9}%s{33CCFF} VIP package for %i days.", GetRPName(playerid), GetVIPRank(rank), days);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have given %s a {D909D9}%s{33CCFF} VIP package for %i days.", GetRPName(targetid), GetVIPRank(rank), days);
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s has given you a {D909D9}%s{33CCFF} VIP package for %i days.", GetRPName(playerid), GetVIPRank(rank), days);
 	}
 
 	Log_Write("log_vip", "%s (uid: %i) has given %s (uid: %i) a %s VIP package for %i days.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], GetVIPRank(rank), days);
@@ -60854,7 +60919,7 @@ CMD:removevip(playerid, params[])
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has revoked %s's VIP subscription.", GetRPName(playerid), GetRPName(targetid));
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has revoked your VIP subscription.", GetRPName(playerid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has revoked your VIP subscription.", GetRPName(playerid));
 	return 1;
 }
 
@@ -61020,7 +61085,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the entrance of house %i.", houseid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the entrance of house %i.", houseid);
 	}
 	else if(!strcmp(option, "exit", true))
 	{
@@ -61044,7 +61109,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the exit of house %i.", houseid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the exit of house %i.", houseid);
 	}
 	else if(!strcmp(option, "world", true))
 	{
@@ -61061,7 +61126,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the virtual world of house %i to %i.", houseid, worldid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the virtual world of house %i to %i.", houseid, worldid);
 	}
 	else if(!strcmp(option, "type", true))
 	{
@@ -61089,7 +61154,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the type of house %i to %i.", houseid, type + 1);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the type of house %i to %i.", houseid, type + 1);
 	}
 	else if(!strcmp(option, "owner", true))
 	{
@@ -61109,7 +61174,7 @@ CMD:edithouse(playerid, params[])
 		}
 
         SetHouseOwner(houseid, targetid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the owner of house %i to %s.", houseid, GetRPName(targetid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the owner of house %i to %s.", houseid, GetRPName(targetid));
 	}
 	else if(!strcmp(option, "price", true))
 	{
@@ -61130,7 +61195,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the price of house %i to $%i.", houseid, price);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the price of house %i to $%i.", houseid, price);
 	}
 	else if(!strcmp(option, "rentprice", true))
 	{
@@ -61151,7 +61216,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the rent price of house %i to $%i.", houseid, price);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the rent price of house %i to $%i.", houseid, price);
 	}
 	else if(!strcmp(option, "level", true))
 	{
@@ -61172,7 +61237,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the level of house %i to %i.", houseid, level);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the level of house %i to %i.", houseid, level);
 	}
     else if(!strcmp(option, "locked", true))
 	{
@@ -61189,7 +61254,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the lock state of house %i to %i.", houseid, locked);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the lock state of house %i to %i.", houseid, locked);
 	}
 	 else if(!strcmp(option, "delivery", true))
 	{
@@ -61206,7 +61271,7 @@ CMD:edithouse(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadHouse(houseid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the ability to be to delivered of house %i to %i.", houseid, delivery);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the ability to be to delivered of house %i to %i.", houseid, delivery);
 	}
  	return 1;
 }
@@ -61244,7 +61309,7 @@ CMD:removehouse(playerid, params[])
 
  	Iter_Remove(House, houseid);
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has removed house id %i", GetPlayerNameEx(playerid), houseid);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed house %i.", houseid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed house %i.", houseid);
 	return 1;
 }
 
@@ -61460,7 +61525,7 @@ CMD:myassets(playerid, params[])
 	{
 	    if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {33CC33}House{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]), (gettime() - HouseInfo[i][hTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {33CC33}House{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]), (gettime() - HouseInfo[i][hTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
 		}
 	}
 
@@ -61468,7 +61533,7 @@ CMD:myassets(playerid, params[])
 	{
 	    if(BusinessInfo[i][bExists] && IsBusinessOwner(playerid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {FFD700}Business{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]), (gettime() - BusinessInfo[i][bTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {FFD700}Business{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]), (gettime() - BusinessInfo[i][bTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
 		}
 	}
 
@@ -61476,7 +61541,7 @@ CMD:myassets(playerid, params[])
 	{
 	    if(GarageInfo[i][gExists] && IsGarageOwner(playerid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {004CFF}Garage{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]), (gettime() - GarageInfo[i][gTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {004CFF}Garage{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]), (gettime() - GarageInfo[i][gTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
 		}
 	}
 
@@ -61484,7 +61549,7 @@ CMD:myassets(playerid, params[])
 	{
 	    if(LandInfo[i][lExists] && IsLandOwner(playerid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {33CCFF}Land{C8C8C8} | ID: %i | Location: %s", i, GetZoneName(LandInfo[i][lHeightX], LandInfo[i][lHeightY], LandInfo[i][lHeightZ]));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {33CCFF}Land{C8C8C8} | ID: %i | Location: %s", i, GetZoneName(LandInfo[i][lHeightX], LandInfo[i][lHeightY], LandInfo[i][lHeightZ]));
 		}
 	}
 
@@ -61517,7 +61582,7 @@ CMD:listassets(playerid, params[])
 	{
 	    if(HouseInfo[i][hExists] && IsHouseOwner(targetid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {33CC33}House{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]), (gettime() - HouseInfo[i][hTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {33CC33}House{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(HouseInfo[i][hPosX], HouseInfo[i][hPosY], HouseInfo[i][hPosZ]), (gettime() - HouseInfo[i][hTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
 		}
 	}
 
@@ -61525,7 +61590,7 @@ CMD:listassets(playerid, params[])
 	{
 	    if(BusinessInfo[i][bExists] && IsBusinessOwner(targetid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {FFD700}Business{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]), (gettime() - BusinessInfo[i][bTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {FFD700}Business{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(BusinessInfo[i][bPosX], BusinessInfo[i][bPosY], BusinessInfo[i][bPosZ]), (gettime() - BusinessInfo[i][bTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
 		}
 	}
 
@@ -61533,7 +61598,7 @@ CMD:listassets(playerid, params[])
 	{
 	    if(GarageInfo[i][gExists] && IsGarageOwner(targetid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {004CFF}Garage{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]), (gettime() - GarageInfo[i][gTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {004CFF}Garage{C8C8C8} | ID: %i | Location: %s | Status: %s", i, GetZoneName(GarageInfo[i][gPosX], GarageInfo[i][gPosY], GarageInfo[i][gPosZ]), (gettime() - GarageInfo[i][gTimestamp]) > 2592000 ? ("{FF6347}Inactive") : ("{00AA00}Active"));
 		}
 	}
 
@@ -61541,7 +61606,7 @@ CMD:listassets(playerid, params[])
 	{
 	    if(LandInfo[i][lExists] && IsLandOwner(targetid, i))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** {33CCFF}Land{C8C8C8} | ID: %i | Location: %s", i, GetZoneName(LandInfo[i][lHeightX], LandInfo[i][lHeightY], LandInfo[i][lHeightZ]));
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* {33CCFF}Land{C8C8C8} | ID: %i | Location: %s", i, GetZoneName(LandInfo[i][lHeightX], LandInfo[i][lHeightY], LandInfo[i][lHeightZ]));
 		}
 	}
 
@@ -61589,7 +61654,7 @@ CMD:asellhouse(playerid, params[])
 	}
 
 	SetHouseOwner(houseid, INVALID_PLAYER_ID);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have admin sold house %i.", houseid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have admin sold house %i.", houseid);
 	return 1;
 }
 
@@ -61611,7 +61676,7 @@ CMD:asellgarage(playerid, params[])
 	}
 
 	SetGarageOwner(garageid, INVALID_PLAYER_ID);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have admin sold garage %i.", garageid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have admin sold garage %i.", garageid);
 	return 1;
 }
 
@@ -61633,7 +61698,7 @@ CMD:asellbiz(playerid, params[])
 	}
 
 	SetBusinessOwner(businessid, INVALID_PLAYER_ID);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have admin sold business %i.", businessid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have admin sold business %i.", businessid);
 	return 1;
 }
 
@@ -61655,7 +61720,7 @@ CMD:asellland(playerid, params[])
 	}
 
 	SetLandOwner(landid, INVALID_PLAYER_ID);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have admin sold land %i.", landid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have admin sold land %i.", landid);
 	return 1;
 }
 
@@ -61799,7 +61864,7 @@ CMD:lock(playerid, params[])
 			VehicleInfo[id][vLocked] = 1;
    		    format(string, sizeof(string), "~r~%s locked", GetVehicleName(id));
             GameTextForPlayer(playerid, string, 3000, 3);
-			ShowActionBubble(playerid, "** %s locks their %s.", GetRPName(playerid), GetVehicleName(id));
+			ShowActionBubble(playerid, "* %s locks their %s.", GetRPName(playerid), GetVehicleName(id));
 		}
 		else
 		{
@@ -61807,7 +61872,7 @@ CMD:lock(playerid, params[])
             new string[24];
             format(string, sizeof(string), "~b~%s unlocked", GetVehicleName(id));
             GameTextForPlayer(playerid, string, 3000, 3);
-			ShowActionBubble(playerid, "** %s unlocks their %s.", GetRPName(playerid), GetVehicleName(id));
+			ShowActionBubble(playerid, "* %s unlocks their %s.", GetRPName(playerid), GetVehicleName(id));
 		}
 
 		SetVehicleParams(id, VEHICLE_DOORS, VehicleInfo[id][vLocked]);
@@ -61824,14 +61889,14 @@ CMD:lock(playerid, params[])
 			HouseInfo[id][hLocked] = 1;
 
 			GameTextForPlayer(playerid, "~r~House locked", 3000, 6);
-			ShowActionBubble(playerid, "** %s locks their house door.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s locks their house door.", GetRPName(playerid));
 		}
 		else
 		{
 			HouseInfo[id][hLocked] = 0;
 
 			GameTextForPlayer(playerid, "~g~House unlocked", 3000, 6);
-			ShowActionBubble(playerid, "** %s unlocks their house door.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s unlocks their house door.", GetRPName(playerid));
 		}
 
 		PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
@@ -61847,14 +61912,14 @@ CMD:lock(playerid, params[])
 			GarageInfo[id][gLocked] = 1;
 
 			GameTextForPlayer(playerid, "~r~Garage locked", 3000, 6);
-			ShowActionBubble(playerid, "** %s locks their garage door.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s locks their garage door.", GetRPName(playerid));
 		}
 		else
 		{
 			GarageInfo[id][gLocked] = 0;
 
 			GameTextForPlayer(playerid, "~g~Garage unlocked", 3000, 6);
-			ShowActionBubble(playerid, "** %s unlocks their garage door.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s unlocks their garage door.", GetRPName(playerid));
 		}
 
 		PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
@@ -61870,14 +61935,14 @@ CMD:lock(playerid, params[])
 			BusinessInfo[id][bLocked] = 1;
 
 			GameTextForPlayer(playerid, "~r~Business locked", 3000, 6);
-			ShowActionBubble(playerid, "** %s locks their business door.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s locks their business door.", GetRPName(playerid));
 		}
 		else
 		{
 			BusinessInfo[id][bLocked] = 0;
 
 			GameTextForPlayer(playerid, "~g~Business unlocked", 3000, 6);
-			ShowActionBubble(playerid, "** %s unlocks their business door.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s unlocks their business door.", GetRPName(playerid));
 		}
 
 		PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
@@ -61908,14 +61973,14 @@ CMD:lock(playerid, params[])
 				EntranceInfo[id][eLocked] = 1;
 
 				GameTextForPlayer(playerid, "~r~Entrance locked", 3000, 6);
-				ShowActionBubble(playerid, "** %s locks their entrance door.", GetRPName(playerid));
+				ShowActionBubble(playerid, "* %s locks their entrance door.", GetRPName(playerid));
 			}
 			else
 			{
 				EntranceInfo[id][eLocked] = 0;
 
 				GameTextForPlayer(playerid, "~g~Entrance unlocked", 3000, 6);
-				ShowActionBubble(playerid, "** %s unlocks their entrance door.", GetRPName(playerid));
+				ShowActionBubble(playerid, "* %s unlocks their entrance door.", GetRPName(playerid));
 			}
 
             PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
@@ -62069,10 +62134,10 @@ CMD:alock(playerid, params[])
 CMD:househelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** HOUSE HELP *** type a command for more information.");
-    SendClientMessage(playerid, COLOR_GREY, "*** HOUSE *** /buyhouse /lock /stash /furniture /upgradehouse /sellhouse /sellmyhouse");
-	SendClientMessage(playerid, COLOR_GREY, "*** HOUSE *** /door /renthouse /unrent /setrent /tenants /evict /evictall /houseinfo");
-	SendClientMessage(playerid, COLOR_GREY, "*** HOUSE *** /houseinvite /hlights /installhousealarm (/iha), /uninstallhousealarm (/uha)");
+    SendClientMessage(playerid, COLOR_WHITE, "** HOUSE HELP ** type a command for more information.");
+    SendClientMessage(playerid, COLOR_GREY, "** HOUSE ** /buyhouse /lock /stash /furniture /upgradehouse /sellhouse /sellmyhouse");
+	SendClientMessage(playerid, COLOR_GREY, "** HOUSE ** /door /renthouse /unrent /setrent /tenants /evict /evictall /houseinfo");
+	SendClientMessage(playerid, COLOR_GREY, "** HOUSE ** /houseinvite /hlights /installhousealarm (/iha), /uninstallhousealarm (/uha)");
 	return 1;
 }
 
@@ -62158,7 +62223,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET cash = %i WHERE id = %i", HouseInfo[houseid][hCash], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %s in your house stash.", FormatNumber(value));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %s in your house stash.", FormatNumber(value));
 			}
 			else if(!strcmp(option, "materials", true))
 			{
@@ -62184,7 +62249,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i materials in your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %i materials in your house stash.", value);
    			}
 			else if(!strcmp(option, "weed", true))
 			{
@@ -62210,7 +62275,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of weed in your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %ig of weed in your house stash.", value);
    			}
    			else if(!strcmp(option, "cocaine", true))
 			{
@@ -62236,7 +62301,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of cocaine in your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %ig of cocaine in your house stash.", value);
    			}
    			else if(!strcmp(option, "meth", true))
 			{
@@ -62262,7 +62327,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of meth in your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %ig of meth in your house stash.", value);
    			}
    			else if(!strcmp(option, "painkillers", true))
 			{
@@ -62288,7 +62353,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i painkillers in your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %i painkillers in your house stash.", value);
    			}
    			else if(!strcmp(option, "weapon", true))
    			{
@@ -62321,7 +62386,7 @@ CMD:stash(playerid, params[])
 						mysql_tquery(connectionID, queryBuffer);
 
 						RemovePlayerWeapon(playerid, weaponid);
-						SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored a %s in slot %i of your house stash.", GetWeaponNameEx(HouseInfo[houseid][hWeapons][i]), i + 1);
+						SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored a %s in slot %i of your house stash.", GetWeaponNameEx(HouseInfo[houseid][hWeapons][i]), i + 1);
 						return 1;
 					}
 				}
@@ -62357,7 +62422,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET cash = %i WHERE id = %i", HouseInfo[houseid][hCash], HouseInfo[houseid][hID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %s from your house stash.", FormatNumber(value));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %s from your house stash.", FormatNumber(value));
 			}
 			else if(!strcmp(option, "materials", true))
 			{
@@ -62383,7 +62448,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i materials from your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %i materials from your house stash.", value);
    			}
 			else if(!strcmp(option, "weed", true))
 			{
@@ -62409,7 +62474,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of weed from your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %ig of weed from your house stash.", value);
    			}
    			else if(!strcmp(option, "cocaine", true))
 			{
@@ -62435,7 +62500,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of cocaine from your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %ig of cocaine from your house stash.", value);
    			}
    			else if(!strcmp(option, "meth", true))
 			{
@@ -62461,7 +62526,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of meth from your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %ig of meth from your house stash.", value);
    			}
    			else if(!strcmp(option, "painkillers", true))
 			{
@@ -62487,7 +62552,7 @@ CMD:stash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i painkillers from your house stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %i painkillers from your house stash.", value);
    			}
    			else if(!strcmp(option, "weapon", true))
    			{
@@ -62511,7 +62576,7 @@ CMD:stash(playerid, params[])
 				}
 
 				GivePlayerWeaponEx(playerid, HouseInfo[houseid][hWeapons][value-1]);
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken a %s from slot %i of your house stash.", GetWeaponNameEx(HouseInfo[houseid][hWeapons][value-1]), value);
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken a %s from slot %i of your house stash.", GetWeaponNameEx(HouseInfo[houseid][hWeapons][value-1]), value);
 
 				HouseInfo[houseid][hWeapons][value-1] = 0;
 
@@ -62635,8 +62700,8 @@ CMD:sellhouse(playerid, params[])
 	PlayerData[targetid][pHouseOffered] = houseid;
 	PlayerData[targetid][pHousePrice] = amount;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered you their house for %s (/accept house).", GetRPName(playerid), FormatNumber(amount));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered %s to buy your house for %s.", GetRPName(targetid), FormatNumber(amount));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered you their house for %s (/accept house).", GetRPName(playerid), FormatNumber(amount));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered %s to buy your house for %s.", GetRPName(targetid), FormatNumber(amount));
 	return 1;
 }
 
@@ -62929,7 +62994,7 @@ CMD:sellinactive(playerid, params[])
 	}
 
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has sold all inactive properties.", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, "** You have sold %i inactive houses, %i inactive garages and %i inactive businesses.", houses, garages, businesses);
+	SendClientMessageEx(playerid, COLOR_WHITE, "* You have sold %i inactive houses, %i inactive garages and %i inactive businesses.", houses, garages, businesses);
 	return 1;
 }
 
@@ -62949,7 +63014,7 @@ CMD:inactivecheck(playerid, params[])
 	foreach(new i : Business) if(BusinessInfo[i][bExists] && BusinessInfo[i][bOwnerID] > 0 && (gettime() - BusinessInfo[i][bTimestamp]) > 2592000)
 		businesses++;
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "** There are currently %i inactive houses, %i inactive garages and %i inactive businesses.", houses, garages, businesses);
+	SendClientMessageEx(playerid, COLOR_WHITE, "* There are currently %i inactive houses, %i inactive garages and %i inactive businesses.", houses, garages, businesses);
 	return 1;
 }
 CMD:setcooldown(playerid, params[])
@@ -63027,13 +63092,13 @@ CMD:setmotd(playerid, params[])
  		if(!strcmp(newval, "none", true))
 		{
 	    	gServerMOTD[0] = 0;
-	    	SendClientMessage(playerid, COLOR_WHITE, "** You have reset the Global MOTD text.");
+	    	SendClientMessage(playerid, COLOR_WHITE, "* You have reset the Global MOTD text.");
 	    	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has reset the global MOTD.", GetRPName(playerid));
 		}
 		else
 		{
 	    	strcpy(gServerMOTD, newval, 128);
-	    	SendClientMessageEx(playerid, COLOR_WHITE, "** You have changed the Global MOTD text to '%s'.", gServerMOTD);
+	    	SendClientMessageEx(playerid, COLOR_WHITE, "* You have changed the Global MOTD text to '%s'.", gServerMOTD);
 	    	SendAdminMessage(COLOR_YELLOW, "AdmCmd: %s has set the global MOTD to '%s'", GetRPName(playerid), gServerMOTD);
 		}
 	}
@@ -63043,13 +63108,13 @@ CMD:setmotd(playerid, params[])
  		if(!strcmp(newval, "none", true))
 		{
 	    	adminMOTD[0] = 0;
-	    	SendClientMessage(playerid, COLOR_WHITE, "** You have reset the Admin MOTD text.");
+	    	SendClientMessage(playerid, COLOR_WHITE, "* You have reset the Admin MOTD text.");
       		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has reset the admin MOTD.", GetRPName(playerid));
 		}
 		else
 		{
 	    	strcpy(adminMOTD, newval, 128);
-	    	SendClientMessageEx(playerid, COLOR_WHITE, "** You have changed the Admin MOTD text to '%s'.", adminMOTD);
+	    	SendClientMessageEx(playerid, COLOR_WHITE, "* You have changed the Admin MOTD text to '%s'.", adminMOTD);
 	    	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the admin MOTD to '%s'", GetRPName(playerid), adminMOTD);
 		}
 	}
@@ -63058,13 +63123,13 @@ CMD:setmotd(playerid, params[])
  		if(!strcmp(newval, "none", true))
 		{
 	    	helperMOTD[0] = 0;
-	    	SendClientMessage(playerid, COLOR_WHITE, "** You have reset the Helper MOTD text.");
+	    	SendClientMessage(playerid, COLOR_WHITE, "* You have reset the Helper MOTD text.");
 	    	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has reset the helper MOTD.", GetRPName(playerid));
 		}
 		else
 		{
 	    	strcpy(helperMOTD, newval, 128);
-	    	SendClientMessageEx(playerid, COLOR_WHITE, "** You have changed the Helper MOTD text to '%s'.", helperMOTD);
+	    	SendClientMessageEx(playerid, COLOR_WHITE, "* You have changed the Helper MOTD text to '%s'.", helperMOTD);
 	    	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has set the helper MOTD to '%s'", GetRPName(playerid), helperMOTD);
 		}
 	}
@@ -63520,7 +63585,7 @@ CMD:changelist(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO changes VALUES(%i, '%e') ON DUPLICATE KEY UPDATE text = '%e'", slot, param, param);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** Change text for slot %i changed to '%s'.", slot, param);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* Change text for slot %i changed to '%s'.", slot, param);
 	}
 	else if(!strcmp(option, "clear", true))
 	{
@@ -63536,7 +63601,7 @@ CMD:changelist(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "DELETE FROM changes WHERE slot = %i", slot);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** Change text for slot %i cleared.", slot);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* Change text for slot %i cleared.", slot);
 	}
 
 	return 1;
@@ -63593,12 +63658,12 @@ CMD:listhelp(playerid, params[])
 	{
 	    if(!isnull(PlayerData[i][pHelpRequest]))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** %s[%i] asks: %s", GetRPName(i), i, PlayerData[i][pHelpRequest]);
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* %s[%i] asks: %s", GetRPName(i), i, PlayerData[i][pHelpRequest]);
 		}
 	}
 
-	SendClientMessage(playerid, COLOR_AQUA, "** Use /accepthelp [id] or /denyhelp [id] to handle help requests.");
-	SendClientMessage(playerid, COLOR_AQUA, "** Use /answerhelp [id] [msg] to PM an answer without the need to teleport.");
+	SendClientMessage(playerid, COLOR_AQUA, "* Use /accepthelp [id] or /denyhelp [id] to handle help requests.");
+	SendClientMessage(playerid, COLOR_AQUA, "* Use /answerhelp [id] [msg] to PM an answer without the need to teleport.");
 	return 1;
 }
 
@@ -63679,7 +63744,7 @@ CMD:denyhelp(playerid, params[])
 
     SendHelperMessage(COLOR_LIGHTRED, "Helper: %s has denied %s's help request.", GetRPName(playerid), GetRPName(targetid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "You denied %s's help request.", GetRPName(targetid));
-	SendClientMessageEx(targetid, COLOR_LIGHTRED, "** %s has denied your help request.", GetRPName(playerid));
+	SendClientMessageEx(targetid, COLOR_LIGHTRED, "* %s has denied your help request.", GetRPName(playerid));
 	return 1;
 }
 
@@ -63709,7 +63774,7 @@ CMD:sta(playerid, params[])
 
     SendHelperMessage(COLOR_LIGHTRED, "Helper: %s has sent %s's help request to all online admins.", GetRPName(playerid), GetRPName(targetid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "You sent %s's help request to all online admins.", GetRPName(targetid));
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has sent your help request to all online admins.", GetRPName(playerid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has sent your help request to all online admins.", GetRPName(playerid));
 	return 1;
 }
 
@@ -63769,12 +63834,12 @@ CMD:answerhelp(playerid, params[])
 
 	if(strlen(msg) > MAX_SPLIT_LENGTH)
 	{
-		SendClientMessageEx(targetid, COLOR_YELLOW, "** Answer from %s: %.*s... **", GetRPName(playerid), MAX_SPLIT_LENGTH, msg);
-		SendClientMessageEx(targetid, COLOR_YELLOW, "** Answer from %s: ...%s **", GetRPName(playerid), msg[MAX_SPLIT_LENGTH]);
+		SendClientMessageEx(targetid, COLOR_YELLOW, "* Answer from %s: %.*s... *", GetRPName(playerid), MAX_SPLIT_LENGTH, msg);
+		SendClientMessageEx(targetid, COLOR_YELLOW, "* Answer from %s: ...%s *", GetRPName(playerid), msg[MAX_SPLIT_LENGTH]);
 	}
 	else
 	{
-	    SendClientMessageEx(targetid, COLOR_YELLOW, "** Answer from %s: %s **", GetRPName(playerid), msg);
+	    SendClientMessageEx(targetid, COLOR_YELLOW, "* Answer from %s: %s *", GetRPName(playerid), msg);
 	}
 
 	SendHelperMessage(COLOR_LIGHTRED, "Helper: %s has answered %s's help request.", GetRPName(playerid), GetRPName(targetid));
@@ -63802,12 +63867,12 @@ CMD:hc(playerid, params[])
 	    {
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-	            SendStaffMessage(0xBDF38BFF, "** %s %s: %.*s... **", GetStaffRank(playerid), GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-	            SendStaffMessage(0xBDF38BFF, "** %s %s: ...%s **", GetStaffRank(playerid), GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+	            SendStaffMessage(0xBDF38BFF, "* %s %s: %.*s... *", GetStaffRank(playerid), GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+	            SendStaffMessage(0xBDF38BFF, "* %s %s: ...%s *", GetStaffRank(playerid), GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-				SendStaffMessage(0xBDF38BFF, "** %s %s: %s **", GetStaffRank(playerid), GetRPName(playerid), params);
+				SendStaffMessage(0xBDF38BFF, "* %s %s: %s *", GetStaffRank(playerid), GetRPName(playerid), params);
 			}
 			return 1;
 		}
@@ -63815,12 +63880,12 @@ CMD:hc(playerid, params[])
 	    {
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-	            SendStaffMessage(0xBDF38BFF, "** %s %s: %.*s... **", GetAdminRank(playerid), GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-	            SendStaffMessage(0xBDF38BFF, "** %s %s: ...%s **", GetAdminRank(playerid), GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+	            SendStaffMessage(0xBDF38BFF, "* %s %s: %.*s... *", GetAdminRank(playerid), GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+	            SendStaffMessage(0xBDF38BFF, "* %s %s: ...%s *", GetAdminRank(playerid), GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-				SendStaffMessage(0xBDF38BFF, "** %s %s: %s **", GetAdminRank(playerid), GetRPName(playerid), params);
+				SendStaffMessage(0xBDF38BFF, "* %s %s: %s *", GetAdminRank(playerid), GetRPName(playerid), params);
 			}
 			return 1;
 		}*/
@@ -63925,7 +63990,7 @@ CMD:activity(playerid, params[])
 		}
 	}
 
-	SendClientMessage(playerid, COLOR_YELLOW, "** Your properties become inactive if you don't enter them for 30+ days.");
+	SendClientMessage(playerid, COLOR_YELLOW, "* Your properties become inactive if you don't enter them for 30+ days.");
 	return 1;
 }
 
@@ -63943,11 +64008,11 @@ CMD:hlights(playerid, params[])
 	}
 	if(option)
 	{
-	    SendClientMessage(playerid, COLOR_AQUA, "** You've turned on the lights to this house.");
+	    SendClientMessage(playerid, COLOR_AQUA, "* You've turned on the lights to this house.");
 	}
 	else
 	{
-	    SendClientMessage(playerid, COLOR_AQUA, "** You've turned off the lights to this house.");
+	    SendClientMessage(playerid, COLOR_AQUA, "* You've turned off the lights to this house.");
 	}
 	HouseInfo[houseid][hLights] = option;
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET lights = %i WHERE id = %i", option, HouseInfo[houseid][hID]);
@@ -63993,7 +64058,7 @@ CMD:setrent(playerid, params[])
 	mysql_tquery(connectionID, queryBuffer);
 
 	ReloadHouse(houseid);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You've set the rental price to $%i.", price);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You've set the rental price to $%i.", price);
 	return 1;
 }
 
@@ -64128,8 +64193,8 @@ CMD:houseinvite(playerid, params[])
 	PlayerData[targetid][pInviteOffer] = playerid;
 	PlayerData[targetid][pInviteHouse] = houseid;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has offered you an invitation to their house in %s. (/accept invite)", GetRPName(playerid), GetZoneName(HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ]));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered %s an invitation to your house.", GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has offered you an invitation to their house in %s. (/accept invite)", GetRPName(playerid), GetZoneName(HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ]));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered %s an invitation to your house.", GetRPName(targetid));
 	return 1;
 }
 CMD:givehousekeys(playerid, params[])
@@ -64250,7 +64315,7 @@ CMD:editgarage(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ReloadGarage(garageid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the entrance of garage %i.", garageid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the entrance of garage %i.", garageid);
 	}
 	else if(!strcmp(option, "freeze", true))
 	{
@@ -64269,9 +64334,9 @@ CMD:editgarage(playerid, params[])
 		ReloadGarage(garageid);
 
 		if(status)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've enabled freeze & object loading for entrance %i.", garageid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've enabled freeze & object loading for entrance %i.", garageid);
 		else
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've disabled freeze & object loading for entrance %i.", garageid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've disabled freeze & object loading for entrance %i.", garageid);
 	}
 	else if(!strcmp(option, "exit", true))
 	{
@@ -64287,7 +64352,7 @@ CMD:editgarage(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ReloadGarage(garageid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the vehicle exit spawn of garage %i.", garageid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the vehicle exit spawn of garage %i.", garageid);
 	}
 	else if(!strcmp(option, "type", true))
 	{
@@ -64317,7 +64382,7 @@ CMD:editgarage(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGarage(garageid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the type of garage %i to %s.", garageid, size);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the type of garage %i to %s.", garageid, size);
 	}
 	else if(!strcmp(option, "owner", true))
 	{
@@ -64337,7 +64402,7 @@ CMD:editgarage(playerid, params[])
 		}
 
         SetGarageOwner(garageid, targetid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the owner of garage %i to %s.", garageid, GetRPName(targetid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the owner of garage %i to %s.", garageid, GetRPName(targetid));
 	}
 	else if(!strcmp(option, "price", true))
 	{
@@ -64358,7 +64423,7 @@ CMD:editgarage(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGarage(garageid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the price of garage %i to $%i.", garageid, price);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the price of garage %i to $%i.", garageid, price);
 	}
     else if(!strcmp(option, "locked", true))
 	{
@@ -64375,7 +64440,7 @@ CMD:editgarage(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadGarage(garageid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the lock state of garage %i to %i.", garageid, locked);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the lock state of garage %i to %i.", garageid, locked);
 	}
 
 	return 1;
@@ -64409,7 +64474,7 @@ CMD:removegarage(playerid, params[])
 	GarageInfo[garageid][gOwnerID] = 0;
     Iter_Remove(Garage, garageid);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed garage %i.", garageid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed garage %i.", garageid);
 	return 1;
 }
 
@@ -64447,9 +64512,9 @@ CMD:gotogarage(playerid, params[])
 CMD:garagehelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** GARAGE HELP *** type a command for more information.");
-	SendClientMessage(playerid, COLOR_GREY, "*** GARAGE *** /buygarage /lock /upgradegarage /sellgarage /sellmygarage /garageinfo");
-	SendClientMessage(playerid, COLOR_GREY, "*** GARAGE *** /repair /refuel");
+    SendClientMessage(playerid, COLOR_WHITE, "** GARAGE HELP ** type a command for more information.");
+	SendClientMessage(playerid, COLOR_GREY, "** GARAGE ** /buygarage /lock /upgradegarage /sellgarage /sellmygarage /garageinfo");
+	SendClientMessage(playerid, COLOR_GREY, "** GARAGE ** /repair /refuel");
 	return 1;
 }
 
@@ -64551,8 +64616,8 @@ CMD:sellgarage(playerid, params[])
 	PlayerData[targetid][pGarageOffered] = garageid;
 	PlayerData[targetid][pGaragePrice] = amount;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered you their garage for %s (/accept garage).", GetRPName(playerid), FormatNumber(amount));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered %s to buy your garage for %s.", GetRPName(targetid), FormatNumber(amount));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered you their garage for %s (/accept garage).", GetRPName(playerid), FormatNumber(amount));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered %s to buy your garage for %s.", GetRPName(targetid), FormatNumber(amount));
 	return 1;
 }
 
@@ -64694,7 +64759,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the entrance of business %i.", businessid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the entrance of business %i.", businessid);
 	}
 	else if(!strcmp(option, "vehspawn", true))
 	{
@@ -64727,7 +64792,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the exit of business %i.", businessid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the exit of business %i.", businessid);
 	}
 	else if(!strcmp(option, "interior", true))
 	{
@@ -64756,7 +64821,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the virtual world of business %i to %i.", businessid, worldid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the virtual world of business %i to %i.", businessid, worldid);
 	}
 	else if(!strcmp(option, "type", true))
 	{
@@ -64784,7 +64849,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the type of business %i to %i.", businessid, type);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the type of business %i to %i.", businessid, type);
 	}
 	else if(!strcmp(option, "owner", true))
 	{
@@ -64804,7 +64869,7 @@ CMD:editbiz(playerid, params[])
 		}
 
         SetBusinessOwner(businessid, targetid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the owner of business %i to %s.", businessid, GetRPName(targetid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the owner of business %i to %s.", businessid, GetRPName(targetid));
 		Log_Write("log_property", "%s (uid: %i) has edited business id owner to (id: %s).", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid));
 
 	}
@@ -64827,7 +64892,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the price of business %i to $%i.", businessid, price);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the price of business %i to $%i.", businessid, price);
 	}
 	else if(!strcmp(option, "entryfee", true))
 	{
@@ -64848,7 +64913,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the entry fee of business %i to $%i.", businessid, price);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the entry fee of business %i to $%i.", businessid, price);
 	}
 	else if(!strcmp(option, "products", true))
 	{
@@ -64865,7 +64930,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the products amount of business %i to %i.", businessid, amount);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the products amount of business %i to %i.", businessid, amount);
 	}
 	else if(!strcmp(option, "materials", true))
 	{
@@ -64882,7 +64947,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the materials amount of business %i to %i.", businessid, amount);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the materials amount of business %i to %i.", businessid, amount);
 	}
     else if(!strcmp(option, "locked", true))
 	{
@@ -64899,7 +64964,7 @@ CMD:editbiz(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadBusiness(businessid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the lock state of business %i to %i.", businessid, locked);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the lock state of business %i to %i.", businessid, locked);
 	}
 
 	return 1;
@@ -64935,7 +65000,7 @@ CMD:removebiz(playerid, params[])
 	BusinessInfo[businessid][bOwnerID] = 0;
 	Iter_Remove(Business, businessid);
 	SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has removed business id %i.", GetRPName(playerid), businessid);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed business %i.", businessid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed business %i.", businessid);
 	return 1;
 }
 
@@ -64973,9 +65038,9 @@ CMD:gotobiz(playerid, params[])
 CMD:bizhelp(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-    SendClientMessage(playerid, COLOR_WHITE, "*** BUSINESS HELP *** type a command for more information.");
-	SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /buybiz /lock /bwithdraw /bdeposit /entryfee /sellbiz /sellmybiz /bizinfo");
-	SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /bdepositmats /bwithdrawmats /bname");
+    SendClientMessage(playerid, COLOR_WHITE, "** BUSINESS HELP ** type a command for more information.");
+	SendClientMessage(playerid, COLOR_GREY, "** BUSINESS ** /buybiz /lock /bwithdraw /bdeposit /entryfee /sellbiz /sellmybiz /bizinfo");
+	SendClientMessage(playerid, COLOR_GREY, "** BUSINESS ** /bdepositmats /bwithdrawmats /bname");
 	return 1;
 }
 
@@ -65039,7 +65104,7 @@ CMD:bwithdraw(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %s from the business vault. There is now %s remaining.", FormatNumber(amount), FormatNumber(BusinessInfo[businessid][bCash]));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %s from the business vault. There is now %s remaining.", FormatNumber(amount), FormatNumber(BusinessInfo[businessid][bCash]));
 	return 1;
 }
 
@@ -65070,7 +65135,7 @@ CMD:bdeposit(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET cash = %i WHERE id = %i", BusinessInfo[businessid][bCash], BusinessInfo[businessid][bID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %s in the business vault. There is now %s available.", FormatNumber(amount), FormatNumber(BusinessInfo[businessid][bCash]));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %s in the business vault. There is now %s available.", FormatNumber(amount), FormatNumber(BusinessInfo[businessid][bCash]));
 	return 1;
 }
 
@@ -65108,7 +65173,7 @@ CMD:bwithdrawmats(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %i materials from the business vault. There is now %i remaining.", amount, BusinessInfo[businessid][bMaterials]);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %i materials from the business vault. There is now %i remaining.", amount, BusinessInfo[businessid][bMaterials]);
 	return 1;
 }
 
@@ -65142,7 +65207,7 @@ CMD:bdepositmats(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited %i materials in the business vault. There is now %i available.", amount, BusinessInfo[businessid][bMaterials]);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited %i materials in the business vault. There is now %i available.", amount, BusinessInfo[businessid][bMaterials]);
 	return 1;
 }
 
@@ -65175,8 +65240,8 @@ CMD:sellbiz(playerid, params[])
 	PlayerData[targetid][pBizOffered] = businessid;
 	PlayerData[targetid][pBizPrice] = amount;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered you their business for %s (/accept business).", GetRPName(playerid), FormatNumber(amount));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered %s to buy your business for %s.", GetRPName(targetid), FormatNumber(amount));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered you their business for %s (/accept business).", GetRPName(playerid), FormatNumber(amount));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered %s to buy your business for %s.", GetRPName(targetid), FormatNumber(amount));
 	return 1;
 }
 
@@ -65241,7 +65306,7 @@ CMD:entryfee(playerid, params[])
 	mysql_tquery(connectionID, queryBuffer);
 
 	ReloadBusiness(businessid);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the entry fee to $%i.", amount);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the entry fee to $%i.", amount);
 	return 1;
 }
 CMD:iha(playerid, params[])
@@ -65422,7 +65487,7 @@ CMD:mark(playerid, params[])
 	MarkedPositions[playerid][slot][mInterior] = GetPlayerInterior(playerid);
 	MarkedPositions[playerid][slot][mWorld] = GetPlayerVirtualWorld(playerid);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** Position saved in slot %i.", slot + 1);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* Position saved in slot %i.", slot + 1);
 	return 1;
 }
 
@@ -65526,7 +65591,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the exterior of entrance %i.", entranceid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the exterior of entrance %i.", entranceid);
 	}
 	else if(!strcmp(option, "interior", true))
 	{
@@ -65539,7 +65604,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the interior of entrance %i.", entranceid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the interior of entrance %i.", entranceid);
 	}
 	else if(!strcmp(option, "name", true))
 	{
@@ -65556,7 +65621,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the name of entrance %i to '%s'.", entranceid, name);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the name of entrance %i to '%s'.", entranceid, name);
 	}
 	else if(!strcmp(option, "icon", true))
 	{
@@ -65577,7 +65642,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the pickup icon model of entrance %i to %i.", entranceid, iconid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the pickup icon model of entrance %i to %i.", entranceid, iconid);
 	}
 	else if(!strcmp(option, "world", true))
 	{
@@ -65594,7 +65659,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the virtual world of entrance %i to %i.", entranceid, worldid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the virtual world of entrance %i to %i.", entranceid, worldid);
 	}
 	else if(!strcmp(option, "owner", true))
 	{
@@ -65603,7 +65668,7 @@ CMD:editentrance(playerid, params[])
 	    if(!isnull(param) && !strcmp(param, "none", true))
 		{
  			SetEntranceOwner(entranceid, INVALID_PLAYER_ID);
-	    	return SendClientMessageEx(playerid, COLOR_AQUA, "** You've reset the owner of entrance %i.", entranceid);
+	    	return SendClientMessageEx(playerid, COLOR_AQUA, "* You've reset the owner of entrance %i.", entranceid);
 		}
 		if(sscanf(param, "u", targetid))
 	    {
@@ -65619,7 +65684,7 @@ CMD:editentrance(playerid, params[])
 		}
 
         SetEntranceOwner(entranceid, targetid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the owner of entrance %i to %s.", entranceid, GetRPName(targetid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the owner of entrance %i to %s.", entranceid, GetRPName(targetid));
 	}
     else if(!strcmp(option, "locked", true))
 	{
@@ -65636,7 +65701,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the lock state of entrance %i to %i.", entranceid, locked);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the lock state of entrance %i to %i.", entranceid, locked);
 	}
 	else if(!strcmp(option, "radius", true))
 	{
@@ -65657,7 +65722,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the entry radius of entrance %i to %.1f.", entranceid, radius);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the entry radius of entrance %i to %.1f.", entranceid, radius);
 	}
 	else if(!strcmp(option, "adminlevel", true))
 	{
@@ -65678,7 +65743,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the admin level of entrance %i to %i.", entranceid, level);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the admin level of entrance %i to %i.", entranceid, level);
 	}
 	else if(!strcmp(option, "faction", true))
 	{
@@ -65703,9 +65768,9 @@ CMD:editentrance(playerid, params[])
 		ReloadEntrance(entranceid);
 
 		if(type == FACTION_NONE)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've reset the faction type of entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've reset the faction type of entrance %i.", entranceid);
 		else
-	    	SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the faction type of entrance %i to %s (%i).", entranceid, factionTypes[type], type);
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the faction type of entrance %i to %s (%i).", entranceid, factionTypes[type], type);
 	}
 	else if(!strcmp(option, "gang", true))
 	{
@@ -65728,9 +65793,9 @@ CMD:editentrance(playerid, params[])
 		ReloadEntrance(entranceid);
 
 		if(gangid == -1)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've reset the gang of entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've reset the gang of entrance %i.", entranceid);
 		else
-	    	SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the gang of entrance %i to %s (%i).", entranceid, GangInfo[gangid][gName], gangid);
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the gang of entrance %i to %s (%i).", entranceid, GangInfo[gangid][gName], gangid);
 	}
 	else if(!strcmp(option, "vip", true))
 	{
@@ -65753,7 +65818,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the VIP rank of entrance %i to {D909D9}%s{33CCFF} (%i).", entranceid, GetVIPRank(rankid), rankid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the VIP rank of entrance %i to {D909D9}%s{33CCFF} (%i).", entranceid, GetVIPRank(rankid), rankid);
 	}
 	else if(!strcmp(option, "vehicles", true))
 	{
@@ -65772,9 +65837,9 @@ CMD:editentrance(playerid, params[])
 		ReloadEntrance(entranceid);
 
 		if(status)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've allowed vehicle entry for entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've allowed vehicle entry for entrance %i.", entranceid);
 		else
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've disallowed vehicle entry for entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've disallowed vehicle entry for entrance %i.", entranceid);
 	}
 	else if(!strcmp(option, "freeze", true))
 	{
@@ -65793,9 +65858,9 @@ CMD:editentrance(playerid, params[])
 		ReloadEntrance(entranceid);
 
 		if(status)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've enabled freeze & object loading for entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've enabled freeze & object loading for entrance %i.", entranceid);
 		else
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've disabled freeze & object loading for entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've disabled freeze & object loading for entrance %i.", entranceid);
 	}
 	else if(!strcmp(option, "label", true))
 	{
@@ -65814,9 +65879,9 @@ CMD:editentrance(playerid, params[])
 		ReloadEntrance(entranceid);
 
 		if(status)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've enabled the 3D text label for entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've enabled the 3D text label for entrance %i.", entranceid);
 		else
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've disabled the 3D text label for entrance %i.", entranceid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've disabled the 3D text label for entrance %i.", entranceid);
 	}
 	else if(!strcmp(option, "password", true))
 	{
@@ -65831,7 +65896,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the password of entrance %i to '%s'.", entranceid, param);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the password of entrance %i to '%s'.", entranceid, param);
 	}
 	else if(!strcmp(option, "type", true))
 	{
@@ -65868,7 +65933,7 @@ CMD:editentrance(playerid, params[])
 		}
 
 		ReloadEntrance(entranceid);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You've set the special type for entrance %i to %i.", entranceid, type);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You've set the special type for entrance %i to %i.", entranceid, type);
 	}
 	else if(!strcmp(option, "mapicon", true))
 	{
@@ -65889,7 +65954,7 @@ CMD:editentrance(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the map icon of entrance %i to %i.", entranceid, type);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the map icon of entrance %i to %i.", entranceid, type);
 	}
 	else if(!strcmp(option, "color", true))
 	{
@@ -65906,7 +65971,7 @@ CMD:editentrance(playerid, params[])
 		mysql_tquery(connectionID, queryBuffer);
 
 		ReloadEntrance(entranceid);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the {%06x}color{33CCFF} of entrance ID %i.", color >>> 8, entranceid);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have set the {%06x}color{33CCFF} of entrance ID %i.", color >>> 8, entranceid);
 	}
 
 	return 1;
@@ -65940,7 +66005,7 @@ CMD:removeentrance(playerid, params[])
 	EntranceInfo[entranceid][eOwnerID] = 0;
 	Iter_Remove(Entrance, entranceid);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed entrance %i.", entranceid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed entrance %i.", entranceid);
 	return 1;
 }
 
@@ -66104,7 +66169,7 @@ CMD:getpizza(playerid, params[])
     PlayerData[playerid][pPizzaCooldown] = 60;
     PlayerData[playerid][pCP] = CHECKPOINT_PIZZA;
 	SetPlayerCheckpoint(playerid, HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ], 2.0);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You loaded your bike with a hot and ready pizza. Deliver it to %s.", GetZoneName(HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ]));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You loaded your bike with a hot and ready pizza. Deliver it to %s.", GetZoneName(HouseInfo[houseid][hPosX], HouseInfo[houseid][hPosY], HouseInfo[houseid][hPosZ]));
 	return 1;
 }
 
@@ -66194,7 +66259,7 @@ CMD:deliver(playerid, params[])
 		amount += percent(amount, PlayerData[playerid][pLaborUpgrade]);
 	}
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have earned {00AA00}$%i{33CCFF} for delivering %i products.", amount, products);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have earned {00AA00}$%i{33CCFF} for delivering %i products.", amount, products);
 	GivePlayerCash(playerid, amount);
 
 	BusinessInfo[businessid][bProducts] += products;
@@ -66426,7 +66491,7 @@ CMD:fish(playerid, params[])
 	ApplyAnimation(playerid, "SAMP", "FishingIdle", 4.1, 0, 0, 0, 1, 0, 1);
 
 	SetPlayerAttachedObject(playerid, 9, 18632, 6, 0.112999, 0.024000, 0.000000, -172.999954, 28.499994, 0.000000);
-	ShowActionBubble(playerid, "** %s reels the line of their fishing rod into the water.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s reels the line of their fishing rod into the water.", GetRPName(playerid));
 	PlayerData[playerid][pFishTime] = 6;
 
 	if(PlayerData[playerid][pFishingBait] > 0)
@@ -66437,7 +66502,7 @@ CMD:fish(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishingbait = fishingbait - 1 WHERE uid = %i", PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		//SendClientMessage(playerid, COLOR_AQUA, "** You used one fish bait. Your odds of catching a bigger fish are increased!");
+		//SendClientMessage(playerid, COLOR_AQUA, "* You used one fish bait. Your odds of catching a bigger fish are increased!");
 	}
 	else
 	{
@@ -66472,7 +66537,7 @@ CMD:sellfish(playerid, params[])
 		amount += percent(amount, PlayerData[playerid][pLaborUpgrade]);
 	}
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You earned {00AA00}$%i{33CCFF} for selling %i kg of fish.", amount, PlayerData[playerid][pFishWeight]);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You earned {00AA00}$%i{33CCFF} for selling %i kg of fish.", amount, PlayerData[playerid][pFishWeight]);
 	GivePlayerCash(playerid, amount);
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET fishweight = 0 WHERE uid = %i", PlayerData[playerid][pID]);
@@ -66531,8 +66596,8 @@ CMD:sellvest(playerid, params[])
 	PlayerData[targetid][pVestOffer] = playerid;
 	PlayerData[targetid][pVestPrice] = amount;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered you a vest with %.1f points of armor for %s (/accept vest).", GetRPName(playerid), 50.0 + (GetJobLevel(playerid, JOB_BODYGUARD) * 5), FormatNumber(amount));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You offered %s a vest with %.1f points of armor for %s.", GetRPName(targetid), 50.0 + (GetJobLevel(playerid, JOB_BODYGUARD) * 5), FormatNumber(amount));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered you a vest with %.1f points of armor for %s (/accept vest).", GetRPName(playerid), 50.0 + (GetJobLevel(playerid, JOB_BODYGUARD) * 5), FormatNumber(amount));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You offered %s a vest with %.1f points of armor for %s.", GetRPName(targetid), 50.0 + (GetJobLevel(playerid, JOB_BODYGUARD) * 5), FormatNumber(amount));
 	return 1;
 }
 
@@ -66564,7 +66629,7 @@ CMD:sellvest(playerid, params[])
 	PlayerData[playerid][pDedication] = 1;
 
 	GivePlayerCash(playerid, -150);
-	SendClientMessage(playerid, COLOR_AQUA, "** You paid $150 for a load of materials. Smuggle them to the depot to collect them.");
+	SendClientMessage(playerid, COLOR_AQUA, "* You paid $150 for a load of materials. Smuggle them to the depot to collect them.");
 
 	if(IsPlayerInRangeOfPoint(playerid, 3.0, 1421.6913, -1318.4719, 13.5547))
 	{
@@ -66609,7 +66674,7 @@ CMD:smugglemats(playerid, params[])
 	PlayerData[playerid][pSmuggleTime] = gettime();
 
 	GivePlayerCash(playerid, -150);
-	SendClientMessage(playerid, COLOR_AQUA, "** You paid $150 for a load of materials. Smuggle them to the depot to collect them.");
+	SendClientMessage(playerid, COLOR_AQUA, "* You paid $150 for a load of materials. Smuggle them to the depot to collect them.");
 
 	if(IsPlayerInRangeOfPoint(playerid, 3.0, 1421.6913, -1318.4719, 13.5547))
 	{
@@ -66741,8 +66806,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 5;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a baseball bat for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a baseball bat for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a baseball bat for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a baseball bat for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "shovel", true))
@@ -66772,8 +66837,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 6;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a shovel for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a shovel for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a shovel for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a shovel for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "golfclub", true))
@@ -66803,8 +66868,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 2;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a golf club for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a golf club for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a golf club for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a golf club for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "poolcue", true))
@@ -66834,8 +66899,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 7;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a pool cue for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a pool cue for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a pool cue for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a pool cue for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "katana", true))
@@ -66865,8 +66930,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 8;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a katana for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a katana for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a katana for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a katana for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "dildo", true))
@@ -66896,8 +66961,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 10;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a dildo for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a dildo for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a dildo for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a dildo for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "flowers", true))
@@ -66927,8 +66992,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 14;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you flowers for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s flowers for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you flowers for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s flowers for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "cane", true))
@@ -66958,8 +67023,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 15;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a cane for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a cane for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a cane for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a cane for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "9mm", true))
@@ -66989,8 +67054,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 22;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a 9mm for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a 9mm for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a 9mm for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a 9mm for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "sdpistol", true))
@@ -67019,8 +67084,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 23;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a silenced pistol for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a silenced pistol for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a silenced pistol for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a silenced pistol for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "shotgun", true))
@@ -67049,8 +67114,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 25;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a shotgun for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a shotgun for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a shotgun for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a shotgun for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "mp5", true))
@@ -67083,8 +67148,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 29;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you an MP5 for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s an MP5 for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you an MP5 for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s an MP5 for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "deagle", true))
@@ -67117,8 +67182,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 24;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a Desert Eagle for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a Desert Eagle for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a Desert Eagle for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a Desert Eagle for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "uzi", true))
@@ -67151,8 +67216,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 28;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a Micro Uzi for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a Micro Uzi for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a Micro Uzi for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a Micro Uzi for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "tec9", true))
@@ -67185,8 +67250,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 32;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a Tec-9 for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a Tec-9 for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a Tec-9 for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a Tec-9 for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "ak47", true))
@@ -67219,8 +67284,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 30;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you an AK-47 for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s an AK-47 for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you an AK-47 for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s an AK-47 for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "m4", true))
@@ -67253,8 +67318,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 31;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you an M4 for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s an M4 for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you an M4 for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s an M4 for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "spas12", true))
@@ -67294,8 +67359,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 27;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a SPAS-12 for $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a SPAS-12 for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a SPAS-12 for $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a SPAS-12 for $%i.", GetRPName(targetid), price);
 		}
 	}
 	else if(!strcmp(weapon, "sniper", true))
@@ -67335,8 +67400,8 @@ CMD:sellgun(playerid, params[])
    			PlayerData[targetid][pSellExtra] = 34;
    			PlayerData[targetid][pSellPrice] = price;
 
-   			SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered to sell you a sniper rifle or $%i. (/accept weapon)", GetRPName(playerid), price);
-   			SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to sell %s a sniper rifle for $%i.", GetRPName(targetid), price);
+   			SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered to sell you a sniper rifle or $%i. (/accept weapon)", GetRPName(playerid), price);
+   			SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to sell %s a sniper rifle for $%i.", GetRPName(targetid), price);
 		}
 	}
 
@@ -67381,7 +67446,7 @@ CMD:buycomps(playerid, params[])
 	    PlayerData[playerid][pComponents] += amount;
 
 		GivePlayerCash(playerid, -price);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have purchased %i components for $%i.", amount, price);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have purchased %i components for $%i.", amount, price);
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -67424,7 +67489,7 @@ CMD:repair(playerid, params[])
 			PlayerData[playerid][pLastRepair] = gettime();
 			SetVehicleHealth(vehicleid, 1000.0);
 
-			ShowActionBubble(playerid, "** %s repairs the vehicle.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s repairs the vehicle.", GetRPName(playerid));
 			PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 		}
 	}
@@ -67473,7 +67538,7 @@ CMD:repair(playerid, params[])
 			    SendClientMessage(playerid, COLOR_WHITE, "You have repaired this vehicle to maximum health.");
 			}
 
-			ShowActionBubble(playerid, "** %s repairs the vehicle.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s repairs the vehicle.", GetRPName(playerid));
 
 			PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 			IncreaseJobSkill(playerid, JOB_MECHANIC);
@@ -67511,7 +67576,7 @@ CMD:repair(playerid, params[])
 			PlayerData[playerid][pLastRepair] = gettime();
 
 			SetVehicleHealth(vehicleid, 1000.0);
-			ShowActionBubble(playerid, "** %s repairs the vehicle.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s repairs the vehicle.", GetRPName(playerid));
 
 			PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
    			IncreaseJobSkill(playerid, JOB_MECHANIC);
@@ -67561,7 +67626,7 @@ CMD:refill(playerid, params[])
 	PlayerData[playerid][pComponents]--;
 	PlayerData[playerid][pLastRefuel] = gettime();
 
-	ShowActionBubble(playerid, "** %s pours some gasoline to the vehicle.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s pours some gasoline to the vehicle.", GetRPName(playerid));
 	PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
@@ -67610,7 +67675,7 @@ CMD:nos(playerid, params[])
 		AddVehicleComponent(vehicleid, 1009);
 
 		PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
-		ShowActionBubble(playerid, "** %s attaches a 2x NOS Canister on the engine feed.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s attaches a 2x NOS Canister on the engine feed.", GetRPName(playerid));
 	}
 	else {
 	    SendClientMessage(playerid, COLOR_GREY, "This vehicle has nos already");
@@ -67654,7 +67719,7 @@ CMD:hyd(playerid, params[])
 	AddVehicleComponent(vehicleid, 1087);
 
 	PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
-	ShowActionBubble(playerid, "** %s attaches a set of hydraulics to the vehicle.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s attaches a set of hydraulics to the vehicle.", GetRPName(playerid));
 	return 1;
 }
 
@@ -67687,8 +67752,8 @@ CMD:tow(playerid, params[])
                 DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
             }
             AttachTrailerToVehicle(vid, GetPlayerVehicleID(playerid));
-            ShowActionBubble(playerid, "** %s lowers their tow hook, attaching it to the vehicle.", GetRPName(playerid));
-            ShowActionBubble(playerid, "** %s raises the tow hook, locking the vehicle in place..", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s lowers their tow hook, attaching it to the vehicle.", GetRPName(playerid));
+            ShowActionBubble(playerid, "* %s raises the tow hook, locking the vehicle in place..", GetRPName(playerid));
         }
     }
     if (!Found) {
@@ -67720,7 +67785,7 @@ CMD:stoptow(playerid, params[])
 		SendClientMessage(playerid, COLOR_GREY, "You are not towing a vehicle.");
 	}
 	DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
-	ShowActionBubble(playerid, "** %s lowers their tow hook, detaching it from the vehicle.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s lowers their tow hook, detaching it from the vehicle.", GetRPName(playerid));
     return 1;
 }
 
@@ -67758,7 +67823,7 @@ CMD:refuel(playerid, params[])
 	{
 	    GivePlayerCash(playerid, -PlayerData[playerid][pRefuelAmount]);
 	    SetVehicleParams(vehicleid, VEHICLE_ENGINE, 1);
-        SendClientMessageEx(playerid, COLOR_AQUA, "** You've refilled your vehicle's gas tank for $%i.", PlayerData[playerid][pRefuelAmount]);
+        SendClientMessageEx(playerid, COLOR_AQUA, "* You've refilled your vehicle's gas tank for $%i.", PlayerData[playerid][pRefuelAmount]);
 
         PlayerData[playerid][pRefuel] = INVALID_VEHICLE_ID;
         PlayerData[playerid][pRefuelAmount] = 0;
@@ -67769,7 +67834,7 @@ CMD:refuel(playerid, params[])
 		SetVehicleParams(vehicleid, VEHICLE_ENGINE, 0);
 		PlayerData[playerid][pRefuelAmount] = 0;
 
-		ShowActionBubble(playerid, "** %s begins to refuel their vehicle's gas tank.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s begins to refuel their vehicle's gas tank.", GetRPName(playerid));
 		SendClientMessageEx(playerid, COLOR_WHITE, "This will take about %i seconds. You will be notified once completed.", 100 - vehicleFuel[vehicleid]);
 	}
 
@@ -67934,10 +67999,10 @@ CMD:rsmsold(playerid, params[])
 	}
 
 	PlayerData[PlayerData[playerid][pTextFrom]][pTextFrom] = playerid;
-	ShowActionBubble(playerid, "** %s takes out a cellphone and sends a message.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s takes out a cellphone and sends a message.", GetRPName(playerid));
 
-    SendClientMessageEx(PlayerData[playerid][pTextFrom], COLOR_YELLOW, "** SMS from %s: %s, Ph: %i **", GetRPName(playerid), params, PlayerData[playerid][pPhone]);
-    SendClientMessageEx(playerid, COLOR_YELLOW, "** SMS to %s: %s, Ph: %i **", GetRPName(PlayerData[playerid][pTextFrom]), params, PlayerData[PlayerData[playerid][pTextFrom]][pPhone]);
+    SendClientMessageEx(PlayerData[playerid][pTextFrom], COLOR_YELLOW, "* SMS from %s: %s, Ph: %i *", GetRPName(playerid), params, PlayerData[playerid][pPhone]);
+    SendClientMessageEx(playerid, COLOR_YELLOW, "* SMS to %s: %s, Ph: %i *", GetRPName(PlayerData[playerid][pTextFrom]), params, PlayerData[PlayerData[playerid][pTextFrom]][pPhone]);
 
     GivePlayerCash(playerid, -1);
     GameTextForPlayer(playerid, "~w~Text sent!~n~~r~-$1", 5000, 1);
@@ -67987,25 +68052,25 @@ CMD:smsold(playerid, params[])
 	            return SendClientMessage(playerid, COLOR_GREY, "That player has their mobile phone switched off.");
 			}
 
-			ShowActionBubble(playerid, "** %s takes out his cellphone and sends a message.", GetRPName(playerid));
+			ShowActionBubble(playerid, "* %s takes out his cellphone and sends a message.", GetRPName(playerid));
 
 			if(strlen(msg) > MAX_SPLIT_LENGTH)
 			{
-			    SendClientMessageEx(i, COLOR_YELLOW, "** SMS from %s: %.*s..., Ph: %i **", GetRPName(playerid), MAX_SPLIT_LENGTH, msg, PlayerData[playerid][pPhone]);
-			    SendClientMessageEx(i, COLOR_YELLOW, "** SMS from %s: ...%s, Ph: %i **", GetRPName(playerid), msg[MAX_SPLIT_LENGTH], PlayerData[playerid][pPhone]);
+			    SendClientMessageEx(i, COLOR_YELLOW, "* SMS from %s: %.*s..., Ph: %i *", GetRPName(playerid), MAX_SPLIT_LENGTH, msg, PlayerData[playerid][pPhone]);
+			    SendClientMessageEx(i, COLOR_YELLOW, "* SMS from %s: ...%s, Ph: %i *", GetRPName(playerid), msg[MAX_SPLIT_LENGTH], PlayerData[playerid][pPhone]);
 
-			    SendClientMessageEx(playerid, COLOR_YELLOW, "** SMS to %s: %.*s..., Ph: %i **", GetRPName(i), MAX_SPLIT_LENGTH, msg, PlayerData[i][pPhone]);
-			    SendClientMessageEx(playerid, COLOR_YELLOW, "** SMS to %s: ...%s, Ph: %i **", GetRPName(i), msg[MAX_SPLIT_LENGTH], PlayerData[i][pPhone]);
+			    SendClientMessageEx(playerid, COLOR_YELLOW, "* SMS to %s: %.*s..., Ph: %i *", GetRPName(i), MAX_SPLIT_LENGTH, msg, PlayerData[i][pPhone]);
+			    SendClientMessageEx(playerid, COLOR_YELLOW, "* SMS to %s: ...%s, Ph: %i *", GetRPName(i), msg[MAX_SPLIT_LENGTH], PlayerData[i][pPhone]);
 			}
 			else
 			{
-		        SendClientMessageEx(i, COLOR_YELLOW, "** SMS from %s: %s, Ph: %i **", GetRPName(playerid), msg, PlayerData[playerid][pPhone]);
-		        SendClientMessageEx(playerid, COLOR_YELLOW, "** SMS to %s: %s, Ph: %i **", GetRPName(i), msg, PlayerData[i][pPhone]);
+		        SendClientMessageEx(i, COLOR_YELLOW, "* SMS from %s: %s, Ph: %i *", GetRPName(playerid), msg, PlayerData[playerid][pPhone]);
+		        SendClientMessageEx(playerid, COLOR_YELLOW, "* SMS to %s: %s, Ph: %i *", GetRPName(i), msg, PlayerData[i][pPhone]);
 			}
 
 			if(PlayerData[i][pTextFrom] == INVALID_PLAYER_ID)
 			{
-			    SendClientMessage(i, COLOR_WHITE, "** You can use '/rsms [message]' to reply to this text message.");
+			    SendClientMessage(i, COLOR_WHITE, "* You can use '/rsms [message]' to reply to this text message.");
 			}
 
 			PlayerData[i][pTextFrom] = playerid;
@@ -68625,7 +68690,7 @@ LocateMethod(playerid, params[])
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1219.2590, -1812.1093, 16.5938, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of DMV.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of DMV.");
 	}
 	else if(!strcmp(params, "dealership", true))
 	{
@@ -68638,182 +68703,182 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest supermarket to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest supermarket to you.");
 
 	}
 	else if(!strcmp(params, "boatdealer", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 154.2223, -1946.3030, 5.1920, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the boat dealership.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the boat dealership.");
 	}
 	else if(!strcmp(params, "airdealer", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1892.6315, -2328.6721, 13.5469, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the aircraft dealership.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the aircraft dealership.");
 	}
 	else if(!strcmp(params, "bank", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1465.1348, -1010.5063, 26.8438, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the bank.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the bank.");
 	}
 	else if(!strcmp(params, "paintball", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1286.2870,-1349.8572,13.5689, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of paintball.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of paintball.");
 	}
 	else if(!strcmp(params, "casino", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1022.5992, -1122.8069, 23.8710, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the casino.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the casino.");
 	}
 	else if(!strcmp(params, "vip", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1015.6364, -1550.5270, 14.8594, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the VIP lounge.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the VIP lounge.");
 	}
 	else if(!strcmp(params, "smuggledrugs", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 52.0937, -292.2513, 1.7001, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the drug smuggling spot.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the drug smuggling spot.");
 	}
 	else if(!strcmp(params, "matpickup1", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1421.6913, -1318.4719, 13.5547, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the 1st materials pickup.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the 1st materials pickup.");
 	}
     else if(!strcmp(params, "matpickup2", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 2393.4885, -2008.5726, 13.3467, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the 2nd materials pickup.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the 2nd materials pickup.");
 	}
 	else if(!strcmp(params, "matfactory1", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 2173.2129, -2264.1548, 13.3467, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the 1st materials factory.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the 1st materials factory.");
 	}
     else if(!strcmp(params, "matfactory2", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 2288.0918, -1105.6555, 37.9766, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the 2nd materials factory.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the 2nd materials factory.");
 	}
 	else if(!strcmp(params, "heisenbergs", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, -65.0972, -1574.3820, 2.6107, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of Heisenberg's meth cooking trailer.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of Heisenberg's meth cooking trailer.");
 	}
 	else if(!strcmp(params, "aiportdepot", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 2112.3240, -2432.8130, 13.5469, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of LSI Materials Depot.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of LSI Materials Depot.");
 	}
 	else if(!strcmp(params, "marinadepot", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 714.5344, -1565.1694, 1.7680, 3.0);
-        SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of Marina materials depot.");
+        SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of Marina materials depot.");
 	}
 	else if(!strcmp(params, "pizzaman", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_PIZZAMAN][jobX], jobLocations[JOB_PIZZAMAN][jobY], jobLocations[JOB_PIZZAMAN][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Pizzaman job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Pizzaman job.");
 	}
 	else if(!strcmp(params, "courier", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_COURIER][jobX], jobLocations[JOB_COURIER][jobY], jobLocations[JOB_COURIER][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Courier job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Courier job.");
 	}
 	else if(!strcmp(params, "fisherman", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_FISHERMAN][jobX], jobLocations[JOB_FISHERMAN][jobY], jobLocations[JOB_FISHERMAN][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Fisherman job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Fisherman job.");
 	}
 	else if(!strcmp(params, "bodyguard", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_BODYGUARD][jobX], jobLocations[JOB_BODYGUARD][jobY], jobLocations[JOB_BODYGUARD][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Bodyguard job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Bodyguard job.");
 	}
 	else if(!strcmp(params, "weapondealer", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_WEAPONDEALER][jobX], jobLocations[JOB_WEAPONDEALER][jobY], jobLocations[JOB_WEAPONDEALER][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Weapons Dealer job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Weapons Dealer job.");
 	}
 	else if(!strcmp(params, "mechanic", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_MECHANIC][jobX], jobLocations[JOB_MECHANIC][jobY], jobLocations[JOB_MECHANIC][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Mechanic job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Mechanic job.");
 	}
 	else if(!strcmp(params, "miner", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_MINER][jobX], jobLocations[JOB_MINER][jobY], jobLocations[JOB_MINER][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Miner job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Miner job.");
 	}
     else if(!strcmp(params, "sweeper", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_SWEEPER][jobX], jobLocations[JOB_SWEEPER][jobY], jobLocations[JOB_SWEEPER][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Sweeper job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Sweeper job.");
 	}
 	else if(!strcmp(params, "taxidriver", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_TAXIDRIVER][jobX], jobLocations[JOB_TAXIDRIVER][jobY], jobLocations[JOB_TAXIDRIVER][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Taxi Driver job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Taxi Driver job.");
 	}
 	else if(!strcmp(params, "drugdealer", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_DRUGDEALER][jobX], jobLocations[JOB_DRUGDEALER][jobY], jobLocations[JOB_DRUGDEALER][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Drug Dealer job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Drug Dealer job.");
 	}
 	else if(!strcmp(params, "lawyer", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, jobLocations[JOB_LAWYER][jobX], jobLocations[JOB_LAWYER][jobY], jobLocations[JOB_LAWYER][jobZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Lawyer job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Lawyer job.");
 	}
 	else if(!strcmp(params, "detective", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1554.8918, -1675.6486, 16.1953, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Detective job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Detective job.");
 	}
 	else if(!strcmp(params, "thief", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 1577.1469, -1475.1631, 14.2195, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Thief job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Thief job.");
 	}
 	else if(!strcmp(params, "garbageman", true)) //here
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, 2441.6909, -2115.9131, 13.5469, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Garbage man job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Garbage man job.");
 	}
 	else if(!strcmp(params, "farmer", true))
 	{
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, -366.3515, -1412.8286, 25.7266, 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the Farmer job.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the Farmer job.");
 	}
 	else if(!strcmp(params, "supermarket", true))
 	{
@@ -68826,7 +68891,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest supermarket to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest supermarket to you.");
 	}
 	else if(!strcmp(params, "gunshop", true))
 	{
@@ -68839,7 +68904,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest gun shop to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest gun shop to you.");
 	}
 	else if(!strcmp(params, "clothesshop", true))
 	{
@@ -68852,7 +68917,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest clothes shop to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest clothes shop to you.");
 	}
 	else if(!strcmp(params, "gym", true))
 	{
@@ -68865,7 +68930,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest gym to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest gym to you.");
 	}
 	else if(!strcmp(params, "restaurant", true))
 	{
@@ -68878,7 +68943,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest restaurant to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest restaurant to you.");
 	}
 	else if(!strcmp(params, "adagency", true))
 	{
@@ -68891,7 +68956,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest advertisement agency to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest advertisement agency to you.");
 	}
 	else if(!strcmp(params, "club", true))
 	{
@@ -68904,7 +68969,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest club/bar to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest club/bar to you.");
 	}
 	else if(!strcmp(params, "toolshop", true))
 	{
@@ -68917,7 +68982,7 @@ LocateMethod(playerid, params[])
 
 	    PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 	    SetPlayerCheckpoint(playerid, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 3.0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Checkpoint marked at the location of the closest tool shop to you.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Checkpoint marked at the location of the closest tool shop to you.");
 	}
 
  	else
@@ -68928,7 +68993,7 @@ LocateMethod(playerid, params[])
 			{
 		    	PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 		    	SetPlayerCheckpoint(playerid, LocationInfo[x][locPosX], LocationInfo[x][locPosY], LocationInfo[x][locPosZ], 3.0);
-		    	SendClientMessageEx(playerid, COLOR_WHITE, "** Checkpoint marked at the location of %s", LocationInfo[x][locName]);
+		    	SendClientMessageEx(playerid, COLOR_WHITE, "* Checkpoint marked at the location of %s", LocationInfo[x][locName]);
 		    	break;
 			}
    			if(x == MAX_LOCATIONS - 1)
@@ -68994,11 +69059,11 @@ CMD:afk(playerid, params[])
 
 	if(PlayerData[targetid][pAFK])
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "** %s has been marked as Away from keyboard for %i minutes.", GetRPName(targetid), PlayerData[targetid][pAFKTime] / 60);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "* %s has been marked as Away from keyboard for %i minutes.", GetRPName(targetid), PlayerData[targetid][pAFKTime] / 60);
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "** %s is currently not marked as Away from keyboard.", GetRPName(targetid));
+	    SendClientMessageEx(playerid, COLOR_WHITE, "* %s is currently not marked as Away from keyboard.", GetRPName(targetid));
 	}
 
 	return 1;
@@ -69071,7 +69136,7 @@ CMD:fixplayerid(playerid, params[])
 		SSCANF_Join(targetid, GetPlayerNameEx(targetid), IsPlayerNPC(targetid));
 	}
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Player ID %i has been fixed.", targetid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "* Player ID %i has been fixed.", targetid);
 	return 1;
 }
 
@@ -69085,7 +69150,7 @@ CMD:fixplayerid(playerid, params[])
 	new
 		rcon_password[128];
 	GetServerVarAsString("rcon_password", rcon_password, sizeof(rcon_password));
-	SendClientMessageEx(playerid, COLOR_WHITE, "** RCON Password: %s", rcon_password);
+	SendClientMessageEx(playerid, COLOR_WHITE, "* RCON Password: %s", rcon_password);
 	return 1;
 }*/
 
@@ -70038,14 +70103,14 @@ CMD:gmx(playerid, params[])
 				}
 				PlayerData[i][pHurt] = 0;
 		    	TogglePlayerControllable(i, 0);
-		    	SendClientMessageEx(i, COLOR_AQUA, "** %s has initated a server restart. You have been frozen.", GetRPName(playerid));
+		    	SendClientMessageEx(i, COLOR_AQUA, "* %s has initated a server restart. You have been frozen.", GetRPName(playerid));
 			}
 
 			SavePlayerVariables(i);
 			GameTextForPlayer(i, "~w~Restarting server...", 100000, 3);
 		}
 	}
-	SendClientMessage(playerid, COLOR_WHITE, "** The server will restart once all accounts have been saved.");
+	SendClientMessage(playerid, COLOR_WHITE, "* The server will restart once all accounts have been saved.");
 	return 1;
 }
 
@@ -70158,8 +70223,8 @@ CMD:taketest(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You need $400 to pay the licensing fee if you pass the test.");
 	}
 
-	SendClientMessage(playerid, COLOR_WHITE, "** You've taken on the drivers test. Go outside and enter one of the vehicles to begin.");
-	SendClientMessage(playerid, COLOR_WHITE, "** Once you have passed the test, you will receive your license and pay a $500 licensing fee.");
+	SendClientMessage(playerid, COLOR_WHITE, "* You've taken on the drivers test. Go outside and enter one of the vehicles to begin.");
+	SendClientMessage(playerid, COLOR_WHITE, "* Once you have passed the test, you will receive your license and pay a $500 licensing fee.");
 
 	PlayerData[playerid][pTestVehicle] = INVALID_VEHICLE_ID;
 	PlayerData[playerid][pDrivingTest] = 1;
@@ -70211,7 +70276,7 @@ CMD:park(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You can't park this vehicle as it doesn't belong to you.");
 	}
 
-	ShowActionBubble(playerid, "** %s parks their %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	ShowActionBubble(playerid, "* %s parks their %s.", GetRPName(playerid), GetVehicleName(vehicleid));
  	SendClientMessageEx(playerid, COLOR_AQUA, "You have parked your {00AA00}%s{33CCFF} which will spawn in this spot from now on.", GetVehicleName(vehicleid));
 
 	// Save the vehicle's information.
@@ -70260,7 +70325,7 @@ CMD:givekeys(playerid, params[])
 
 	PlayerData[targetid][pVehicleKeys] = vehicleid;
 
-	ShowActionBubble(playerid, "** %s gives %s the keys to their %s.", GetRPName(playerid), GetRPName(targetid), GetVehicleName(vehicleid));
+	ShowActionBubble(playerid, "* %s gives %s the keys to their %s.", GetRPName(playerid), GetRPName(targetid), GetVehicleName(vehicleid));
 	SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you the keys to their {00AA00}%s{33CCFF}.", GetRPName(playerid), GetVehicleName(vehicleid));
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have given %s the keys to your {00AA00}%s{33CCFF}.", GetRPName(targetid), GetVehicleName(vehicleid));
 	return 1;
@@ -70293,7 +70358,7 @@ CMD:takekeys(playerid, params[])
 
 	PlayerData[targetid][pVehicleKeys] = INVALID_VEHICLE_ID;
 
-	ShowActionBubble(playerid, "** %s takes back the keys to their %s from %s.", GetRPName(playerid), GetRPName(targetid), GetVehicleName(vehicleid));
+	ShowActionBubble(playerid, "* %s takes back the keys to their %s from %s.", GetRPName(playerid), GetRPName(targetid), GetVehicleName(vehicleid));
 	SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken back the keys to their {00AA00}%s{33CCFF}.", GetRPName(playerid), GetVehicleName(vehicleid));
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have taken back the keys to your {00AA00}%s{33CCFF} from %s.", GetRPName(targetid), GetVehicleName(vehicleid));
 	return 1;
@@ -70477,9 +70542,9 @@ CMD:upgradevehicle(playerid, params[])
 
 	    if(sscanf(param, "i", level))
 	    {
-	        SendClientMessage(playerid, COLOR_WHITE, "** Level 1: Alarm sound effects and notification to owner. {FFD700}($15,000)");
-            SendClientMessage(playerid, COLOR_WHITE, "** Level 2: Alarm sound effects and notification to owner and online LEO. {FFD700}($30,000)");
-            SendClientMessage(playerid, COLOR_WHITE, "** Level 3: Alarm alarm effects and notification to owner and blip for online LEO. {FFD700}($60,000)");
+	        SendClientMessage(playerid, COLOR_WHITE, "* Level 1: Alarm sound effects and notification to owner. {FFD700}($15,000)");
+            SendClientMessage(playerid, COLOR_WHITE, "* Level 2: Alarm sound effects and notification to owner and online LEO. {FFD700}($30,000)");
+            SendClientMessage(playerid, COLOR_WHITE, "* Level 3: Alarm alarm effects and notification to owner and blip for online LEO. {FFD700}($60,000)");
 	        SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /upgradevehicle [alarm] [level]");
 	        return 1;
 		}
@@ -70583,16 +70648,16 @@ CMD:neon(playerid, params[])
 	    VehicleInfo[vehicleid][vNeonEnabled] = 1;
 	    GameTextForPlayer(playerid, "~g~Neon activated", 3000, 3);
 
-	    ShowActionBubble(playerid, "** %s presses a button to activate their neon tubes.", GetRPName(playerid));
-	    //SendClientMessage(playerid, COLOR_AQUA, "** Neon enabled. The tubes appear under your vehicle.");
+	    ShowActionBubble(playerid, "* %s presses a button to activate their neon tubes.", GetRPName(playerid));
+	    //SendClientMessage(playerid, COLOR_AQUA, "* Neon enabled. The tubes appear under your vehicle.");
 	}
 	else
 	{
 	    VehicleInfo[vehicleid][vNeonEnabled] = 0;
 	    GameTextForPlayer(playerid, "~r~Neon deactivated", 3000, 3);
 
-	    ShowActionBubble(playerid, "** %s presses a button to deactivate their neon tubes.", GetRPName(playerid));
-	    //SendClientMessage(playerid, COLOR_AQUA, "** Neon disabled.");
+	    ShowActionBubble(playerid, "* %s presses a button to deactivate their neon tubes.", GetRPName(playerid));
+	    //SendClientMessage(playerid, COLOR_AQUA, "* Neon disabled.");
 	}
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET neonenabled = %i WHERE id = %i", VehicleInfo[vehicleid][vNeonEnabled], VehicleInfo[vehicleid][vID]);
@@ -70684,7 +70749,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET cash = %i WHERE id = %i", VehicleInfo[vehicleid][vCash], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %s in your vehicle stash.", FormatNumber(value));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %s in your vehicle stash.", FormatNumber(value));
 			}
 			else if(!strcmp(option, "materials", true))
 			{
@@ -70710,7 +70775,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i materials in your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %i materials in your vehicle stash.", value);
    			}
 			else if(!strcmp(option, "weed", true))
 			{
@@ -70736,7 +70801,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of weed in your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %ig of weed in your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "cocaine", true))
 			{
@@ -70762,7 +70827,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of cocaine in your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %ig of cocaine in your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "meth", true))
 			{
@@ -70788,7 +70853,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %ig of meth in your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %ig of meth in your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "painkillers", true))
 			{
@@ -70814,7 +70879,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored %i painkillers in your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored %i painkillers in your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "weapon", true))
    			{
@@ -70847,7 +70912,7 @@ CMD:vstash(playerid, params[])
 						mysql_tquery(connectionID, queryBuffer);
 
 						RemovePlayerWeapon(playerid, weaponid);
-						SendClientMessageEx(playerid, COLOR_AQUA, "** You have stored a %s in slot %i of your vehicle stash.", GetWeaponNameEx(VehicleInfo[vehicleid][vWeapons][i]), i + 1);
+						SendClientMessageEx(playerid, COLOR_AQUA, "* You have stored a %s in slot %i of your vehicle stash.", GetWeaponNameEx(VehicleInfo[vehicleid][vWeapons][i]), i + 1);
 						return 1;
 					}
 				}
@@ -70886,7 +70951,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET cash = %i WHERE id = %i", VehicleInfo[vehicleid][vCash], VehicleInfo[vehicleid][vID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %s from your vehicle stash.", FormatNumber(value));
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %s from your vehicle stash.", FormatNumber(value));
 			}
 			else if(!strcmp(option, "materials", true))
 			{
@@ -70912,7 +70977,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = %i WHERE uid = %i", PlayerData[playerid][pMaterials], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i materials from your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %i materials from your vehicle stash.", value);
    			}
 			else if(!strcmp(option, "weed", true))
 			{
@@ -70938,7 +71003,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of weed from your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %ig of weed from your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "cocaine", true))
 			{
@@ -70964,7 +71029,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of cocaine from your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %ig of cocaine from your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "meth", true))
 			{
@@ -70990,7 +71055,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %ig of meth from your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %ig of meth from your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "painkillers", true))
 			{
@@ -71016,7 +71081,7 @@ CMD:vstash(playerid, params[])
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
 
-			    SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken %i painkillers from your vehicle stash.", value);
+			    SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken %i painkillers from your vehicle stash.", value);
    			}
    			else if(!strcmp(option, "weapon", true))
    			{
@@ -71040,7 +71105,7 @@ CMD:vstash(playerid, params[])
 				}
 
 				GivePlayerWeaponEx(playerid, VehicleInfo[vehicleid][vWeapons][value-1]);
-				SendClientMessageEx(playerid, COLOR_AQUA, "** You have taken a %s from slot %i of your vehicle stash.", GetWeaponNameEx(VehicleInfo[vehicleid][vWeapons][value-1]), value);
+				SendClientMessageEx(playerid, COLOR_AQUA, "* You have taken a %s from slot %i of your vehicle stash.", GetWeaponNameEx(VehicleInfo[vehicleid][vWeapons][value-1]), value);
 
 				VehicleInfo[vehicleid][vWeapons][value-1] = 0;
 
@@ -71083,7 +71148,7 @@ CMD:unmod(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ChangeVehicleColor(vehicleid, 0, 0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Vehicle color has been set back to default.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Vehicle color has been set back to default.");
 	}
 	else if(!strcmp(params, "paintjob", true))
 	{
@@ -71093,7 +71158,7 @@ CMD:unmod(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ChangeVehiclePaintjob(vehicleid, 3);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Vehicle paintjob has been set back to default.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Vehicle paintjob has been set back to default.");
 	}
 	else if(!strcmp(params, "mods", true))
 	{
@@ -71108,7 +71173,7 @@ CMD:unmod(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET mod_1 = 0, mod_2 = 0, mod_3 = 0, mod_4 = 0, mod_5 = 0, mod_6 = 0, mod_7 = 0, mod_8 = 0, mod_9 = 0, mod_10 = 0, mod_11 = 0, mod_12 = 0, mod_13 = 0, mod_14 = 0 WHERE id = %i", VehicleInfo[vehicleid][vID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    SendClientMessage(playerid, COLOR_WHITE, "** All vehicle modifications have been removed.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* All vehicle modifications have been removed.");
 	}
 	else if(!strcmp(params, "neon", true))
 	{
@@ -71131,7 +71196,7 @@ CMD:unmod(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET neon = 0, neonenabled = 0 WHERE id = %i", VehicleInfo[vehicleid][vID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    SendClientMessage(playerid, COLOR_WHITE, "** Neon has been removed from vehicle.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Neon has been removed from vehicle.");
 	}
 
 	return 1;
@@ -71163,7 +71228,7 @@ CMD:gunmod(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ChangeVehicleColor(vehicleid, 0, 0);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Vehicle color has been set back to default.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Vehicle color has been set back to default.");
 	}
 	else if(!strcmp(params, "paintjob", true))
 	{
@@ -71173,7 +71238,7 @@ CMD:gunmod(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 	    ChangeVehiclePaintjob(vehicleid, 3);
-	    SendClientMessage(playerid, COLOR_WHITE, "** Vehicle paintjob has been set back to default.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* Vehicle paintjob has been set back to default.");
 	}
 	else if(!strcmp(params, "mods", true))
 	{
@@ -71188,7 +71253,7 @@ CMD:gunmod(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET mod_1 = 0, mod_2 = 0, mod_3 = 0, mod_4 = 0, mod_5 = 0, mod_6 = 0, mod_7 = 0, mod_8 = 0, mod_9 = 0, mod_10 = 0, mod_11 = 0, mod_12 = 0, mod_13 = 0, mod_14 = 0 WHERE id = %i", VehicleInfo[vehicleid][vID]);
 	    mysql_tquery(connectionID, queryBuffer);
 
-	    SendClientMessage(playerid, COLOR_WHITE, "** All vehicle modifications have been removed.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* All vehicle modifications have been removed.");
 	}
 
 	return 1;
@@ -71241,8 +71306,8 @@ CMD:colorcar(playerid, params[])
 		PlayerData[playerid][pSpraycans]--;
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
-		ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
+		ShowActionBubble(playerid, "* %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "* Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
 		ChangeVehicleColor(vehicleid, color1, color2);
 		PlayerPlaySound(playerid, 1134, 0.0, 0.0, 0.0);
 		return 1;
@@ -71266,8 +71331,8 @@ CMD:colorcar(playerid, params[])
 			PlayerData[playerid][pSpraycans]--;
 			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
-			ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
+			ShowActionBubble(playerid, "* %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "* Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
 			ChangeVehicleColor(vehicleid, color1, color2);
 			PlayerPlaySound(playerid, 1134, 0.0, 0.0, 0.0);
 			return 1;
@@ -71287,8 +71352,8 @@ CMD:colorcar(playerid, params[])
 		PlayerData[playerid][pComponents]--;
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
-		ShowActionBubble(playerid, "** %s sprays the vehicle to a different color.", GetRPName(playerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i components left.", PlayerData[playerid][pComponents]);
+		ShowActionBubble(playerid, "* %s sprays the vehicle to a different color.", GetRPName(playerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "* Vehicle resprayed. You have %i components left.", PlayerData[playerid][pComponents]);
 		ChangeVehicleColor(vehicleid, color1, color2);
 		PlayerPlaySound(playerid, 1134, 0.0, 0.0, 0.0);
 	    return 1;
@@ -71339,8 +71404,8 @@ CMD:paintcar(playerid, params[])
 		PlayerData[playerid][pSpraycans]--;
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
-		ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
+		ShowActionBubble(playerid, "* %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "* Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
 		ChangeVehiclePaintjob(vehicleid, paintjobid);
 		PlayerPlaySound(playerid, 1134, 0.0, 0.0, 0.0);
 		return 1;
@@ -71363,8 +71428,8 @@ CMD:paintcar(playerid, params[])
 			PlayerData[playerid][pSpraycans]--;
 			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = %i WHERE uid = %i", PlayerData[playerid][pSpraycans], PlayerData[playerid][pID]);
 			mysql_tquery(connectionID, queryBuffer);
-			ShowActionBubble(playerid, "** %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
+			ShowActionBubble(playerid, "* %s uses their spraycan to spray their vehicle a different color.", GetRPName(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "* Vehicle resprayed. You have %i spraycans left.", PlayerData[playerid][pSpraycans]);
 			ChangeVehiclePaintjob(vehicleid, paintjobid);
 			PlayerPlaySound(playerid, 1134, 0.0, 0.0, 0.0);
 			return 1;
@@ -71385,8 +71450,8 @@ CMD:paintcar(playerid, params[])
 		PlayerData[playerid][pComponents]--;
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET components = %i WHERE uid = %i", PlayerData[playerid][pComponents], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
-		ShowActionBubble(playerid, "** %s sprays the vehicle to a different color.", GetRPName(playerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, "** Vehicle resprayed. You have %i components left.", PlayerData[playerid][pComponents]);
+		ShowActionBubble(playerid, "* %s sprays the vehicle to a different color.", GetRPName(playerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "* Vehicle resprayed. You have %i components left.", PlayerData[playerid][pComponents]);
 		ChangeVehiclePaintjob(vehicleid, paintjobid);
 		PlayerPlaySound(playerid, 1134, 0.0, 0.0, 0.0);
 	    return 1;
@@ -71430,8 +71495,8 @@ CMD:sellcar(playerid, params[])
 	PlayerData[targetid][pCarOffered] = vehicleid;
 	PlayerData[targetid][pCarPrice] = amount;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered you their %s for %s (/accept vehicle).", GetRPName(playerid), GetVehicleName(vehicleid), FormatNumber(amount));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered %s to buy your %s for %s.", GetRPName(targetid), GetVehicleName(vehicleid), FormatNumber(amount));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered you their %s for %s (/accept vehicle).", GetRPName(playerid), GetVehicleName(vehicleid), FormatNumber(amount));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered %s to buy your %s for %s.", GetRPName(targetid), GetVehicleName(vehicleid), FormatNumber(amount));
 	return 1;
 }
 
@@ -71546,8 +71611,8 @@ CMD:startsweeping(playerid, params[])
 	PlayerData[playerid][pSweepTime] = 30;
 	PlayerData[playerid][pSweepEarnings] = 0;
 
-	SendClientMessage(playerid, COLOR_WHITE, "** You are now sweeping. Drive around with your sweeper to earn money towards your paycheck.");
-	SendClientMessage(playerid, COLOR_WHITE, "** When you are finished your sweeping shift, use /stopsweeping in order to end your shift.");
+	SendClientMessage(playerid, COLOR_WHITE, "* You are now sweeping. Drive around with your sweeper to earn money towards your paycheck.");
+	SendClientMessage(playerid, COLOR_WHITE, "* When you are finished your sweeping shift, use /stopsweeping in order to end your shift.");
 	return 1;
 }
 
@@ -71562,7 +71627,7 @@ CMD:stopsweeping(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not sweeping right now.");
 	}
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You are no longer sweeping. You earned a total of {00AA00}$%i{33CCFF} towards your paycheck during your shift.", PlayerData[playerid][pSweepEarnings]);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You are no longer sweeping. You earned a total of {00AA00}$%i{33CCFF} towards your paycheck during your shift.", PlayerData[playerid][pSweepEarnings]);
     PlayerData[playerid][pSweeping] = 0;
 	PlayerData[playerid][pSweepTime] = 0;
 	PlayerData[playerid][pSweepEarnings] = 0;
@@ -71612,7 +71677,7 @@ CMD:vip(playerid, params[])
 	{
 	    if(PlayerData[i][pVIPPackage] > 0 && !PlayerData[i][pToggleVIP] && PlayerData[i][pAdmin] > JUNIOR_ADMIN)
 	    {
-			SendClientMessageEx(i, COLOR_VIP, "** %s VIP %s: %s **", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetRPName(playerid), params);
+			SendClientMessageEx(i, COLOR_VIP, "* %s VIP %s: %s *", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetRPName(playerid), params);
 		}
 	}
 
@@ -71629,12 +71694,12 @@ CMD:vipcolor(playerid, params[])
 	if(!PlayerData[playerid][pVIPColor])
 	{
         PlayerData[playerid][pVIPColor] = 1;
-	    SendClientMessage(playerid, COLOR_AQUA, "** You have enabled the VIP nametag color.");
+	    SendClientMessage(playerid, COLOR_AQUA, "* You have enabled the VIP nametag color.");
 	}
 	else
 	{
 	    PlayerData[playerid][pVIPColor] = 0;
-	    SendClientMessage(playerid, COLOR_AQUA, "** You have disabled the VIP nametag color.");
+	    SendClientMessage(playerid, COLOR_AQUA, "* You have disabled the VIP nametag color.");
 	}
 
 	return 1;
@@ -71693,8 +71758,8 @@ CMD:vipinvite(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vipcooldown = %i WHERE uid = %i", PlayerData[playerid][pVIPCooldown], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has given you a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(playerid), GetVIPRank(PlayerData[targetid][pVIPPackage]));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have given %s a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(targetid), GetVIPRank(PlayerData[targetid][pVIPPackage]));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has given you a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(playerid), GetVIPRank(PlayerData[targetid][pVIPPackage]));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have given %s a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(targetid), GetVIPRank(PlayerData[targetid][pVIPPackage]));
 
 	Log_Write("log_vip", "%s VIP %s (uid: %i) has given %s (uid: %i) a temporary three hour package.", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	return 1;
@@ -71788,7 +71853,7 @@ CMD:setfare(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pTaxiFare] = 0;
-	    SendClientMessage(playerid, COLOR_YELLOW, "** You have set the fare to $0 and went off duty.");
+	    SendClientMessage(playerid, COLOR_YELLOW, "* You have set the fare to $0 and went off duty.");
 	}
 	else
 	{
@@ -71798,7 +71863,7 @@ CMD:setfare(playerid, params[])
 	    }
         PlayerData[playerid][pLastFare] = gettime();
 	    PlayerData[playerid][pTaxiFare] = amount;
-	    SendClientMessageToAllEx(COLOR_YELLOW, "** Taxi driver %s is now on duty, fare: $%i. /call taxi for a ride.", GetRPName(playerid), amount);
+	    SendClientMessageToAllEx(COLOR_YELLOW, "* Taxi driver %s is now on duty, fare: $%i. /call taxi for a ride.", GetRPName(playerid), amount);
 	}
 
 	return 1;
@@ -71847,7 +71912,7 @@ CMD:createfaction(playerid, params[])
 	        SetupFaction(i, name, type_id);
 
 	        SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has created a {F7A763}%s{FF6347} faction named '%s'.", GetRPName(playerid), factionTypes[type_id], name);
-	        SendClientMessageEx(playerid, COLOR_WHITE, "** This faction's ID is %i. /editfaction to edit.", i);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "* This faction's ID is %i. /editfaction to edit.", i);
 	        return 1;
 		}
 	}
@@ -72044,7 +72109,7 @@ CMD:editfaction(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO factionskins VALUES(%i, %i, %i) ON DUPLICATE KEY UPDATE skinid = %i", factionid, slot, skinid, skinid);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "** You have set the skin in slot %i to ID %i.", slot + 1, skinid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "* You have set the skin in slot %i to ID %i.", slot + 1, skinid);
 	}
 	else if(!strcmp(option, "paycheck", true))
 	{
@@ -72306,11 +72371,11 @@ CMD:setfreq(playerid, params[])
 
 	if(channel == 0)
 	{
-	    SendClientMessage(playerid, COLOR_WHITE, "** You have set the channel to 0 and disabled your walkie talkie.");
+	    SendClientMessage(playerid, COLOR_WHITE, "* You have set the channel to 0 and disabled your walkie talkie.");
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "** Channel set to %i, use /wt to broadcast over this channel.", channel);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "* Channel set to %i, use /wt to broadcast over this channel.", channel);
 	}
 
 	return 1;
@@ -72353,12 +72418,12 @@ CMD:wt(playerid, params[])
 		{
 		    if(strlen(params) > MAX_SPLIT_LENGTH)
 		    {
-				SendClientMessageEx(i, COLOR_WALKIETALKIE, "** [CH: %i] %s: %.*s... **", PlayerData[playerid][pChannel], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-				SendClientMessageEx(i, COLOR_WALKIETALKIE, "** [CH: %i] %s: ...%s **", PlayerData[playerid][pChannel], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+				SendClientMessageEx(i, COLOR_WALKIETALKIE, "* [CH: %i] %s: %.*s... *", PlayerData[playerid][pChannel], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+				SendClientMessageEx(i, COLOR_WALKIETALKIE, "* [CH: %i] %s: ...%s *", PlayerData[playerid][pChannel], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-			    SendClientMessageEx(i, COLOR_WALKIETALKIE, "** [CH: %i] %s: %s **", PlayerData[playerid][pChannel], GetRPName(playerid), params);
+			    SendClientMessageEx(i, COLOR_WALKIETALKIE, "* [CH: %i] %s: %s *", PlayerData[playerid][pChannel], GetRPName(playerid), params);
 			}
 		}
 	}
@@ -72374,7 +72439,7 @@ CMD:wt(playerid, params[])
 			}
 		}
 	}
-    ShowActionBubble(playerid, "** %s speaks into their walkie talkie.", GetRPName(playerid));
+    ShowActionBubble(playerid, "* %s speaks into their walkie talkie.", GetRPName(playerid));
 	return 1;
 }
 
@@ -72520,12 +72585,12 @@ CMD:crew(playerid, params[])
 	    {
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "** [%s] %s %s: %.*s... **", GangCrews[PlayerData[playerid][pGang]][PlayerData[playerid][pCrew]], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "** [%s] %s %s: ...%s **", GangCrews[PlayerData[playerid][pGang]][PlayerData[playerid][pCrew]], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "* [%s] %s %s: %.*s... *", GangCrews[PlayerData[playerid][pGang]][PlayerData[playerid][pCrew]], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "* [%s] %s %s: ...%s *", GangCrews[PlayerData[playerid][pGang]][PlayerData[playerid][pCrew]], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-			    SendClientMessageEx(i, COLOR_LIGHTORANGE, "** [%s] %s %s: %s **", GangCrews[PlayerData[playerid][pGang]][PlayerData[playerid][pCrew]], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params);
+			    SendClientMessageEx(i, COLOR_LIGHTORANGE, "* [%s] %s %s: %s *", GangCrews[PlayerData[playerid][pGang]][PlayerData[playerid][pCrew]], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params);
 			}
 		}
 	}
@@ -72554,12 +72619,12 @@ CMD:div(playerid, params[])
 	    {
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "** [%s] %s %s: %.*s... **", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "** [%s] %s %s: ...%s **", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "* [%s] %s %s: %.*s... *", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+		        SendClientMessageEx(i, COLOR_LIGHTORANGE, "* [%s] %s %s: ...%s *", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-			    SendClientMessageEx(i, COLOR_LIGHTORANGE, "** [%s] %s %s: %s **", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+			    SendClientMessageEx(i, COLOR_LIGHTORANGE, "* [%s] %s %s: %s *", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 			}
 		}
 	}
@@ -72604,30 +72669,30 @@ CMD:radio(playerid, params[])
 			{
 			    if(PlayerData[playerid][pDivision] == -1)
 			    {
-				    SendClientMessageEx(i, color, "** %s %s: %.*s... **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-				    SendClientMessageEx(i, color, "** %s %s: ...%s **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+				    SendClientMessageEx(i, color, "* %s %s: %.*s... *", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+				    SendClientMessageEx(i, color, "* %s %s: ...%s *", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 				}
 				else
 				{
-				    SendClientMessageEx(i, color, "** [%s] %s %s: %.*s... **", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-				    SendClientMessageEx(i, color, "** [%s] %s %s: ...%s **", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+				    SendClientMessageEx(i, color, "* [%s] %s %s: %.*s... *", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+				    SendClientMessageEx(i, color, "* [%s] %s %s: ...%s *", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 				}
 			}
 			else
 			{
 			    if(PlayerData[playerid][pDivision] == -1)
 			    {
-				    SendClientMessageEx(i, color, "** %s %s: %s **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+				    SendClientMessageEx(i, color, "* %s %s: %s *", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 				}
 				else
 				{
-				    SendClientMessageEx(i, color, "** [%s] %s %s: %s **", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+				    SendClientMessageEx(i, color, "* [%s] %s %s: %s *", FactionDivisions[PlayerData[playerid][pFaction]][PlayerData[playerid][pDivision]], FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 				}
 			}
 
 			if((PlayerData[i][pPoliceScanner] && PlayerData[i][pScannerOn]) && random(100) <= 3)
             {
-                SendProximityMessage(i, 20.0, COLOR_PURPLE, "** %s's police scanner would shoot a spark and short out.", GetRPName(i));
+                SendProximityMessage(i, 20.0, COLOR_PURPLE, "* %s's police scanner would shoot a spark and short out.", GetRPName(i));
                 SendClientMessage(i, COLOR_GREY2, "Your police scanner shorted out and is now broken.");
 
                 mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET policescanner = 0, scanneron = 0 WHERE uid = %i", PlayerData[i][pID]);
@@ -72706,17 +72771,17 @@ CMD:d(playerid, params[])
 			    {
        				if(strlen(params) > MAX_SPLIT_LENGTH)
 			        {
-			            SendClientMessageEx(i, COLOR_YELLOW, "** %s: %.*s... **", header, MAX_SPLIT_LENGTH, params);
-				        SendClientMessageEx(i, COLOR_YELLOW, "** %s: ...%s **", header, params[MAX_SPLIT_LENGTH]);
+			            SendClientMessageEx(i, COLOR_YELLOW, "* %s: %.*s... *", header, MAX_SPLIT_LENGTH, params);
+				        SendClientMessageEx(i, COLOR_YELLOW, "* %s: ...%s *", header, params[MAX_SPLIT_LENGTH]);
 					}
 					else
 					{
-					    SendClientMessageEx(i, COLOR_YELLOW, "** %s: %s **", header, params);
+					    SendClientMessageEx(i, COLOR_YELLOW, "* %s: %s *", header, params);
 					}
 
 					if((PlayerData[i][pPoliceScanner] && PlayerData[i][pScannerOn]) && random(100) <= 3)
 		            {
-		                SendProximityMessage(i, 20.0, COLOR_PURPLE, "** %s's police scanner would shoot a spark and short out.", GetRPName(i));
+		                SendProximityMessage(i, 20.0, COLOR_PURPLE, "* %s's police scanner would shoot a spark and short out.", GetRPName(i));
 		                SendClientMessage(i, COLOR_GREY2, "Your police scanner shorted out and is now broken.");
 
 		                mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET policescanner = 0, scanneron = 0 WHERE uid = %i", PlayerData[i][pID]);
@@ -72757,7 +72822,7 @@ CMD:faction(playerid, params[])
 	{
         if(!PlayerData[playerid][pFactionLeader])
 		{
-		    return SendClientMessageEx(playerid, COLOR_YELLOW, "** Faction MOTD: %s", FactionInfo[PlayerData[playerid][pFaction]][fMOTD]);
+		    return SendClientMessageEx(playerid, COLOR_YELLOW, "* Faction MOTD: %s", FactionInfo[PlayerData[playerid][pFaction]][fMOTD]);
 		}
 		if(isnull(param))
 		{
@@ -72809,8 +72874,8 @@ CMD:faction(playerid, params[])
 		PlayerData[targetid][pFactionOffer] = playerid;
 		PlayerData[targetid][pFactionOffered] = PlayerData[playerid][pFaction];
 
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s has invited you to join {00AA00}%s{33CCFF} (/accept faction).", GetRPName(playerid), FactionInfo[PlayerData[playerid][pFaction]][fName]);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have invited %s to join your faction.", GetRPName(targetid));
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s has invited you to join {00AA00}%s{33CCFF} (/accept faction).", GetRPName(playerid), FactionInfo[PlayerData[playerid][pFaction]][fName]);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have invited %s to join your faction.", GetRPName(targetid));
 	}
 	else if(!strcmp(option, "kick", true))
 	{
@@ -73345,9 +73410,9 @@ CMD:cells(playerid, params[])
 	}
 
 	if(status)
-		SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "** HQ: %s %s has opened all cells in the prison.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
+		SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "* HQ: %s %s has opened all cells in the prison.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
 	else
-	    SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "** HQ: %s %s has closed all cells in the prison.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
+	    SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "* HQ: %s %s has closed all cells in the prison.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
 
 	return 1;
 }
@@ -73365,13 +73430,13 @@ CMD:cell(playerid, params[])
 
 			if(!Streamer_GetExtraInt(gPrisonCells[i], E_OBJECT_OPENED))
 			{
-			    ShowActionBubble(playerid, "** %s uses their key to open the cell door.", GetRPName(playerid));
+			    ShowActionBubble(playerid, "* %s uses their key to open the cell door.", GetRPName(playerid));
 			    MoveDynamicObject(gPrisonCells[i], cellPositions[i][3], cellPositions[i][4], cellPositions[i][5], 2.0);
 			    Streamer_SetExtraInt(gPrisonCells[i], E_OBJECT_OPENED, 1);
 			}
 			else
 			{
-			    ShowActionBubble(playerid, "** %s uses their key to close the cell door.", GetRPName(playerid));
+			    ShowActionBubble(playerid, "* %s uses their key to close the cell door.", GetRPName(playerid));
 			    MoveDynamicObject(gPrisonCells[i], cellPositions[i][0], cellPositions[i][1], cellPositions[i][2], 2.0);
 			    Streamer_SetExtraInt(gPrisonCells[i], E_OBJECT_OPENED, 0);
 			}
@@ -73476,8 +73541,8 @@ CMD:showbadge(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "You can't use this faction for your fake badge.");
 	    }
 
-	    SendClientMessageEx(targetid, COLOR_WHITE, "** %s is rank %s (%i) in %s. **", GetRPName(playerid), FactionRanks[factionid][rankid], rankid, FactionInfo[factionid][fName]);
-	    ShowActionBubble(playerid, "** %s shows their badge to %s.", GetRPName(playerid), GetRPName(targetid));
+	    SendClientMessageEx(targetid, COLOR_WHITE, "* %s is rank %s (%i) in %s. *", GetRPName(playerid), FactionRanks[factionid][rankid], rankid, FactionInfo[factionid][fName]);
+	    ShowActionBubble(playerid, "* %s shows their badge to %s.", GetRPName(playerid), GetRPName(targetid));
 	}
 	else
 	{
@@ -73490,8 +73555,8 @@ CMD:showbadge(playerid, params[])
 		    return SendClientMessage(playerid, COLOR_GREY, "The player specified is disconnected or out of range.");
 		}
 
-	    SendClientMessageEx(targetid, COLOR_WHITE, "** %s is rank %s (%i) in %s. **", GetRPName(playerid), FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], PlayerData[playerid][pFactionRank], FactionInfo[PlayerData[playerid][pFaction]][fName]);
-	    ShowActionBubble(playerid, "** %s shows their badge to %s.", GetRPName(playerid), GetRPName(targetid));
+	    SendClientMessageEx(targetid, COLOR_WHITE, "* %s is rank %s (%i) in %s. *", GetRPName(playerid), FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], PlayerData[playerid][pFactionRank], FactionInfo[PlayerData[playerid][pFaction]][fName]);
+	    ShowActionBubble(playerid, "* %s shows their badge to %s.", GetRPName(playerid), GetRPName(targetid));
 	}
 
 	return 1;
@@ -73556,7 +73621,7 @@ CMD:tazer(playerid, params[])
 	if(!PlayerData[playerid][pTazer])
 	{
 	    PlayerData[playerid][pTazer] = 1;
-		ShowActionBubble(playerid, "** %s reaches for their tazer.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s reaches for their tazer.", GetRPName(playerid));
         pTazerReplace{playerid} = PlayerData[playerid][pWeapons][2];
 		GivePlayerWeaponEx(playerid, 23);
   		SetPlayerArmedWeapon(playerid, 23);
@@ -73567,7 +73632,7 @@ CMD:tazer(playerid, params[])
 	    RemovePlayerWeapon(playerid, 23);
 		SetPlayerWeapons(playerid);
         GivePlayerWeaponEx(playerid, pTazerReplace{playerid});
-		ShowActionBubble(playerid, "** %s puts their tazer back in their duty belt.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s puts their tazer back in their duty belt.", GetRPName(playerid));
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
@@ -73630,7 +73695,7 @@ CMD:swat(playerid, params[])
 	if(PlayerData[playerid][pSWATduty] == true)
 	{
 	    PlayerData[playerid][pSWATduty] = false;
-		SendFactionMessage(factionid, COLOR_FACTIONCHAT, "** HQ: %s %s is now off tactical duty! **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
+		SendFactionMessage(factionid, COLOR_FACTIONCHAT, "* HQ: %s %s is now off tactical duty! *", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
 		PlayerData[playerid][pSWATduty] = true;
 		SetPlayerSkin(playerid, PlayerData[playerid][pSkin]);
         GivePlayerHealth(playerid, 100);
@@ -73641,7 +73706,7 @@ CMD:swat(playerid, params[])
 		SetPlayerSkin(playerid, 285);
 		SetScriptArmour(playerid, 200);
 		GivePlayerHealth(playerid, 100);
-		SendFactionMessage(factionid, COLOR_FACTIONCHAT, "** HQ: %s %s is now ready for tactical duty! **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
+		SendFactionMessage(factionid, COLOR_FACTIONCHAT, "* HQ: %s %s is now ready for tactical duty! *", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
 		PlayerData[playerid][pSWATduty] = true;
 	}
 	return true;
@@ -73712,7 +73777,7 @@ CMD:cuff(playerid, params[])
 
 	TogglePlayerControllable(targetid, 0);
 
-	ShowActionBubble(playerid, "** %s tightens a pair of handcuffs around %s's wrists.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s tightens a pair of handcuffs around %s's wrists.", GetRPName(playerid), GetRPName(targetid));
 	GameTextForPlayer(targetid, "~r~Cuffed", 3000, 3);
 	return 1;
 }
@@ -73752,7 +73817,7 @@ CMD:uncuff(playerid, params[])
 	SetPlayerSpecialAction(targetid, SPECIAL_ACTION_NONE);
 	TogglePlayerControllable(targetid, 1);
 	RemovePlayerAttachedObject(targetid, 9);
-	ShowActionBubble(playerid, "** %s loosens the pair of handcuffs from around %s's wrists.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s loosens the pair of handcuffs from around %s's wrists.", GetRPName(playerid), GetRPName(targetid));
 	GameTextForPlayer(targetid, "~g~Uncuffed", 3000, 3);
 	return 1;
 }
@@ -73790,13 +73855,13 @@ CMD:drag(playerid, params[])
 	{
 		PlayerData[targetid][pDraggedBy] = playerid;
 		//TogglePlayerControllable(targetid, 0);
-		ShowActionBubble(playerid, "** %s grabs onto %s and begins to drag them.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s grabs onto %s and begins to drag them.", GetRPName(playerid), GetRPName(targetid));
 	}
 	else
 	{
 	    PlayerData[targetid][pDraggedBy] = INVALID_PLAYER_ID;
 	    //TogglePlayerControllable(targetid, 1);
-		ShowActionBubble(playerid, "** %s stops dragging %s.", GetRPName(playerid), GetRPName(targetid));
+		ShowActionBubble(playerid, "* %s stops dragging %s.", GetRPName(playerid), GetRPName(targetid));
 	}
 
 	return 1;
@@ -73846,7 +73911,7 @@ CMD:detain(playerid, params[])
 	        PutPlayerInVehicle(targetid, vehicleid, i);
 
 			SetPlayerSpecialAction(targetid, SPECIAL_ACTION_NONE);
-			ShowActionBubble(playerid, "** %s throws %s into their vehicle.", GetRPName(playerid), GetRPName(targetid));
+			ShowActionBubble(playerid, "* %s throws %s into their vehicle.", GetRPName(playerid), GetRPName(targetid));
 			return 1;
 		}
 	}
@@ -73906,11 +73971,11 @@ CMD:charge(playerid, params[])
 	{
 	    if(IsLawEnforcement(i))
 	    {
-			SendClientMessageEx(i, COLOR_OLDSCHOOL, "** HQ: %s %s has charged %s with {FF6347}%s{9999FF}. **", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetRPName(targetid), reason);
+			SendClientMessageEx(i, COLOR_OLDSCHOOL, "* HQ: %s %s has charged %s with {FF6347}%s{9999FF}. *", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetRPName(targetid), reason);
 		}
 	}
 
-	SendClientMessageEx(targetid, COLOR_LIGHTRED, "** Officer %s has charged you with %s.", GetRPName(playerid), reason);
+	SendClientMessageEx(targetid, COLOR_LIGHTRED, "* Officer %s has charged you with %s.", GetRPName(playerid), reason);
 	Log_Write("log_faction", "%s (uid: %i) has charged %s (uid: %i) with %s", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], reason);
 	return 1;
 }
@@ -74044,8 +74109,8 @@ CMD:find(playerid, params[])
 
     SetPlayerMarkerForPlayer(playerid, targetid, 0xFF0000FF);
 
-    ShowActionBubble(playerid, "** %s takes out a cellphone and begins to track someone.", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, "** %s's location marked on your radar. %i seconds remain until the marker disappears.", GetRPName(targetid), PlayerData[playerid][pFindTime]);
+    ShowActionBubble(playerid, "* %s takes out a cellphone and begins to track someone.", GetRPName(playerid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "* %s's location marked on your radar. %i seconds remain until the marker disappears.", GetRPName(targetid), PlayerData[playerid][pFindTime]);
 
 	IncreaseJobSkill(playerid, JOB_DETECTIVE);
 	PlayerData[playerid][pFindPlayer] = targetid;
@@ -74077,8 +74142,8 @@ CMD:frisk(playerid, params[])
 	{
 	    PlayerData[targetid][pFriskOffer] = playerid;
 
-	    SendClientMessageEx(targetid, COLOR_AQUA, "** %s is attempting to frisk you for illegal items. (/accept frisk)", GetRPName(playerid));
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You have sent a frisk offer to %s.", GetRPName(targetid));
+	    SendClientMessageEx(targetid, COLOR_AQUA, "* %s is attempting to frisk you for illegal items. (/accept frisk)", GetRPName(playerid));
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You have sent a frisk offer to %s.", GetRPName(targetid));
 	}
 
 	return 1;
@@ -74106,7 +74171,7 @@ CMD:take(playerid, params[])
 	if(!strcmp(option, "weapons", true))
 	{
 	    ResetPlayerWeaponsEx(targetid);
-	    ShowActionBubble(playerid, "** %s takes away %s's weapons.", GetRPName(playerid), GetRPName(targetid));
+	    ShowActionBubble(playerid, "* %s takes away %s's weapons.", GetRPName(playerid), GetRPName(targetid));
 
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your weapons.", GetRPName(playerid));
         Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) weapons.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
@@ -74118,7 +74183,7 @@ CMD:take(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "That player has no weed on them.");
 		}
 
-	    ShowActionBubble(playerid, "** %s takes away %s's weed.", GetRPName(playerid), GetRPName(targetid));
+	    ShowActionBubble(playerid, "* %s takes away %s's weed.", GetRPName(playerid), GetRPName(targetid));
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i grams of weed.", GetRPName(playerid), PlayerData[targetid][pWeed]);
 	    Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i grams of weed.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pWeed]);
 
@@ -74134,7 +74199,7 @@ CMD:take(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "That player has no cocaine on them.");
 		}
 
-	    ShowActionBubble(playerid, "** %s takes away %s's cocaine.", GetRPName(playerid), GetRPName(targetid));
+	    ShowActionBubble(playerid, "* %s takes away %s's cocaine.", GetRPName(playerid), GetRPName(targetid));
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i grams of cocaine.", GetRPName(playerid), PlayerData[targetid][pWeed]);
         Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i grams of cocaine.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pCocaine]);
 
@@ -74150,7 +74215,7 @@ CMD:take(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "That player has no meth on them.");
 		}
 
-	    ShowActionBubble(playerid, "** %s takes away %s's meth.", GetRPName(playerid), GetRPName(targetid));
+	    ShowActionBubble(playerid, "* %s takes away %s's meth.", GetRPName(playerid), GetRPName(targetid));
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i grams of meth.", GetRPName(playerid), PlayerData[targetid][pWeed]);
         Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i grams of meth.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pMeth]);
 
@@ -74166,7 +74231,7 @@ CMD:take(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "That player has no painkillers on them.");
 		}
 
-	    ShowActionBubble(playerid, "** %s takes away %s's painkillers.", GetRPName(playerid), GetRPName(targetid));
+	    ShowActionBubble(playerid, "* %s takes away %s's painkillers.", GetRPName(playerid), GetRPName(targetid));
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your %i painkillers.", GetRPName(playerid), PlayerData[targetid][pWeed]);
         Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) %i painkillers.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], PlayerData[targetid][pPainkillers]);
 
@@ -74182,7 +74247,7 @@ CMD:take(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "That player has no driving license on them.");
 		}
 
-	    ShowActionBubble(playerid, "** %s takes away %s's drivers license.", GetRPName(playerid), GetRPName(targetid));
+	    ShowActionBubble(playerid, "* %s takes away %s's drivers license.", GetRPName(playerid), GetRPName(targetid));
 	    SendClientMessageEx(targetid, COLOR_AQUA, "%s has taken your drivers license.", GetRPName(playerid));
 	    Log_Write("log_faction", "%s (uid: %i) has taken %s's (uid: %i) drivers license.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 
@@ -74223,8 +74288,8 @@ CMD:ticket(playerid, params[])
 	PlayerData[targetid][pTicketOffer] = playerid;
 	PlayerData[targetid][pTicketPrice] = amount;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s writes you a %s ticket for %s. (/accept ticket)", GetRPName(playerid), FormatNumber(amount), reason);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered a %s ticket to %s for %s.", FormatNumber(amount), GetRPName(targetid), reason);
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s writes you a %s ticket for %s. (/accept ticket)", GetRPName(playerid), FormatNumber(amount), reason);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered a %s ticket to %s for %s.", FormatNumber(amount), GetRPName(targetid), reason);
 	return 1;
 }
 
@@ -74250,7 +74315,7 @@ CMD:gov(playerid, params[])
 	        if(!PlayerData[playerid][pGovTimer])
 	        	SendClientMessageToAll(COLOR_GREY1, "____________ Public Service Announcement ____________");
 
-			SendClientMessageToAllEx(COLOR_DOCTOR, "** %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+			SendClientMessageToAllEx(COLOR_DOCTOR, "* %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 			PlayerData[playerid][pGovTimer] = 30;
 		}
 		case FACTION_POLICE:
@@ -74258,7 +74323,7 @@ CMD:gov(playerid, params[])
             if(!PlayerData[playerid][pGovTimer])
 	        	SendClientMessageToAll(COLOR_GREY1, "____________ Public Service Announcement ____________");
 
-			SendClientMessageToAllEx(COLOR_BLUE, "** %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+			SendClientMessageToAllEx(COLOR_BLUE, "* %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 			PlayerData[playerid][pGovTimer] = 30;
 		}
         case FACTION_GOVERNMENT:
@@ -74266,7 +74331,7 @@ CMD:gov(playerid, params[])
 		    if(!PlayerData[playerid][pGovTimer])
 	        	SendClientMessageToAll(COLOR_GREY1, "____________ Government News Announcement ____________");
 
-			SendClientMessageToAllEx(COLOR_YELLOW2, "** %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+			SendClientMessageToAllEx(COLOR_YELLOW2, "* %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 			PlayerData[playerid][pGovTimer] = 30;
 		}
 		case FACTION_FEDERAL:
@@ -74274,7 +74339,7 @@ CMD:gov(playerid, params[])
 		    if(!PlayerData[playerid][pGovTimer])
 	        	SendClientMessageToAll(COLOR_GREY1, "____________ Public Service Announcement ____________");
 
-			SendClientMessageToAllEx(COLOR_OLDSCHOOL, "** %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+			SendClientMessageToAllEx(COLOR_OLDSCHOOL, "* %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 			PlayerData[playerid][pGovTimer] = 30;
 		}
 		case FACTION_ARMY:
@@ -74282,7 +74347,7 @@ CMD:gov(playerid, params[])
 		    if(!PlayerData[playerid][pGovTimer])
 	       	 SendClientMessageToAll(COLOR_GREY1, "____________ Public Service Announcement ____________");
 
-			SendClientMessageToAllEx(COLOR_OLDSCHOOL, "** %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
+			SendClientMessageToAllEx(COLOR_OLDSCHOOL, "* %s %s: %s", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), params);
 
 			PlayerData[playerid][pGovTimer] = 30;
 		}
@@ -74335,7 +74400,7 @@ CMD:ram(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE houses SET locked = 0 WHERE id = %i", HouseInfo[id][hID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		ShowActionBubble(playerid, "** %s rams down %s's house door.", GetRPName(playerid), HouseInfo[id][hOwner]);
+		ShowActionBubble(playerid, "* %s rams down %s's house door.", GetRPName(playerid), HouseInfo[id][hOwner]);
 	}
 	else if((id = GetNearbyBusiness(playerid)) >= 0)
 	{
@@ -74349,7 +74414,7 @@ CMD:ram(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET locked = 0 WHERE id = %i", BusinessInfo[id][bID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		ShowActionBubble(playerid, "** %s rams down %s's business door.", GetRPName(playerid), BusinessInfo[id][bOwner]);
+		ShowActionBubble(playerid, "* %s rams down %s's business door.", GetRPName(playerid), BusinessInfo[id][bOwner]);
 	}
 	else if((id = GetNearbyGarage(playerid)) >= 0)
 	{
@@ -74363,7 +74428,7 @@ CMD:ram(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE garages SET locked = 0 WHERE id = %i", GarageInfo[id][gID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		ShowActionBubble(playerid, "** %s rams down %s's garage door.", GetRPName(playerid), GarageInfo[id][gOwner]);
+		ShowActionBubble(playerid, "* %s rams down %s's garage door.", GetRPName(playerid), GarageInfo[id][gOwner]);
 	}
 	else
 	{
@@ -74421,9 +74486,9 @@ CMD:deploy(playerid, params[])
 	}
 
 	if(IsLawEnforcement(playerid))
-		SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "** HQ: %s %s has deployed a %s in %s.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), deployableItems[type_id], GetZoneName(x, y, z));
+		SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "* HQ: %s %s has deployed a %s in %s.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), deployableItems[type_id], GetZoneName(x, y, z));
 	else
-	    SendFactionMessage(PlayerData[playerid][pFaction], COLOR_DOCTOR, "** HQ: %s %s has deployed a %s in %s.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), deployableItems[type_id], GetZoneName(x, y, z));
+	    SendFactionMessage(PlayerData[playerid][pFaction], COLOR_DOCTOR, "* HQ: %s %s has deployed a %s in %s.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), deployableItems[type_id], GetZoneName(x, y, z));
 
 	return 1;
 }
@@ -74443,7 +74508,7 @@ CMD:undeployall(playerid, params[])
    			DeployInfo[i][dType] = -1;
 		}
 	}
-	SendFactionMessage(PlayerData[playerid][pFaction], (IsLawEnforcement(playerid)) ? (COLOR_OLDSCHOOL) : (COLOR_DOCTOR), "** HQ: %s %s has removed all deployed objects.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
+	SendFactionMessage(PlayerData[playerid][pFaction], (IsLawEnforcement(playerid)) ? (COLOR_OLDSCHOOL) : (COLOR_DOCTOR), "* HQ: %s %s has removed all deployed objects.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid));
 	return 1;
 }
 CMD:undeploy(playerid, params[])
@@ -74467,7 +74532,7 @@ CMD:undeploy(playerid, params[])
 
         	if(IsPlayerInRangeOfPoint(playerid, range, DeployInfo[i][dPosX], DeployInfo[i][dPosY], DeployInfo[i][dPosZ]))
         	{
-      	  		SendFactionMessage(PlayerData[playerid][pFaction], (IsLawEnforcement(playerid)) ? (COLOR_OLDSCHOOL) : (COLOR_DOCTOR), "** HQ: %s %s has removed a %s in %s.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), deployableItems[DeployInfo[i][dType]], GetZoneName(DeployInfo[i][dPosX], DeployInfo[i][dPosY], DeployInfo[i][dPosZ]));
+      	  		SendFactionMessage(PlayerData[playerid][pFaction], (IsLawEnforcement(playerid)) ? (COLOR_OLDSCHOOL) : (COLOR_DOCTOR), "* HQ: %s %s has removed a %s in %s.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), deployableItems[DeployInfo[i][dType]], GetZoneName(DeployInfo[i][dPosX], DeployInfo[i][dPosY], DeployInfo[i][dPosZ]));
 				DestroyDynamicObject(DeployInfo[i][dObject]);
 
         	    DeployInfo[i][dExists] = 0;
@@ -74522,12 +74587,12 @@ CMD:backup(playerid, params[])
 			{
 	    	    if(PlayerData[playerid][pBackup])
 	    	    {
-	    	        SendClientMessageEx(i, COLOR_OLDSCHOOL, "** HQ: %s %s is requesting backup in %s (marked on map).", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
+	    	        SendClientMessageEx(i, COLOR_OLDSCHOOL, "* HQ: %s %s is requesting backup in %s (marked on map).", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
 	    	        SetPlayerMarkerForPlayer(i, playerid, (FactionInfo[PlayerData[playerid][pFaction]][fColor] & ~0xff) + 0xFF);
 				}
 				else
 				{
-	    	        SendClientMessageEx(i, COLOR_OLDSCHOOL, "** HQ: %s %s has cancelled their backup request.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
+	    	        SendClientMessageEx(i, COLOR_OLDSCHOOL, "* HQ: %s %s has cancelled their backup request.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
 	    	        SetPlayerMarkerForPlayer(i, playerid, GetPlayerColor(playerid));
 				}
 			}
@@ -74570,9 +74635,9 @@ CMD:clearwanted(playerid, params[])
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET wantedlevel = 0 WHERE uid = %i", PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
-	ShowActionBubble(playerid, "** %s calls in dispatch and asks for a warrant removal of %s.", GetRPName(playerid), GetRPName(targetid));
-	SendClientMessageEx(targetid, COLOR_WHITE, "** Your crimes were cleared by %s.", GetRPName(playerid));
-	SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "** HQ: %s %s has cleared %s's charges and wanted level.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s calls in dispatch and asks for a warrant removal of %s.", GetRPName(playerid), GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_WHITE, "* Your crimes were cleared by %s.", GetRPName(playerid));
+	SendFactionMessage(PlayerData[playerid][pFaction], COLOR_OLDSCHOOL, "* HQ: %s %s has cleared %s's charges and wanted level.", FactionRanks[PlayerData[playerid][pFaction]][PlayerData[playerid][pFactionRank]], GetRPName(playerid), GetRPName(targetid));
 	return 1;
 }
 
@@ -74610,7 +74675,7 @@ CMD:vticket(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET tickets = %i WHERE id = %i", VehicleInfo[vehicleid][vTickets], VehicleInfo[vehicleid][vID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	ShowActionBubble(playerid, "** %s writes up a %s ticket and attaches it to the %s.", GetRPName(playerid), FormatNumber(amount), GetVehicleName(vehicleid));
+	ShowActionBubble(playerid, "* %s writes up a %s ticket and attaches it to the %s.", GetRPName(playerid), FormatNumber(amount), GetVehicleName(vehicleid));
 	Log_Write("log_faction", "%s (uid: %i) placed a ticket for $%i on %s's (uid: %i) %s (id: %i).", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, VehicleInfo[vehicleid][vOwner], VehicleInfo[vehicleid][vOwnerID], GetVehicleName(vehicleid), VehicleInfo[vehicleid][vID]);
 	return 1;
 }
@@ -74640,13 +74705,13 @@ CMD:siren(playerid, params[])
 		vehicleSiren[vehicleid] = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		AttachDynamicObjectToVehicle(vehicleSiren[vehicleid], vehicleid, -x, y, z / 1.9, 0.0, 0.0, 0.0);
 
-	    ShowActionBubble(playerid, "** %s places a detachable siren on the roof of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s places a detachable siren on the roof of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 	else
 	{
 	    DestroyDynamicObject(vehicleSiren[vehicleid]);
 	    vehicleSiren[vehicleid] = INVALID_OBJECT_ID;
-	    ShowActionBubble(playerid, "** %s detaches the siren from the roof of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s detaches the siren from the roof of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 	}
 
 	return 1;
@@ -74676,14 +74741,14 @@ CMD:callsign(playerid, params[])
 
 		if(!strcmp(params, "none", true))
 		{
-			SendClientMessage(playerid, COLOR_WHITE, "** Callsign removed from the vehicle.");
+			SendClientMessage(playerid, COLOR_WHITE, "* Callsign removed from the vehicle.");
 		}
 	}
 
 	if(strcmp(params, "none", true) != 0)
 	{
 		vehicleCallsign[vehicleid] = CreateDynamic3DTextLabel(params, COLOR_GREY2, 0.0, -3.0, 0.0, 10.0, .attachedvehicle = vehicleid);
- 		SendClientMessage(playerid, COLOR_WHITE, "** Callsign attached. '/callsign none' to detach the callsign.");
+ 		SendClientMessage(playerid, COLOR_WHITE, "* Callsign attached. '/callsign none' to detach the callsign.");
 	}
 
 	return 1;
@@ -74735,7 +74800,7 @@ CMD:vfrisk(playerid, params[])
 		}
     }
 
-	ShowActionBubble(playerid, "** %s prys open the trunk of the %s and takes a look inside.", GetRPName(playerid), GetVehicleName(vehicleid));
+	ShowActionBubble(playerid, "* %s prys open the trunk of the %s and takes a look inside.", GetRPName(playerid), GetVehicleName(vehicleid));
 	return 1;
 }
 
@@ -74773,13 +74838,13 @@ CMD:vtake(playerid, params[])
         mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET weapon_1 = 0, weapon_2 = 0, weapon_3 = 0, weapon_4 = 0, weapon_5 = 0 WHERE id = %i", VehicleInfo[vehicleid][vID]);
         mysql_tquery(connectionID, queryBuffer);
 
-        ShowActionBubble(playerid, "** %s takes the weapons from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+        ShowActionBubble(playerid, "* %s takes the weapons from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 		SendClientMessage(playerid, COLOR_AQUA, "You have taken the weapons from the trunk.");
 		Log_Write("log_faction", "%s (uid: %i) has taken the weapons from %s's (uid: %i) %s trunk (id: %i).", GetRPName(playerid), PlayerData[playerid][pID], VehicleInfo[vehicleid][vOwner], VehicleInfo[vehicleid][vOwnerID], GetVehicleName(vehicleid), VehicleInfo[vehicleid][vID]);
 	}
 	else if(!strcmp(option, "weed", true))
 	{
-	    ShowActionBubble(playerid, "** %s takes the weed from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s takes the weed from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have taken the %i grams of weed from the trunk.", VehicleInfo[vehicleid][vWeed]);
 		Log_Write("log_faction", "%s (uid: %i) has taken the %i grams of weed from %s's (uid: %i) %s trunk (id: %i).", GetRPName(playerid), PlayerData[playerid][pID], VehicleInfo[vehicleid][vWeed], VehicleInfo[vehicleid][vOwner], VehicleInfo[vehicleid][vOwnerID], GetVehicleName(vehicleid), VehicleInfo[vehicleid][vID]);
 
@@ -74790,7 +74855,7 @@ CMD:vtake(playerid, params[])
 	}
 	else if(!strcmp(option, "cocaine", true))
 	{
-	    ShowActionBubble(playerid, "** %s takes the cocaine from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s takes the cocaine from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have taken the %i grams of cocaine from the trunk.", VehicleInfo[vehicleid][vCocaine]);
 		Log_Write("log_faction", "%s (uid: %i) has taken the %i grams of cocaine from %s's (uid: %i) %s trunk (id: %i).", GetRPName(playerid), PlayerData[playerid][pID], VehicleInfo[vehicleid][vCocaine], VehicleInfo[vehicleid][vOwner], VehicleInfo[vehicleid][vOwnerID], GetVehicleName(vehicleid), VehicleInfo[vehicleid][vID]);
 
@@ -74801,7 +74866,7 @@ CMD:vtake(playerid, params[])
 	}
 	else if(!strcmp(option, "meth", true))
 	{
-	    ShowActionBubble(playerid, "** %s takes the meth from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s takes the meth from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have taken the %i grams of meth from the trunk.", VehicleInfo[vehicleid][vMeth]);
 		Log_Write("log_faction", "%s (uid: %i) has taken the %i grams of meth from %s's (uid: %i) %s trunk (id: %i).", GetRPName(playerid), PlayerData[playerid][pID], VehicleInfo[vehicleid][vMeth], VehicleInfo[vehicleid][vOwner], VehicleInfo[vehicleid][vOwnerID], GetVehicleName(vehicleid), VehicleInfo[vehicleid][vID]);
 
@@ -74812,7 +74877,7 @@ CMD:vtake(playerid, params[])
 	}
 	else if(!strcmp(option, "painkillers", true))
 	{
-	    ShowActionBubble(playerid, "** %s takes the painkillers from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	    ShowActionBubble(playerid, "* %s takes the painkillers from the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
 		SendClientMessageEx(playerid, COLOR_AQUA, "You have taken the %i painkillers from the trunk.", VehicleInfo[vehicleid][vPainkillers]);
 		Log_Write("log_faction", "%s (uid: %i) has taken the %i painkillers from %s's (uid: %i) %s trunk (id: %i).", GetRPName(playerid), PlayerData[playerid][pID], VehicleInfo[vehicleid][vPainkillers], VehicleInfo[vehicleid][vOwner], VehicleInfo[vehicleid][vOwnerID], GetVehicleName(vehicleid), VehicleInfo[vehicleid][vID]);
 
@@ -74851,7 +74916,7 @@ CMD:heal(playerid, params[])
 	}
 
 	PlayerData[targetid][pReceivingAid] = 1;
-	ShowActionBubble(playerid, "** %s administers first aid to %s.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s administers first aid to %s.", GetRPName(playerid), GetRPName(targetid));
 
 	SendClientMessageEx(targetid, COLOR_AQUA, "You have received first aid from %s. Your health will now regenerate until full.", GetRPName(playerid));
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have administered first aid to %s.", GetRPName(targetid));
@@ -74903,7 +74968,7 @@ CMD:stretcher(playerid, params[])
 	        TogglePlayerControllable(targetid, 0);
 	        PutPlayerInVehicle(targetid, vehicleid, i);
 
-			ShowActionBubble(playerid, "** %s places %s on a stretcher in the Ambulance.", GetRPName(playerid), GetRPName(targetid));
+			ShowActionBubble(playerid, "* %s places %s on a stretcher in the Ambulance.", GetRPName(playerid), GetRPName(targetid));
 			return 1;
 		}
 	}
@@ -75194,8 +75259,8 @@ CMD:live(playerid, params[])
 
 	PlayerData[targetid][pLiveOffer] = playerid;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered you a live interview. (/accept live)", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered %s a live interview.", GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered you a live interview. (/accept live)", GetRPName(playerid));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered %s a live interview.", GetRPName(targetid));
 	return 1;
 }
 
@@ -75346,7 +75411,7 @@ CMD:adwithdraw(playerid, params[])
 	SaveServerInfo();
 	GivePlayerCash(playerid, amount);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %s from the advertisement vault. The new balance is %s.", FormatNumber(amount), FormatNumber(gVault));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %s from the advertisement vault. The new balance is %s.", FormatNumber(amount), FormatNumber(gVault));
 	SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s has withdrawn %s from the advertisement vault, reason: %s", GetRPName(playerid), FormatNumber(amount), reason);
 	Log_Write("log_faction", "%s (uid: %i) has withdrawn $%i from the advertisement vault, reason: %s", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, reason);
 	return 1;
@@ -75381,7 +75446,7 @@ CMD:addeposit(playerid, params[])
 	SaveServerInfo();
 	GivePlayerCash(playerid, -amount);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited $%i in the advertisement vault. The new balance is $%i.", amount, gNewsVault);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited $%i in the advertisement vault. The new balance is $%i.", amount, gNewsVault);
 	SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s has deposited $%i in the advertisement vault.", GetRPName(playerid), amount);
 	Log_Write("log_faction", "%s (uid: %i) has deposited $%i in the advertisement vault.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 	return 1;
@@ -75416,7 +75481,7 @@ CMD:taxwithdraw(playerid, params[])
 	AddToTaxVault(-amount);
 	GivePlayerCash(playerid, amount);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have withdrawn %s from the tax vault. The new balance is %s.", FormatNumber(amount), FormatNumber(gVault));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have withdrawn %s from the tax vault. The new balance is %s.", FormatNumber(amount), FormatNumber(gVault));
 	SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s has withdrawn %s from the tax vault, reason: %s", GetRPName(playerid), FormatNumber(amount), reason);
 	Log_Write("log_faction", "%s (uid: %i) has withdrawn $%i from the tax vault, reason: %s", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount, reason);
 	return 1;
@@ -75450,7 +75515,7 @@ CMD:taxdeposit(playerid, params[])
 	AddToTaxVault(amount);
 	GivePlayerCash(playerid, -amount);
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have deposited $%i in the tax vault. The new balance is $%i.", amount, gVault);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have deposited $%i in the tax vault. The new balance is $%i.", amount, gVault);
 	SendAdminMessage(COLOR_YELLOW, "AdmWarning: %s has deposited $%i in the tax vault.", GetRPName(playerid), amount);
 	Log_Write("log_faction", "%s (uid: %i) has deposited $%i in the tax vault.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], amount);
 	return 1;
@@ -75520,7 +75585,7 @@ CMD:contract(playerid, params[])
 	{
 	    if(GetFactionType(i) == FACTION_HITMAN)
 	    {
-	        SendClientMessageEx(i, COLOR_YELLOW, "** %s has contracted %s for $%i, reason: %s [/contracts]", GetRPName(playerid), GetRPName(targetid), amount, reason);
+	        SendClientMessageEx(i, COLOR_YELLOW, "* %s has contracted %s for $%i, reason: %s [/contracts]", GetRPName(playerid), GetRPName(targetid), amount, reason);
 		}
 	}
 
@@ -75588,7 +75653,7 @@ CMD:hfind(playerid, params[])
 	PlayerData[playerid][pFindPlayer] = targetid;
 
     SetPlayerMarkerForPlayer(playerid, targetid, 0xFF0000FF);
-	SendClientMessageEx(playerid, COLOR_WHITE, "** %s's location marked on your radar. 15 seconds remain until the marker disappears.", GetRPName(targetid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "* %s's location marked on your radar. 15 seconds remain until the marker disappears.", GetRPName(targetid));
 	return 1;
 }
 
@@ -75609,7 +75674,7 @@ CMD:contracts(playerid, params[])
 		}
 	}
 
-	SendClientMessage(playerid, COLOR_YELLOW, "** Use /takehit [id] or /denyhit [id] to handle contracts.");
+	SendClientMessage(playerid, COLOR_YELLOW, "* Use /takehit [id] or /denyhit [id] to handle contracts.");
 	return 1;
 }
 
@@ -75638,7 +75703,7 @@ CMD:denyhit(playerid, params[])
 
 	if(GetFactionType(playerid) == FACTION_HITMAN)
 	{
-		SendFactionMessage(PlayerData[playerid][pFaction], COLOR_YELLOW, "** Hitman %s has cancelled the contract on %s for %s. **", GetRPName(playerid), GetRPName(targetid), FormatNumber(PlayerData[targetid][pContracted]));
+		SendFactionMessage(PlayerData[playerid][pFaction], COLOR_YELLOW, "* Hitman %s has cancelled the contract on %s for %s. *", GetRPName(playerid), GetRPName(targetid), FormatNumber(PlayerData[targetid][pContracted]));
 	}
 
 	PlayerData[targetid][pContracted] = 0;
@@ -75679,7 +75744,7 @@ CMD:takehit(playerid, params[])
 	}
 
 	PlayerData[playerid][pContractTaken] = targetid;
-	SendFactionMessage(PlayerData[playerid][pFaction], COLOR_YELLOW, "** Hitman %s has accepted the contract to kill %s for %s. **", GetRPName(playerid), GetRPName(targetid), FormatNumber(PlayerData[targetid][pContracted]));
+	SendFactionMessage(PlayerData[playerid][pFaction], COLOR_YELLOW, "* Hitman %s has accepted the contract to kill %s for %s. *", GetRPName(playerid), GetRPName(targetid), FormatNumber(PlayerData[targetid][pContracted]));
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have taken the hit. You will receive %s once you have assassinated {00AA00}%s{33CCFF}.", FormatNumber(PlayerData[targetid][pContracted]), GetRPName(targetid));
 	return 1;
 }
@@ -75713,8 +75778,8 @@ CMD:propose(playerid, params[])
 	}
 	PlayerData[targetid][pMarriageOffer] = playerid;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has asked you to marry them, Please be careful when chosing a partner, It will cost both parties $25,000. (/accept marriage)", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have sent %s a proposal for marriage.", GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has asked you to marry them, Please be careful when chosing a partner, It will cost both parties $25,000. (/accept marriage)", GetRPName(playerid));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have sent %s a proposal for marriage.", GetRPName(targetid));
 	return 1;
 }
 CMD:divorce(playerid, params[])
@@ -75738,8 +75803,8 @@ CMD:divorce(playerid, params[])
 	}
 	PlayerData[targetid][pMarriageOffer] = playerid;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has asked you to divorce them (/accept divorce)", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have sent %s a request for divorce.", GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has asked you to divorce them (/accept divorce)", GetRPName(playerid));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have sent %s a request for divorce.", GetRPName(targetid));
 	return 1;
 }
 CMD:profile(playerid, params[])
@@ -75878,7 +75943,7 @@ CMD:plantbomb(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessage(playerid, COLOR_WHITE, "** Bomb has been planted, use /detonate to make it go BOOM!");
+	SendClientMessage(playerid, COLOR_WHITE, "* Bomb has been planted, use /detonate to make it go BOOM!");
 	return 1;
 }
 
@@ -75907,7 +75972,7 @@ CMD:pickupbomb(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET bombs = %i WHERE uid = %i", PlayerData[playerid][pBombs], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessage(playerid, COLOR_WHITE, "** You have picked up your bomb.");
+	SendClientMessage(playerid, COLOR_WHITE, "* You have picked up your bomb.");
 	return 1;
 }
 
@@ -75934,7 +75999,7 @@ CMD:detonate(playerid, params[])
     PlayerData[playerid][pBombObject] = INVALID_OBJECT_ID;
 	PlayerData[playerid][pPlantedBomb] = 0;
 
-	SendClientMessage(playerid, COLOR_WHITE, "** You have detonated your bomb!");
+	SendClientMessage(playerid, COLOR_WHITE, "* You have detonated your bomb!");
 	return 1;
 }
 
@@ -76216,7 +76281,7 @@ CMD:spawnfire(playerid, params[])
 	                {
 	            		PlayerData[i][pCP] = CHECKPOINT_MISC;
                			SetPlayerCheckpoint(i, px, py, pz, 3.0);
-		   				SendClientMessageEx(i, COLOR_DOCTOR, "** All units, a fire has been reported in %s. Please head to the beacon on your map. **", GetZoneName(px, py, pz));
+		   				SendClientMessageEx(i, COLOR_DOCTOR, "* All units, a fire has been reported in %s. Please head to the beacon on your map. *", GetZoneName(px, py, pz));
 					}
 	            }
 	        }
@@ -76250,7 +76315,7 @@ CMD:numberold(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "The player specified is disconnected.");
 	}
 
-    ShowActionBubble(playerid, "** %s takes out a cellphone and looks up a number.", GetRPName(playerid));
+    ShowActionBubble(playerid, "* %s takes out a cellphone and looks up a number.", GetRPName(playerid));
 	SendClientMessageEx(playerid, COLOR_GREY2, "Name: %s, Ph: %i", GetRPName(targetid), PlayerData[targetid][pPhone]);
 	return 1;
 }
@@ -76373,7 +76438,7 @@ CMD:boombox(playerid, params[])
         PlayerData[playerid][pBoomboxURL] = 0;
 
     	ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 0, 0, 0, 0, 0);
-		ShowActionBubble(playerid, "** %s places a boombox on the ground.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s places a boombox on the ground.", GetRPName(playerid));
 	}
 	else if(!strcmp(option, "pickup", true))
 	{
@@ -76386,7 +76451,7 @@ CMD:boombox(playerid, params[])
 	        return SendClientMessage(playerid, COLOR_GREY, "You are not in range of your boombox.");
 		}
 
-		ShowActionBubble(playerid, "** %s picks up their boombox and switches it off.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s picks up their boombox and switches it off.", GetRPName(playerid));
 		DestroyBoombox(playerid);
 	}
     else if(!strcmp(option, "play", true))
@@ -76457,8 +76522,8 @@ CMD:shakehand(playerid, params[])
 	PlayerData[targetid][pShakeOffer] = playerid;
 	PlayerData[targetid][pShakeType] = type;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has offered to shake your hand. (/accept handshake)", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have sent %s a handshake offer.", GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has offered to shake your hand. (/accept handshake)", GetRPName(playerid));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have sent %s a handshake offer.", GetRPName(targetid));
 	return 1;
 }
 
@@ -76498,7 +76563,7 @@ CMD:dropgun(playerid, params[])
 
 
 
-	ShowActionBubble(playerid, "** %s drops their %s on the ground.", GetRPName(playerid), GetWeaponNameEx(weaponid));
+	ShowActionBubble(playerid, "* %s drops their %s on the ground.", GetRPName(playerid), GetWeaponNameEx(weaponid));
 	SendClientMessageEx(playerid, COLOR_AQUA, "You have dropped your {00AA00}%s{33CCFF}.", GetWeaponNameEx(weaponid));
 	return 1;
 }
@@ -76533,7 +76598,7 @@ CMD:grabgun(playerid, params[])
 	    GivePlayerWeaponEx(playerid, weaponid);
 	    DestroyDynamicObject(i);
 
-	    ShowActionBubble(playerid, "** %s picks up a %s from the ground.", GetRPName(playerid), GetWeaponNameEx(weaponid));
+	    ShowActionBubble(playerid, "* %s picks up a %s from the ground.", GetRPName(playerid), GetWeaponNameEx(weaponid));
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You have picked up a {00AA00}%s{33CCFF}.", GetWeaponNameEx(weaponid));
 	    return 1;
 	}
@@ -76590,24 +76655,24 @@ CMD:confirm(playerid, params[])
 	{
         GetPlayerPos(playerid, PlayerData[playerid][pMinX], y, z);
         PlayerData[playerid][pZonePickups][0] = CreateDynamicPickup(1239, 1, PlayerData[playerid][pMinX], y, z, .playerid = playerid);
-		SendClientMessage(playerid, COLOR_WHITE, "** Boundary 1/4 set (min X).");
+		SendClientMessage(playerid, COLOR_WHITE, "* Boundary 1/4 set (min X).");
 	}
 	else if(PlayerData[playerid][pMinY] == 0.0)
 	{
         GetPlayerPos(playerid, x, PlayerData[playerid][pMinY], z);
         PlayerData[playerid][pZonePickups][1] = CreateDynamicPickup(1239, 1, x, PlayerData[playerid][pMinY], z, .playerid = playerid);
-        SendClientMessage(playerid, COLOR_WHITE, "** Boundary 2/4 set (min Y).");
+        SendClientMessage(playerid, COLOR_WHITE, "* Boundary 2/4 set (min Y).");
 	}
 	else if(PlayerData[playerid][pMaxX] == 0.0)
 	{
         GetPlayerPos(playerid, PlayerData[playerid][pMaxX], y, z);
         PlayerData[playerid][pZonePickups][2] = CreateDynamicPickup(1239, 1, PlayerData[playerid][pMaxX], y, z, .playerid = playerid);
-        SendClientMessage(playerid, COLOR_WHITE, "** Boundary 3/4 set (max X).");
+        SendClientMessage(playerid, COLOR_WHITE, "* Boundary 3/4 set (max X).");
 	}
 	else if(PlayerData[playerid][pMaxY] == 0.0)
 	{
         GetPlayerPos(playerid, x, PlayerData[playerid][pMaxY], z);
-        SendClientMessage(playerid, COLOR_WHITE, "** Boundary 4/4 set (max Y).");
+        SendClientMessage(playerid, COLOR_WHITE, "* Boundary 4/4 set (max Y).");
 
         PlayerData[playerid][pZonePickups][3] = CreateDynamicPickup(1239, 1, x, PlayerData[playerid][pMaxY], z, .playerid = playerid);
         PlayerData[playerid][pZoneID] = GangZoneCreate(PlayerData[playerid][pMinX], PlayerData[playerid][pMinY], PlayerData[playerid][pMaxX], PlayerData[playerid][pMaxY]);
@@ -76636,7 +76701,7 @@ CMD:landcancel(playerid, params[])
 	}
 
 	CancelZoneCreation(playerid);
-	SendClientMessage(playerid, COLOR_LIGHTRED, "** Land creation cancelled.");
+	SendClientMessage(playerid, COLOR_LIGHTRED, "* Land creation cancelled.");
 	return 1;
 }
 
@@ -76688,7 +76753,7 @@ CMD:removelandobjects(playerid, params[])
 	}
 
 	RemoveAllLandObjects(landid);
-    SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed all land objects for land %i.", landid);
+    SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed all land objects for land %i.", landid);
 	return 1;
 }
 
@@ -76722,7 +76787,7 @@ CMD:removeland(playerid, params[])
 	LandInfo[landid][lExists] = 0;
 	LandInfo[landid][lOwnerID] = 0;
 	Iter_Remove(Land, landid);
-    SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed land %i.", landid);
+    SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed land %i.", landid);
 
 	Log_Write("log_land", "%s (uid: %i) has removed land (id: %i) land owner (%i).", GetRPName(playerid), PlayerData[playerid][pID], landid, PlayerData[LandInfo[landid][lOwner]][pID]);
 	return 1;
@@ -76786,8 +76851,8 @@ CMD:sellland(playerid, params[])
 	PlayerData[targetid][pLandOffered] = landid;
 	PlayerData[targetid][pLandPrice] = amount;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s offered you to buy their land for %s. (/accept land)", GetRPName(playerid), FormatNumber(amount));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You offered %s to buy your land for %s.", GetRPName(targetid), FormatNumber(amount));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s offered you to buy their land for %s. (/accept land)", GetRPName(playerid), FormatNumber(amount));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You offered %s to buy your land for %s.", GetRPName(targetid), FormatNumber(amount));
 	return 1;
 }
 
@@ -76825,11 +76890,11 @@ CMD:landinfo(playerid, params[])
 
     if(!LandInfo[landid][lOwnerID])
 	{
-        SendClientMessageEx(playerid, COLOR_WHITE, "** This land is currently not owned and is for sale, price: {00AA00}$%i{FFFFFF}.", LandInfo[landid][lPrice]);
+        SendClientMessageEx(playerid, COLOR_WHITE, "* This land is currently not owned and is for sale, price: {00AA00}$%i{FFFFFF}.", LandInfo[landid][lPrice]);
 	}
 	else if(!IsLandOwner(playerid, landid))
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "** This land is owned by %s.", LandInfo[landid][lOwner]);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "* This land is owned by %s.", LandInfo[landid][lOwner]);
 	}
 	else
 	{
@@ -77032,7 +77097,7 @@ CMD:acceptname(playerid, params[])
 		}
 		if(PlayerData[targetid][pFreeNamechange] == 2)
 		{
-		    SendClientMessage(targetid, COLOR_WHITE, "** You can use /passport again to return to your old name and stats.");
+		    SendClientMessage(targetid, COLOR_WHITE, "* You can use /passport again to return to your old name and stats.");
 		}
 	}
 	else
@@ -77476,7 +77541,7 @@ CMD:plantweed(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = %i, weedplanted = 1, weedtime = %i, weedgrams = %i, weed_x = '%f', weed_y = '%f', weed_z = '%f', weed_a = '%f' WHERE uid = %i", PlayerData[playerid][pSeeds], PlayerData[playerid][pWeedTime], PlayerData[playerid][pWeedGrams], PlayerData[playerid][pWeedX], PlayerData[playerid][pWeedY], PlayerData[playerid][pWeedZ], PlayerData[playerid][pWeedA], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	ShowActionBubble(playerid, "** %s plants some seeds into the ground.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s plants some seeds into the ground.", GetRPName(playerid));
 	SendClientMessage(playerid, COLOR_GREEN, "You have planted a weed plant. Every two minutes your plant will grow one gram of weed.");
 	SendClientMessage(playerid, COLOR_GREEN, "Your plant will be ready in 60 minutes. Be careful, as anyone who sees your plant can pick it!");
 	return 1;
@@ -77488,8 +77553,8 @@ CMD:plantinfo(playerid, params[])
 	{
 	    if(PlayerData[i][pWeedPlanted] && IsPlayerInRangeOfPoint(playerid, 3.0, PlayerData[i][pWeedX], PlayerData[i][pWeedY], PlayerData[i][pWeedZ]))
 	    {
-	        ShowActionBubble(playerid, "** %s inspects the plant.", GetRPName(playerid));
-	        SendClientMessageEx(playerid, COLOR_WHITE, "** This plant has so far grown %i grams of weed. It will be ready in %i/60 minutes.", PlayerData[i][pWeedGrams], PlayerData[i][pWeedTime]);
+	        ShowActionBubble(playerid, "* %s inspects the plant.", GetRPName(playerid));
+	        SendClientMessageEx(playerid, COLOR_WHITE, "* This plant has so far grown %i grams of weed. It will be ready in %i/60 minutes.", PlayerData[i][pWeedGrams], PlayerData[i][pWeedTime]);
 	        return 1;
 		}
 	}
@@ -77539,8 +77604,8 @@ CMD:pickplant(playerid, params[])
 			PlayerData[playerid][pPickPlant] = i;
 			PlayerData[playerid][pPickTime] = 5;
 
-			ShowActionBubble(playerid, "** %s crouches down and starts picking at the weed plant.", GetRPName(playerid));
-		//	SendClientMessage(playerid, COLOR_WHITE, "** Allow up to five seconds for you to pick the plant.");
+			ShowActionBubble(playerid, "* %s crouches down and starts picking at the weed plant.", GetRPName(playerid));
+		//	SendClientMessage(playerid, COLOR_WHITE, "* Allow up to five seconds for you to pick the plant.");
 			return 1;
 		}
 	}
@@ -77560,7 +77625,7 @@ CMD:seizeplant(playerid, params[])
 	{
 	    if(PlayerData[i][pWeedPlanted] && IsPlayerInRangeOfPoint(playerid, 3.0, PlayerData[i][pWeedX], PlayerData[i][pWeedY], PlayerData[i][pWeedZ]))
 	    {
-	        ShowActionBubble(playerid, "** %s seizes a weed plant weighing %i grams.", GetRPName(playerid), PlayerData[i][pWeedGrams]);
+	        ShowActionBubble(playerid, "* %s seizes a weed plant weighing %i grams.", GetRPName(playerid), PlayerData[i][pWeedGrams]);
 	        DestroyWeedPlant(i);
 	        return 1;
 		}
@@ -77616,7 +77681,7 @@ CMD:usecigar(playerid, params[])
 	PlayerData[playerid][pCigars]--;
 
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_SMOKE_CIGGY);
-	ShowActionBubble(playerid, "** %s lights up a cigar and starts to smoke it.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s lights up a cigar and starts to smoke it.", GetRPName(playerid));
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = %i WHERE uid = %i", PlayerData[playerid][pCigars], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
@@ -77672,7 +77737,7 @@ CMD:usedrug(playerid, params[])
 		}
 
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
-		ShowActionBubble(playerid, "** %s smokes two grams of weed.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s smokes two grams of weed.", GetRPName(playerid));
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = %i WHERE uid = %i", PlayerData[playerid][pWeed], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
@@ -77703,7 +77768,7 @@ CMD:usedrug(playerid, params[])
 		}
 
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
-		ShowActionBubble(playerid, "** %s snorts two grams of cocaine.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s snorts two grams of cocaine.", GetRPName(playerid));
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = %i WHERE uid = %i", PlayerData[playerid][pCocaine], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
@@ -77735,7 +77800,7 @@ CMD:usedrug(playerid, params[])
 		}
 
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
-		ShowActionBubble(playerid, "** %s smokes two grams of meth.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s smokes two grams of meth.", GetRPName(playerid));
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = %i WHERE uid = %i", PlayerData[playerid][pMeth], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
@@ -77767,7 +77832,7 @@ CMD:usedrug(playerid, params[])
 		}
 
         ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, 0, 0, 0, 0, 0);
-		ShowActionBubble(playerid, "** %s pops a painkiller in their mouth.", GetRPName(playerid));
+		ShowActionBubble(playerid, "* %s pops a painkiller in their mouth.", GetRPName(playerid));
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = %i WHERE uid = %i", PlayerData[playerid][pPainkillers], PlayerData[playerid][pID]);
 		mysql_tquery(connectionID, queryBuffer);
@@ -77795,7 +77860,7 @@ CMD:showid(playerid, params[])
 	SendClientMessageEx(targetid, COLOR_GREY1, "Age: %i years old", PlayerData[playerid][pAge]);
 	SendClientMessageEx(targetid, COLOR_GREY1, "Drivers License: %s", (PlayerData[playerid][pCarLicense]) ? ("{00AA00}Yes") : ("{FF6347}No"));
 	SendClientMessageEx(targetid, COLOR_GREY1, "Weapon License: %s", (PlayerData[playerid][pGunLicense]) ? ("{00AA00}Yes") : ("{FF6347}No"));
-	ShowActionBubble(playerid, "** %s shows their ID card to %s.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s shows their ID card to %s.", GetRPName(playerid), GetRPName(targetid));
 	return 1;
 }
 
@@ -77834,7 +77899,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    ResetPlayerWeaponsEx(playerid);
-	    ShowActionBubble(playerid, "** %s throws away their weapons.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their weapons.", GetRPName(playerid));
 	}
 	else if(!strcmp(option, "materials", true))
 	{
@@ -77848,7 +77913,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pMaterials] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their materials.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their materials.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET materials = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77865,7 +77930,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pWeed] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their weed.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their weed.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET weed = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77882,7 +77947,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pCocaine] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their cocaine.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their cocaine.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cocaine = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77899,7 +77964,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pMeth] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their meth.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their meth.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET meth = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77916,7 +77981,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pPainkillers] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their painkillers.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their painkillers.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET painkillers = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77933,7 +77998,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pCigars] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their cigars.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their cigars.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET cigars = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77950,7 +78015,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pSpraycans] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their spraycanss.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their spraycanss.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET spraycans = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77967,7 +78032,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pSeeds] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their seeds.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their seeds.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET seeds = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -77984,7 +78049,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pEphedrine] = 0;
-	    ShowActionBubble(playerid, "** %s throws away their ephedrine.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s throws away their ephedrine.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET ephedrine = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -78001,7 +78066,7 @@ CMD:drop(playerid, params[])
 	    }
 
 	    PlayerData[playerid][pCarLicense] = 0;
-	    ShowActionBubble(playerid, "** %s rips up their drivers license.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s rips up their drivers license.", GetRPName(playerid));
 
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET carlicense = 0 WHERE uid = %i", PlayerData[playerid][pID]);
 	    mysql_tquery(connectionID, queryBuffer);
@@ -78030,7 +78095,7 @@ CMD:creategang(playerid, params[])
 	        SetupGang(i, name);
 
 	        SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has setup gang {F7A763}%s{FF6347} in slot ID %i.", GetRPName(playerid), name, i);
-	        SendClientMessageEx(playerid, COLOR_WHITE, "** This gang's ID is %i. /editgang to edit.", i);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "* This gang's ID is %i. /editgang to edit.", i);
 	        return 1;
 		}
 	}
@@ -78247,7 +78312,7 @@ CMD:editgang(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO gangskins VALUES(%i, %i, %i) ON DUPLICATE KEY UPDATE skinid = %i", gangid, slot, skinid, skinid);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "** You have set the skin in slot %i to ID %i.", slot + 1, skinid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "* You have set the skin in slot %i to ID %i.", slot + 1, skinid);
 	}
 	else if(!strcmp(option, "strikes", true))
 	{
@@ -78616,11 +78681,11 @@ CMD:points(playerid, params[])
 	}
 
     SendClientMessageEx(playerid, COLOR_NAVYBLUE, "_____ %s ($%i) _____", PointInfo[pointid][pName], PointInfo[pointid][pProfits]);
-    SendClientMessageEx(playerid, COLOR_WHITE, "** This point captured by %s for {%06x}%s{FFFFFF} will be available in %i hours.", PointInfo[pointid][pCapturedBy], color >>> 8, name, PointInfo[pointid][pTime]);
+    SendClientMessageEx(playerid, COLOR_WHITE, "* This point captured by %s for {%06x}%s{FFFFFF} will be available in %i hours.", PointInfo[pointid][pCapturedBy], color >>> 8, name, PointInfo[pointid][pTime]);
 
     if(PointInfo[pointid][pCapturer] != INVALID_PLAYER_ID)
     {
-	    SendClientMessageEx(playerid, COLOR_WHITE, "** This point is being captured by %s and will be theirs in %i minutes.", GetRPName(PointInfo[pointid][pCapturer]), PointInfo[pointid][pCaptureTime]);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "* This point is being captured by %s and will be theirs in %i minutes.", GetRPName(PointInfo[pointid][pCapturer]), PointInfo[pointid][pCaptureTime]);
 	}
 
 	return 1;
@@ -78701,12 +78766,12 @@ CMD:f(playerid, params[])
 	    {
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-	            SendClientMessageEx(i, COLOR_AQUA, "** [%i] %s (%s) %s: %.*s... **", PlayerData[playerid][pGangRank], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], crew, GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-	            SendClientMessageEx(i, COLOR_AQUA, "** [%i] %s (%s) %s: ...%s **", PlayerData[playerid][pGangRank], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], crew, GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+	            SendClientMessageEx(i, COLOR_AQUA, "* [%i] %s (%s) %s: %.*s... *", PlayerData[playerid][pGangRank], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], crew, GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+	            SendClientMessageEx(i, COLOR_AQUA, "* [%i] %s (%s) %s: ...%s *", PlayerData[playerid][pGangRank], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], crew, GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-			    SendClientMessageEx(i, COLOR_AQUA, "** [%i] %s (%s) %s: %s **", PlayerData[playerid][pGangRank], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], crew, GetRPName(playerid), params);
+			    SendClientMessageEx(i, COLOR_AQUA, "* [%i] %s (%s) %s: %s *", PlayerData[playerid][pGangRank], GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], crew, GetRPName(playerid), params);
 			}
 		}
 	}
@@ -78753,12 +78818,12 @@ CMD:ally(playerid, params[])
 	    {
 	        if(strlen(params) > MAX_SPLIT_LENGTH)
 	        {
-	            SendClientMessageEx(i, COLOR_GREEN, "** [Alliance] %s %s: %.*s... **", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
-	            SendClientMessageEx(i, COLOR_GREEN, "** [Alliance] %s %s: ...%s **", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
+	            SendClientMessageEx(i, COLOR_GREEN, "* [Alliance] %s %s: %.*s... *", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), MAX_SPLIT_LENGTH, params);
+	            SendClientMessageEx(i, COLOR_GREEN, "* [Alliance] %s %s: ...%s *", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params[MAX_SPLIT_LENGTH]);
 			}
 			else
 			{
-			    SendClientMessageEx(i, COLOR_GREEN, "** [Alliance] %s %s: %s **", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params);
+			    SendClientMessageEx(i, COLOR_GREEN, "* [Alliance] %s %s: %s *", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), params);
 			}
 		}
 	}
@@ -78938,7 +79003,7 @@ CMD:gang(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO gangskins VALUES(%i, %i, %i) ON DUPLICATE KEY UPDATE skinid = %i", gangid, slot, skinid, skinid);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "** You have set the skin in slot %i to ID %i.", slot + 1, skinid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "* You have set the skin in slot %i to ID %i.", slot + 1, skinid);
 	}
 	else if(!strcmp(option, "kick", true))
 	{
@@ -79272,7 +79337,7 @@ CMD:bandana(playerid, params[])
 	    PlayerData[playerid][pBandana] = 1;
 
 	    SendClientMessage(playerid, COLOR_AQUA, "You have enabled your bandana. Your nametag color has been set to your gang color.");
-	    ShowActionBubble(playerid, "** %s takes out a bandana and wraps it around their head.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s takes out a bandana and wraps it around their head.", GetRPName(playerid));
 	    //SetPlayerColor(playerid, GangInfo[PlayerData[playerid][pGang]][gColor] & ~0xff);
 		new string[120];
 		format(string, sizeof(string), "{%06x}%s", color >>> 8, GangInfo[PlayerData[playerid][pGang]][gName]);
@@ -79283,7 +79348,7 @@ CMD:bandana(playerid, params[])
 	{
 	    PlayerData[playerid][pBandana] = 0;
 	    SendClientMessage(playerid, COLOR_AQUA, "You have disabled your bandana. Your nametag color was reset back to normal.");
-	    ShowActionBubble(playerid, "** %s takes off their bandana from around their head.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s takes off their bandana from around their head.", GetRPName(playerid));
 		DestroyDynamic3DTextLabel(fRepfamtext[playerid]);
         fRepfamtext[playerid] = Text3D:INVALID_3DTEXT_ID;
 	}
@@ -79320,7 +79385,7 @@ CMD:fpark(playerid, params[])
     VehicleInfo[vehicleid][vInterior] = GetPlayerInterior(playerid);
     VehicleInfo[vehicleid][vWorld] = GetPlayerVirtualWorld(playerid);
 
-	SendClientMessage(playerid, COLOR_GREEN, "** Faction vehicle parked. It will now spawn here.");
+	SendClientMessage(playerid, COLOR_GREEN, "* Faction vehicle parked. It will now spawn here.");
 
 	// Update the database record with the new information, then despawn the vehicle.
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET pos_x = '%f', pos_y = '%f', pos_z = '%f', pos_a = '%f', interior = %i, world = %i WHERE id = %i", VehicleInfo[vehicleid][vPosX], VehicleInfo[vehicleid][vPosY], VehicleInfo[vehicleid][vPosZ], VehicleInfo[vehicleid][vPosA], VehicleInfo[vehicleid][vInterior], VehicleInfo[vehicleid][vWorld], VehicleInfo[vehicleid][vID]);
@@ -79360,7 +79425,7 @@ CMD:gpark(playerid, params[])
     VehicleInfo[vehicleid][vInterior] = GetPlayerInterior(playerid);
     VehicleInfo[vehicleid][vWorld] = GetPlayerVirtualWorld(playerid);
 
-	SendClientMessage(playerid, COLOR_AQUA, "** Gang vehicle parked. It will now spawn here.");
+	SendClientMessage(playerid, COLOR_AQUA, "* Gang vehicle parked. It will now spawn here.");
 
 	// Update the database record with the new information, then despawn the vehicle.
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET pos_x = '%f', pos_y = '%f', pos_z = '%f', pos_a = '%f', interior = %i, world = %i WHERE id = %i", VehicleInfo[vehicleid][vPosX], VehicleInfo[vehicleid][vPosY], VehicleInfo[vehicleid][vPosZ], VehicleInfo[vehicleid][vPosA], VehicleInfo[vehicleid][vInterior], VehicleInfo[vehicleid][vWorld], VehicleInfo[vehicleid][vID]);
@@ -80079,7 +80144,7 @@ CMD:turfcancel(playerid, params[])
 	}
 
 	CancelZoneCreation(playerid);
-	SendClientMessage(playerid, COLOR_LIGHTRED, "** Land creation cancelled.");
+	SendClientMessage(playerid, COLOR_LIGHTRED, "* Land creation cancelled.");
 	return 1;
 }
 
@@ -80141,7 +80206,7 @@ CMD:removeturf(playerid, params[])
     TurfInfo[turfid][tType] = 0;
     Iter_Remove(Turf, turfid);
 
-    SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed turf %i.", turfid);
+    SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed turf %i.", turfid);
 	return 1;
 }
 
@@ -80377,15 +80442,15 @@ CMD:turfinfo(playerid, params[])
 
 	if(TurfInfo[turfid][tType] == 8)
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "** This turf is owned by {%06x}%s{FFFFFF} and is not available to capture.", color >>> 8, name);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "* This turf is owned by {%06x}%s{FFFFFF} and is not available to capture.", color >>> 8, name);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "** This turf captured by %s for {%06x}%s{FFFFFF} will be available in %i hours.", TurfInfo[turfid][tCapturedBy], color >>> 8, name, TurfInfo[turfid][tTime]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "* This turf captured by %s for {%06x}%s{FFFFFF} will be available in %i hours.", TurfInfo[turfid][tCapturedBy], color >>> 8, name, TurfInfo[turfid][tTime]);
 
     	if(TurfInfo[turfid][tCapturer] != INVALID_PLAYER_ID)
 		{
-	    	SendClientMessageEx(playerid, COLOR_WHITE, "** This turf is being captured by %s and will be theirs in %i minutes.", GetRPName(TurfInfo[turfid][tCapturer]), TurfInfo[turfid][tCaptureTime]);
+	    	SendClientMessageEx(playerid, COLOR_WHITE, "* This turf is being captured by %s and will be theirs in %i minutes.", GetRPName(TurfInfo[turfid][tCapturer]), TurfInfo[turfid][tCaptureTime]);
 		}
 	}
 
@@ -80440,8 +80505,8 @@ CMD:defend(playerid, params[])
 	PlayerData[targetid][pDefendPrice] = amount;
 	PlayerData[playerid][pLastDefend] = gettime();
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** Lawyer %s has offered to defend your wanted level for $%i. (/accept lawyer)", GetRPName(playerid), amount);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have offered to defend %s's wanted level for $%i.", GetRPName(targetid), amount);
+	SendClientMessageEx(targetid, COLOR_AQUA, "* Lawyer %s has offered to defend your wanted level for $%i. (/accept lawyer)", GetRPName(playerid), amount);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have offered to defend %s's wanted level for $%i.", GetRPName(targetid), amount);
 	return 1;
 }
 
@@ -80476,8 +80541,8 @@ CMD:free(playerid, params[])
 
 	PlayerData[targetid][pJailTime] -= time * 60;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** Lawyer %s has reduced your jail sentence by %i minutes.", GetRPName(playerid), time);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have reduced %s's jail sentence by %i minutes.", GetRPName(targetid), time);
+	SendClientMessageEx(targetid, COLOR_AQUA, "* Lawyer %s has reduced your jail sentence by %i minutes.", GetRPName(playerid), time);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have reduced %s's jail sentence by %i minutes.", GetRPName(targetid), time);
 	return 1;
 }
 
@@ -80499,7 +80564,7 @@ CMD:eject(playerid, params[])
 	}
 
 	RemovePlayerFromVehicle(targetid);
-	ShowActionBubble(playerid, "** %s ejects %s from the vehicle.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s ejects %s from the vehicle.", GetRPName(playerid), GetRPName(targetid));
 	return 1;
 }
 
@@ -80549,8 +80614,8 @@ CMD:dicebet(playerid, params[])
 	PlayerData[targetid][pDiceRigged] = 0;
 	PlayerData[playerid][pLastBet] = gettime();
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has initiated a dice bet with you for $%i (/accept dicebet).", GetRPName(playerid), amount);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have initiated a dice bet against %s for $%i.", GetRPName(targetid), amount);
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has initiated a dice bet with you for $%i (/accept dicebet).", GetRPName(playerid), amount);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have initiated a dice bet against %s for $%i.", GetRPName(targetid), amount);
 	return 1;
 }
 
@@ -80600,8 +80665,8 @@ CMD:dicebetrigged(playerid, params[]) // Added to keep the economy in control. A
 	PlayerData[targetid][pDiceRigged] = 1;
 	PlayerData[playerid][pLastBet] = gettime();
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has initiated a dice bet with you for $%i (/accept dicebet).", GetRPName(playerid), amount);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have initiated a dice bet against %s for $%i.", GetRPName(targetid), amount);
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has initiated a dice bet with you for $%i (/accept dicebet).", GetRPName(playerid), amount);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have initiated a dice bet against %s for $%i.", GetRPName(targetid), amount);
 	return 1;
 }
 
@@ -80621,13 +80686,13 @@ CMD:calculate(playerid, params[])
 	}
 
 	if(option == '+') {
-	    SendClientMessageEx(playerid, COLOR_GREEN, "** Result: %.2f + %.2f = %.2f", value1, value2, value1 + value2);
+	    SendClientMessageEx(playerid, COLOR_GREEN, "* Result: %.2f + %.2f = %.2f", value1, value2, value1 + value2);
 	} else if(option == '-') {
-	    SendClientMessageEx(playerid, COLOR_GREEN, "** Result: %.2f - %.2f = %.2f", value1, value2, value1 - value2);
+	    SendClientMessageEx(playerid, COLOR_GREEN, "* Result: %.2f - %.2f = %.2f", value1, value2, value1 - value2);
 	} else if(option == '*' || option == 'x') {
-		SendClientMessageEx(playerid, COLOR_GREEN, "** Result: %.2f * %.2f = %.2f", value1, value2, value1 * value2);
+		SendClientMessageEx(playerid, COLOR_GREEN, "* Result: %.2f * %.2f = %.2f", value1, value2, value1 * value2);
 	} else if(option == '/') {
-		SendClientMessageEx(playerid, COLOR_GREEN, "** Result: %.2f / %.2f = %.2f", value1, value2, value1 / value2);
+		SendClientMessageEx(playerid, COLOR_GREEN, "* Result: %.2f / %.2f = %.2f", value1, value2, value1 / value2);
 	}
 
 	return 1;
@@ -80683,13 +80748,13 @@ CMD:pw(playerid, params[])
 
 	    PlayerData[playerid][pWatchOn] = 1;
 	    TextDrawShowForPlayer(playerid, TimeTD);
-	    ShowActionBubble(playerid, "** %s turns on their pocket watch.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s turns on their pocket watch.", GetRPName(playerid));
 	}
 	else
 	{
 	    PlayerData[playerid][pWatchOn] = 0;
 	    TextDrawHideForPlayer(playerid, TimeTD);
-	    ShowActionBubble(playerid, "** %s turns off their pocket watch.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s turns off their pocket watch.", GetRPName(playerid));
 	}
 
 	return 1;
@@ -80714,13 +80779,13 @@ CMD:gps(playerid, params[])
 	    PlayerTextDrawSetString(playerid, PlayerData[playerid][pText][0], "Loading...");
 	    PlayerTextDrawShow(playerid, PlayerData[playerid][pText][0]);
 
-	    ShowActionBubble(playerid, "** %s turns on their GPS.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s turns on their GPS.", GetRPName(playerid));
 	}
 	else
 	{
 	    PlayerData[playerid][pGPSOn] = 0;
 	    PlayerTextDrawHide(playerid, PlayerData[playerid][pText][0]);
-	    ShowActionBubble(playerid, "** %s turns off their GPS.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s turns off their GPS.", GetRPName(playerid));
 	}
 
 	return 1;
@@ -80881,7 +80946,7 @@ CMD:mole(playerid, params[]) // MADE BY THE ONE AND ONLY Hernandez!
      	SendClientMessage(playerid, COLOR_YELLOW, "This command sends a SMS to the entire server. Abusing this command will result in heavy punishment.");
      	return 1;
  	}
-	SendClientMessageToAllEx(COLOR_YELLOW, "** SMS from Satan: %s, Ph: 666 **", params);
+	SendClientMessageToAllEx(COLOR_YELLOW, "* SMS from Satan: %s, Ph: 666 *", params);
  	return 1;
 }
 
@@ -80930,8 +80995,8 @@ CMD:takecall(playerid, params[])
 		GetPlayerPos(targetid, x, y, z);
 		SetPlayerCheckpoint(playerid, x, y, z, 5.0);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's mechanic call. Their location was marked on your map.", GetRPName(targetid));
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s has accepted your mechanic call. Please wait patiently until they arrive.", GetRPName(playerid));
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's mechanic call. Their location was marked on your map.", GetRPName(targetid));
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s has accepted your mechanic call. Please wait patiently until they arrive.", GetRPName(playerid));
 	}
 	else if(PlayerHasJob(playerid, JOB_TAXIDRIVER) && PlayerData[targetid][pTaxiCall] > 0)
 	{
@@ -80946,8 +81011,8 @@ CMD:takecall(playerid, params[])
 		GetPlayerPos(targetid, x, y, z);
 		SetPlayerCheckpoint(playerid, x, y, z, 5.0);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's taxi call. Their location was marked on your map.", GetRPName(targetid));
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s has accepted your taxi call. Please wait patiently until they arrive.", GetRPName(playerid));
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's taxi call. Their location was marked on your map.", GetRPName(targetid));
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s has accepted your taxi call. Please wait patiently until they arrive.", GetRPName(playerid));
 	}
 	else
 	{
@@ -80970,7 +81035,7 @@ CMD:listcallers(playerid, params[])
 	{
 	    if((PlayerData[i][pEmergencyCall] > 0) && ((PlayerData[i][pEmergencyType] == FACTION_MEDIC && GetFactionType(playerid) == FACTION_MEDIC) || (PlayerData[i][pEmergencyType] == FACTION_POLICE && IsLawEnforcement(playerid))))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY2, "** %s[%i] - Expiry: %i seconds - Emergency: %s", GetRPName(i), i, PlayerData[i][pEmergencyCall], PlayerData[i][pEmergency]);
+	        SendClientMessageEx(playerid, COLOR_GREY2, "* %s[%i] - Expiry: %i seconds - Emergency: %s", GetRPName(i), i, PlayerData[i][pEmergencyCall], PlayerData[i][pEmergency]);
 		}
 	}
 
@@ -81006,11 +81071,11 @@ CMD:trackcall(playerid, params[])
 	PlayerData[playerid][pCP] = CHECKPOINT_MISC;
 
 	SetPlayerCheckpoint(playerid, x, y, z, 5.0);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have accepted %s's emergency call. Their location was marked on your map.", GetRPName(targetid));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have accepted %s's emergency call. Their location was marked on your map.", GetRPName(targetid));
 
 	if(PlayerData[targetid][pEmergencyCall] == FACTION_MEDIC)
 	{
-		SendClientMessageEx(targetid, COLOR_AQUA, "** %s has accepted your emergency call. Please wait patiently until they arrive.", GetRPName(playerid));
+		SendClientMessageEx(targetid, COLOR_AQUA, "* %s has accepted your emergency call. Please wait patiently until they arrive.", GetRPName(playerid));
 	}
 
 	return 1;
@@ -81159,9 +81224,9 @@ CMD:reply(playerid, params[])
 	    if(i == playerid || chattingWith[i]{playerid})
 	    {
 	        if(PlayerData[playerid][pAdmin] > 1 && PlayerData[playerid][pAdminHide] == 0)
-	        	SendClientMessageEx(i, COLOR_YELLOW, "** %s %s (ID %i): %s **", GetAdminRank(playerid), GetRPName(playerid), playerid, params);
+	        	SendClientMessageEx(i, COLOR_YELLOW, "* %s %s (ID %i): %s *", GetAdminRank(playerid), GetRPName(playerid), playerid, params);
 			else
-			    SendClientMessageEx(i, COLOR_YELLOW, "** Player %s (ID %i): %s **", GetRPName(playerid), playerid, params);
+			    SendClientMessageEx(i, COLOR_YELLOW, "* Player %s (ID %i): %s *", GetRPName(playerid), playerid, params);
 	    }
 	}
 
@@ -81199,7 +81264,7 @@ CMD:gascan(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET gascan = %i WHERE uid = %i", PlayerData[playerid][pGasCan], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	ShowActionBubble(playerid, "** %s refills the %s's gas tank with %i liters of gasoline.", GetRPName(playerid), GetVehicleName(vehicleid), amount);
+	ShowActionBubble(playerid, "* %s refills the %s's gas tank with %i liters of gasoline.", GetRPName(playerid), GetVehicleName(vehicleid), amount);
 	return 1;
 }
 CMD:robbiz(playerid, params[])
@@ -81333,8 +81398,8 @@ CMD:robinvite(playerid, params[])
 
 	PlayerData[targetid][pRobberyOffer] = playerid;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has invited you to a bank robbery. (/accept robbery)", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have invited %s to join your bank robbery.", GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has invited you to a bank robbery. (/accept robbery)", GetRPName(playerid));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have invited %s to join your bank robbery.", GetRPName(targetid));
 	return 1;
 }
 
@@ -81359,8 +81424,8 @@ CMD:bombvault(playerid, params[])
 
 	RobberyInfo[rObjects][1] = CreateDynamicObject(1654, 1677.787475, -988.009765, 671.625366, 0.000000, 0.000000, 180.680709);
 
-	ShowActionBubble(playerid, "** %s firmly plants an explosive on the vault door.", GetRPName(playerid));
-	SendClientMessage(playerid, COLOR_WHITE, "** Bomb planted. Shoot at the bomb to blow that sumbitch' up!");
+	ShowActionBubble(playerid, "* %s firmly plants an explosive on the vault door.", GetRPName(playerid));
+	SendClientMessage(playerid, COLOR_WHITE, "* Bomb planted. Shoot at the bomb to blow that sumbitch' up!");
 	return 1;
 }
 
@@ -81422,23 +81487,23 @@ CMD:motd(playerid, params[])
 {
 	if(!isnull(gServerMOTD))
 	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "** MOTD: %s", gServerMOTD);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* MOTD: %s", gServerMOTD);
 	}
 	if(!isnull(adminMOTD) && PlayerData[playerid][pAdmin] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_LIGHTRED, "** Admin MOTD: %s", adminMOTD);
+		SendClientMessageEx(playerid, COLOR_LIGHTRED, "* Admin MOTD: %s", adminMOTD);
 	}
 	if(!isnull(helperMOTD) && (PlayerData[playerid][pHelper] > 0 || PlayerData[playerid][pAdmin] > 0))
 	{
-		SendClientMessageEx(playerid, COLOR_AQUA, "** Helper MOTD: %s", helperMOTD);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* Helper MOTD: %s", helperMOTD);
 	}
 	if(PlayerData[playerid][pGang] >= 0 && strcmp(GangInfo[PlayerData[playerid][pGang]][gMOTD], "None", true) != 0)
 	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "** Gang MOTD: %s", GangInfo[PlayerData[playerid][pGang]][gMOTD]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* Gang MOTD: %s", GangInfo[PlayerData[playerid][pGang]][gMOTD]);
 	}
 	if(PlayerData[playerid][pFaction] >= 0 && strcmp(FactionInfo[PlayerData[playerid][pFaction]][fMOTD], "None", true) != 0)
 	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "** Faction MOTD: %s", FactionInfo[PlayerData[playerid][pFaction]][fMOTD]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* Faction MOTD: %s", FactionInfo[PlayerData[playerid][pFaction]][fMOTD]);
 	}
 
 	return 1;
@@ -81453,7 +81518,7 @@ CMD:createlocation(playerid, params[])
     if(sscanf(params, "s[32]", name))
 	{
 	    SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /createlocation [name]");
-		SendClientMessage(playerid, COLOR_WHITE, "** NOTE: The location will be created at the coordinates you are standing on.");
+		SendClientMessage(playerid, COLOR_WHITE, "* NOTE: The location will be created at the coordinates you are standing on.");
 		return 1;
 	}
 	if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
@@ -81614,7 +81679,7 @@ CMD:removelocation(playerid, params[])
 	LocationInfo[loc][locExists] = false;
 	LocationInfo[loc][locID] = 0;
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed location %i.", loc);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed location %i.", loc);
 	return 1;
 }
 
@@ -81678,7 +81743,7 @@ CMD:editland(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE lands SET price = %i WHERE id = %i", value, LandInfo[landid][lID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You set land %i's price to %i.", landid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You set land %i's price to %i.", landid, value);
 		ReloadLand(landid);
 	}
 	else if(!strcmp(option, "level", true))
@@ -81696,7 +81761,7 @@ CMD:editland(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE lands SET level = %i WHERE id = %i", value, LandInfo[landid][lID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You set land %i's price to %i.", landid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You set land %i's price to %i.", landid, value);
 		ReloadLand(landid);
 	}
 	else if(!strcmp(option, "height", true))
@@ -81710,7 +81775,7 @@ CMD:editland(playerid, params[])
  	  //  LandInfo[landid][lPickup] = zCoord[1]; We need this, land pickup, when you create a land at height it will create a pickup like house pickup.
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE lands SET heightx = %f, heighty = %f, heightz = %f WHERE id = %i", LandInfo[landid][lHeightX], LandInfo[landid][lHeightY], LandInfo[landid][lHeightZ], LandInfo[landid][lID]);
 		mysql_tquery(connectionID, queryBuffer);
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have land %i's (height) pos to your current height Pos (%f %f %f).", landid, LandInfo[landid][lHeightX], LandInfo[landid][lHeightY], LandInfo[landid][lHeightZ]);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have land %i's (height) pos to your current height Pos (%f %f %f).", landid, LandInfo[landid][lHeightX], LandInfo[landid][lHeightY], LandInfo[landid][lHeightZ]);
 		ReloadLand(landid);
 	}
 	else if(!strcmp(option, "owner", true))
@@ -81722,7 +81787,7 @@ CMD:editland(playerid, params[])
 		}
 	   	SetLandOwner(landid, targetid);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You set land %i's owner to %s.", landid, GetRPName(targetid));
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You set land %i's owner to %s.", landid, GetRPName(targetid));
 		ReloadLand(landid);
 	}
 	return 1;
@@ -81754,7 +81819,7 @@ CMD:editlocker(playerid, params[])
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factionlockers SET pos_x = '%f', pos_y = '%f', pos_z = '%f', interior = %i, world = %i WHERE id = %i", LockerInfo[lockerid][lPosX], LockerInfo[lockerid][lPosY], LockerInfo[lockerid][lPosZ], LockerInfo[lockerid][lInterior], LockerInfo[lockerid][lWorld], LockerInfo[lockerid][lID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You have moved locker %i to your position.", lockerid);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You have moved locker %i to your position.", lockerid);
 		ReloadLocker(lockerid);
 	}
 	else if(!strcmp(option, "factionid", true))
@@ -81768,7 +81833,7 @@ CMD:editlocker(playerid, params[])
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE factionlockers SET factionid = %i WHERE id = %i", LockerInfo[lockerid][lFaction], LockerInfo[lockerid][lID]);
 		mysql_tquery(connectionID, queryBuffer);
 
-		SendClientMessageEx(playerid, COLOR_AQUA, "** You set locker %i's faction to %i.", lockerid, value);
+		SendClientMessageEx(playerid, COLOR_AQUA, "* You set locker %i's faction to %i.", lockerid, value);
 		ReloadLocker(lockerid);
 	}
 	else if(!strcmp(option, "icon", true))
@@ -81790,7 +81855,7 @@ CMD:editlocker(playerid, params[])
 	    mysql_tquery(connectionID, queryBuffer);
 
 		ReloadLocker(lockerid);
-	    SendClientMessageEx(playerid, COLOR_AQUA, "** You've changed the pickup icon model of locker %i to %i.", lockerid, iconid);
+	    SendClientMessageEx(playerid, COLOR_AQUA, "* You've changed the pickup icon model of locker %i to %i.", lockerid, iconid);
 	}
 	else if(!strcmp(option, "label", true))
 	{
@@ -81809,9 +81874,9 @@ CMD:editlocker(playerid, params[])
 		ReloadLocker(lockerid);
 
 		if(status)
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've enabled the 3D text label for locker %i.", lockerid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've enabled the 3D text label for locker %i.", lockerid);
 		else
-		    SendClientMessageEx(playerid, COLOR_AQUA, "** You've disabled the 3D text label for locker %i.", lockerid);
+		    SendClientMessageEx(playerid, COLOR_AQUA, "* You've disabled the 3D text label for locker %i.", lockerid);
 	}
 	else if(!strcmp(option, "weapons", true))
 	{
@@ -82022,7 +82087,7 @@ CMD:removelocker(playerid, params[])
 	LockerInfo[lockerid][lExists] = 0;
 	LockerInfo[lockerid][lID] = 0;
 
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have removed locker %i.", lockerid);
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have removed locker %i.", lockerid);
 	return 1;
 }
 
@@ -82228,7 +82293,7 @@ CMD:breakcuffs(playerid, params[])
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You can't pick your own handcuffs.");
 
 	SetTimerEx("BreakCuffs", 3000, false, "dd", playerid, userid);
-	SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "** %s attempts to pick the cuffs with a crowbar.", GetRPName(playerid));
+	SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s attempts to pick the cuffs with a crowbar.", GetRPName(playerid));
 	return 1;
 }
 forward BreakCuffs(playerid, userid);
@@ -82238,7 +82303,7 @@ public BreakCuffs(playerid, userid)
 	if (random(2))
 	{
 	    SendClientMessageEx(playerid, COLOR_GREEN, "You have failed to pick the cuffs.");
-		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "** %s has failed to pick the cuffs.", GetRPName(playerid));
+		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s has failed to pick the cuffs.", GetRPName(playerid));
 	}
 	else
 	{
@@ -82246,7 +82311,7 @@ public BreakCuffs(playerid, userid)
 	    SetPlayerSpecialAction(userid, SPECIAL_ACTION_NONE);
 
 	    SendClientMessage(playerid, COLOR_GREEN, "You have picked the cuffs.");
-		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "** %s has picked the cuffs from %s's wrists.", GetRPName(playerid), GetRPName(userid));
+		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s has picked the cuffs from %s's wrists.", GetRPName(playerid), GetRPName(userid));
 	}
 	return 1;
 }
@@ -82375,8 +82440,8 @@ CMD:cracktrunk(playerid, params[])
 	}
 	PlayerData[playerid][pCocaineTrunk] = vehicleid;
 
-	ShowActionBubble(playerid, "** %s begins to pry open the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
-	SendClientMessageEx(playerid, COLOR_WHITE, "** This will take about %i seconds. Do not move during the process.", PlayerData[playerid][pCocaineTime]);
+	ShowActionBubble(playerid, "* %s begins to pry open the trunk of the %s.", GetRPName(playerid), GetVehicleName(vehicleid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "* This will take about %i seconds. Do not move during the process.", PlayerData[playerid][pCocaineTime]);
 	return 1;
 }
 
@@ -82488,7 +82553,7 @@ CMD:tie(playerid, params[])
 	mysql_tquery(connectionID, queryBuffer);
 
 	GameTextForPlayer(targetid, "~r~Tied", 3000, 3);
-	ShowActionBubble(playerid, "** %s ties %s with a rope.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s ties %s with a rope.", GetRPName(playerid), GetRPName(targetid));
 
 	TogglePlayerControllable(targetid, 0);
 	PlayerData[targetid][pTied] = 1;
@@ -82535,7 +82600,7 @@ CMD:blindfold(playerid, params[])
 
 	TextDrawShowForPlayer(targetid, Blind);
 	GameTextForPlayer(targetid, "~r~Blindfolded", 3000, 3);
-	ShowActionBubble(playerid, "** %s blindfolds %s with a piece of rag.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s blindfolds %s with a piece of rag.", GetRPName(playerid), GetRPName(targetid));
 
 	PlayerData[targetid][pBlinded] = 1;
 	return 1;
@@ -82567,7 +82632,7 @@ CMD:removeblindfold(playerid, params[])
 	}
 
     TextDrawHideForPlayer(targetid, Blind);
-	ShowActionBubble(playerid, "** %s removes the blindfold from %s.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s removes the blindfold from %s.", GetRPName(playerid), GetRPName(targetid));
 
 	PlayerData[targetid][pBlinded] = 0;
 	return 1;
@@ -82602,7 +82667,7 @@ CMD:untie(playerid, params[])
 	}
 
 	GameTextForPlayer(targetid, "~g~Untied", 3000, 3);
-	ShowActionBubble(playerid, "** %s unties the rope from %s.", GetRPName(playerid), GetRPName(targetid));
+	ShowActionBubble(playerid, "* %s unties the rope from %s.", GetRPName(playerid), GetRPName(targetid));
 
 	TogglePlayerControllable(targetid, 1);
 	PlayerData[targetid][pTied] = 0;
@@ -82685,8 +82750,8 @@ CMD:offerduel(playerid, params[])
 
 	PlayerData[targetid][pDuelOffer] = playerid;
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "** %s has offered you to duel with them. (/accept duel)", GetRPName(playerid));
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have sent %s a duel offer.", GetRPName(targetid));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has offered you to duel with them. (/accept duel)", GetRPName(playerid));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have sent %s a duel offer.", GetRPName(targetid));
 	return 1;
 }
 
@@ -82723,12 +82788,12 @@ CMD:gbackup(playerid, params[])
         {
     	    if(PlayerData[playerid][pBackup])
     	    {
-    	        SendClientMessageEx(i, COLOR_AQUA, "** %s %s is requesting backup in %s (marked on map). **", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
+    	        SendClientMessageEx(i, COLOR_AQUA, "* %s %s is requesting backup in %s (marked on map). *", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
     	        SetPlayerMarkerForPlayer(i, playerid, (GangInfo[PlayerData[playerid][pGang]][gColor] & ~0xff) + 0xFF);
 			}
 			else
 			{
-    	        SendClientMessageEx(i, COLOR_AQUA, "** %s %s has cancelled their backup request. **", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
+    	        SendClientMessageEx(i, COLOR_AQUA, "* %s %s has cancelled their backup request. *", GangRanks[PlayerData[playerid][pGang]][PlayerData[playerid][pGangRank]], GetRPName(playerid), GetPlayerZoneName(playerid));
     	        SetPlayerMarkerForPlayer(i, playerid, GetPlayerColor(playerid));
 			}
 		}
@@ -83037,7 +83102,7 @@ CMD:firstaid(playerid, params[])
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET firstaid = %i WHERE uid = %i", PlayerData[playerid][pFirstAid], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	ShowActionBubble(playerid, "** %s administers first aid to their self.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s administers first aid to their self.", GetRPName(playerid));
 	SendClientMessage(playerid, COLOR_WHITE, "HINT: Your first aid kit is in effect until your health is full.");
 	return 1;
 }
@@ -83052,13 +83117,13 @@ CMD:scanner(playerid, params[])
 	if(!PlayerData[playerid][pScannerOn])
 	{
 	    PlayerData[playerid][pScannerOn] = 1;
-	    ShowActionBubble(playerid, "** %s turns on their police scanner.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s turns on their police scanner.", GetRPName(playerid));
 	    SendClientMessage(playerid, COLOR_WHITE, "You will now hear messages from emergency and department chats.");
 	}
 	else
 	{
 	    PlayerData[playerid][pScannerOn] = 0;
-	    ShowActionBubble(playerid, "** %s turns off their police scanner.", GetRPName(playerid));
+	    ShowActionBubble(playerid, "* %s turns off their police scanner.", GetRPName(playerid));
 	}
 
 	return 1;
@@ -83087,7 +83152,7 @@ CMD:bodykit(playerid, params[])
 
 	PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 	RepairVehicle(GetPlayerVehicleID(playerid));
-	ShowActionBubble(playerid, "** %s repairs the health and bodywork on their vehicle.", GetRPName(playerid));
+	ShowActionBubble(playerid, "* %s repairs the health and bodywork on their vehicle.", GetRPName(playerid));
 	return 1;
 }
 CMD:viprimkit(playerid, params[])
