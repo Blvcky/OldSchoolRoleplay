@@ -1317,6 +1317,7 @@ enum vEnum
 	bool:vForSale,
 	vForSalePrice,
 	Text3D:vForSaleLabel,
+	Float:vMileage,
 };
 
 enum fEnum
@@ -1569,7 +1570,6 @@ new firstperson[MAX_PLAYERS];
 new HelmetEnabled[MAX_PLAYERS];
 new CarWindows[MAX_VEHICLES] = 0;
 new PlayerText:_vhudFlash[MAX_PLAYERS];
-new PlayerText:Brzinomer[ MAX_PLAYERS ][ 10 ];
 new Text3D:fRepfamtext[MAX_PLAYERS];
 new Text:welcomenew;
 new VIPVehicles[50];
@@ -1713,6 +1713,7 @@ new ElevatorBoostTimer;
 new bool:chattingWith[MAX_PLAYERS][MAX_PLAYERS char];
 new Text3D:vehicleCallsign[MAX_VEHICLES] = {Text3D:INVALID_3DTEXT_ID, ...};
 new PayCheckCode[MAX_PLAYERS];
+new PlayerText:SpeedoMeterTextDraw[MAX_PLAYERS][40];
 new Text:td_mdc_Box = Text:INVALID_TEXT_DRAW,
 	Text:td_mdc_HeaderBox = Text:INVALID_TEXT_DRAW,
 	Text:td_mdc_CitizenBox = Text:INVALID_TEXT_DRAW,
@@ -8466,9 +8467,9 @@ stock SetToyColor(playerid, slot, layer, color)
 			ClothingInfo[playerid][slot][cMatColor1] = color;
 		}
 		else ClothingInfo[playerid][slot][cMatColor2] = color;
-
+		
 		RemovePlayerAttachedObject(playerid, slot);
-
+		
  		SetPlayerAttachedObject(playerid, slot, ClothingInfo[playerid][slot][cModel], ClothingInfo[playerid][slot][cBone],
 		ClothingInfo[playerid][slot][cPosX], ClothingInfo[playerid][slot][cPosY], ClothingInfo[playerid][slot][cPosZ],
 		ClothingInfo[playerid][slot][cRotX], ClothingInfo[playerid][slot][cRotY], ClothingInfo[playerid][slot][cRotZ],
@@ -11872,129 +11873,6 @@ stock CreatePlayerTextDraws( playerid )
 	PlayerTextDrawSetOutline(playerid, _crTickets[playerid], 1);
 	PlayerTextDrawSetProportional(playerid, _crTickets[playerid], 1);
 
-
-	//------------------------------------------------------------------------//
-
-	Brzinomer[playerid][0] = CreatePlayerTextDraw(playerid, 525.111389, 394.088836, "box");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][0], 0.000000, -0.044444);
-	PlayerTextDrawTextSize(playerid, Brzinomer[playerid][0], 623.000000, 0.000000);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][0], 1);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][0], -1);
-	PlayerTextDrawUseBox(playerid, Brzinomer[playerid][0], 1);
-	PlayerTextDrawBoxColor(playerid, Brzinomer[playerid][0], 0x000000AA);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][0], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][0], 0);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][0], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][0], 1);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][0], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][0], 0);
-
-	Brzinomer[playerid][1] = CreatePlayerTextDraw(playerid, 627.777770, 365.715454, "box");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][1], 0.000000, 6.133327);
-	PlayerTextDrawTextSize(playerid, Brzinomer[playerid][1], 621.000000, 0.000000);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][1], 1);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][1], -1);
-	PlayerTextDrawUseBox(playerid, Brzinomer[playerid][1], 1);
-	PlayerTextDrawBoxColor(playerid, Brzinomer[playerid][1], 0x000000AA);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][1], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][1], 0);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][1], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][1], 1);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][1], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][1], 0);
-
-	Brzinomer[playerid][2] = CreatePlayerTextDraw(playerid, 565.889099, 341.168945, "");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][2], 0.000000, 0.000000);
-	PlayerTextDrawTextSize(playerid, Brzinomer[playerid][2], 60.000000, 73.000000);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][2], 1);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][2], -1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][2], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][2], 0);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][2], 0);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][2], 5);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][2], 0);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][2], 0);
-	PlayerTextDrawSetPreviewModel(playerid, Brzinomer[playerid][2], 411);
-	PlayerTextDrawSetPreviewRot(playerid, Brzinomer[playerid][2], 0.000000, 0.000000, -30.000000, 1.000000);
-	PlayerTextDrawSetPreviewVehCol(playerid, Brzinomer[playerid][2], 1, 1);
-
-	Brzinomer[playerid][3] = CreatePlayerTextDraw(playerid, 524.222167, 395.582153, "220");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][3], 0.342222, 1.316266);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][3], 1);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][3], -1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][3], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][3], 1);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][3], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][3], 3);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][3], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][3], 0);
-
-	Brzinomer[playerid][4] = CreatePlayerTextDraw(playerid, 523.777770, 382.142395, "infernus");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][4], 0.172888, 0.903111);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][4], 1);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][4], -1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][4], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][4], 1);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][4], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][4], 2);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][4], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][4], 0);
-
-	Brzinomer[playerid][5] = CreatePlayerTextDraw(playerid, 526.000244, 408.026733, "KM/H");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][5], 0.175555, 0.669155);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][5], 1);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][5], -1378294017);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][5], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][5], 0);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][5], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][5], 1);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][5], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][5], 0);
-
-	Brzinomer[playerid][6] = CreatePlayerTextDraw(playerid, 572.933105, 396.080047, "100");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][6], 0.301333, 1.171911);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][6], 2);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][6], -1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][6], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][6], 1);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][6], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][6], 3);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][6], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][6], 0);
-
-	Brzinomer[playerid][7] = CreatePlayerTextDraw(playerid, 572.509460, 407.528869, "FUEL");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][7], 0.151111, 0.689067);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][7], 2);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][7], -1378294017);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][7], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][7], 0);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][7], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][7], 1);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][7], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][7], 0);
-
-	Brzinomer[playerid][8] = CreatePlayerTextDraw(playerid, 621.111633, 396.080108, "999.0");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][8], 0.231555, 1.052444);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][8], 3);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][8], -1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][8], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][8], 1);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][8], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][8], 3);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][8], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][8], 0);
-
-	Brzinomer[playerid][9] = CreatePlayerTextDraw(playerid, 618.444335, 406.533325, "HEALTH");
-	PlayerTextDrawLetterSize(playerid, Brzinomer[playerid][9], 0.145778, 0.699022);
-	PlayerTextDrawAlignment(playerid, Brzinomer[playerid][9], 3);
-	PlayerTextDrawColor(playerid, Brzinomer[playerid][9], -1378294017);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][9], 0);
-	PlayerTextDrawSetOutline(playerid, Brzinomer[playerid][9], 0);
-	PlayerTextDrawBackgroundColor(playerid, Brzinomer[playerid][9], 255);
-	PlayerTextDrawFont(playerid, Brzinomer[playerid][9], 1);
-	PlayerTextDrawSetProportional(playerid, Brzinomer[playerid][9], 1);
-	PlayerTextDrawSetShadow(playerid, Brzinomer[playerid][9], 0);
-
 	//-------------------------------------------------------------------------//
 
     TuningBuy[ playerid ][ 0 ] = CreatePlayerTextDraw(playerid, 425.125000, 338.666687, "usebox");
@@ -14334,7 +14212,7 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	}
 
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
-    format(string, sizeof(string), "{B5B5B5}Statistics of: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", name, GetDateStats());
+    format(string, sizeof(string), "{B5B5B5}Statistics of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", name, GetDateStats());
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
 
 	format(string, sizeof(string), "Level: %i | Gender: %s | Age: %i | Cash: %s | Bank: %s | Hours: %s | Ph: %i | Channel: %i",
@@ -14352,21 +14230,21 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	format(string, sizeof(string), "{B5B5B5}Job: %s | Job 2: %s | Crimes Commited: %s | Times Arrested: %s | Wanted Level: %i | Insurance: %s",
 	job, secondjob, FormatNumber(PlayerData[playerid][pCrimes], 0), FormatNumber(PlayerData[playerid][pArrested], 0), PlayerData[playerid][pWantedLevel], insurance);
     SendClientMessage(targetid, COLOR_WHITE, string);
-
+    
     format(string, sizeof(string), "Faction: %s | Rank: %s | Division: %s | Gang: %s | Rank: %s | Crew: %s",
 	faction, facrank, division, gang, gangrank, gangcrew);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
-    format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Or? | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
+    format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Orë | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
 	GetVIPRankEx(PlayerData[playerid][pVIPPackage]), PlayerData[playerid][pDoubleXP], FormatNumber(PlayerData[playerid][pCookies], 0), FormatNumber(PlayerData[playerid][pPaycheck]), PlayerData[playerid][pMinutes]);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "Weapon Restriction: %i hours | Married To: %s | DJ Rank: %d | Trucking XP: %d | Trucking Level: %d.",
-	PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);
+	PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);   
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "{B5B5B5}Warnings: %i | DM Warnings: %i/3 | Report Warnings: %i/3 | Jail Type: %s | Jail Time: %s sec",
-	PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0));
+	PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0));   
     SendClientMessage(targetid, COLOR_WHITE, string);
 
 	if(PlayerData[targetid][pAdmin] > 0)
@@ -14384,35 +14262,35 @@ DisplayInventory(playerid, targetid = INVALID_PLAYER_ID)
 {
     new string[800];
 	if(targetid == INVALID_PLAYER_ID) targetid = playerid;
-
+	
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 
-	format(string, sizeof(string), "{B5B5B5}Inventory of: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
+	format(string, sizeof(string), "{B5B5B5}Inventory of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	format(string, sizeof(string), "Weed: %i/%ig | Cocaine: %i/%ig | Meth: %i/%ig | Painkillers: %i/%i | Seeds: %i/%i", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED),
         PlayerData[playerid][pCocaine], GetPlayerCapacity(playerid, CAPACITY_COCAINE), PlayerData[playerid][pMeth], GetPlayerCapacity(playerid, CAPACITY_METH), PlayerData[playerid][pPainkillers], GetPlayerCapacity(playerid, CAPACITY_PAINKILLERS), PlayerData[playerid][pSeeds], GetPlayerCapacity(playerid, CAPACITY_SEEDS));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	format(string, sizeof(string), "{B5B5B5}Materials: %s/%s | Ephedrine: %i/%ig | Muriatic acid: %i/10 | Baking soda: %i/3", FormatNumber(PlayerData[playerid][pMaterials], 0), FormatNumber(GetPlayerCapacity(playerid, CAPACITY_MATERIALS), 0),
 		PlayerData[playerid][pEphedrine], GetPlayerCapacity(playerid, CAPACITY_EPHEDRINE), PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pBakingSoda]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	format(string, sizeof(string), "Fishing rod: %s | Fish bait: %i/20 | Boombox: %s | MP3 player: %s | Phonebook: %s", (PlayerData[playerid][pFishingRod]) ? ("Yes") : ("No"), PlayerData[playerid][pFishingBait], (PlayerData[playerid][pBoombox]) ? ("Yes") : ("No"), (PlayerData[playerid][pMP3Player]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhonebook]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	format(string, sizeof(string), "{B5B5B5}Drivers license: %s | Components: %s | Cigars: %s | Spraycans: %i/20 | Bombs: %i/3", (PlayerData[playerid][pCarLicense]) ? ("Yes") : ("No"), FormatNumber(PlayerData[playerid][pComponents], 0), FormatNumber(PlayerData[playerid][pCigars], 0), PlayerData[playerid][pSpraycans], PlayerData[playerid][pBombs]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	format(string, sizeof(string), "Walkie talkie: %s | Mobile phone: %s | First aid kits: %i/20 | Police scanner: %s", (PlayerData[playerid][pWalkieTalkie]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhone]) ? ("Yes") : ("No"), PlayerData[playerid][pFirstAid], (PlayerData[playerid][pPoliceScanner]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	format(string, sizeof(string), "{B5B5B5}Gasoline: %i/20L | Bodykits: %i/10 | Rimkits: %i/5 | Rope: %i/10 | Watch: %s | GPS: %s", PlayerData[playerid][pGasCan], PlayerData[playerid][pBodykits], PlayerData[playerid][pRimkits], PlayerData[playerid][pRope], (PlayerData[playerid][pWatch]) ? ("Yes") : ("No"), (PlayerData[playerid][pGPS]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	format(string, sizeof(string), "Diamond: %s | Oil: %i/%iL | Skates: %s | Crowbar: %i/5", FormatNumber(PlayerData[playerid][pDiamonds], 0), PlayerData[playerid][pOil],  GetPlayerCapacity(playerid, CAPACITY_OIL), (PlayerData[playerid][pSkates]) ? ("Yes") : ("No"), PlayerData[playerid][pCrowbar]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-
+	
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 	return 1;
 }
@@ -23036,7 +22914,7 @@ DespawnVehicle(vehicleid, bool:save = true)
 		    GetVehicleHealth(vehicleid, health);
 		    SaveVehicleModifications(vehicleid);
 
-		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET fuel = %i, health = '%f' WHERE id = %i", vehicleFuel[vehicleid], health, VehicleInfo[vehicleid][vID]);
+		    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET fuel = %i, mileage = '%f', health = '%f' WHERE id = %i", vehicleFuel[vehicleid], VehicleInfo[vehicleid][vMileage], health, VehicleInfo[vehicleid][vID]);
 	    	mysql_tquery(connectionID, queryBuffer);
 	    }
 
@@ -23090,6 +22968,7 @@ ResetVehicle(vehicleid)
 	VehicleInfo[vehicleid][vObjects][1] = INVALID_OBJECT_ID;
 	VehicleInfo[vehicleid][vTimer] = -1;
 	VehicleInfo[vehicleid][vRank] = 0;
+	VehicleInfo[vehicleid][vMileage] = 0.0;
 
 	VehicleInfo[vehicleid][vForSale] = false;
 	VehicleInfo[vehicleid][vForSalePrice] = 0;
@@ -23805,9 +23684,9 @@ ReloadBusiness(businessid)
 
 		BusinessInfo[businessid][bText] = CreateDynamic3DTextLabel(string, COLOR_GREY1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ] + 0.4, 20.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, BusinessInfo[businessid][bOutsideVW], BusinessInfo[businessid][bOutsideInt], -1 , 10.0);
 	    BusinessInfo[businessid][bPickup] = CreateDynamicPickup(1272, 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-
+	    
 	    /*BusinessInfo[businessid][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(businessid), 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-
+		
 		switch(BusinessInfo[businessid][bType])
 		{
 		    case BUSINESS_STORE: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 17, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
@@ -24414,7 +24293,7 @@ SetVehicleParams(vehicleid, param, status)
 
 	return SetVehicleParamsEx(vehicleid, params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
 }
-
+/*
 Float:GetVehicleSpeedMPH(vehicleid)
 {
 	new
@@ -24428,7 +24307,7 @@ Float:GetVehicleSpeedMPH(vehicleid)
 	}
 
 	return 0.0;
-}
+}*/
 
 Float:GetVehicleSpeed(vehicleid)
 {
@@ -24443,6 +24322,17 @@ Float:GetVehicleSpeed(vehicleid)
 	}
 
 	return 0.0;
+}
+
+stock GetVehicleSpeedKMH(vehicleid)
+{
+	new Float:speed_x, Float:speed_y, Float:speed_z, Float:temp_speed, round_speed;
+	GetVehicleVelocity(vehicleid, speed_x, speed_y, speed_z);
+
+	temp_speed = temp_speed = floatsqroot(((speed_x*speed_x) + (speed_y*speed_y)) + (speed_z*speed_z)) * 136.666667;
+
+	round_speed = floatround(temp_speed);
+	return round_speed;
 }
 
 VehicleHasWindows(vehicleid)
@@ -26665,7 +26555,7 @@ public SecondTimer()
 							GetPlayerFacingAngle(i, a);
 						    strunpack(str, PlayerData[i][pGraffitiText]);
 		        	        format(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], 64, str);
-
+		        	        
 		        	        GraffitiData[PlayerData[i][pGraffiti]][graffitiPos][3] = a - 90.0;
 		        	        strreplace2(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], "(n)", "\n");
                             GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault] = 0;
@@ -27643,7 +27533,7 @@ public MinuteTimer()
 			}
 		}
 	 	AddToTaxVault(-budget);
-
+    
         for(new i = 0; i < MAX_POINTS; i ++)
 	    {
 	        if(PointInfo[i][pExists])
@@ -28032,6 +27922,20 @@ public InjuredTimer()
 		}
 	}
 }
+
+forward MileageTimer();
+public MileageTimer()
+{
+	foreach(new i: Vehicle)
+	{
+	    if((GetVehicleDriver(i)) != INVALID_VEHICLE_ID)
+	    {
+		  	new speed = GetVehicleSpeedKMH(i);
+		  	VehicleInfo[i][vMileage] += (speed * 0.00009722222);
+ 		}
+	}
+}
+
 
 forward RandomFire(check);
 public RandomFire(check)
@@ -29183,6 +29087,8 @@ public OnPlayerSpawnVehicle(playerid, parked)
 
 			VehicleInfo[vehicleid][vForSale] = bool:cache_get_field_content_int(0, "forsale");
 			VehicleInfo[vehicleid][vForSalePrice] = cache_get_field_content_int(0, "forsaleprice");
+
+			VehicleInfo[vehicleid][vMileage] = cache_get_field_content_float(0, "mileage");
 
 			if(VehicleInfo[vehicleid][vForSale])
 			{
@@ -30985,22 +30891,22 @@ public OnQueryFinished(threadid, extraid)
 						{
 							SendClientMessageEx(extraid, 0xE65A5AAA, "Admin Motd: %s", adminMOTD);
 						}
-
+					
 						if(!isnull(helperMOTD) && PlayerData[extraid][pHelper] > 0)
 						{
 							SendClientMessageEx(extraid, COLOR_AQUA, "Helper Motd: %s", helperMOTD);
 						}
-
+				
 						if(PlayerData[extraid][pFaction] >= 0 && strcmp(FactionInfo[PlayerData[extraid][pFaction]][fMOTD], "None", true) != 0)
 						{
 							SendClientMessageEx(extraid, COLOR_YELLOW, "Faction Motd: %s", FactionInfo[PlayerData[extraid][pFaction]][fMOTD]);
-						}
+						}	
 
 						if(PlayerData[extraid][pGang] >= 0 && strcmp(GangInfo[PlayerData[extraid][pGang]][gMOTD], "None", true) != 0)
 						{
 							SendClientMessageEx(extraid, COLOR_YELLOW, "Gang MOTD: %s", GangInfo[PlayerData[extraid][pGang]][gMOTD]);
 						}
-
+				
 						if(!isnull(gServerMOTD))
 						{
 							SendClientMessageEx(extraid, COLOR_WHITE, "Global Motd: %s", gServerMOTD);
@@ -31008,7 +30914,7 @@ public OnQueryFinished(threadid, extraid)
 
 					    format(string, sizeof(string), "~w~Welcome ~n~~y~   %s", GetPlayerNameEx(extraid));
         	        	GameTextForPlayer(extraid, string, 5000, 1);
-
+						
 					    /*if(PlayerData[extraid][pAdmin] && !PlayerData[extraid][pAdminHide])
 					    {
 					        SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has logged in.", GetAdmCmdRank(extraid), GetRPName(extraid));
@@ -32131,6 +32037,7 @@ public OnQueryFinished(threadid, extraid)
 					VehicleInfo[vehicleid][vHealth] = cache_get_field_content_int(i, "health");
 				    VehicleInfo[vehicleid][carImpounded] = cache_get_field_content_int(i, "carImpounded");
 				    VehicleInfo[vehicleid][carImpoundPrice] = cache_get_field_content_int(i, "carImpoundPrice");
+				    VehicleInfo[vehicleid][vMileage] = cache_get_field_content_float(i, "mileage");
 
 					if(VehicleInfo[vehicleid][vGang] >= 0)
 					{
@@ -33710,7 +33617,6 @@ public OnPlayerConnect(playerid)
 	zone_paintball[1] = GangZoneCreateEx(-2591.2288, -1814.2455, -2178.9082, -1394.5500);
 	area_paintball[1] = CreateDynamicRectangle(-2591.2288, -1814.2455, -2178.9082, -1394.5500);
 
-
     // Miner objects
 
 	// GPS
@@ -33723,27 +33629,265 @@ public OnPlayerConnect(playerid)
 	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][0], 1);
 	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][0], 1);
 
-	// Speedometer
-/*	PlayerData[playerid][pText][1] = CreatePlayerTextDraw(playerid, 552.000000, 382.000000, "_");
-	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][1], 255);
-	PlayerTextDrawFont(playerid, PlayerData[playerid][pText][1], 1);
-	PlayerTextDrawLetterSize(playerid, PlayerData[playerid][pText][1], 0.519999, 5.500000);
-	PlayerTextDrawColor(playerid, PlayerData[playerid][pText][1], -1);
-	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][1], 0);
-	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][1], 1);
-	PlayerTextDrawSetShadow(playerid, PlayerData[playerid][pText][1], 1);
-	PlayerTextDrawUseBox(playerid, PlayerData[playerid][pText][1], 1);
-	PlayerTextDrawBoxColor(playerid, PlayerData[playerid][pText][1], 85);
-	PlayerTextDrawTextSize(playerid, PlayerData[playerid][pText][1], 628.000000, 0.000000);
+	/* Samp Version 0.3.DLL
+	 Speedo - Prej 0 deri 9
+	 Fuel - Prej 10 deri 18
+	 Nos - Prej 19 deri 28
+	 Miliage - 29
+	 Lights - 30
+	 Oil - 31
+	 Engine Broken 32 deri 33
+	 Locks 34 deri 35
+	 Text Mileage 36
+	 Text 0 KMH 37 */
 
-	PlayerData[playerid][pText][2] = CreatePlayerTextDraw(playerid, 554.000000, 384.000000, "~b~~h~Speed:~w~ 100 km/h~n~~b~~h~Fuel:~w~ 100%~n~~b~~h~Damage:~w~ 50%~n~~b~~h~Doors:~w~ Locked");
-	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][2], 255);
-	PlayerTextDrawFont(playerid, PlayerData[playerid][pText][2], 2);
-	PlayerTextDrawLetterSize(playerid, PlayerData[playerid][pText][2], 0.169999, 1.200000);
-	PlayerTextDrawColor(playerid, PlayerData[playerid][pText][2], -1);
-	PlayerTextDrawSetOutline(playerid, PlayerData[playerid][pText][2], 1);
-	PlayerTextDrawSetProportional(playerid, PlayerData[playerid][pText][2], 1);
-*/
+	SpeedoMeterTextDraw[playerid][0] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-0");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][0], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][0], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][0], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][0], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][0], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][0], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][0], 0);
+
+	SpeedoMeterTextDraw[playerid][1] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-10");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][1], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][1], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][1], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][1], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][1], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][1], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][1], 0);
+
+	SpeedoMeterTextDraw[playerid][2] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-20");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][2], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][2], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][2], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][2], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][2], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][2], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][2], 0);
+
+	SpeedoMeterTextDraw[playerid][3] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-30");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][3], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][3], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][3], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][3], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][3], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][3], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][3], 0);
+
+	SpeedoMeterTextDraw[playerid][4] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-40");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][4], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][4], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][4], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][4], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][4], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][4], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][4], 0);
+
+	SpeedoMeterTextDraw[playerid][5] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-50");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][5], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][5], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][5], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][5], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][5], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][5], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][5], 0);
+
+	SpeedoMeterTextDraw[playerid][6] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-60");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][6], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][6], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][6], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][6], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][6], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][6], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][6], 0);
+
+	SpeedoMeterTextDraw[playerid][7] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-70");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][7], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][7], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][7], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][7], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][7], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][7], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][7], 0);
+
+	SpeedoMeterTextDraw[playerid][8] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-80");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][8], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][8], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][8], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][8], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][8], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][8], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][8], 0);
+
+	SpeedoMeterTextDraw[playerid][9] = CreatePlayerTextDraw(playerid, 511.250000, 358.000518, "mdl-2001:speedo-90");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][9], 84.000000, 74.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][9], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][9], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][9], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][9], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][9], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][9], 0);
+
+	SpeedoMeterTextDraw[playerid][10] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-0");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][10], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][10], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][10], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][10], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][10], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][10], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][10], 0);
+
+	SpeedoMeterTextDraw[playerid][11] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-12");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][11], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][11], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][11], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][11], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][11], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][11], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][11], 0);
+
+	SpeedoMeterTextDraw[playerid][12] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-25");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][12], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][12], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][12], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][12], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][12], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][12], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][12], 0);
+
+	SpeedoMeterTextDraw[playerid][13] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-37");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][13], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][13], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][13], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][13], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][13], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][13], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][13], 0);
+
+	SpeedoMeterTextDraw[playerid][14] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-50");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][14], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][14], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][14], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][14], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][14], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][14], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][14], 0);
+
+	SpeedoMeterTextDraw[playerid][15] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-65");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][15], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][15], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][15], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][15], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][15], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][15], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][15], 0);
+
+	SpeedoMeterTextDraw[playerid][16] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-75");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][16], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][16], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][16], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][16], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][16], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][16], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][16], 0);
+
+	SpeedoMeterTextDraw[playerid][17] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-87");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][17], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][17], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][17], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][17], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][17], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][17], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][17], 0);
+
+	SpeedoMeterTextDraw[playerid][18] = CreatePlayerTextDraw(playerid, 573.750000, 362.666442, "mdl-2001:fuel-100");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][18], 76.000000, 67.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][18], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][18], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][18], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][18], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][18], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][18], 0);
+
+	SpeedoMeterTextDraw[playerid][29] = CreatePlayerTextDraw(playerid, 559.375000, 314.250152, "mdl-2001:mileage");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][29], 76.000000, 66.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][29], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][29], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][29], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][29], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][29], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][29], 0);
+
+	SpeedoMeterTextDraw[playerid][30] = CreatePlayerTextDraw(playerid, 499.375000, 396.500061, "mdl-2001:lights");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][30], 16.000000, 13.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][30], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][30], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][30], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][30], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][30], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][30], 0);
+
+	SpeedoMeterTextDraw[playerid][31] = CreatePlayerTextDraw(playerid, 501.875000, 371.416839, "mdl-2001:oil");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][31], 19.000000, 23.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][31], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][31], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][31], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][31], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][31], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][31], 0);
+
+	SpeedoMeterTextDraw[playerid][32] = CreatePlayerTextDraw(playerid, 518.125000, 360.916839, "mdl-2001:Engine-Broken");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][32], 17.000000, 14.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][32], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][32], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][32], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][32], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][32], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][32], 0);
+
+	SpeedoMeterTextDraw[playerid][34] = CreatePlayerTextDraw(playerid, 542.500000, 355.666870, "mdl-2001:Locks-Locked");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][34], 16.000000, 13.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][34], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][34], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][34], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][34], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][34], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][34], 0);
+
+	SpeedoMeterTextDraw[playerid][35] = CreatePlayerTextDraw(playerid, 542.500000, 355.666870, "mdl-2001:Locks-Unlocked");
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][35], 16.000000, 13.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][35], 1);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][35], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][35], 0);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][35], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][35], 4);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][35], 0);
+	
+	SpeedoMeterTextDraw[playerid][36] = CreatePlayerTextDraw(playerid, 598.125000, 338.749847, "300 KIL");
+	PlayerTextDrawLetterSize(playerid, SpeedoMeterTextDraw[playerid][36], 0.219999, 1.600000);
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][36], 0.000000, 427.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][36], 2);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][36], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][36], 0);
+	PlayerTextDrawSetOutline(playerid, SpeedoMeterTextDraw[playerid][36], 1);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][36], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][36], 2);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][36], 1);
+
+	SpeedoMeterTextDraw[playerid][37] = CreatePlayerTextDraw(playerid, 552.500000, 402.916534, "0 KMH");
+	PlayerTextDrawLetterSize(playerid, SpeedoMeterTextDraw[playerid][37], 0.356249, 1.891667);
+	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][37], 0.000000, 427.000000);
+	PlayerTextDrawAlignment(playerid, SpeedoMeterTextDraw[playerid][37], 2);
+	PlayerTextDrawColor(playerid, SpeedoMeterTextDraw[playerid][37], -1);
+	PlayerTextDrawSetShadow(playerid, SpeedoMeterTextDraw[playerid][37], 0);
+	PlayerTextDrawSetOutline(playerid, SpeedoMeterTextDraw[playerid][37], 1);
+	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][37], 255);
+	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][37], 2);
+	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][37], 1);
+
 	// HP & armor
 	PlayerData[playerid][pText][3] = CreatePlayerTextDraw(playerid, 577.000000, 43.500000, "100");
 	PlayerTextDrawAlignment(playerid, PlayerData[playerid][pText][3], 2);
@@ -34037,11 +34181,6 @@ public OnPlayerDisconnect(playerid, reason)
     PlayerData[playerid][pCarryCrate] = -1;
     PlayerData[playerid][pRobHouse] = -1;
  	SavePlayerVariables(playerid);
-
-	for( new i = 0; i < 10; i ++) {
-        PlayerTextDrawDestroy( playerid, Brzinomer[ playerid ][ i ] );
-		Brzinomer[ playerid ][ i ] = PlayerText:INVALID_TEXT_DRAW;
-	}
 
  	foreach(new i : Player)
 	{
@@ -36318,7 +36457,7 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 	            new houseid = GetInsideHouse(playerid);
 				if(houseid == -1)
 				    houseid = GetFurnitureHouse(playerid);
-
+				    
 	            if(houseid >= 0 && HasFurniturePerms(playerid, houseid))
 	            {
 		            PreviewFurniture(playerid, listitem + PlayerData[playerid][pPreviewIndex]);
@@ -36520,34 +36659,10 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 		    if(PlayerData[playerid][pSpeedometer] == 1)
 		    {
 
-				 //&& !IsVehicleBrod( vehicle ) ) {// && !IsVehicleLetelica( vehicle ) ) {
-				new Float:H;
-				GetVehicleHealth( vehicle, H );
-				new string[ 32 ];
-				format( string, sizeof( string ), "%.0f", GetVehicleSpeed( vehicle ) );
-				PlayerTextDrawSetString( playerid, Brzinomer[ playerid ][ 3 ], string );
-				new stringic[ 32 ];
-				format( stringic, sizeof( stringic ), "%d", vehicleFuel[ vehicle ] );
-				PlayerTextDrawSetString( playerid, Brzinomer[ playerid ][ 6 ], stringic );
-		        new str[ 32 ];
-		        format( str, sizeof( str ), "%.1f", H );
-				PlayerTextDrawSetString( playerid, Brzinomer[ playerid ][ 8 ], str );
 			}
 			else if(PlayerData[playerid][pSpeedometer] == 2)
 			{
-				 //&& !IsVehicleBrod( vehicle ) ) {// && !IsVehicleLetelica( vehicle ) ) {
-				new Float:H;
-				GetVehicleHealth( vehicle, H );
-				new string[ 32 ];
-				format( string, sizeof( string ), "%.0f", GetVehicleSpeedMPH( vehicle ) );
-				PlayerTextDrawSetString( playerid, Brzinomer[ playerid ][ 3 ], string );
-				new stringic[ 32 ];
-				format( stringic, sizeof( stringic ), "%d", vehicleFuel[ vehicle ] );
-				PlayerTextDrawSetString( playerid, Brzinomer[ playerid ][ 6 ], stringic );
-		        new str[ 32 ];
-		        format( str, sizeof( str ), "%.1f", H );
-				PlayerTextDrawSetString( playerid, Brzinomer[ playerid ][ 8 ], str );
-				PlayerTextDrawSetString(playerid, Brzinomer[playerid][5], "MP/H");
+
 			}
 		}
 	}
@@ -37149,27 +37264,267 @@ public UpdateBooth(playerid, id)
 	Booth_Refresh(playerid);
 	return 1;
 }
+
 forward UpdateSpeedo();
 public UpdateSpeedo()
 {
-    foreach(new playerid : Player)
+	foreach(new playerid : Player)
     {
-		new vehicleid = GetPlayerVehicleID(playerid);
-		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER && VehicleHasEngine(vehicleid))
-	    {
-	        new
-				Float:health;
+		new vehicleid = GetPlayerVehicleID(playerid), string[264];
+        if(IsPlayerInAnyVehicle(playerid))
+		{
+			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER && VehicleHasEngine(vehicleid))
+		    {
+		        new
+					Float:health,
+					Float:damage;
 
-	        GetVehicleHealth(vehicleid, health);
+		        GetVehicleHealth(vehicleid, health);
 
-	        if(health < 300.0)
-	    	{
-	     		SetVehicleHealth(vehicleid, 300.0);
+		        if(health < 300.0)
+		    	{
+		     		SetVehicleHealth(vehicleid, 300.0);
 
-				SetVehicleParams(vehicleid, VEHICLE_ENGINE, 0);
-	       		//SendClientMessage(playerid, COLOR_RED, "The engine has shut down for being totalled and needs repairing.");
-	       		GameTextForPlayer(playerid, "~r~Engine totalled", 3000, 3);
-		    }
+					SetVehicleParams(vehicleid, VEHICLE_ENGINE, 0);
+     	       		GameTextForPlayer(playerid, "~r~Motorri u Prish", 3000, 3);
+			    }
+
+				damage = (1000.0 - health) / 7.0;
+
+				if(damage > 100.0) damage = 100.0;
+
+				// Speed
+	  			new speed = GetVehicleSpeedKMH(vehicleid);
+
+				switch(speed)
+				{
+					case 0..15:
+					{
+					    for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][0]);
+       				}
+					case 16..31:
+					{
+					    for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][1]);
+     				}
+					case 32..47:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][2]);
+                    }
+					case 48..63:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][3]);
+					}
+					case 64..79:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][4]);
+                    }
+					case 80..95:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][5]);
+				    }
+					case 96..111:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][6]);
+                    }
+					case 112..127:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][7]);
+					}
+                    case 128..149:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][8]);
+     				}
+     				case 150:
+                    {
+                        for(new i = 0; i < 11; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][9]);
+     				}
+   				}
+
+   				format(string, sizeof(string), "%i KMH", speed);
+				PlayerTextDrawSetString(playerid, SpeedoMeterTextDraw[playerid][37], string);
+				PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][37]);
+
+   				// Fuel
+   				switch(vehicleFuel[vehicleid])
+				{
+					case 0..11:
+					{
+					    for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][10]);
+
+						// Oil
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][31]);
+    				}
+					case 12..24:
+					{
+					    for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][11]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+     				}
+					case 25..36:
+                    {
+                        for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][12]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+                    }
+					case 37..49:
+                    {
+                        for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][13]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+					}
+					case 50..64:
+                    {
+                        for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][14]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+                    }
+					case 65..74:
+                    {
+                        for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][15]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+				    }
+					case 75..86:
+                    {
+                        for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][16]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+                    }
+					case 87..94:
+                    {
+                        for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][17]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+					}
+                    case 95..100:
+                    {
+                        for(new i = 10; i < 19; i ++)
+						{
+							PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
+						}
+						PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][18]);
+
+						// Oil
+						PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][31]);
+                    }
+                }
+
+				PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][29]);
+                format(string, sizeof(string), "%i MI", floatround(VehicleInfo[vehicleid][vMileage]));
+				PlayerTextDrawSetString(playerid, SpeedoMeterTextDraw[playerid][36], string);
+				PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][36]);
+
+  			    // Lights
+  			    if(GetVehicleParams(vehicleid, VEHICLE_LIGHTS))
+				{
+				    PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][30]);
+				}
+				else
+				{
+                    PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][30]);
+				}
+
+  			    // Engine Check
+                if(health < 600.0)
+		    	{
+		    	    PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][32]);
+	            }
+                else
+                {
+                    PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][32]);
+  			    }
+
+  			    // Vehicle Lock
+  			    if(VehicleInfo[vehicleid][vLocked])
+			    {
+                    PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][34]);
+                    PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][35]);
+				}
+				else
+				{
+				    PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][34]);
+                    PlayerTextDrawShow(playerid, SpeedoMeterTextDraw[playerid][35]);
+				}
+			}
 			for(new i = 0; i < MAX_DEPLOYABLES; i ++)
 			{
 			    if(DeployInfo[i][dExists] && DeployInfo[i][dType] == DEPLOY_SPIKESTRIP && IsPlayerInRangeOfPoint(playerid, 3.0, DeployInfo[i][dPosX], DeployInfo[i][dPosY], DeployInfo[i][dPosZ]))
@@ -37190,10 +37545,10 @@ public UpdateSpeedo()
 		        }
 			}
 		}
-
 	}
 	return 1;
 }
+
 public OnVehicleRespray(playerid, vehicleid, color1, color2)
 {
 	if(VehicleInfo[vehicleid][vOwnerID] > 0 || VehicleInfo[vehicleid][vGang] >= 0)
@@ -37788,19 +38143,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				SetPVarInt(playerid,"used",1);
 			}
 		}
-	    new vehicleid = GetPlayerVehicleID(playerid);
-        new vstr[ 30 ];
-		format( vstr, sizeof( vstr ), "%s", GetVehicleName(vehicleid));
-		PlayerTextDrawSetString( playerid, Brzinomer[ playerid ][ 4 ], vstr );
 
-        PlayerTextDrawSetPreviewModel( playerid, Brzinomer[ playerid ][ 2 ], GetVehicleModel( GetPlayerVehicleID( playerid ) ) );
-	    PlayerTextDrawShow( playerid, Brzinomer[ playerid ][ 2 ] );
-		if( !IsVehicleBajs( GetPlayerVehicleID( playerid ) ) ) {
-			for( new i = 0; i < 10; i++) {
-				PlayerTextDrawShow( playerid, Brzinomer[ playerid ][ i ] );
-			}
-			//ShowPlayerProgressBar( playerid, BrzinomerHealth[ playerid ] );
-		}
+		new vehicleid = GetPlayerVehicleID(playerid);
+
 	    if((pizzaVehicles[0] <= vehicleid <= pizzaVehicles[5]) && !PlayerHasJob(playerid, JOB_PIZZAMAN))
 	    {
 	        SendClientMessage(playerid, COLOR_GREY, "You cannot operate this vehicle as you are not a Pizzaman.");
@@ -37950,9 +38295,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 	else if(oldstate == PLAYER_STATE_DRIVER)
 	{
-        for( new i = 0; i < 10; i++) {
-			PlayerTextDrawHide( playerid, Brzinomer[ playerid ][ i ] );
-		}
 		if (CarRadars[playerid] == 1)
 		{
 			PlayerTextDrawShow(playerid, _crTextTarget[playerid]);
@@ -37972,6 +38314,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
          	PlayerData[playerid][pDrivingTest] = 0;
          	SetVehicleToRespawn(PlayerData[playerid][pTestVehicle]);
          	SendClientMessage(playerid, COLOR_LIGHTRED, "* You have exited the vehicle and therefore failed the test.");
+		}
+
+		for(new i = 0; i < 38; i ++)
+    	{
+			PlayerTextDrawHide(playerid, SpeedoMeterTextDraw[playerid][i]);
 		}
 
 //	    PlayerTextDrawHide(playerid, PlayerData[playerid][pText][1]);
@@ -38558,7 +38905,7 @@ Dialog:PhoneMusic(playerid, response, listitem, inputtext[])
 {
 	if(response)
 	{
-
+	
 	}
 	return 1;
 }
@@ -48520,7 +48867,7 @@ PrintNetWorthPlayer(playerid)
     {
         if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i))
         {
-            SendClientMessageEx(playerid, COLOR_GREY2, "- Sht?pia: +{FF6347}%s", FormatNumber(pricehouse));
+            SendClientMessageEx(playerid, COLOR_GREY2, "- Shtëpia: +{FF6347}%s", FormatNumber(pricehouse));
             break;
 		}
 	}
@@ -48559,7 +48906,7 @@ PrintNetWorthPlayer(playerid)
 	}
 
 	SendClientMessage(playerid, COLOR_GREEN, "_______________________________");
-	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj ?sht?: %s", FormatNumber(total2));
+	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj është: %s", FormatNumber(total2));
 	return 1;
 }
 
@@ -58037,7 +58384,7 @@ CMD:savevehicle(playerid, params[])
 
 CMD:editvehicle(playerid, params[])
 {
-	new vehicleid, option[14], param[32], value;
+	new vehicleid, option[14], param[32], value, Float:value2;
 
 	if(PlayerData[playerid][pAdmin] < GENERAL_ADMIN)
 	{
@@ -58114,6 +58461,25 @@ CMD:editvehicle(playerid, params[])
 	    Log_Write("log_admin", "%s (uid: %i) has edited vehicle id %d price to $%d", GetPlayerNameEx(playerid), vehicleid, value);
 
 	}
+
+	else if(!strcmp(option, "mileage", true))
+	{
+		if(sscanf(param, "i", value2))
+		{
+		    return SendSyntaxMessage(playerid, " /editvehicle [vehicleid] [mileage] [value]");
+		}
+
+		VehicleInfo[vehicleid][vMileage] = value2;
+
+		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET mileage = %.2f WHERE id = %i", VehicleInfo[vehicleid][vMileage], VehicleInfo[vehicleid][vID]);
+		mysql_tquery(connectionID, queryBuffer);
+		
+		if(value2 == 0)
+		    SendClientMessageEx(playerid, COLOR_AQUA, "** Ju keni ristartuar kilometrazhin e vetures %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
+		else
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "** Ju keni edituar kilometrazhin e vetures %s (ID %i) në (%i) KM.", GetVehicleName(vehicleid), vehicleid, value);
+	}
+
 	else if(!strcmp(option, "type", true))
 	{
 	    if(VehicleInfo[vehicleid][vOwnerID])
