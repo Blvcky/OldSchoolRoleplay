@@ -29,7 +29,6 @@
 										    Pedro & Hernandez & MMilot
 
 */
-// cuff animation
 #include <a_samp>
 #include <crashdetect>
 #include <a_http>
@@ -1170,11 +1169,9 @@ enum bEnum
 	bOwnerID,
 	bOwner[MAX_PLAYER_NAME],
 	bType,
-    bColor,
 	bPrice,
 	bEntryFee,
 	bLocked,
-	bDescription[128],
     bItemPrices[21],
     Float:cVehicle[4],
 	bTimestamp,
@@ -23736,27 +23733,19 @@ ReloadBusiness(businessid)
 	if(BusinessInfo[businessid][bExists])
 	{
 	    new
-	        string[128], color;
+	        string[128];
 
 		DestroyDynamic3DTextLabel(BusinessInfo[businessid][bText]);
 		DestroyDynamicPickup(BusinessInfo[businessid][bPickup]);
-		if(BusinessInfo[businessid][bColor] == -1 || BusinessInfo[businessid][bColor] == -256)
-		{
-			color = 0xC8C8C8FF;
-		}
-		else
-		{
-		    color = BusinessInfo[businessid][bColor];
-		}
+
         if(BusinessInfo[businessid][bOwnerID] == 0)
         {
-	        format(string, sizeof(string), "[Business]\nPrice: %s\nType: %s\nEntry Fee: $%i\nStatus: %s", FormatNumber(BusinessInfo[businessid][bPrice]), bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], (BusinessInfo[businessid][bLocked]) ? ("{ffff00}Closed") : ("{00AA00}Opened"));
+	        format(string, sizeof(string), "Price: %s\nType: %s\nEntry Fee: $%i\nStatus: %s", FormatNumber(BusinessInfo[businessid][bPrice]), bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], (BusinessInfo[businessid][bLocked]) ? ("{ffff00}Closed") : ("{00AA00}Opened"));
 		}
 		else
 		{
-		    format(string, sizeof(string), "[{ffff00}{%06x}%s{FFFF00}]{E6E6E6}\nOwner: %s\nType: %s\nEntry Fee: $%i\nStatus: %s", color >>> 8, BusinessInfo[businessid][bDescription], BusinessInfo[businessid][bOwner], bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], (BusinessInfo[businessid][bLocked]) ? ("{FFFF00}Closed") : ("{00AA00}Open"));
+		    format(string, sizeof(string), "Owner: %s\nType: %s\nEntry Fee: $%i\nStatus: %s", BusinessInfo[businessid][bOwner], bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bEntryFee], (BusinessInfo[businessid][bLocked]) ? ("{FFFF00}Closed") : ("{00AA00}Open"));
 		}
-
 		BusinessInfo[businessid][bText] = CreateDynamic3DTextLabel(string, COLOR_GREY1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ] + 0.1, 10.0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
         BusinessInfo[businessid][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(businessid), 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
 	}
@@ -31222,7 +31211,6 @@ public OnQueryFinished(threadid, extraid)
 		    for(new i = 0; i < rows && i < MAX_BUSINESSES; i ++)
 		    {
 		        cache_get_field_content(i, "owner", BusinessInfo[i][bOwner], connectionID, MAX_PLAYER_NAME);
-                cache_get_field_content(i, "description", BusinessInfo[i][bDescription], 128);
 		        BusinessInfo[i][bID] = cache_get_field_content_int(i, "id");
 		        BusinessInfo[i][bOwnerID] = cache_get_field_content_int(i, "ownerid");
 		        BusinessInfo[i][bType] = cache_get_field_content_int(i, "type");
@@ -31249,7 +31237,6 @@ public OnQueryFinished(threadid, extraid)
 		        BusinessInfo[i][bCash] = cache_get_field_content_int(i, "cash");
                 BusinessInfo[i][bProducts] = cache_get_field_content_int(i, "products");
                 BusinessInfo[i][bMaterials] = cache_get_field_content_int(i, "materials");
-                BusinessInfo[i][bColor] = cache_get_field_content_int(i, "color");
                 BusinessInfo[i][bText] = Text3D:INVALID_3DTEXT_ID;
                 BusinessInfo[i][bPickup] = -1;
                 //BusinessInfo[i][bMapIcon] = -1;
@@ -39043,7 +39030,7 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 			{
 			    SendClientMessage(playerid, COLOR_WHITE, "*** BUSINESS HELP *** type a command for more information.");
 				SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /buybiz /lock /bwithdraw /bdeposit /entryfee /sellbiz /sellmybiz /bizinfo");
-				SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /bdepositmats /bwithdrawmats /bname");
+				SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /bdepositmats /bwithdrawmats");
             }
             case 8:
             {
@@ -64991,47 +64978,6 @@ CMD:bizhelp(playerid, params[])
 	SendClientMessage(playerid, COLOR_GREY, "*** BUSINESS *** /bdepositmats /bwithdrawmats /bname");
 	return 1;
 }
-CMD:bcolor(playerid, params[])
-{
-	new businessid = GetInsideBusiness(playerid), color;
-
-	if(businessid == -1 || !IsBusinessOwner(playerid, businessid))
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside any business of yours.");
-	}
-	if(sscanf(params, "h", color))
-    {
-        return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /bcolor [0xRRGGBBAA]");
-	}
-	BusinessInfo[businessid][bColor] = (color & ~0xFF) | 0xFF;
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET color = %i WHERE id = %i", BusinessInfo[businessid][bColor], BusinessInfo[businessid][bID]);
-	mysql_tquery(connectionID, queryBuffer);
-	ReloadBusiness(businessid);
-	SendClientMessageEx(playerid, COLOR_AQUA, "** You have set the {%06x}color{33CCFF} of your business description.", color >>> 8);
-
-	return 1;
-}
-CMD:bname(playerid, params[])
-{
-	new businessid = GetInsideBusiness(playerid), bizname[128];
-
-	if(businessid == -1 || !IsBusinessOwner(playerid, businessid))
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside any business of yours.");
-	}
-    if(sscanf(params, "s[128]", bizname))
-    {
-        SendClientMessage(playerid, COLOR_WHITE, "USAGE: /bname [business name]");
-		return 1;
-    }
-    strmid(BusinessInfo[businessid][bDescription], bizname, 0, strlen(bizname), 255);
-	SendClientMessageEx(playerid, COLOR_AQUA, " You have set your Business Name to %s", bizname);
-    SendAdminMessage(COLOR_LIGHTRED, "AdmWarn: %s[%i] has set his own business description to %s",GetRPName(playerid), playerid, bizname);
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE businesses SET description = '%e' WHERE id = %i", BusinessInfo[businessid][bDescription], businessid);
-	mysql_tquery(connectionID, queryBuffer);
-	ReloadBusiness(businessid);
-	return 1;
-}
 
 CMD:buybiz(playerid, params[])
 {
@@ -73724,10 +73670,6 @@ CMD:cuff(playerid, params[])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "That player is already handcuffed.");
 	}
-	if(PlayerData[targetid][pTazedTime] == 0 && GetPlayerSpecialAction(targetid) != SPECIAL_ACTION_DUCK && GetPlayerAnimationIndex(targetid) != 1437)
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "That player must either be tazed, crouched, or hands up.");
-	}
 	if(PlayerData[targetid][pInjured])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You can't handcuff an injured player.");
@@ -73737,9 +73679,37 @@ CMD:cuff(playerid, params[])
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You're too hurt to cuff anyone. Please wait %i seconds before trying again.", PlayerData[playerid][pHurt]);
 	}
 
+	new
+		bool:canHandcuff;
+
+    if(PlayerData[targetid][pTazedTime] > 0)
+		canHandcuff = true;
+
+	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_HANDSUP)
+		canHandcuff = true;
+
+	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_DUCK)
+		canHandcuff = true;
+
+	if(GetPlayerAnimationIndex(targetid) == 1151)
+		canHandcuff = true;
+
+	if(GetPlayerAnimationIndex(targetid) == 1150)
+		canHandcuff = true;
+
+	if(GetPlayerAnimationIndex(targetid) == 960)
+		canHandcuff = true;
+
+	if(GetPlayerAnimationIndex(targetid) == 1701)
+		canHandcuff = true;
+
+	if(!canHandcuff)
+		return SendClientMessage(playerid, COLOR_ADM, "That player needs to be crouched, have their hands up or be on the floor.");
 
 	PlayerData[targetid][pCuffed] = 1;
 	SetPlayerSpecialAction(targetid, SPECIAL_ACTION_CUFFED);
+	SetPlayerAttachedObject(targetid, 9, 19418,6,-0.031999,0.024000,-0.024000,-7.900000,-32.000011,-72.299987,1.115998,1.322000,1.406000);
+
 	TogglePlayerControllable(targetid, 0);
 
 	ShowActionBubble(playerid, "** %s tightens a pair of handcuffs around %s's wrists.", GetRPName(playerid), GetRPName(targetid));
@@ -73781,7 +73751,7 @@ CMD:uncuff(playerid, params[])
 
 	SetPlayerSpecialAction(targetid, SPECIAL_ACTION_NONE);
 	TogglePlayerControllable(targetid, 1);
-
+	RemovePlayerAttachedObject(targetid, 9);
 	ShowActionBubble(playerid, "** %s loosens the pair of handcuffs from around %s's wrists.", GetRPName(playerid), GetRPName(targetid));
 	GameTextForPlayer(targetid, "~g~Uncuffed", 3000, 3);
 	return 1;
