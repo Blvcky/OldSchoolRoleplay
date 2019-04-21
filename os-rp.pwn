@@ -25,14 +25,13 @@
 				     **********************************************************************
 				     **********************************************************************
 											Copyright (c) 2018 - 2019
-
 											 	Old School Roleplay
 										    Pedro & Hernandez & MMilot
 
 */
+// cuff animation
 #include <a_samp>
 #include <crashdetect>
-
 #include <a_http>
 #include <a_mysql>
 #include <foreach>
@@ -56,7 +55,7 @@
 #define MYSQL_PASSWORD  ""
 // ---------------------------------------
 #define SERVER_NAME      "Old School Roleplay"
-#define SERVER_REVISION  "OS:RP v0.3"
+#define SERVER_REVISION  "OS:RP v0.4"
 #define SERVER_ANTICHEAT "The server"
 // ---------------------------------------
 #define TABLE_USERS         "`users`" //to be moved all tables.
@@ -361,7 +360,7 @@ new Float: WeaponDamages[47];
 new InsideShamal[MAX_PLAYERS];
 new VehicleStatus[MAX_VEHICLES char] = 0; // 0 == none, 1 == vehicle dead about to respawn
 new PlayerText:_Mask[MAX_PLAYERS];
-new MaskUsage[MAX_PLAYERS];
+
 // MDC System:
 
 enum TICINFO
@@ -496,8 +495,6 @@ new Text:welcomepm3;
 new Text:loginwb1;
 new Text:houseLights;
 new PlayerText:TuningBuy[ MAX_PLAYERS ][ 14 ];
-new CBTogged = 1;
-new CSWarned[MAX_PLAYERS];
 new Obj_Elevator, Obj_ElevatorDoors[2],
 	Obj_FloorDoors[21][2];
 new Text3D:Label_Elevator, Text3D:Label_Floors[21];
@@ -505,11 +502,8 @@ new rentcar[8];
 new Renting[MAX_PLAYERS];
 new firstperson[MAX_PLAYERS];
 new HelmetEnabled[MAX_PLAYERS];
-
 new CarWindows[MAX_VEHICLES] = 0;
-new viewingGuide[MAX_PLAYERS];
 new PlayerText:_vhudFlash[MAX_PLAYERS];
-
 new PlayerText:Brzinomer[ MAX_PLAYERS ][ 10 ];
 new Text3D:fRepfamtext[MAX_PLAYERS];
 new Text:welcomenew;
@@ -800,12 +794,7 @@ enum
 	DIALOG_CASEFILE_NAME,
 	DIALOG_CASEFILE_INFO,
 	DIALOG_CASEFILE,
-	DIALOGID_GUIDE_MAIN,
-	DIALOGID_GUIDE_MONEY,
-	DIALOGID_GUIDE_GUNS,
-	DIALOGID_GUIDE_FACTION,
-	DIALOGID_GUIDE_ROLEPLAY,
-	DIALOGID_GUIDE_LEVEL,
+
 	DIALOG_SETTINGS,
 	DIALOG_SETTINGS2,
 	DIALOG_POST_APPLICATION,
@@ -1181,11 +1170,8 @@ enum pEnum
 	pShowFooter,
 	pFooterTimer,
 	pVehicleCMD,
-	pMask,
-	pMaskID,
 	pCrowbar,
-	pMaskBan,
-	pMaskOn,
+
     pSpeedTime,
 	pSpeakerPhone,
 	pRangeBooth,
@@ -1229,7 +1215,6 @@ enum pEnum
 	pAdmin,
 	pGraffiti,
 	pGraffitiTime,
-	pGraffitiColor[40],
 	pGraffitiText[64 char],
 	pEditGraffiti,
 	pEditLandGraffiti,
@@ -8366,19 +8351,13 @@ GetRPName(playerid)
 {
 	new
 		name[MAX_PLAYER_NAME];
-	if(GetPVarInt(playerid, "MASK_USED")) {
-		format(name, sizeof(name), "Mask_%d", GetPVarInt(playerid, "MASK_ID"));
-	}
-	else
-	{
-		GetPlayerName(playerid, name, sizeof(name));
 
-		for(new i = 0, l = strlen(name); i < l; i ++)
-		{
-		    if(name[i] == '_')
-		    {
-		        name[i] = ' ';
-			}
+	GetPlayerName(playerid, name, sizeof(name));
+	for(new i = 0, l = strlen(name); i < l; i ++)
+	{
+	    if(name[i] == '_')
+	    {
+	        name[i] = ' ';
 		}
 	}
 	return name;
@@ -8753,6 +8732,13 @@ stock CountPlayerHouses(playerid)
 	}
 
 	return count;
+}
+GetGangColor(gang)
+{
+	new
+		color;
+	color = GangInfo[gang][gColor] >>> 8;
+	return color;
 }
 stock SetToyColor(playerid, slot, layer, color)
 {
@@ -10137,109 +10123,6 @@ public DestroyDamageTD(playerid)
 	}
 }
 
-forward CBugCheck(playerid);
-public CBugCheck(playerid)
-{
-	CSWarned[playerid] = 0;
-	return true;
-}
-
-ShowCasefileDialog(playerid)
-{
-	new string[156], CasefileName[MAX_PLAYER_NAME];
-	queryBuffer[0] = 0;
-
-	if(!GetPVarType(playerid, "CasefileName")) format(CasefileName, sizeof(CasefileName), "Nobody");
-	else GetPVarString(playerid, "CasefileName", CasefileName, sizeof(CasefileName));
-
-	format(string, 156, "%s - Casefile", FactionInfo[PlayerData[playerid][pFaction]][fName]);
-	format(queryBuffer, sizeof(queryBuffer), "Name: %s\n\
-		Information\n\
-		Submit", CasefileName);
-
-	return Dialog_Show(playerid, DIALOG_CASEFILE, DIALOG_STYLE_LIST, string, queryBuffer, "Select", "Cancel");
-}
-
-ListCasefiles(playerid, group)
-{
-	queryBuffer[0] = 0;
-
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT * FROM `casefiles` WHERE `active` = 1 AND `faction` = '%d'", group);
-	mysql_tquery(connectionID, queryBuffer, "OnCasefileList", "i", playerid);
-	return 1;
-}
-forward OnApplyFile(playerid);
-public OnApplyFile(playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		if(cache_get_row_count(connectionID))
-			return ShowDialogToPlayer(playerid, DIALOG_POST_APPLICATION);
-		else
-		{
-			return SendClientMessageEx(playerid, COLOR_WHITE, "That is not your name.");
-		}
-	}
-	return 1;
-}
-
-forward OnCasefileName(playerid);
-public OnCasefileName(playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-
-		if(cache_get_row_count(connectionID))
-			 return ShowCasefileDialog(playerid);
-		else
-		{
-			DeletePVar(playerid, "CasefileName");
-			return SendClientMessageEx(playerid, COLOR_WHITE, "This name does not exist.");
-		}
-	}
-	else DeletePVar(playerid, "CasefileName");
-	return 1;
-}
-
-forward OnCasefileList(playerid);
-public OnCasefileList(playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		new rows = cache_get_row_count(connectionID);
-		if(rows)
-		{
-			new PlayerNamee[MAX_PLAYER_NAME], suspect[MAX_PLAYER_NAME], issuer[MAX_PLAYER_NAME], information[256];
-			for(new i; i < rows; i++)
-			{
-				cache_get_field_content(i, "suspect", suspect);
-			 	cache_get_field_content(i, "issuer", issuer);
-				cache_get_field_content(i, "information", information);
-
-				foreach(new d: Player)
-				{
-					GetPlayerName(d, PlayerNamee, sizeof(PlayerNamee));
-					if(strfind(PlayerNamee, suspect, true) != -1)
-					{
-						format(queryBuffer, sizeof queryBuffer, "%s (ID: %d) | Issuer: %s | Information: %s", GetPlayerNameEx(d), d, issuer, information);
-						SendClientMessageEx(playerid, COLOR_GREEN, queryBuffer);
-					}
-				}
-			}
-			for(new i; i < rows; i++)
-			{
-				cache_get_field_content(i, "suspect", suspect);
-			 	cache_get_field_content(i, "issuer", issuer);
-				cache_get_field_content(i, "information", information);
-
-				format(queryBuffer, sizeof queryBuffer, "%s | Issuer: %s | Information: %s",suspect, issuer, information);
-				SendClientMessageEx(playerid, COLOR_GREY, queryBuffer);
-			}
-		}
-		else return SendClientMessageEx(playerid, COLOR_WHITE, "Your group does not have any casefiles.");
-	}
-	return 1;
-}
 forward TurnOffFlash(playerid);
 public TurnOffFlash(playerid)
 {
@@ -13979,12 +13862,9 @@ stock str_replace(sSearch[], sReplace[], const sSubject[], &iCount = 0)
 	return sReturn;
 }
 
-CMD:testplate(playerid, params[])
+CMD:testcolor(playerid, params[])
 {
-	foreach(new i: Vehicle)
-	{
-	    testplate(i);
-	}
+	SendClientMessageEx(playerid, -1, "%d", GetGangColor(PlayerData[playerid][pGang]));
 	return 1;
 }
 
@@ -22108,7 +21988,7 @@ ResetPlayer(playerid)
 		Booth_Leave(playerid);
 	PlayerData[playerid][pInTurf] = -1;
 	InsideShamal[playerid]= INVALID_VEHICLE_ID;
-	PlayerData[playerid][pMaskOn] = 0;
+
 	PlayerData[playerid][pInjured] = 0;
 	PlayerData[playerid][pAcceptedHelp] = 0;
 	PlayerData[playerid][pMiningTime] = 0;
@@ -23918,7 +23798,6 @@ stock Graffiti_Create(Float:x, Float:y, Float:z, Float:angle)
 			GraffitiData[i][graffitiPos][2] = z;
 			GraffitiData[i][graffitiPos][3] = angle - 90.0;
 			GraffitiData[i][graffitiColor] = 0xFFFFFFFF;
-
 			format(GraffitiData[i][graffitiText], 32, "Graffiti");
 
 			Graffiti_Refresh(i);
@@ -26733,15 +26612,11 @@ public TutorialTimer(playerid, stage)
 			    SetCameraBehindPlayer(playerid);
 			    StopAudioStreamForPlayer(playerid);
 			    TogglePlayerControllable(playerid, 1);
-
 				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET setup = 0, gender = %i, age = %i, skin = %i WHERE uid = %i", PlayerData[playerid][pGender], PlayerData[playerid][pAge], PlayerData[playerid][pSkin], PlayerData[playerid][pID]);
 				mysql_tquery(connectionID, queryBuffer);
-
 				SendClientMessage(playerid, COLOR_WHITE, "Welcome to {00aa00}Old School Roleplay{FFFFFF}. Make sure to visit os-rp.net for news and updates.");
 				SendClientMessage(playerid, COLOR_WHITE, "Use the {FFFF90}/locate{FFFFFF} command to point to locations of jobs, businesses, and common places.");
-				Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
 				StopAudioStreamForPlayer(playerid);
-				viewingGuide[playerid] = 1;
 		        DestroyDynamic3DTextLabel(fRepfamtext[playerid]);
 		        fRepfamtext[playerid] = Text3D:INVALID_3DTEXT_ID;
 				SendStaffMessage(COLOR_YELLOW, "OnPlayerSpawn: %s[%d] has just spawned on Old School Roleplay for the first time!", GetRPName(playerid), playerid);
@@ -27247,7 +27122,7 @@ public SecondTimer()
 		        	        strreplace2(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], "(n)", "\n");
                             GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault] = 0;
                             gang_tag_chosen[i] = 0;
-						    GraffitiData[PlayerData[i][pGraffiti]][graffitiColor] = PlayerData[i][pGraffitiColor];
+						    GraffitiData[PlayerData[i][pGraffiti]][graffitiColor] = GetGangColor(PlayerData[i][pGang]);
 							Graffiti_Refresh(PlayerData[i][pGraffiti]);
 						    Graffiti_Save(PlayerData[i][pGraffiti]);
 						    ClearAnimations(i, 1);
@@ -31228,9 +31103,7 @@ public OnQueryFinished(threadid, extraid)
    			    {
    					ResetPlayerWeaponsEx(extraid);
    				}
-          //      AnimationCameraView(extraid, 1,false);
 	            new date[64];
-
 	            cache_get_field_content(0, "login_date", date);
 	            cache_get_field_content(0, "accent", PlayerData[extraid][pAccent], connectionID, 16);
 	            cache_get_field_content(0, "adminname", PlayerData[extraid][pAdminName], connectionID, MAX_PLAYER_NAME);
@@ -31239,9 +31112,7 @@ public OnQueryFinished(threadid, extraid)
 	            cache_get_field_content(0, "prisonreason", PlayerData[extraid][pPrisonReason], connectionID, 128);
 	            cache_get_field_content(0, "passportname", PlayerData[extraid][pPassportName], connectionID, MAX_PLAYER_NAME);
 	            cache_get_field_content(0, "customtitle", PlayerData[extraid][pCustomTitle], connectionID, 64);
-	            //cache_get_field_content(0, "marriedname", PlayerData[extraid][pMarriedName], connectionID, MAX_PLAYER_NAME);
 				PlayerData[extraid][pCustomTColor] = cache_get_field_content_int(0, "customcolor");
-
 	            PlayerData[extraid][pID] = cache_get_field_content_int(0, "uid");
 				PlayerData[extraid][pSetup] = cache_get_field_content_int(0, "setup");
                 PlayerData[extraid][pGender] = cache_get_field_content_int(0, "gender");
@@ -31255,7 +31126,6 @@ public OnQueryFinished(threadid, extraid)
                 PlayerData[extraid][pPosZ] = cache_get_field_content_float(0, "pos_z");
                 PlayerData[extraid][pPosA] = cache_get_field_content_float(0, "pos_a");
                 PlayerData[extraid][pInterior] = cache_get_field_content_int(0, "interior");
-
                 PlayerData[extraid][pWorld] = cache_get_field_content_int(0, "world");
                 PlayerData[extraid][pCash] = cache_get_field_content_int(0, "cash");
                 PlayerData[extraid][pBank] = cache_get_field_content_int(0, "bank");
@@ -31264,8 +31134,6 @@ public OnQueryFinished(threadid, extraid)
                 PlayerData[extraid][pChatstyle] = cache_get_field_content_int(0, "chatstyle");
                 PlayerData[extraid][pTruckingXP] = cache_get_field_content_int(0, "truckingxp");
                 PlayerData[extraid][pTruckingLevel] = cache_get_field_content_int(0, "truckinglevel");
-
-
                 PlayerData[extraid][pVehicleCMD] = cache_get_field_content_int(0, "vehiclecmd");//pVehicleCMD
                 PlayerData[extraid][pCrowbar] = cache_get_field_content_int(0, "crowbar");
                 PlayerData[extraid][pAdminStrike] = cache_get_field_content_int(0, "adminstrike");
@@ -31320,15 +31188,6 @@ public OnQueryFinished(threadid, extraid)
 				PlayerData[extraid][pChannel] = cache_get_field_content_int(0, "channel");
 				PlayerData[extraid][pRentingHouse] = cache_get_field_content_int(0, "rentinghouse");
 				PlayerData[extraid][pSpraycans] = cache_get_field_content_int(0, "spraycans");
-			//	PlayerData[extraid][pPVIPVoucher] = cache_get_field_content_int(0, "pvipvoucher");
-			//	PlayerData[extraid][pAdvertVoucher] = cache_get_field_content_int(0, "advoucher");
-			//	PlayerData[extraid][pSVIPExVoucher] = cache_get_field_content_int(0, "svipexvoucher");
-			//	PlayerData[extraid][pGVIPExVoucher] = cache_get_field_content_int(0, "gvipexvoucher");
-			//	PlayerData[extraid][pCarVoucher] = cache_get_field_content_int(0, "carvoucher");
-			//	PlayerData[extraid][pVehVoucher] = cache_get_field_content_int(0, "rcarvoucher");
-			////	PlayerData[extraid][pSVIPVoucher] = cache_get_field_content_int(0, "svipvoucher");
-			//	PlayerData[extraid][pGVIPVoucher] = cache_get_field_content_int(0, "gvipvoucher");
-			//	PlayerData[extraid][pGiftVoucher] = cache_get_field_content_int(0, "giftvoucher");
 				PlayerData[extraid][pBoombox] = cache_get_field_content_int(0, "boombox");
 				PlayerData[extraid][pMP3Player] = cache_get_field_content_int(0, "mp3player");
 				PlayerData[extraid][pPhonebook] = cache_get_field_content_int(0, "phonebook");
@@ -31372,9 +31231,6 @@ public OnQueryFinished(threadid, extraid)
                 PlayerData[extraid][pSpawnSelect] = cache_get_field_content_int(0, "spawntype");
 				PlayerData[extraid][pSpawnHouse] = cache_get_field_content_int(0, "spawnhouse");
 
-				PlayerData[extraid][pMask] = cache_get_field_content_int(0, "mask");
-				if (!PlayerData[extraid][pMaskID])
-				    PlayerData[extraid][pMaskID] = random(90000) + 10000;
 
 				for(new i, wepid[64]; i < 13; i++)
 				{
@@ -32860,8 +32716,6 @@ public OnQueryFinished(threadid, extraid)
 					SendClientMessage(extraid, COLOR_WHITE, "Use the {FFFF90}/locate{FFFFFF} command to point to locations of jobs, businesses, and common places.");
 
 					SendStaffMessage(COLOR_YELLOW, "OnPlayerSpawn: %s[%d] has just spawned on Old School Roleplay for the first time!", GetRPName(extraid), extraid);
-					Dialog_Show(extraid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
-					viewingGuide[extraid] = 1;
 					StopAudioStreamForPlayer(extraid);
 	                PlayerData[extraid][pReferralUID] = cache_get_field_content_int(0, "uid");
                     DestroyDynamic3DTextLabel(fRepfamtext[extraid]);
@@ -33563,13 +33417,9 @@ public OnPlayerConnect(playerid)
 		format(formato, sizeof formato, "www.shroomery.org/ythan/proxycheck.php?ip=%s", GetPlayerIP(playerid));
 		HTTP(playerid, HTTP_GET, formato, "", "HTTP_ProxyCheck");
 	}
+	
 	PlayerData[playerid][pBars][0] = CreatePlayerProgressBar(playerid, 556.000000, 130.000000, 57.000000, 4.699999, COLOR_SAMP, 100.0000, 0);
-
-    PlayerData[playerid][pMask] = 0;
-    SetPVarInt(playerid, "EventToken", 0);
     PlayerData[playerid][pShowFooter] = 0;
-	DeletePVar(playerid, "MASK_ID");
-	DeletePVar(playerid, "MASK_USED");
     PlayerData[playerid][pChatstyle] = 0;
 	mdc_LoadPlayerTextdraws(playerid);
 	PlayerData[playerid][pInTurf] = 0;
@@ -33877,7 +33727,7 @@ public OnPlayerConnect(playerid)
 	//(playerid);
     PlayerData[playerid][pGraffiti] = -1;
     PlayerData[playerid][pGraffitiTime] = 0;
-    PlayerData[playerid][pGraffitiColor] = 0;
+
     PlayerData[playerid][pEditGraffiti] = -1;
     PlayerData[playerid][pEditLandGraffiti] = -1;
 	PlayerData[playerid][pID] = 0;
@@ -40888,219 +40738,7 @@ Dialog:DIALOG_SETTINGS(playerid, response, listitem, inputtext[])
 	return 1;
 }
 
-Dialog:DIALOGID_GUIDE_MAIN(playerid, response, listitem, inputtext[]) //main guide screen
-{
-	if(response)
-	{
-		if(listitem == 0) // How to make money
-		{
-			new hstr[2048];
-			format(hstr, sizeof(hstr), "%s{007BD0}Jobs{FFFFFF}\n", hstr);
-			format(hstr, sizeof(hstr), "%sThere are multiple ways to make money on this server, the most common way of making money is getting a job.\n", hstr);
-			format(hstr, sizeof(hstr), "%sThe most popular job for new players is the {FFFF91}Courier Job{FFFFFF}, this job allows you to deliver items in random businesses.\n", hstr);
-			format(hstr, sizeof(hstr), "%sMost jobs have a skill level which can be leveled up by doing the job, the higher your skill level the more money you can make while doing it.\n", hstr);
-			format(hstr, sizeof(hstr), "%sYou can quit your job at any time, when you quit a job you don't lose the skill level.\n", hstr);
-			format(hstr, sizeof(hstr), "%sYou can get a job by going to the job location and typing /join.\n", hstr);
-			format(hstr, sizeof(hstr), "%sTo see a list of jobs and their locations, type {FFFF91}/jobhelp{FFFFFF}.\n\n", hstr);
 
-			format(hstr, sizeof(hstr), "%s{007BD0}Paycheck{FFFFFF}\n", hstr);
-			format(hstr, sizeof(hstr), "%sYou start with $5,000 on hand and $10,000 which you can {FFFF91}/withdraw{FFFFFF} from the bank. You can also withdraw money from ATMs.\n", hstr);
-			format(hstr, sizeof(hstr), "%sEvery 1 hour you will get a paycheck and 1 respect point, the amount of money you get on paycheck depends on your main level.\n", hstr);
-			format(hstr, sizeof(hstr), "%sWhen you have enough money to {FFFF91}/buylevel{FFFFFF} your paycheck money will increase.", hstr);
-
-			Dialog_Show(playerid, DIALOGID_GUIDE_MONEY, DIALOG_STYLE_MSGBOX, "How to make money", hstr, "Ok", "Back");
-			return 1;
-		}
-		if(listitem == 1) // Getting guns
-		{
-			new hstr[512];
-			format(hstr, sizeof(hstr), "%s{007BD0}Getting guns{FFFFFF}\n", hstr);
-			format(hstr, sizeof(hstr), "%s{D14545}Warning: You must play for at least 2 hours before you can get a weapon, this was added to help minimize deathmatching.{FFFFFF}\n\n", hstr);
-
-			format(hstr, sizeof(hstr), "%sYou can buy weapons from Ammunations or Arms Dealers. If you are an {FFFF91}Arms Dealer{FFFFFF} you can create your own weapons and sell them to\n", hstr);
-			format(hstr, sizeof(hstr), "%syourself or players. You must be at least level 2 before buying legal from an Ammunation.", hstr);
-            format(hstr, sizeof(hstr), "%sYou can also buy guns from gang arms dealer.", hstr);
-			Dialog_Show(playerid, DIALOGID_GUIDE_GUNS, DIALOG_STYLE_MSGBOX, "Getting guns", hstr, "Ok", "Back");
-			return 1;
-		}
-		if(listitem == 2) // Joining a faction or gang
-		{
-			new hstr[512];
-			format(hstr, sizeof(hstr), "{007BD0}Joining a faction or gang:{FFFFFF}\n", hstr);
-
-			format(hstr, sizeof(hstr), "%sTo join a gang or faction you need to be invited by the leader, being friends with the gangs members will increase your chance of being invited.\n", hstr);
-			format(hstr, sizeof(hstr), "%sThere are a lot gangs and are good if you want to quickly join one.\n", hstr);
-			format(hstr, sizeof(hstr), "%sYou can display a list of gangs by typing {FFFF91}/gangs{FFFFFF}.", hstr);
-
-			format(hstr, sizeof(hstr), "%s\nJoining factions requires filling out an application on the forums at {8D8DFF}os-rp.net.", hstr);
-			Dialog_Show(playerid, DIALOGID_GUIDE_FACTION, DIALOG_STYLE_MSGBOX, "Joining a faction or gang", hstr, "Ok", "Back");
-
-			return 1;
-		}
-		if(listitem == 3) // How to roleplay
-		{
-			new hstr[612];
-			format(hstr, sizeof(hstr), "{007BD0}How to roleplay:{FFFFFF}\n", hstr);
-			format(hstr, sizeof(hstr), "%sThe fastest way to learn how to roleplay is to watch other people doing it.\n", hstr);
-			format(hstr, sizeof(hstr), "%sYou will earn the respect of other players quickly if you are a good roleplayer. You will also find it easier to join factions and gangs.\n", hstr);
-			format(hstr, sizeof(hstr), "%sThere are commands which can help improve your roleplay skills quickly that you should familiarize yourself with.\n", hstr);
-			format(hstr, sizeof(hstr), "%s{FFFF91}/me{FFFFFF} - Can be used to do actions (example: /me is looking to buy a gun).\n", hstr);
-			format(hstr, sizeof(hstr), "%s{FFFF91}/do{FFFFFF} - For actions which don't display your name.\n", hstr);
-			format(hstr, sizeof(hstr), "%s{FFFF91}/animhelp{FFFFFF} - displays a list of animations.", hstr);
-			Dialog_Show(playerid, DIALOGID_GUIDE_ROLEPLAY, DIALOG_STYLE_MSGBOX, "How to roleplay", hstr, "Ok", "Back");
-			return 1;
-		}
-		if(listitem == 4) // How to level up
-		{
-			new hstr[812];
-			format(hstr, sizeof(hstr), "{007BD0}How to level up:{FFFFFF}\n", hstr);
-			format(hstr, sizeof(hstr), "%sYou can level up by getting respect points and the amount of money it costs to {FFFF91}/buylevel{FFFFFF}.\n", hstr);
-			format(hstr, sizeof(hstr), "%sEach paycheck you will be given 1 respect point, you can earn the money by doing jobs, missions, fishing or /dropcar.\n", hstr);
-			format(hstr, sizeof(hstr), "%sLeveling up your account will allow you to make more money on paycheck, get upgrade points as well as unlock features like:\n", hstr);
-			format(hstr, sizeof(hstr), "%sThe ability to buy weapons from Ammunations. (Level 2)\n", hstr);
-			format(hstr, sizeof(hstr), "%sThe ability to place a {FFFF91}/contract{FFFFFF} on another player (when a player has contract on their head they become a target and will lose half the contract\n", hstr);
-			format(hstr, sizeof(hstr), "%sprice if they are killed by a hitman).\n", hstr);
-			format(hstr, sizeof(hstr), "%sUnlock more commands ({FFFF91}/wiretransfer{FFFFFF} etc).", hstr);
-			format(hstr, sizeof(hstr), "%sYou can type {FFFF91}/stats{FFFFFF} to display your account stats, more commands are listed in {FFFF91}/help{FFFFFF}.\n", hstr);
-			Dialog_Show(playerid, DIALOGID_GUIDE_LEVEL, DIALOG_STYLE_MSGBOX, "How to level up", hstr, "Ok", "Back");
-			return 1;
-		}
-	}
-	viewingGuide[playerid] = 0;
-	return 1;
-}
-Dialog:DIALOGID_GUIDE_MONEY(playerid, response, listitem, inputtext[])
-{
-	if(!response)
-	{
-		Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
-		return 1;
-	}
-	//SendClientMessage(playerid, COLOR_WHITE, "Type {7DAEFF}/guide{FFFFFF} if you want to view this again, use ({7DAEFF}/newb{FFFFFF})ie to ask questions in the newbie chat channel.");
-	viewingGuide[playerid] = 0;
-	return 1;
-}
-Dialog:DIALOGID_GUIDE_GUNS(playerid, response, listitem, inputtext[])
-{
-	if(!response)
-	{
-		Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
-		return 1;
-	}
-	//SendClientMessage(playerid, COLOR_WHITE, "Type {7DAEFF}/guide{FFFFFF} if you want to view this again, use ({7DAEFF}/newb{FFFFFF})ie to ask questions in the newbie chat channel.");
-	viewingGuide[playerid] = 0;
-	return 1;
-}
-Dialog:DIALOGID_GUIDE_FACTION(playerid, response, listitem, inputtext[])
-{
-	if(!response)
-	{
-		Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
-		return 1;
-	}
-	//SendClientMessage(playerid, COLOR_WHITE, "Type {7DAEFF}/guide{FFFFFF} if you want to view this again, use ({7DAEFF}/newb{FFFFFF})ie to ask questions in the newbie chat channel.");
-	viewingGuide[playerid] = 0;
-	return 1;
-}
-Dialog:DIALOGID_GUIDE_ROLEPLAY(playerid, response, listitem, inputtext[])
-{
-	if(!response)
-	{
-		Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
-		return 1;
-	}
-	//SendClientMessage(playerid, COLOR_WHITE, "Type {7DAEFF}/guide{FFFFFF} if you want to view this again, use ({7DAEFF}/newb{FFFFFF})ie to ask questions in the newbie chat channel.");
-	viewingGuide[playerid] = 0;
-	return 1;
-}
-Dialog:DIALOGID_GUIDE_LEVEL(playerid, response, listitem, inputtext[])
-{
-	if(!response)
-	{
-		Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
-		return 1;
-	}
-	//SendClientMessage(playerid, COLOR_WHITE, "Type {7DAEFF}/guide{FFFFFF} if you want to view this again, use ({7DAEFF}/newb{FFFFFF})ie to ask questions in the newbie chat channel.");
-	viewingGuide[playerid] = 0;
-	return 1;
-}
-Dialog:DIALOG_CASEFILE(playerid, response, listitem, inputtext[])
-{
-	if(!response) return Dialog_Show(playerid, DIALOG_CASEFILE_QUIT, DIALOG_STYLE_MSGBOX, "Casefile - Cancel", "Are you sure you would like to exit out of the casefile creation?\n(Note: This will reset all of your work)", "Yes", "No");
-	switch(listitem)
-	{
-		case 0: return Dialog_Show(playerid, DIALOG_CASEFILE_NAME, DIALOG_STYLE_INPUT, "Casefile - Name", "Please enter the name of the suspect. (( Firstname_Lastname ))", "Select", "Cancel");
-		case 1: return Dialog_Show(playerid, DIALOG_CASEFILE_INFO, DIALOG_STYLE_INPUT, "Casefile - Information", "Please enter a description of the casefile. (( Maximum 256 characters. ))", "Select", "Cancel");
-		case 2:
-		{
-			if(!GetPVarType(playerid, "CasefileName")) return Dialog_Show(playerid, DIALOG_CASEFILE_NAME, DIALOG_STYLE_INPUT, "Casefile - Name", "Please enter the name of the suspect. (( Firstname_Lastname ))", "Select", "Cancel");
-			else if(!GetPVarType(playerid, "CasefileInfo")) return Dialog_Show(playerid, DIALOG_CASEFILE_INFO, DIALOG_STYLE_INPUT, "Casefile - Information", "Please enter a description for the casefile. (( Maximum 256 characters. ))", "Select", "Cancel");
-			else
-			{
-				new CasefileName[MAX_PLAYER_NAME], CasefileInfo[256];
-				queryBuffer[0] = 0;
-
-				GetPVarString(playerid, "CasefileName", CasefileName, sizeof(CasefileName));
-				GetPVarString(playerid, "CasefileInfo", CasefileInfo, sizeof(CasefileInfo));
-
-				mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO casefiles (suspect, issuer, information, faction, active) VALUES ('%s', '%s', '%s', %d, 1)", CasefileName, GetPlayerNameEx(playerid), CasefileInfo, PlayerData[playerid][pFaction]);
-				mysql_tquery(connectionID, queryBuffer);
-			}
-		}
-	}
-	return 1;
-}
-Dialog:DIALOG_CASEFILE_NAME(playerid, response, listitem, inputtext[])
-{
-	if(!response) return ShowCasefileDialog(playerid);
-	else
-	{
-		if(strlen(inputtext) == 0)
-		{
-			SendClientMessage(playerid, -1, "You have reset the casefile name.");
-			DeletePVar(playerid, "CasefileName");
-		}
-		queryBuffer[0] = 0;
-
-		new escapeName[MAX_PLAYER_NAME];
-		mysql_escape_string(inputtext, escapeName);
-		SetPVarString(playerid, "CasefileName", escapeName);
-
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "SELECT `username` FROM `users` WHERE `username` = '%e'", inputtext);
-		mysql_tquery(connectionID, queryBuffer, "OnCasefileName", "i", playerid);
-	}
-	return 1;
-}
-Dialog:DIALOG_CASEFILE_INFO(playerid, response, listitem, inputtext[])
-{
-	if(!response) return ShowCasefileDialog(playerid);
-	else
-	{
-		if(strlen(inputtext) == 0)
-		{
-			DeletePVar(playerid, "CasefileInfo");
-			return SendClientMessage(playerid, -1, "You have reset the casefile information.");
-		}
-		else if(strlen(inputtext) < 257)
-		{
-			new escapeName[MAX_PLAYER_NAME];
-			mysql_escape_string(inputtext, escapeName);
-			SetPVarString(playerid, "CasefileInfo", escapeName);
-			ShowCasefileDialog(playerid);
-		}
-	}
-	return 1;
-}
-Dialog:DIALOG_CASEFILE_QUIT(playerid, response, listitem, inputtext[])
-{
-	if(!response) ShowCasefileDialog(playerid);
-	else
-	{
-		DeletePVar(playerid, "CasefileName");
-		DeletePVar(playerid, "CasefileInfo");
-	}
-	return 1;
-}
 Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 {
 	if(response)
@@ -41530,9 +41168,7 @@ Dialog:ACCOUNT_CREATION(playerid, response, listitem, inputtext[])
 			mysql_tquery(connectionID, queryBuffer);
 			SendClientMessage(playerid, COLOR_WHITE, "Welcome to {00aa00}Old School Roleplay{FFFFFF}. Make sure to visit os-rp.net for news and updates.");
 			SendClientMessage(playerid, COLOR_WHITE, "Use the {FFFF90}/locate{FFFFFF} command to point to locations of jobs, businesses, and common places.");
-			Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
 			StopAudioStreamForPlayer(playerid);
-			viewingGuide[playerid] = 1;
 	        DestroyDynamic3DTextLabel(fRepfamtext[playerid]);
 	        fRepfamtext[playerid] = Text3D:INVALID_3DTEXT_ID;
 			SendStaffMessage(COLOR_YELLOW, "OnPlayerSpawn: %s[%d] has just spawned on Old School Roleplay for the first time!", GetRPName(playerid), playerid);
@@ -50235,33 +49871,10 @@ CMD:gspray(playerid, params[])
 		return SendClientMessage(playerid, COLOR_GREY, "You don't have enough spraycans for this.");
 	}
 
-    PlayerData[playerid][pGraffitiColor] = GangTag_IntColor(GangInfo[PlayerData[playerid][pGang]][gColor]);
 	Dialog_Show(playerid, Graffiti_Type, DIALOG_STYLE_LIST, "Graffiti Style", "Default Gang Tags\nCustom Text", "Select", "Close");
 
 	return 1;
 }
-
-CMD:togcs(playerid,params[])
-{
-	if(PlayerData[playerid][pAdmin] < MANAGEMENT)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorised to use this command.");
-
-
-
-	if(CBTogged == 1) {
-		SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has disabled the C-BUG detector.", GetPlayerNameEx(playerid));
-
-		CBTogged = 0;
-	}
-	else
-	{
-        SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s has enabled the C-BUG detector.", GetPlayerNameEx(playerid));
-
-		CBTogged = 1;
-	}
-	return true;
-}
-
 CMD:tip(playerid, params[])
 {
 	if(PlayerData[playerid][pAdmin] > 7)
@@ -51052,31 +50665,6 @@ CMD:windows(playerid, params[])
 	return 1;
 }
 
-CMD:casefile(playerid, params[])
-{
-	if(IsLawEnforcement(playerid))
-	{
-		ShowCasefileDialog(playerid);
-	}
-	return 1;
-}
-
-CMD:casefiles(playerid, params[])
-{
-	if(IsLawEnforcement(playerid))
-	{
-		ListCasefiles(playerid, PlayerData[playerid][pFaction]);
-	}
-	return 1;
-}
-
-
-CMD:guide(playerid, params[])
-{
-	Dialog_Show(playerid, DIALOGID_GUIDE_MAIN, DIALOG_STYLE_LIST, "Guide", "How to make money\nGetting guns\nJoining a gang or faction\nHow to roleplay\nHow to level up", "Ok", "Cancel");
-	viewingGuide[playerid] = 1;
-	return 1;
-}
 
 CMD:loaditem(playerid, params[])
 {
@@ -52019,8 +51607,7 @@ CMD:impound(playerid, params[])
 
 	AddToTaxVault(price);
 
-//	GetVehiclePos(vehicleid, VehicleInfo[vehicleid][vPosX], VehicleInfo[vehicleid][vPosY], VehicleInfo[vehicleid][vPosZ]);
-	VehicleInfo[vehicleid][vPosX] = 0.0;
+ 	VehicleInfo[vehicleid][vPosX] = 0.0;
 	VehicleInfo[vehicleid][vPosY] = 0.0;
 	VehicleInfo[vehicleid][vPosZ] = 0.0;
 
@@ -52091,162 +51678,6 @@ CMD:editimpound(playerid, params[])
 	return 1;
 }
 
-
-CMD:listmasks(playerid, params[]) {
-	if(PlayerData[playerid][pAdmin] > 3) {
-		new string[128];
-		SendClientMessageEx(playerid, COLOR_GREEN,"Listing active "#TABLE_USERS" using a mask...");
-		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		for(new i; i < MAX_PLAYERS; i++) {
-			if(GetPVarInt(i, "MASK_USED")) {
-				format(string, sizeof(string), "Mask: Mask_%d | Username: %s | ID: %i", GetPVarInt(i, "MASK_ID"), GetPlayerNameEx(i), i);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-		}
-		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	}
-	return 1;
-}
-
-CMD:maskunban(playerid, params[]) {
-	if(PlayerData[playerid][pAdmin] > 2) {
-		new giveplayerid, string[128];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /maskban [player]");
-		if(IsPlayerConnected(giveplayerid)) {
-			if(PlayerData[giveplayerid][pMaskBan] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player isn't banned from using /mask!");
-
-			PlayerData[giveplayerid][pMaskBan] = 0;
-			format(string, sizeof(string), "You granted %s access to /mask again!", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s removed your ban from /mask, you can now use masks again.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_AQUA, string);
-
-
-		} else {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		}
-	}
-	return 1;
-}
-
-CMD:maskban(playerid, params[]) {
-	if(PlayerData[playerid][pAdmin] > 2) {
-		new giveplayerid, string[128];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /maskban [player]");
-		if(IsPlayerConnected(giveplayerid)) {
-			if(PlayerData[giveplayerid][pMaskBan] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player is already banned from using the mask!");
-
-			PlayerData[giveplayerid][pMaskBan] = 1;
-			format(string, sizeof(string), "You just banned %s from using /mask", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "You were just banned from using /mask by %s", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_AQUA, string);
-
-
-		} else {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		}
-	}
-	return 1;
-}
-
-
-CMD:pullmask(playerid, params[]) {
-	if(IsLawEnforcement(playerid)) {
-
-		new suspect = GetClosestPlayer(playerid);
-		if(IsPlayerConnected(suspect)) {
-			if (IsPlayerNearPlayer(playerid, suspect, 5.0)) {
-				if(GetPVarInt(suspect, "MASK_USED")) {
-					if(PlayerData[playerid][pCuffed] > 0 || GetPlayerSpecialAction(suspect) == SPECIAL_ACTION_HANDSUP || GetPVarInt(suspect, "injured") == 1) {
-
-						//format(string, sizeof(string), "* %s removes the mask from [Mask_%d] to reveal their face.", GetPlayerNameEx(playerid), GetPVarInt(suspect, "MASK_ID"));
-						//ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-						SendClientMessageEx(suspect, COLOR_AQUA, "%s has removed and taken away your mask you're no longer hidden.", GetPlayerNameEx(playerid));
-						PlayerData[suspect][pMask]--;
-						foreach(new i: Player) {
-							ShowPlayerNameTagForPlayer(i, suspect, 1);
-							CallLocalFunction("OnPlayerStreamOut","ii",i,suspect);
-						}
-						DeletePVar(suspect, "MASK_ID");
-						DeletePVar(suspect, "MASK_USED");
-					} else {
-						SendClientMessageEx(playerid, COLOR_GREY, "%s either isn't restrained or injured!", GetPlayerNameEx(suspect));
-					}
-				} else {
-					SendClientMessageEx(playerid, COLOR_GREY, "%s isn't wearning a mask for you to pull!", GetPlayerNameEx(suspect));
-				}
-			} else {
-				SendClientMessageEx(playerid, COLOR_GREY, "You are not near anyone.");
-			}
-		} else {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		}
-	} else {
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not a law enforcement officer!");
-	}
-	return 1;
-}
-
-CMD:wearmask(playerid, params[]) {
-	if(PlayerData[playerid][pHours] > 99) {
-		if(PlayerData[playerid][pMaskBan] == 0) {
-			if(PlayerData[playerid][pMask] > 0) {
-
-			//	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt( playerid, "EventToken" ) == 1 || PlayerData[playerid][pBeingSentenced] != 0 || GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerData[playerid][pHospital] != 0 || PlayerData[playerid][pJailTime] != 0) return SendClientMessageEx (playerid, COLOR_GREY, "You cannot do this at this time.");
-		//		if(PlayerData[playerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this on an Administrator account!");
-				if(GetPVarInt(playerid, "MASK_USED") == 0) {
-					new Number = Random(0, 9999);
-					SetPVarInt(playerid, "MASK_USED", 1);
-					foreach(new i: Player) {
-						ShowPlayerNameTagForPlayer(i, playerid, 0);
-
-						CallLocalFunction("OnPlayerStreamIn","ii",i,playerid);
-
-						if(GetPVarInt(i, "MASK_USED") == 1) {
-							if(GetPVarInt(i, "MASK_ID") == Number) return callcmd::wearmask(playerid, params);
-						}
-					}
-					if(MaskUsage[playerid] == 0) {
-						MaskUsage[playerid] = MASK_USAGE;
-					}
-					SetPVarInt(playerid, "MASK_ID", Number);
-					SendClientMessageEx(playerid, COLOR_AQUA, "You take out your mask and went under as [Mask_%d]", Number);
-					SendClientMessageEx(playerid, COLOR_AQUA, "Simply type /wearmask to take it off again.");
-
-                  //  format(string, sizeof(string), "* [Mask_%d] takes out their mask and puts it on.", GetPVarInt(playerid, "MASK_ID"));
-                  //  ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				} else {
-					foreach(new i: Player) {
-						ShowPlayerNameTagForPlayer(i, playerid, 1);
-						CallLocalFunction("OnPlayerStreamOut","ii",i,playerid);
-					}
-					SendClientMessageEx(playerid, COLOR_AQUA, "You take off your mask and no longer under [Mask_%d] and you throw it away.", GetPVarInt(playerid, "MASK_ID"));
-
-					MaskUsage[playerid]--;
-					if(MaskUsage[playerid] == 0) {
-						PlayerData[playerid][pMask] = 0;
-						SendClientMessageEx(playerid, COLOR_AQUA, "You have used your mask %d times and it's been worn you'll need to purcahse a new one!", MASK_USAGE);
-					} else {
-						SendClientMessageEx(playerid, COLOR_AQUA, "You have %d usages left of your mask before it becomes worn and damaged.", MaskUsage[playerid]);
-					}
-                  //  format(string, sizeof(string), "* [Mask_%d] has taken their mask off.", GetPVarInt(playerid, "MASK_ID"));
-                  //  ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					DeletePVar(playerid, "MASK_ID");
-					DeletePVar(playerid, "MASK_USED");
-				}
-			} else {
-				SendClientMessageEx(playerid, COLOR_GREY, "You don't have any masks to wear!");
-			}
-		} else {
-			SendClientMessageEx(playerid, COLOR_GREY, "You are banned from using this command!");
-		}
-	} else {
-		SendClientMessageEx(playerid, COLOR_GREY, "You need to have at least 100 hours playing time and be level 15+ to wear a mask.");
-	}
-	return 1;
-}
 CMD:editdamages(playerid, params[])
 {
 	if (PlayerData[playerid][pAdmin] < 6)
@@ -61301,23 +60732,7 @@ CMD:setstat(playerid, params[])
 		    mysql_tquery(connectionID, queryBuffer);
 		}
 	}
-	else if(!strcmp(option, "mask", true))
-	{
-	    if(sscanf(param, "i", value))
-	    {
-			return SendClientMessage(playerid, COLOR_WHITE, "Usage: /setstat [playerid] [mask] [0/1]");
-		}
-		if(!(-1 <= value <= 1))
-		{
-		    return SendClientMessage(playerid, COLOR_GREY, "Invalid value.");
-		}
 
-		PlayerData[targetid][pMask] = value;
-	    SendClientMessageEx(playerid, COLOR_WHITE, "** You have set %s's mask to %i.", GetRPName(targetid), value);
-
-	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET mask = %i WHERE uid = %i", value, PlayerData[targetid][pID]);
-	    mysql_tquery(connectionID, queryBuffer);
-	}
 	else if(!strcmp(option, "age", true))
 	{
 	    if(sscanf(param, "i", value))
