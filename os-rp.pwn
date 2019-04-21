@@ -3040,6 +3040,15 @@ new PlayerTruckJob[MAX_PLAYERS][pOnTruckJobInfo];
 
 
 new const clothesShopSkins[] = {
+	25001, 25002, 25004, 25005, 25006, 25007, 25008, 25010, 25011, 25013, 25014,
+	25015, 25016, 25017, 25018, 25019, 25020, 25024, 25025, 25026, 25027, 25028,
+	25035, 25036, 25037, 25038, 25039, 25057, 25059, 25060, 25061, 25062, 25063,
+	25064, 25065, 25066, 25067, 25068, 25069, 25070, 25071, 25072, 25075, 25076,
+	25077, 25093, 25094, 25095, 25096, 25099, 25100, 25108, 25116, 25117, 25118,
+	25119, 25120, 25121, 25122, 25123, 25124, 25125, 25126, 25127, 25128, 25129,
+	25130, 25131, 25132, 25133, 25135, 25145, 25148, 25149, 25153, 25164, 25163,
+	25003, 25022, 25033, 25034, 25056, 25058, 25101, 25102, 25103, 25104, 25105,
+	25106, 25107, 25111, 25112, 25113, 25115, 25134, 25136, 25160, 25161, 25162,
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 	20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
 	38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
@@ -3057,9 +3066,15 @@ new const clothesShopSkins[] = {
 	229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
 	244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258,
 	259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273,
-    289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 304, 305, 306, 307,
-    309, 310, 311
+	274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288,
+	289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303,
+	304, 305, 306, 307, 308, 309, 310, 311
 };
+
+new const VipSkins[] = {
+	25023, 25073, 25074, 25097, 25098, 25165, 25055, 25110, 25114
+};
+
 
 enum houseInt
 {
@@ -10575,6 +10590,17 @@ stock CheckServerAd(szInput[]) {
 }
 
 //==============================================================================
+stock l_GetPlayerSkin(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
+#if defined _ALS_GetPlayerSkin
+    #undef GetPlayerSkin
+#else
+    #define _ALS_GetPlayerSkin
+#endif
+#define GetPlayerSkin l_GetPlayerSkin
+
+stock GetPlayerSkinScript(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
+
+
 stock IsARestricted(modelid) {
 	switch(modelid)
 	{
@@ -43923,7 +43949,7 @@ Dialog:DIALOG_FACTIONSKINS(playerid, response, listitem, inputtext[])
         else
         {
             PlayerData[playerid][pClothes] = PlayerData[playerid][pSkin];
-            PlayerData[playerid][pSkin] = GetPlayerSkin(playerid);
+            PlayerData[playerid][pSkin] = GetPlayerSkinScript(playerid);
             PlayerData[playerid][pSkinSelected] = -1;
 
             mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pClothes], PlayerData[playerid][pID]);
@@ -46425,7 +46451,7 @@ Dialog:DIALOG_GANGSKINS(playerid, response, listitem, inputtext[])
         {
             PlayerData[playerid][pSkinSelected] = -1;
 
-			SetScriptSkin(playerid, GetPlayerSkin(playerid));
+			SetScriptSkin(playerid, GetPlayerSkinScript(playerid));
             ShowActionBubble(playerid, "* %s changes their clothes.", GetRPName(playerid));
 		}
     }
@@ -56583,19 +56609,19 @@ CMD:setskin(playerid, params[])
 {
     new targetid, skinid;
 
-    if(PlayerData[playerid][pAdmin] < JUNIOR_ADMIN)
+    if(PlayerData[playerid][pAdmin] < 2)
 	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	    return SendClientMessage(playerid, COLOR_GREY, "Ti nuk je i autorizuar për të përdorur këtë komandë.");
 	}
 	if(sscanf(params, "ui", targetid, skinid))
 	{
-	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /setskin [playerid] [skinid]");
+	    return SendSyntaxMessage(playerid, " /setskin [playerid] [skinid]");
 	}
 	if(!IsPlayerConnected(targetid))
 	{
-	    return SendClientMessage(playerid, COLOR_GREY, "The player specified is disconnected.");
+	    return SendClientMessage(playerid, COLOR_GREY, "Ai lojtar nuk është në server.");
 	}
-	if(!(1 <= skinid <= 311))
+	if(!(0 <= skinid <= 311) && !(25000 <= skinid <= 25165))
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "Invalid skin specified.");
 	}
@@ -56609,7 +56635,7 @@ CMD:setskin(playerid, params[])
 	}
 
 	SetScriptSkin(targetid, skinid);
-	SendClientMessageEx(playerid, COLOR_GREY2, "%s's skin set to ID %i.", GetRPName(targetid), skinid);
+	SendClientMessageEx(playerid, COLOR_GREY2, "%s's skin set to ID %i.", GetPlayerNameEx(targetid), skinid);
 	return 1;
 }
 
@@ -83438,17 +83464,8 @@ CMD:clothes(playerid, params[])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not in range of the VIP locker.");
 	}
-	new skins[311], index;
 
-	for(new i = 0; i < 312; i ++)
-	{
-		if(i != 74)
-		{
-		    skins[index++] = i;
-		}
-	}
-
-    ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_VIPCLOTHES, "VIP Clothes", skins);
+	ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_VIPCLOTHES, "VIP Clothes", VipSkins, sizeof(VipSkins));
 	return 1;
 }
 
