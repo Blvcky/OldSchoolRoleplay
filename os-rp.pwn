@@ -42,8 +42,6 @@
 #include <easyDialog>
 #include <youtube_stream>
 #include <dof2>
-#include <YSI\y_hooks>
-#include <nex-ac>
 #include <streamer>
 // --------------------------------------
 #undef MAX_PLAYERS
@@ -54,7 +52,7 @@
 #define MYSQL_PASSWORD  ""
 // ---------------------------------------
 #define SERVER_NAME      	"Old School Roleplay"
-#define SERVER_REVISION  	"OS:RP v0.4"
+#define SERVER_REVISION  	"OS:RP v0.4 R2"
 #define SERVER_ANTICHEAT 	"The server"
 #define SERVER_MUSIC_URL 	"os-rp.net/music"
 #define SERVER_FETCH_URL 	"os-rp.net/music"
@@ -380,7 +378,6 @@ enum
 	GRAPHICRANK_MANAGER
 };
 
-
 enum
 {
 	ZONETYPE_LAND = 1,
@@ -628,7 +625,7 @@ enum pEnum
 	pToggleWhisper,
 	pToggleBug,
 	pCarLicense,
-	pVIPPackage,
+	pDonator,
 	pVIPTime,
 	pVIPCooldown,
 	pWeapons[13],
@@ -999,19 +996,8 @@ enum pEnum
 	pCarryCrate,
 	pBlindfold,
 	pBlinded,
-	pWarnTimer,
-	pWarnWeapon,
-	pWarnHealth,
-	pWarnArmor,
-	pWarnAirbreak,
-	pWarnSpeedhack,
-	pWarnMoneyHack,
-	pWarnAmmoHack,
-	pWarnFlyHack,
-	pWarnDialogHack,
-	pWarnGodMode,
-	pWarnRapidFire,
-	pWarnTeleport
+	pRepairShop,
+	pRepairTime
 };
 
 enum rEnum
@@ -1830,6 +1816,15 @@ static Float:FloorZOffsets[21] =
     101.22425,  // 8.5479 + (5.45155 * 17.0),
     106.67580,	// 8.5479 + (5.45155 * 18.0),
     112.12735	// 8.5479 + (5.45155 * 19.0)
+};
+new const Float:g_RepairShops[][] =
+{
+	{2074.7122,	 -1831.3906, 13.5469, 	2065.4092,	-1831.4474,	13.3643, 90.0000,   2076.0828,  -1831.3698, 13.2777, 270.0000},
+	{1025.1017,	 -1032.9968, 31.8545, 	1024.9688,	-1023.1215,	31.9303, 0.0000,  1024.9032,  -1033.9376, 31.6534, 180.0000},
+	{488.5583,	 -1731.2819, 11.2464, 	487.3807,	-1741.6285,	11.0107, 170.0000,  489.1483,   -1730.7385, 11.0434, 350.0000},
+	{720.2086, 	 -465.7499,  16.3437, 	720.0692,	-456.0589,	17.0412, 0.0000,	720.1885,	-469.6240,	17.0489, 180.0000},
+	{-99.8833, 	 1109.2959,  19.7422,	-100.0493,	1116.5676,	20.3480, 0.0000,	-99.8743,	1105.2859,	20.4476, 180.0000},
+	{-1420.7378, 2594.0757,  55.7505, 	-1420.5433,	2585.7573,	56.5724, 180.0000,	-1420.6559,	2595.4070,	56.4271, 0.0000}
 };
 new const Float:arrBoothPositions[MAX_BOOTHS][3] = {
     {300.5000, -138.5660, 1004.0625},
@@ -3041,129 +3036,29 @@ new PlayerTruckJob[MAX_PLAYERS][pOnTruckJobInfo];
 
 new const customSkins[] = {
 
-25000,
-25001, 
-25002,
-25003,
-25005,
-25006, 
-25008, 
-25009,
-25011,
-25013,
-25014, 
-25015,
-25016,
-25020,
-25021,
-25023,
-25027, //"skin11.dff", //"skin11.txd");
-25028, //"skin12.dff", //"skin12.txd");
-25029, //"skin13.dff", //"skin13.txd");
-25030, //"skin14.dff", //"skin14.txd");
-25031, //"skin15.dff", //"skin15.txd");
-25032, //"skin16.dff", //"skin16.txd");
-25033, //"skin17.dff", //"skin17.txd");
-25034, //"skin18.dff", //"skin18.txd");
-25035, //"skin19.dff", //"skin19.txd");
-25036, //"skin110.dff", //"skin110.txd");
-25037, //"skin111.dff", //"skin111.txd");
-25038, //"skin112.dff", //"skin112.txd");
-25039, //"skin113.dff", //"skin113.txd");
-25040, //"skin114.dff", //"skin114.txd");
-25041, //"skin115.dff", //"skin115.txd");
-25042, //"skin116.dff", //"skin116.txd");
-25043, //"skin117.dff", //"skin117.txd");
-25044, //"skin118.dff", //"skin118.txd");
-25045, //"skin119.dff", //"skin119.txd");
-25046, //"skin120.dff", //"skin120.txd");
-25047, //"skin121.dff", //"skin121.txd");
-25048, //"skin122.dff", //"skin122.txd");
-25049, //"skin123.dff", //"skin123.txd");
-25050, //"skin124.dff", //"skin124.txd");
-25051, //"skin125.dff", //"skin125.txd");
-25052, //"skin126.dff", //"skin126.txd");
-25053, //"skin127.dff", //"skin127.txd");
-25054, //"skin128.dff", //"skin128.txd");
-25055, //"skin129.dff", //"skin129.txd");
-25056, //"skin130.dff", //"skin130.txd");
-25057, //"skin131.dff", //"skin131.txd");
-25058, //"skin132.dff", //"skin132.txd");
-25059, //"skin133.dff", //"skin133.txd");
-25060, //"skin134.dff", //"skin134.txd");
-25061, //"skin135.dff", //"skin135.txd");
-25062, //"skin136.dff", //"skin136.txd");
-25063, //"skin137.dff", //"skin137.txd");
-25076, //"skin150.dff", //"skin150.txd");
-25077, //"skin151.dff", //"skin151.txd");
-25078, //"skin152.dff", //"skin152.txd");
-25079, //"skin153.dff", //"skin153.txd");
-25080, //"skin154.dff", //"skin154.txd");
-25081, //"skin155.dff", //"skin155.txd");
-25082, //"skin156.dff", //"skin156.txd");
-25083, //"skin157.dff", //"skin157.txd");
-25084, //"skin158.dff", //"skin158.txd");
-25085, //"skin159.dff", //"skin159.txd");
-25086, //"skin160.dff", //"skin160.txd");
-25087, //"skin161.dff", //"skin161.txd");
-25088, //"skin162.dff", //"skin162.txd");
-25089, //"skin163.dff", //"skin163.txd");
-25090, //"skin164.dff", //"skin164.txd");
-25091, //"skin165.dff", //"skin165.txd");
-25092, //"skin166.dff", //"skin166.txd");
-25093, //"skin167.dff", //"skin167.txd");
-25094, //"skin168.dff", //"skin168.txd");
-25095, //"skin169.dff", //"skin169.txd");
-25096, //"skin170.dff", //"skin170.txd");
-25099, //"skin173.dff", //"skin173.txd");
-25101, //"skin175.dff", //"skin175.txd");
-25102, //"skin176.dff", //"skin176.txd");
-25103, //"skin177.dff", //"skin177.txd");
-25104, //"skin178.dff", //"skin178.txd");
-25105, //"skin179.dff", //"skin179.txd");
-25106, //"skin180.dff", //"skin180.txd");
-25107, //"skin181.dff", //"skin181.txd");
-25108, //"skin182.dff", //"skin182.txd");
-25109, //"skin183.dff", //"skin183.txd");
-25110, //"skin184.dff", //"skin184.txd");
-25116, //"skin190.dff", //"skin190.txd");
-25117, //"skin191.dff", //"skin191.txd");
-25120, //"skin194.dff", //"skin194.txd");
-25121, //"skin195.dff", //"skin195.txd");
-25122, //"skin196.dff", //"skin196.txd");
-25123, //"skin197.dff", //"skin197.txd");
-25124, //"skin198.dff", //"skin198.txd");
-25125, //"skin199.dff", //"skin199.txd");
-25126, //"skin1100.dff", //"skin1100.txd");
-25127, //"skin1101.dff", //"skin1101.txd");
-25128, //"skin1102.dff", //"skin1102.txd");
-25129, //"skin1103.dff", //"skin1103.txd");
-25130, //"skin1104.dff", //"skin1104.txd");
-25131, //"skin1105.dff", //"skin1105.txd");
-25132, //"skin1106.dff", //"skin1106.txd");
-25133, //"skin1107.dff", //"skin1107.txd");
-25134, //"skin1108.dff", //"skin1108.txd");
-25136, //"skin1110.dff", //"skin1110.txd");
-25137, //"skin1111.dff", //"skin1111.txd");
-25138, //"skin1112.dff", //"skin1112.txd");
-25139, //"skin1113.dff", //"skin1113.txd");
-25142, //"skin1116.dff", //"skin1116.txd");
-25143, //"skin1117.dff", //"skin1117.txd");
-25144, //"skin1118.dff", //"skin1118.txd");
-25145, //"skin1119.dff", //"skin1119.txd");
-25148, //"skin1122.dff", //"skin1122.txd");
-25149, //"skin1123.dff", //"skin1123.txd");
-25150, //"skin1124.dff", //"skin1124.txd");
-25151, //"skin1125.dff", //"skin1125.txd");
-25153, //"skin1127.dff", //"skin1127.txd");
-25154, //"skin1128.dff", //"skin1128.txd");
-25155, //"skin1129.dff", //"skin1129.txd");
-25156, //"skin1130.dff", //"skin1130.txd");
-25157, //"skin1131.dff", //"skin1131.txd");
-25160, //"skin1134.dff", //"skin1134.txd");
-25164 //"skin1138.dff", //"skin1138.txd");
-
+	25000, 25001, 25002, 25003, 25005, 25006,
+	25008, 25009, 25011, 25013, 25014, 25015,
+	25016, 25020, 25021, 25023, 25027, 25028,
+	25029, 25030, 25031, 25032, 25033, 25034,
+	25035, 25036, 25037, 25038, 25039, 25040,
+	25041, 25042, 25043, 25044, 25045, 25046,
+	25047, 25048, 25049, 25050, 25051, 25052,
+	25053, 25054, 25055, 25056, 25057, 25058,
+	25059, 25060, 25061, 25062, 25063, 25076,
+	25077, 25078, 25079, 25080, 25081, 25082,
+	25083, 25084, 25085, 25086,	25087, 25088,
+	25089, 25090, 25091, 25092, 25093, 25094,
+	25095, 25096, 25099, 25101, 25102, 25103,
+	25104, 25105, 25106, 25107, 25108, 25109,
+	25110, 25116, 25117, 25120, 25121, 25122,
+	25123, 25124, 25125, 25126, 25127, 25128,
+	25129, 25130, 25131, 25132, 25133, 25134,
+	25136, 25137, 25138, 25139, 25142, 25143,
+	25144, 25145, 25148, 25149, 25150, 25151,
+	25153, 25154, 25155, 25156, 25157, 25160,
+	25164
 };
+
 new const clothesShopSkins[] = {
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 	20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
@@ -7909,7 +7804,7 @@ GetPlayerAssetLimit(playerid, type)
 	{
 	    case LIMIT_HOUSES:
 	    {
-	        switch(PlayerData[playerid][pVIPPackage])
+	        switch(PlayerData[playerid][pDonator])
 			{
 			    case 2: return 4;
 			    case 3: return 6;
@@ -7942,7 +7837,7 @@ GetPlayerAssetLimit(playerid, type)
 		}
         case LIMIT_VEHICLES:
 	    {
-            switch(PlayerData[playerid][pVIPPackage])
+            switch(PlayerData[playerid][pDonator])
 			{
 			    case 1: return 10;
 			    case 2: return 15;
@@ -8602,7 +8497,18 @@ stock AddDamages(playerid, issuerid, weaponid, bodypart, Float:amount)
 	format(DamageData[playerid][id][damageBy], 90, "%s", GetPlayerNameEx(issuerid));
 	return true;
 }
+IsRepairShopInUse(id)
+{
+	foreach(new i : Player)
+	{
+		if(PlayerData[i][pRepairShop] == id && IsPlayerInRangeOfPoint(i, 10.0, g_RepairShops[id][3], g_RepairShops[id][4], g_RepairShops[id][5]))
+		{
+			return 1;
+		}
+	}
 
+	return 0;
+}
 stock SetToyColor(playerid, slot, layer, color)
 {
 	if(ClothingInfo[playerid][slot][cModel] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, slot))
@@ -9532,6 +9438,43 @@ EnterCheck(playerid)
 		SetCameraBehindPlayer(playerid);
 		return 1;
 	}
+	else if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER && !PlayerData[playerid][pRepairTime])
+	{
+		for(new i = 0; i < sizeof(g_RepairShops); i ++)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 5.0, g_RepairShops[i][0], g_RepairShops[i][1], g_RepairShops[i][2]))
+			{
+				if(IsRepairShopInUse(i))
+				{
+					return SendErrorMessage(playerid, "This Pay n' Spray is currently in use.");
+				}
+				if((!PlayerCanAfford(playerid, 500)) && (GetFactionType(playerid) != FACTION_POLICE && GetFactionType(playerid) != FACTION_MEDIC))
+				{
+					return SendErrorMessage(playerid, "You can't afford the entry cost.");
+				}
+
+				SetVehiclePos(GetPlayerVehicleID(playerid), g_RepairShops[i][3], g_RepairShops[i][4], g_RepairShops[i][5]);
+				SetVehicleZAngle(GetPlayerVehicleID(playerid), g_RepairShops[i][6]);
+
+				TogglePlayerControllable(playerid, 0);
+				SendClientMessage(playerid, COLOR_WHITE, "Garage: You will be moved out the garage in 8 seconds.");
+
+				if(GetFactionType(playerid) == FACTION_POLICE || GetFactionType(playerid) == FACTION_MEDIC)
+				{
+					SendClientMessage(playerid, COLOR_GREEN, "Your vehicle is fixed free of charge due to being in a government faction!");
+				}
+				else
+				{
+					GivePlayerCash(playerid, -500);
+				}
+
+				PlayerData[playerid][pRepairTime] = 8;
+				PlayerData[playerid][pRepairShop] = i;
+				return 1;
+			}
+		}
+		return 1;
+	}
 	else if((id = GetNearbyEntrance(playerid)) >= 0)
 	{
 	    if(EntranceInfo[id][eLocked])
@@ -9567,7 +9510,7 @@ EnterCheck(playerid)
 		    	SendClientMessage(playerid, COLOR_GREY, "This entrance is only accesible to a specific gang. You may not enter.");
 				return 0;
 			}
-			if(EntranceInfo[id][eVIP] && PlayerData[playerid][pVIPPackage] < EntranceInfo[id][eVIP])
+			if(EntranceInfo[id][eVIP] && PlayerData[playerid][pDonator] < EntranceInfo[id][eVIP])
 			{
 		    	SendClientMessage(playerid, COLOR_GREY, "Your VIP rank is too low. You may not enter.");
 		    	return 0;
@@ -9628,7 +9571,7 @@ EnterCheck(playerid)
 	    {
 	        if(IsPlayerInRangeOfPoint(playerid, 3.0, staticEntrances[i][ePosX], staticEntrances[i][ePosY], staticEntrances[i][ePosZ]))
 	        {
-	            if(!strcmp(staticEntrances[i][eName], "VIP lounge") && PlayerData[playerid][pVIPPackage] == 0)
+	            if(!strcmp(staticEntrances[i][eName], "VIP lounge") && PlayerData[playerid][pDonator] == 0)
 	            {
 	                SendClientMessage(playerid, COLOR_GREY, "This lounge is only available to those with a VIP subscription.");
 	                return 0;
@@ -10399,26 +10342,27 @@ public DecreasePower(playerid)
 forward ReturnChatAnimation(playerid, text[]);
 public ReturnChatAnimation(playerid, text[])
 {
-	if(GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_CUFFED || PlayerData[playerid][pInjured] == 0 || PlayerData[playerid][pHospital] == 0 || PlayerData[playerid][pMiningTime] == 0 || PlayerData[playerid][pTazedTime] == 0 || PlayerData[playerid][pCuffed] == 0 || PlayerData[playerid][pLootTime] == 0)
+    if(!PlayerUseAnims(playerid) || PlayerData[playerid][pLoopAnim] != 0)
 	{
-		switch(PlayerData[playerid][pChatstyle])
-		{
-			case 0: ApplyAnimation(playerid,"PED","IDLE_CHAT",4.0,1,1,0,1,1,1);
-			case 1: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKA",4.0,1,0,0,1,1,1);
-			case 2: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKB", 4.0,1,0,0,1,1,1);
-			case 3: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKD", 4.0,1,0,0,1,1,1);
-			case 4: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKE", 4.0,1,0,0,1,1,1);
-			case 5: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKF", 4.0,1,0,0,1,1,1);
-			case 6: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKG", 4.0,1,0,0,1,1,1);
-			case 7: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKH", 4.0,1,0,0,1,1,1);
-		}
-		if(strlen(text) <= 16) SetTimerEx("TIMER_EndChatAnim",2000, 0, "i", playerid);
-		else if(strlen(text) <= 32 && strlen(text) > 16) SetTimerEx("TIMER_EndChatAnim",3500, 0, "i", playerid);
-			else if(strlen(text) <= 64 && strlen(text) > 32) SetTimerEx("TIMER_EndChatAnim",4000, 0, "i", playerid);
-			else if(strlen(text) <= 96 && strlen(text) > 64) SetTimerEx("TIMER_EndChatAnim",4500, 0, "i", playerid);
-			else if(strlen(text) <= 128 && strlen(text) > 96) SetTimerEx("TIMER_EndChatAnim",5000, 0, "i", playerid);
-			else if(strlen(text) > 128) SetTimerEx("TIMER_EndChatAnim",5500, 0, "i", playerid);
+	    return 1;
 	}
+	switch(PlayerData[playerid][pChatstyle])
+	{
+		case 0: ApplyAnimation(playerid,"PED","IDLE_CHAT",4.0,1,1,0,1,1,1);
+		case 1: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKA",4.0,1,0,0,1,1,1);
+		case 2: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKB", 4.0,1,0,0,1,1,1);
+		case 3: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKD", 4.0,1,0,0,1,1,1);
+		case 4: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKE", 4.0,1,0,0,1,1,1);
+		case 5: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKF", 4.0,1,0,0,1,1,1);
+		case 6: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKG", 4.0,1,0,0,1,1,1);
+		case 7: ApplyAnimation(playerid, "GANGS", "PRTIAL_GNGTLKH", 4.0,1,0,0,1,1,1);
+	}
+	if(strlen(text) <= 16) SetTimerEx("TIMER_EndChatAnim",2000, 0, "i", playerid);
+	else if(strlen(text) <= 32 && strlen(text) > 16) SetTimerEx("TIMER_EndChatAnim",3500, 0, "i", playerid);
+	else if(strlen(text) <= 64 && strlen(text) > 32) SetTimerEx("TIMER_EndChatAnim",4000, 0, "i", playerid);
+	else if(strlen(text) <= 96 && strlen(text) > 64) SetTimerEx("TIMER_EndChatAnim",4500, 0, "i", playerid);
+	else if(strlen(text) <= 128 && strlen(text) > 96) SetTimerEx("TIMER_EndChatAnim",5000, 0, "i", playerid);
+	else if(strlen(text) > 128) SetTimerEx("TIMER_EndChatAnim",5500, 0, "i", playerid);
 	return 1;
 }
 
@@ -14266,7 +14210,7 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	    gangcrew = "None";
 	}
 
-	/*switch(PlayerData[playerid][pVIPPackage])
+	/*switch(PlayerData[playerid][pDonator])
 	{
 		case 0:
 			maxarmor = 100.0;
@@ -14355,7 +14299,7 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Or? | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
-	GetVIPRankEx(PlayerData[playerid][pVIPPackage]), PlayerData[playerid][pDoubleXP], FormatNumber(PlayerData[playerid][pCookies], 0), FormatNumber(PlayerData[playerid][pPaycheck]), PlayerData[playerid][pMinutes]);
+	GetVIPRankEx(PlayerData[playerid][pDonator]), PlayerData[playerid][pDoubleXP], FormatNumber(PlayerData[playerid][pCookies], 0), FormatNumber(PlayerData[playerid][pPaycheck]), PlayerData[playerid][pMinutes]);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "Weapon Restriction: %i hours | Married To: %s | DJ Rank: %d | Trucking XP: %d | Trucking Level: %d.",
@@ -14943,7 +14887,7 @@ ShowDialogToPlayer(playerid, dialogid)
 			{
 			    format(string, sizeof(string), "%s's %s [%i products]", BusinessInfo[businessid][bOwner], bizInteriors[BusinessInfo[businessid][bType]][intType], BusinessInfo[businessid][bProducts]);
 
-				if(PlayerData[playerid][pVIPPackage] > 0) {
+				if(PlayerData[playerid][pDonator] > 0) {
 					Dialog_Show(playerid, DIALOG_BUYCLOTHES, DIALOG_STYLE_INPUT, string, "NOTE: New clothes are free for VIP members.\n\nPlease input the ID of the skin you wish to purchase.\n(( List of skins: http://wiki.sa-mp.com/wiki/Skins:All ))", "Submit", "Cancel");
 				} else {
 					Dialog_Show(playerid, DIALOG_BUYCLOTHES, DIALOG_STYLE_INPUT, string, "NOTE: New clothes costs $2,000.\n\nPlease input the ID of the skin you wish to purchase.\n(( List of skins: http://wiki.sa-mp.com/wiki/Skins:All ))", "Submit", "Cancel");
@@ -15497,19 +15441,19 @@ SendPaycheck(playerid)
     new total = paycheck - tax;
 
     // If the player is a VIP, adjust his interest rate accordingly.
-   	if(PlayerData[playerid][pVIPPackage] == 0)
+   	if(PlayerData[playerid][pDonator] == 0)
 	{
 		rate = 1;
 	}
-	if(PlayerData[playerid][pVIPPackage] == 1)
+	if(PlayerData[playerid][pDonator] == 1)
 	{
 		rate = 3;
 	}
-	if(PlayerData[playerid][pVIPPackage] == 2)
+	if(PlayerData[playerid][pDonator] == 2)
 	{
 		rate = 6;
 	}
-	if(PlayerData[playerid][pVIPPackage] == 3)
+	if(PlayerData[playerid][pDonator] == 3)
 	{
 		rate = 8;
 	}
@@ -15577,7 +15521,7 @@ SendPaycheck(playerid)
 		    rent = -1;
 		}
 	}
-	switch(PlayerData[playerid][pVIPPackage])
+	switch(PlayerData[playerid][pDonator])
 	{
 		case 1:
 		{
@@ -15706,10 +15650,10 @@ SendPaycheck(playerid)
 		        SendClientMessageEx(playerid, COLOR_GLOBAL, "* _-= "#SERVER_NAME" Automate Playing Hours Reward =-_ *");
 		        SendClientMessageEx(playerid, COLOR_GLOBAL, " You receive 7 Days Gold VIP for spending 120 Hours of Time in Playing");
 		        SendClientMessageEx(playerid, COLOR_YELLOW, "_______________________________________________________________________");
-				if(PlayerData[playerid][pVIPPackage] < 2)
+				if(PlayerData[playerid][pDonator] < 2)
 				{
 					new days;
-					PlayerData[playerid][pVIPPackage] = 2;
+					PlayerData[playerid][pDonator] = 2;
 					PlayerData[playerid][pVIPTime] = gettime() + (days * 86400);
 					PlayerData[playerid][pVIPCooldown] = 0;
 					//SavePlayerVarriables(playerid);
@@ -15742,10 +15686,10 @@ SendPaycheck(playerid)
 		        SendClientMessageEx(playerid, COLOR_GLOBAL, " You receive 7 Days Gold VIP Voucher, 1 Car Voucher, 1 Rim Kit, 3 Exp Tokens for spending 300 Hours of Time in Playing");
 		        SendClientMessageEx(playerid, COLOR_YELLOW, "_______________________________________________________________________");
 		        PlayerData[playerid][pEXP] += 3;
-				if(PlayerData[playerid][pVIPPackage] < 2)
+				if(PlayerData[playerid][pDonator] < 2)
 				{
 					new days;
-					PlayerData[playerid][pVIPPackage] = 2;
+					PlayerData[playerid][pDonator] = 2;
 					PlayerData[playerid][pVIPTime] = gettime() + (days * 86400);
 					PlayerData[playerid][pVIPCooldown] = 0;
 					//SavePlayerVarriables(playerid);
@@ -15825,6 +15769,24 @@ SaveServerInfo()
 }
 LoadObjects()
 {
+	CreateDynamicObject(3055, 2071.46143, -1831.12000, 13.68281,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(3055, 1843.35388, -1855.81506, 13.09352,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(3055, 1025.12244, -1029.34338, 32.27671,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, 719.81921, -462.47787, 16.34370,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -99.94527, 1111.47241, 16.62420,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -99.94527, 1111.47241, 21.64419,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -1420.79822, 2591.23022, 52.79280,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -1420.79822, 2591.23022, 57.77278,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -2425.93945, 1028.25513, 47.49768,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -2425.93945, 1028.25513, 52.47769,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -1904.72595, 277.80399, 38.01996,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, -1904.72595, 277.80399, 43.01995,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, 1968.21545, 2162.34033, 11.35032,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(3055, 2386.81738, 1043.47742, 10.54739,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, 488.70782, -1735.24133, 11.63138,   0.00000, 0.00000, 170.00000);
+	CreateDynamicObject(3055, 2004.66003, 2303.51660, 10.82031,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3055, 2004.66003, 2317.93896, 10.82031,   0.00000, 0.00000, 0.00000);
+
 	// Gym objects
 	CreateDynamicObject(2916, 772.496765, 5.770771, 999.879760, 0.000000, 0.000000, -90.000000);
 	CreateDynamicObject(2916, 772.527404, 5.051626, 999.879760, 0.000000, 0.000000, -90.000000);
@@ -20149,6 +20111,12 @@ LoadObjects()
 }
 LoadPickupsAndText()
 {
+	for(new i = 0; i < sizeof(g_RepairShops); i ++)
+	{
+		CreateDynamicPickup(1239, 1, g_RepairShops[i][0], g_RepairShops[i][1], g_RepairShops[i][2]);
+		CreateDynamic3DTextLabel("{ffff00}Repair Shop\n{ffffff}Cost: $500\n/enter to repair your vehicle.", COLOR_GREY, g_RepairShops[i][0], g_RepairShops[i][1], g_RepairShops[i][2], 20.0);
+	}
+
 	CreateDynamic3DTextLabel("Press Y to use weights", COLOR_GREY, 772.4859, 5.3462, 999.9802, 10.0);
 	CreateDynamic3DTextLabel("Press Y to use treadmill", COLOR_GREY, 773.5106, -2.8392, 1000.1479, 10.0);
 
@@ -21564,22 +21532,10 @@ ResetPlayer(playerid)
     PlayerData[playerid][pPreviewType] = 0;
     PlayerData[playerid][pPreviewTime] = 0;
     PlayerData[playerid][pHHCheck] = 0;
-	PlayerData[playerid][pWarnTimer] = 0;
-	PlayerData[playerid][pWarnWeapon] = 0;
-	PlayerData[playerid][pWarnHealth] = 0;
-	PlayerData[playerid][pWarnArmor] = 0;
-	PlayerData[playerid][pWarnAirbreak] = 0;
-	PlayerData[playerid][pWarnSpeedhack] = 0;
-	PlayerData[playerid][pWarnMoneyHack] = 0;
-	PlayerData[playerid][pWarnAmmoHack] = 0;
-	PlayerData[playerid][pWarnFlyHack] = 0;
-	PlayerData[playerid][pWarnDialogHack] = 0;
-	PlayerData[playerid][pWarnGodMode] = 0;
-	PlayerData[playerid][pWarnRapidFire] = 0;
-	PlayerData[playerid][pWarnTeleport] = 0;
  	CancelActiveCheckpoint(playerid);
  	CancelBreakIn(playerid);
-
+	PlayerData[playerid][pRepairShop] = -1;
+	PlayerData[playerid][pRepairTime] = 0;
  	RemovePlayerAttachedObject(playerid, 9);
 }
 
@@ -21682,8 +21638,8 @@ SendNewbieChatMessage(playerid, text[])
 	    format(string, sizeof(string), "%s %s", GetHelperRank(playerid), GetRPName(playerid));
     } else if(PlayerData[playerid][pFormerAdmin]) {
 	    format(string, sizeof(string), "{FF69B5}Former Admin{7DAEFF} %s", GetRPName(playerid));
-	} else if(PlayerData[playerid][pVIPPackage] > 0) {
-		format(string, sizeof(string), "{D909D9}%s VIP{7DAEFF} %s", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetRPName(playerid));
+	} else if(PlayerData[playerid][pDonator] > 0) {
+		format(string, sizeof(string), "{D909D9}%s VIP{7DAEFF} %s", GetVIPRank(PlayerData[playerid][pDonator]), GetRPName(playerid));
 	} else if(PlayerData[playerid][pLevel] > 1) {
 	    format(string, sizeof(string), "Player %s", GetRPName(playerid));
 	} else if(PlayerData[playerid][pHours] > 250) {
@@ -21785,7 +21741,7 @@ SellWeapon(playerid, targetid, weaponid, price = 0)
 	    case 34: cost = 7500;
 	}
 
-	if((weaponid == 27 || weaponid == 34) && PlayerData[playerid][pVIPPackage] == 3)
+	if((weaponid == 27 || weaponid == 34) && PlayerData[playerid][pDonator] == 3)
 	{
 	    cost = 5000;
 	}
@@ -23518,7 +23474,7 @@ GetTurfColor(turfid)
 
 	return 0x000000AA;
 }
-public OnPlayerEnterDynamicArea(playerid, areaid)
+/*public OnPlayerEnterDynamicArea(playerid, areaid)
 {
 	foreach(new i : Player)
 	{
@@ -23530,7 +23486,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
             SetPlayerMarkerForPlayer(playerid, i, (GangInfo[PlayerData[playerid][pGang]][gColor] & ~0xff) + 0xFF);
 	    }
 	}
-}
+}*/
 public OnPlayerLeaveDynamicArea(playerid, areaid)
 {
 	foreach(new i : Player)
@@ -26618,6 +26574,37 @@ public SecondTimer()
 		            AwardAchievement(i, "Party hard");
 		        }
 		    }
+    		if(PlayerData[i][pRepairTime] > 0)
+			{
+				PlayerData[i][pRepairTime]--;
+
+				if(PlayerData[i][pRepairTime] <= 0)
+				{
+					if(GetPlayerState(i) == PLAYER_STATE_DRIVER)
+					{
+						new vehicleid = GetPlayerVehicleID(i);
+						
+						foreach(new e : Player)
+						{
+							if(IsPlayerInVehicle(e, vehicleid))
+							{
+								SetCameraBehindPlayer(e);
+							}
+						}
+
+						SetVehiclePos(vehicleid, g_RepairShops[PlayerData[i][pRepairShop]][7], g_RepairShops[PlayerData[i][pRepairShop]][8], g_RepairShops[PlayerData[i][pRepairShop]][9]);
+						SetVehicleZAngle(vehicleid, g_RepairShops[PlayerData[i][pRepairShop]][10]);
+						SetCameraBehindPlayer(i);
+
+						RepairVehicle(vehicleid);
+						GameTextForPlayer(i, "~g~Vehicle Repaired", 5000, 1);
+						TogglePlayerControllable(i, 1);
+					}
+
+					PlayerData[i][pRepairShop] = -1;
+				}
+			}
+
 		    if(PlayerData[i][pPizzas] > 0 && GetPlayerState(i) == PLAYER_STATE_DRIVER)
 			{
 				if(GetVehicleModel(GetPlayerVehicleID(i)) == 448)
@@ -26690,23 +26677,6 @@ public SecondTimer()
 					}
 				}
 			}
-			PlayerData[i][pWarnTimer]++;
-
-			if (PlayerData[i][pWarnTimer] > 5)
-			{
-				PlayerData[i][pWarnWeapon] = 0;
-				PlayerData[i][pWarnHealth] = 0;
-				PlayerData[i][pWarnArmor] = 0;
-				PlayerData[i][pWarnAirbreak] = 0;
-				PlayerData[i][pWarnSpeedhack] = 0;
-				PlayerData[i][pWarnMoneyHack] = 0;
-				PlayerData[i][pWarnAmmoHack] = 0;
-				PlayerData[i][pWarnFlyHack] = 0;
-				PlayerData[i][pWarnDialogHack] = 0;
-				PlayerData[i][pWarnGodMode] = 0;
-				PlayerData[i][pWarnRapidFire] = 0;
-				PlayerData[i][pWarnTeleport] = 0;
-			}
 		    if(!PlayerData[i][pToggleTextdraws])
 		    {
 			    if(PlayerData[i][pGPSOn])
@@ -26737,9 +26707,9 @@ public SecondTimer()
 			{
 	    		TeleportToPlayer(i, PlayerData[i][pDraggedBy]);
 			}
-			if(PlayerData[i][pVIPPackage] > 0 && gettime() > PlayerData[i][pVIPTime])
+			if(PlayerData[i][pDonator] > 0 && gettime() > PlayerData[i][pVIPTime])
 			{
-			    PlayerData[i][pVIPPackage] = 0;
+			    PlayerData[i][pDonator] = 0;
 			    PlayerData[i][pVIPTime] = 0;
 			    PlayerData[i][pSecondJob] = -1;
 
@@ -26748,7 +26718,7 @@ public SecondTimer()
 
 			    SendClientMessage(i, COLOR_LIGHTRED, "Your VIP subscription has expired. You are no longer a VIP.");
 			}
-			if(PlayerData[i][pVIPPackage] < 2 && PlayerData[i][pSecondJob] != JOB_NONE)
+			if(PlayerData[i][pDonator] < 2 && PlayerData[i][pSecondJob] != JOB_NONE)
 			{
 			    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET secondjob = -1 WHERE uid = %i", PlayerData[i][pID]);
 			    mysql_tquery(connectionID, queryBuffer);
@@ -27525,7 +27495,7 @@ public SecondTimer()
 					SetPlayerColor(i, FactionInfo[PlayerData[i][pFaction]][fColor] & ~0xff);
 				} else if(PlayerHasJob(i, JOB_TAXIDRIVER) && PlayerData[i][pTaxiFare] > 0) {
 				    SetPlayerColor(i, 0xF5DEB300);
-				} else if(PlayerData[i][pVIPPackage] > 0 && PlayerData[i][pVIPColor]) {
+				} else if(PlayerData[i][pDonator] > 0 && PlayerData[i][pVIPColor]) {
 				    SetPlayerColor(i, 0xFF00FF00);
 				} else if(PlayerData[i][pHunted] == 1) {
 				    SetPlayerColor(i, 0xFF69B5FF);
@@ -27687,7 +27657,7 @@ public MinuteTimer()
 				if(!TurfInfo[i][tTime] && TurfInfo[i][tType] != 8)
 				{
 				    SendTurfMessage(i, COLOR_YELLOW, "Turf wars: %s is now available to capture.", TurfInfo[i][tName]);
-             }
+             	}
 
 	            mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE turfs SET time = %i WHERE id = %i", TurfInfo[i][tTime], i);
              	mysql_tquery(connectionID, queryBuffer);
@@ -28458,14 +28428,6 @@ public LeftVehicle(playerid)
 	SendClientMessage(playerid, COLOR_RED, "Your renting timer is over, you are now able to rent again.");
 	return 1;
 }
-stock  GetPlayerTurfZone(playerid)
-{
-	for(new i = 0; i < MAX_TURFS; i++) if(IsPlayerInDynamicArea(playerid, TurfInfo[i][tArea])) return i;
-	return -1;
-}
-
-
-
 
 forward OnPlayerUpgradeGarage(playerid, garageid);
 public OnPlayerUpgradeGarage(playerid, garageid)
@@ -28599,7 +28561,7 @@ public OnPlayerUseCarStorage(playerid)
 forward OnPlayerAttemptResetUpgrades(playerid);
 public OnPlayerAttemptResetUpgrades(playerid)
 {
-	if(PlayerData[playerid][pVIPPackage] == 0 && cache_get_row_int(0, 0) > 3)
+	if(PlayerData[playerid][pDonator] == 0 && cache_get_row_int(0, 0) > 3)
 	{
  		SendClientMessageEx(playerid, COLOR_GREY, "You own %i/%i vehicle at the moment. Please sell one of them before using this command.", cache_get_row_int(0, 0), GetPlayerAssetLimit(playerid, LIMIT_HOUSES));
 	}
@@ -29086,8 +29048,6 @@ public OnPlayerListFactions(playerid, factionid)
 	}
 }
 
-
-
 forward OnPlayerBuyPhoneNumber(playerid, number);
 public OnPlayerBuyPhoneNumber(playerid, number)
 {
@@ -29106,7 +29066,7 @@ public OnPlayerBuyPhoneNumber(playerid, number)
 	    GameTextForPlayer(playerid, "~r~-$10,000", 5000, 1);
 
 	    SendClientMessageEx(playerid, COLOR_AQUA, "You paid $10,000 to change your phone number to %i.", number);
-	    Log_Write("log_vip", "%s VIP %s (uid: %i) has purchased phone number: %i for $10000.", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetPlayerNameEx(playerid), PlayerData[playerid][pID], number);
+	    Log_Write("log_vip", "%s VIP %s (uid: %i) has purchased phone number: %i for $10000.", GetVIPRank(PlayerData[playerid][pDonator]), GetPlayerNameEx(playerid), PlayerData[playerid][pID], number);
 	}
 }
 
@@ -29125,7 +29085,7 @@ public OnPlayerSpawnVehicle(playerid, parked)
       		return SendClientMessage(playerid, COLOR_GREY, "This vehicle is spawned already. /findcar to track it.");
 	    }
 
-	    if(GetSpawnedVehicles(playerid) >= MAX_SPAWNED_VEHICLES && PlayerData[playerid][pVIPPackage] < 3)//vipveh
+	    if(GetSpawnedVehicles(playerid) >= MAX_SPAWNED_VEHICLES && PlayerData[playerid][pDonator] < 3)//vipveh
 	    {
 	        return SendClientMessageEx(playerid, COLOR_GREY, "You can't have more than %i vehicles spawned at a time.", MAX_SPAWNED_VEHICLES);
 	    }
@@ -29794,7 +29754,7 @@ public OnAdminOfflineCheck(playerid, username[])
 		PlayerData[MAX_PLAYERS][pToggleReports] = cache_get_field_content_int(0, "togglereports");
 		PlayerData[MAX_PLAYERS][pToggleWhisper] = cache_get_field_content_int(0, "togglewhisper");
 		PlayerData[MAX_PLAYERS][pCarLicense] = cache_get_field_content_int(0, "carlicense");
-		PlayerData[MAX_PLAYERS][pVIPPackage] = cache_get_field_content_int(0, "vippackage");
+		PlayerData[MAX_PLAYERS][pDonator] = cache_get_field_content_int(0, "vippackage");
 		PlayerData[MAX_PLAYERS][pVIPTime] = cache_get_field_content_int(0, "viptime");
 		PlayerData[MAX_PLAYERS][pVIPCooldown] = cache_get_field_content_int(0, "vipcooldown");
 		PlayerData[MAX_PLAYERS][pWeapons][0] = cache_get_field_content_int(0, "weapon_0");
@@ -30800,7 +30760,7 @@ public OnQueryFinished(threadid, extraid)
 				PlayerData[extraid][pToggleWhisper] = cache_get_field_content_int(0, "togglewhisper");
 				PlayerData[extraid][pToggleBug] = cache_get_field_content_int(0, "togglebug");
 				PlayerData[extraid][pCarLicense] = cache_get_field_content_int(0, "carlicense");
-				PlayerData[extraid][pVIPPackage] = cache_get_field_content_int(0, "vippackage");
+				PlayerData[extraid][pDonator] = cache_get_field_content_int(0, "vippackage");
 				PlayerData[extraid][pVIPTime] = cache_get_field_content_int(0, "viptime");
 				PlayerData[extraid][pVIPCooldown] = cache_get_field_content_int(0, "vipcooldown");
                 PlayerData[extraid][pSpawnSelect] = cache_get_field_content_int(0, "spawntype");
@@ -31054,8 +31014,8 @@ public OnQueryFinished(threadid, extraid)
 							SendClientMessageEx(extraid, COLOR_WHITE, "Old School Roleplay: You have logged in as a {FF6347}level %i %s{FFFFFF}.", PlayerData[extraid][pAdmin], GetAdminRank(extraid));
 						} else if(PlayerData[extraid][pHelper] > 0) {
 						    SendClientMessageEx(extraid, COLOR_WHITE, "Old School Roleplay: You have logged in as a {33CCFF}%s{FFFFFF}.", GetHelperRank(extraid));
-						} else if(PlayerData[extraid][pVIPPackage] > 0) {
-						    SendClientMessageEx(extraid, COLOR_WHITE, "Old School Roleplay: You have logged in as a {D909D9}%s VIP{FFFFFF}.", GetVIPRank(PlayerData[extraid][pVIPPackage]));
+						} else if(PlayerData[extraid][pDonator] > 0) {
+						    SendClientMessageEx(extraid, COLOR_WHITE, "Old School Roleplay: You have logged in as a {D909D9}%s VIP{FFFFFF}.", GetVIPRank(PlayerData[extraid][pDonator]));
         	        	} else if(PlayerData[extraid][pLevel] >= 2) {
         	        	    SendClientMessageEx(extraid, COLOR_WHITE, "Old School Roleplay: You have logged in as a {AFAFAF}level %i player{FFFFFF}.", PlayerData[extraid][pLevel]);
 						} else {
@@ -33017,25 +32977,13 @@ public OnPlayerConnect(playerid)
 	PlayerTextDrawHide(playerid, LoadingObjects5[playerid]);
     totalDamages[playerid] = 0;
 	PlayerData[playerid][pSpeakerPhone] = 0;
-
+	PlayerData[playerid][pRepairShop] = -1;
+	PlayerData[playerid][pRepairTime] = 0;
     PlayerData[playerid][pEditRack] = -1;
     CarRadars[playerid] = 0;
 	PlayerData[playerid][pRangeBooth] = -1;
 	PlayerData[playerid][pTargets] = 0;
 	PlayerData[playerid][pTargetLevel] = 0;
-	PlayerData[playerid][pWarnTimer] = 0;
-	PlayerData[playerid][pWarnWeapon] = 0;
-	PlayerData[playerid][pWarnHealth] = 0;
-	PlayerData[playerid][pWarnArmor] = 0;
-	PlayerData[playerid][pWarnAirbreak] = 0;
-	PlayerData[playerid][pWarnSpeedhack] = 0;
-	PlayerData[playerid][pWarnMoneyHack] = 0;
-	PlayerData[playerid][pWarnAmmoHack] = 0;
-	PlayerData[playerid][pWarnFlyHack] = 0;
-	PlayerData[playerid][pWarnDialogHack] = 0;
-	PlayerData[playerid][pWarnGodMode] = 0;
-	PlayerData[playerid][pWarnRapidFire] = 0;
-	PlayerData[playerid][pWarnTeleport] = 0;
 
 	//police
 
@@ -33422,7 +33370,7 @@ public OnPlayerConnect(playerid)
 	PlayerData[playerid][pToggleGlobal] = 1;
 	PlayerData[playerid][pToggleCam] = 0;
 	PlayerData[playerid][pCarLicense] = 0;
-	PlayerData[playerid][pVIPPackage] = 0;
+	PlayerData[playerid][pDonator] = 0;
 	PlayerData[playerid][pVIPTime] = 0;
 	PlayerData[playerid][pVIPCooldown] = 0;
 	PlayerData[playerid][pWeapons] = 0;
@@ -35153,7 +35101,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	        SendClientMessageEx(playerid, COLOR_GREY, "You cannot operate this vehicle as you are not a %s.", GetJobName(VehicleInfo[vehicleid][vJob]));
 	        ClearAnimations(playerid);
 	    }
-	    if(VehicleInfo[vehicleid][vVIP] > 0 && PlayerData[playerid][pVIPPackage] < VehicleInfo[vehicleid][vVIP])
+	    if(VehicleInfo[vehicleid][vVIP] > 0 && PlayerData[playerid][pDonator] < VehicleInfo[vehicleid][vVIP])
 	    {
 	        SendClientMessageEx(playerid, COLOR_GREY, "You cannot operate this vehicle as you are not a %s VIP+.", GetVIPRank(VehicleInfo[vehicleid][vVIP]));
 	        ClearAnimations(playerid);
@@ -35384,7 +35332,7 @@ public OnPlayerEnterCheckpoint(playerid)
                     PlayerData[playerid][pMaterials] += 650;
 					SendClientMessage(playerid, COLOR_AQUA, "You have dropped off your load and collected 650 materials from the depot.");
 				}
-				if(PlayerData[playerid][pSmuggleMats] > 0 && PlayerData[playerid][pVIPPackage] >= 3)
+				if(PlayerData[playerid][pSmuggleMats] > 0 && PlayerData[playerid][pDonator] >= 3)
                 {
                     PlayerData[playerid][pMaterials] += 250;
                     SendClientMessage(playerid, COLOR_AQUA, "You've earned 250 more materials for being a {D909D9}Legendary VIP");
@@ -35911,7 +35859,7 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 	    }
 	}
 
-	if(PlayerData[playerid][pVIPPackage] == 3)
+	if(PlayerData[playerid][pDonator] == 3)
 	{
 	    if(pickupid == gVIPHealth) {
 	        SetPlayerHealth(playerid, 100.0);
@@ -36360,162 +36308,6 @@ public OnPlayerAirbreak(playerid)
 	return 1;
 }
 
-forward OnCheatDetected(playerid, ip_address[], type, code);
-public OnCheatDetected(playerid, ip_address[], type, code)
-{
-
-	switch (code)
-	{
-		case 0 .. 1:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnAirbreak]++;
-
-			if (PlayerData[playerid][pWarnAirbreak] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be airbreaking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnAirbreak] = 0;
-			}
-		}
-		case 2 .. 6:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnTeleport]++;
-
-			if (PlayerData[playerid][pWarnTeleport] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be teleport hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnTeleport] = 0;
-			}
-		}
-		case 7 .. 8:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnFlyHack]++;
-
-			if (PlayerData[playerid][pWarnFlyHack] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be flying.", GetRPName(playerid));
-				PlayerData[playerid][pWarnFlyHack] = 0;
-			}
-		}
-		case 9 .. 10:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnSpeedhack]++;
-
-			if (PlayerData[playerid][pWarnSpeedhack] > 3)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be speed hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnSpeedhack] = 0;
-			}
-		}
-		case 11 .. 12:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnHealth]++;
-
-			if (PlayerData[playerid][pWarnHealth] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be health hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnHealth] = 0;
-			}
-		}
-		case 13:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnArmor]++;
-
-			if (PlayerData[playerid][pWarnArmor] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be armor hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnArmor] = 0;
-			}
-		}
-		case 14:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnMoneyHack]++;
-
-			if (PlayerData[playerid][pWarnMoneyHack] > 3)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be money hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnMoneyHack] = 0;
-			}
-		}
-		case 15:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnWeapon]++;
-
-			if (PlayerData[playerid][pWarnWeapon] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be weapon hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnWeapon] = 0;
-			}
-		}
-		case 16 .. 17:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnAmmoHack]++;
-
-			if (PlayerData[playerid][pWarnAmmoHack] > 2)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be ammo hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnAmmoHack] = 0;
-			}
-		}
-		case 19 .. 20:
-		{
-			if(CheckAdmin(playerid, 5))
-				return 1;
-
-			PlayerData[playerid][pWarnGodMode]++;
-
-			if (PlayerData[playerid][pWarnGodMode] > 1)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be godmode hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnGodMode] = 0;
-			}
-		}
-
-		/*case 39:
-		{
-			PlayerData[playerid][pWarnDialogHack]++;
-
-			if (PlayerData[playerid][pWarnDialogHack] > 10)
-			{
-				SendAdminMessage(COLOR_RED, "Admin: %s might be dialog hacking.", GetRPName(playerid));
-				PlayerData[playerid][pWarnDialogHack] = 0;
-			}
-		}
-		default:
-		{
-			SendAdminMessage(COLOR_RED, "Admin: %s is hacking (code: %i).", GetRPName(playerid), code);
-		}*/
-	}
-
-	return 1;
-}
-
 public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, modelid)
 {
 	switch(extraid)
@@ -36533,16 +36325,16 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 		            {
 		                return SendClientMessage(playerid, COLOR_GREY, "This business is out of stock.");
 		            }
-		            if(PlayerData[playerid][pVIPPackage] == 0 && PlayerData[playerid][pCash] < 1000)
+		            if(PlayerData[playerid][pDonator] == 0 && PlayerData[playerid][pCash] < 1000)
 	                {
 	                    return SendClientMessage(playerid, COLOR_GREY, "You don't have enough money. You can't buy new clothes.");
 	                }
-					if((PlayerData[playerid][pVIPPackage] == 0 && GetFactionType(playerid) != FACTION_POLICE && GetFactionType(playerid) != FACTION_MEDIC) && (!(0 <= modelid <= 311) || (265 <= modelid <= 267) || (274 <= modelid <= 288) || (300 <= modelid <= 302) || (306 <= modelid <= 311)))
+					if((PlayerData[playerid][pDonator] == 0 && GetFactionType(playerid) != FACTION_POLICE && GetFactionType(playerid) != FACTION_MEDIC) && (!(0 <= modelid <= 311) || (265 <= modelid <= 267) || (274 <= modelid <= 288) || (300 <= modelid <= 302) || (306 <= modelid <= 311)))
 					{
 					    return SendClientMessage(playerid, COLOR_GREY, "You are not allowed to use that skin as it is either invalid or faction reserved.");
 					}
 
-					if(PlayerData[playerid][pVIPPackage] == 0)
+					if(PlayerData[playerid][pDonator] == 0)
 					{
 					    new price = 1000;
 
@@ -36634,7 +36426,7 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 	    }
 	    case MODEL_SELECTION_VIPCLOTHES:
 	    {
-	        if((response) && PlayerData[playerid][pVIPPackage] > 0)
+	        if((response) && PlayerData[playerid][pDonator] > 0)
 	        {
 	            SetScriptSkin(playerid, modelid);
 	            SendClientMessage(playerid, COLOR_VIP, "VIP Perk: You changed your clothes free of charge.");
@@ -37682,7 +37474,6 @@ public OnVehicleRespray(playerid, vehicleid, color1, color2)
 	    mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET color1 = %i, color2 = %i WHERE id = %i", color1, color2, VehicleInfo[vehicleid][vID]);
 	    mysql_tquery(connectionID, queryBuffer);
 	}
-
 	return 1;
 }
 
@@ -37779,28 +37570,27 @@ public OnPlayerText(playerid, text[])
 	        SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently in the tutorial. Chatting is disabled.");
 	        return 0;
 		}
-		if(PlayerData[playerid][pHospital])
+		else if(PlayerData[playerid][pHospital])
 	    {
 	        SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently in the hospital. Chatting is disabled.");
 	        return 0;
 		}
-		if(PlayerData[playerid][pMuted])
+		else if(PlayerData[playerid][pMuted])
 		{
 		    SendClientMessage(playerid, COLOR_LIGHTRED, "* You are currently muted. Chatting is disabled.");
 	        return 0;
 		}
-		if(++PlayerData[playerid][pSpamTime] >= 4 && PlayerData[playerid][pAdmin] < JUNIOR_ADMIN)
+		else if(++PlayerData[playerid][pSpamTime] >= 4 && PlayerData[playerid][pAdmin] < JUNIOR_ADMIN)
 		{
 		    PlayerData[playerid][pMuted] = 10;
 		    SendClientMessage(playerid, COLOR_YELLOW, "You've been temporarily muted by the server for ten seconds for spamming.");
 		    return 0;
 		}
-		if(PlayerData[playerid][pAdmin] < GENERAL_MANAGER && CheckServerAd(text))
+		else if(PlayerData[playerid][pAdmin] < GENERAL_MANAGER && CheckServerAd(text))
 		{
 			new string[128];
 			format(string,sizeof(string),"{00aa00}AdmWarning{FFFF00}: %s (ID: %d) may be server advertising: '{00aa00}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, text);
 			SendAdminMessage(COLOR_YELLOW, string, 2);
-			//Log_Write("logs/hack.log", string);
 			SendClientMessage(playerid, COLOR_GREY, "Your chat was blocked, you have automatically reported for server advertising.");
         	if(++PlayerData[playerid][pAdvertWarnings] > MAX_ANTICHEAT_WARNINGS)
         	{
@@ -37810,13 +37600,6 @@ public OnPlayerText(playerid, text[])
 			return 0;
 		}
 
-		if (IsPlayerInAnyVehicle(playerid))
-		{
-			if (PlayerData[playerid][pCalling] > 1)
-			{
-				SendDistanceMessage(playerid, 20.0, COLOR_WHITE, "(Phone) %s says: %s", GetRPName(playerid), text);
-			}
-		}
 		else if (PlayerData[playerid][pCalling] != 0 && PlayerData[playerid][pCalling] != 1)
 		{
 			SendDistanceMessage(playerid, 20.0, COLOR_WHITE, "(Phone) %s says: %s", GetRPName(playerid), text);
@@ -37825,7 +37608,6 @@ public OnPlayerText(playerid, text[])
 		{
 			new
 			    string[144];
-
 
 			if (PlayerData[playerid][pCalling] > 1)
 			{
@@ -37846,12 +37628,12 @@ public OnPlayerText(playerid, text[])
 					{
 				        case 911:
 				        {
-					        if(!strcmp(text, "police", true))
+					        if(!strcmp(text, "Police", true))
 					        {
 					            SendClientMessage(playerid, COLOR_OLDSCHOOL, "Dispatch: This is the Los Santos Police Department. What is your emergency?");
 					        	PlayerData[playerid][pCalling] = 912;
 					        }
-							else if(!strcmp(text, "medic", true))
+							else if(!strcmp(text, "Medic", true))
 					        {
 					            SendClientMessage(playerid, COLOR_DOCTOR, "Dispatch: This is the Los Santos Fire & Medical Department. What is your emergency?");
 					        	PlayerData[playerid][pCalling] = 913;
@@ -37874,12 +37656,9 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/trackcall %i' to track the caller's location.", playerid);
 						        }
 						    }
-
 							strcpy(PlayerData[playerid][pEmergency], text, 128);
-
                             PlayerData[playerid][pEmergencyCall] = 120;
                             PlayerData[playerid][pEmergencyType] = FACTION_POLICE;
-
 						    SendClientMessage(playerid, COLOR_OLDSCHOOL, "Dispatch: All units in the area have been notified. Thank you for your time.");
 						    HangupCall(playerid);
 						}
@@ -37896,12 +37675,9 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/trackcall %i' to track the caller's location.", playerid);
 						        }
 						    }
-
 						    strcpy(PlayerData[playerid][pEmergency], text, 128);
-
 						    PlayerData[playerid][pEmergencyCall] = 120;
 						    PlayerData[playerid][pEmergencyType] = FACTION_MEDIC;
-
 						    SendClientMessage(playerid, COLOR_DOCTOR, "Dispatch: All units in the area have been notified. Thank you for your time.");
 						    HangupCall(playerid);
 						}
@@ -37916,7 +37692,6 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_GREY2, "Message: %s", text);
 						        }
 						    }
-
 						    SendClientMessage(playerid, COLOR_NAVYBLUE, "News Team: Thank you. We will get back to you shortly!");
 						    HangupCall(playerid);
 						}
@@ -37932,7 +37707,6 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/takecall %i' in order to take this call.", playerid);
 						        }
 						    }
-
 							PlayerData[playerid][pMechanicCall] = 60;
 						    SendClientMessage(playerid, COLOR_LIGHTORANGE, "Dispatch: Thank you. We will alert all mechanics on duty.");
 						    HangupCall(playerid);
@@ -37949,7 +37723,6 @@ public OnPlayerText(playerid, text[])
 						            SendClientMessageEx(i, COLOR_WHITE, "* Use '/takecall %i' in order to take this call.", playerid);
 						        }
 						    }
-
 							PlayerData[playerid][pTaxiCall] = 60;
 						    SendClientMessage(playerid, COLOR_YELLOW, "Dispatch: Thank you. We will alert all taxi drivers on duty.");
 						    HangupCall(playerid);
@@ -38008,6 +37781,7 @@ public OnPlayerText(playerid, text[])
     PlayerData[playerid][pAFKPos][2] = 0.0;
 	return 0;
 }
+
 func StopTalking(playerid)
 {
 
@@ -38333,7 +38107,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        RemovePlayerFromVehicle(playerid);
 	        return 1;
 	    }
-	    if(VehicleInfo[vehicleid][vVIP] > 0 && PlayerData[playerid][pVIPPackage] < VehicleInfo[vehicleid][vVIP])
+	    if(VehicleInfo[vehicleid][vVIP] > 0 && PlayerData[playerid][pDonator] < VehicleInfo[vehicleid][vVIP])
 	    {
 	        SendClientMessageEx(playerid, COLOR_GREY, "You cannot operate this vehicle as you are not a %s VIP+.", GetVIPRank(VehicleInfo[vehicleid][vVIP]));
 	        RemovePlayerFromVehicle(playerid);
@@ -38666,6 +38440,69 @@ Dialog:FurnEditConfirm(playerid, response, listitem, inputtext[])
 	}
 	return 1;
 }
+
+stock  GetPlayerTurfZone(playerid)
+{
+	for(new i = 0; i < MAX_TURFS; i++) if(IsPlayerInDynamicArea(playerid, TurfInfo[i][tArea])) return i;
+	return -1;
+}
+public OnPlayerEnterDynamicArea(playerid, areaid)
+{
+	for(new i = 0; i < MAX_TURFS; i++)
+	{
+	    if(areaid == TurfInfo[i][tArea])
+	    {
+			if(PlayerData[playerid][pGang] != -1 || IsLawEnforcement(playerid))
+			{
+		        if(TurfInfo[i][tTime])
+		        {
+		     	    if(GetPlayerTurfZone(TurfInfo[i][tCapturer]) == i)
+		     	    {
+		     	        SetPlayerMarkerForPlayer(playerid, TurfInfo[i][tCapturer], (GangInfo[PlayerData[playerid][pGang]][gColor] & ~0xff) + 0xFF);
+		     	    }
+		        }
+			}
+	    }
+	}
+	return 1;
+}
+
+/*public OnPlayerLeaveDynamicArea(playerid, areaid)
+{
+    if(InsideMainMenu{playerid}) return 1;
+	for(new i = 0; i < MAX_TURFS; i++)
+	{
+	    if(areaid == TurfInfo[i][tAreaId])
+	    {
+			if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || IsACop(playerid))
+			{
+		        if(TurfInfo[i][tTimeToClaim])
+		        {
+				    if(GetPlayerTurfZone(TurfInfo[i][tCapturer]) == i)
+			 	    {
+			 	        if(IsACop(TurfInfo[i][tCapturer]))
+			 	        {
+				 	        if(PlayerInfo[TurfInfo[i][tCapturer]][pDuty])
+				 	        {
+				 	            SetPlayerMarkerForPlayer(playerid, TurfInfo[i][tCapturer], arrGroupData[PlayerInfo[TurfInfo[i][tCapturer]][pMember]][g_hDutyColour] * 256 + 0);
+				 	        }
+				 	        else
+				 	        {
+				 	            SetPlayerMarkerForPlayer(playerid, TurfInfo[i][tCapturer], 0xFFFFFF00);
+				 	        }
+						}
+						else
+						{
+						    SetPlayerMarkerForPlayer(playerid, TurfInfo[i][tCapturer], 0xFFFFFF00);
+						}
+			 	    }
+				}
+			}
+	    }
+	}
+	return 1;
+}*/
+
 
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
@@ -39538,7 +39375,7 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 			}
 			case 4:
 			{
-				if(!PlayerData[playerid][pVIPPackage])
+				if(!PlayerData[playerid][pDonator])
 				{
 					return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 				}
@@ -39547,7 +39384,7 @@ Dialog:DIALOG_HELPCMD(playerid, response, listitem, inputtext[])
 			    SendClientMessage(playerid, COLOR_WHITE, "** VIP HELP ** type a command for more information.");
 			    SendClientMessage(playerid, COLOR_GREY, "** VIP ** /(v)ip /vipinfo /vipcolor /vipinvite /vipnumber /vipmusic");
 
-				if(PlayerData[playerid][pVIPPackage] == 3)
+				if(PlayerData[playerid][pDonator] == 3)
 				{
 				    SendClientMessage(playerid, COLOR_GREY, "** VIP ** /repair /nos /hyd /viprimkit");
 				}
@@ -39687,15 +39524,15 @@ Dialog:DIALOG_NEWUPGRADEONE(playerid, response, listitem, inputtext[])
 			}
 			case 6:
 			{
-			    if(PlayerData[playerid][pSpawnArmor] > 100 && PlayerData[playerid][pVIPPackage] == 0)
+			    if(PlayerData[playerid][pSpawnArmor] > 100 && PlayerData[playerid][pDonator] == 0)
 			    {
 			        return SendClientMessage(playerid, COLOR_GREY, "Your spawn armor is at maximum (100).");
 			    }
-			    else if(PlayerData[playerid][pSpawnArmor] > 125 && PlayerData[playerid][pVIPPackage] <= 2)
+			    else if(PlayerData[playerid][pSpawnArmor] > 125 && PlayerData[playerid][pDonator] <= 2)
 			    {
 			        return SendClientMessage(playerid, COLOR_GREY, "Your spawn armor is at maximum (125).");
 			    }
-			    else if(PlayerData[playerid][pSpawnArmor] > 150 && PlayerData[playerid][pVIPPackage] == 3)
+			    else if(PlayerData[playerid][pSpawnArmor] > 150 && PlayerData[playerid][pDonator] == 3)
 			    {
 			        return SendClientMessage(playerid, COLOR_GREY, "Your spawn armor is at maximum (150).");
 			    }
@@ -40304,7 +40141,7 @@ Dialog:DIALOG_SETTINGS2(playerid, response, listitem, inputtext[])
             }
             case 1:
             {
-			    if(!PlayerData[playerid][pVIPPackage])
+			    if(!PlayerData[playerid][pDonator])
 			    {
 			        return SendClientMessage(playerid, COLOR_GREY, "You are not a VIP member and therefore cannot toggle this feature.");
 				}
@@ -40707,13 +40544,13 @@ Dialog:DIALOG_HELP(playerid, response, listitem, inputtext[])
 			}//faction
 			case 6:
 			{
-				if(!PlayerData[playerid][pVIPPackage])
+				if(!PlayerData[playerid][pDonator])
 				{
 					return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.\n");
 				}
 			    format(sstring, sizeof(sstring), "** VIP ** /(v)ip /vipinfo /viptag /vipcolor /vipinvite /vipnumber /vipmusic\n");
 
-				if(PlayerData[playerid][pVIPPackage] == 3)
+				if(PlayerData[playerid][pDonator] == 3)
 				{
 				    strcat(sstring, "** VIP ** /repair /nos /hyd\n");
 				}
@@ -40792,7 +40629,7 @@ Dialog:DIALOG_ADNEW(playerid, response, listitem, inputtext[])
 
 	    new businessid = GetInsideBusiness(playerid), price = strlen(inputtext) * 25;
 		if(isnull(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "Please input your advertisement");
-		if((PlayerData[playerid][pVIPPackage] == 0) && (businessid == -1 || BusinessInfo[businessid][bType] != 5))
+		if((PlayerData[playerid][pDonator] == 0) && (businessid == -1 || BusinessInfo[businessid][bType] != 5))
 		{
 		    if(GetClosestBusiness(playerid, BUSINESS_AGENCY) == -1)
 		    {
@@ -40801,11 +40638,11 @@ Dialog:DIALOG_ADNEW(playerid, response, listitem, inputtext[])
 		    }
 		    businessid = GetClosestBusiness(playerid, BUSINESS_AGENCY);
 		}
-		if(PlayerData[playerid][pVIPPackage] < 3 && PlayerData[playerid][pCash] < price)
+		if(PlayerData[playerid][pDonator] < 3 && PlayerData[playerid][pCash] < price)
 		{
 		    return SendClientMessageEx(playerid, COLOR_GREY, "You need %s in order to place the advertisement. You can't afford that.", FormatNumber(price));
 		}
-		if(PlayerData[playerid][pVIPPackage] == 3)
+		if(PlayerData[playerid][pDonator] == 3)
 		{
 		    SendClientMessage(playerid, COLOR_VIP, "VIP Perk: Your advertisement was posted free of charge!");
 		}
@@ -40833,7 +40670,7 @@ Dialog:DIALOG_ADNEW(playerid, response, listitem, inputtext[])
 		}
 		gLastAd = gettime();
 		strval(inputtext);
-		SendClientMessageToAllEx((PlayerData[playerid][pVIPPackage] > 0) ? (0x00AA00FF) : (0x00AA00FF), "> Advertisement: %s {00aa00}[Ph: %i]", inputtext, PlayerData[playerid][pPhone]);
+		SendClientMessageToAllEx((PlayerData[playerid][pDonator] > 0) ? (0x00AA00FF) : (0x00AA00FF), "> Advertisement: %s {00aa00}[Ph: %i]", inputtext, PlayerData[playerid][pPhone]);
 	}
 	return 1;
 }
@@ -42969,7 +42806,7 @@ Dialog:DIALOG_ATMDEPOSIT(playerid, response, listitem, inputtext[])
         PlayerData[playerid][pBank] += amount;
         GivePlayerCash(playerid, -amount);
 
-        if(PlayerData[playerid][pVIPPackage] == 0)
+        if(PlayerData[playerid][pDonator] == 0)
         {
             fee = percent(amount, 3);
 
@@ -42988,7 +42825,7 @@ Dialog:DIALOG_ATMDEPOSIT(playerid, response, listitem, inputtext[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "A 3 percent convenience fee of %s was deducted from your bank account.", FormatNumber(fee));
 		    AddToTaxVault(fee);
         }
-        else if(PlayerData[playerid][pVIPPackage] > 0)
+        else if(PlayerData[playerid][pDonator] > 0)
         {
 			SendClientMessage(playerid, COLOR_VIP, "VIP Perk: You do not pay the 3 percent convenience fee as you are a VIP!");
         }
@@ -43021,7 +42858,7 @@ Dialog:DIALOG_ATMWITHDRAW(playerid, response, listitem, inputtext[])
         PlayerData[playerid][pBank] -= amount;
         GivePlayerCash(playerid, amount);
 
-        if(PlayerData[playerid][pVIPPackage] == 0)
+        if(PlayerData[playerid][pDonator] == 0)
         {
             fee = percent(amount, 3);
 
@@ -43039,7 +42876,7 @@ Dialog:DIALOG_ATMWITHDRAW(playerid, response, listitem, inputtext[])
 		    SendClientMessageEx(playerid, COLOR_WHITE, "A 3 percent convenience fee of %s was deducted from your bank account.", FormatNumber(fee));
 		    AddToTaxVault(fee);
         }
-        else if(PlayerData[playerid][pVIPPackage] > 0)
+        else if(PlayerData[playerid][pDonator] > 0)
         {
 			SendClientMessage(playerid, COLOR_VIP, "VIP Perk: You do not pay the 3 percent convenience fee as you are a VIP!");
         }
@@ -44783,7 +44620,7 @@ Dialog:DIALOG_MP3PLAYER(playerid, response, listitem, inputtext[])
 			}
 			case 4:
 			{
-				 if(PlayerData[playerid][pVIPPackage] < 1)
+				 if(PlayerData[playerid][pDonator] < 1)
 				 {
 					 return SendClientMessage(playerid, COLOR_GREY, "You must be a VIP to use this option");
 				 }
@@ -50867,7 +50704,7 @@ CMD:vcode(playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 
-	if(PlayerData[playerid][pVIPPackage] < 3)
+	if(PlayerData[playerid][pDonator] < 3)
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You need a Legendary donator package to access use this command.");
 	}
@@ -51301,12 +51138,12 @@ CMD:arrest(playerid, params[])
 	        minutes = PlayerData[targetid][pWantedLevel] * 5;
 	        fine = PlayerData[targetid][pWantedLevel] * 1000;
 
-	        if(PlayerData[targetid][pVIPPackage] == 1)
+	        if(PlayerData[targetid][pDonator] == 1)
 			{
 	            SendClientMessageEx(targetid, COLOR_VIP, "VIP Perk: Your %i minutes of jail time has been reduced by 50 percent to %i minutes.", minutes, percent(minutes, 50));
 	            minutes = percent(minutes, 50);
 	        }
-	        else if(PlayerData[targetid][pVIPPackage] >= 2)
+	        else if(PlayerData[targetid][pDonator] >= 2)
 			{
 	            SendClientMessageEx(targetid, COLOR_VIP, "VIP Perk: Your %i minutes of jail time has been reduced by 75 percent to %i minutes.", minutes, percent(minutes, 75));
 	            minutes = percent(minutes, 25);
@@ -51734,7 +51571,7 @@ CMD:cancel(playerid, params[])
 CMD:setstyle(playerid, params[])
 {
 	new pickid;
-	if(!PlayerData[playerid][pVIPPackage])
+	if(!PlayerData[playerid][pDonator])
 		return SendClientMessage(playerid, COLOR_ADM, "ACCESS DENIED:{FFFFFF} You aren't a donator.");
 
 	if(sscanf(params, "i", pickid)){
@@ -51858,14 +51695,14 @@ CMD:bankhelp(playerid, params[])
 
 CMD:viphelp(playerid, params[])
 {
-	if(!PlayerData[playerid][pVIPPackage])
+	if(!PlayerData[playerid][pDonator])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
     SendClientMessage(playerid, COLOR_NAVYBLUE, "__________________ VIP Help __________________");
     SendClientMessage(playerid, COLOR_WHITE, "** VIP HELP ** type a command for more information.");
     SendClientMessage(playerid, COLOR_GREY, "** VIP ** /(v)ip /vipinfo /viptag /vipcolor /vipinvite /vipnumber /vipmusic");
-	if(PlayerData[playerid][pVIPPackage] == 3)
+	if(PlayerData[playerid][pDonator] == 3)
 	{
 	    SendClientMessage(playerid, COLOR_GREY, "** VIP ** /repair /nos /hyd /viprimkit");
 	}
@@ -52182,8 +52019,8 @@ CMD:ooc(playerid, params[])
 	    format(string, sizeof(string), "%s %s", GetHelperRank(playerid), GetRPName(playerid));
     } else if(PlayerData[playerid][pFormerAdmin]) {
 	    format(string, sizeof(string), "{FF69B5}Former Admin{FFFFFF} %s", GetRPName(playerid));
-	} else if(PlayerData[playerid][pVIPPackage] > 0) {
-	    format(string, sizeof(string), "{D909D9}%s VIP{FFFFFF} %s", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetRPName(playerid));
+	} else if(PlayerData[playerid][pDonator] > 0) {
+	    format(string, sizeof(string), "{D909D9}%s VIP{FFFFFF} %s", GetVIPRank(PlayerData[playerid][pDonator]), GetRPName(playerid));
 	} else {
 	    format(string, sizeof(string), "%s", GetRPName(playerid));
 	}
@@ -59978,7 +59815,7 @@ CMD:fws(playerid, params[])
 
 CMD:healup(playerid, params[])
 {
-	if(PlayerData[playerid][pVIPPackage] < 1)
+	if(PlayerData[playerid][pDonator] < 1)
 	{
 		 return SendClientMessage(playerid, COLOR_GREY, "You are not {D909D9}Legendary VIP.");
 	}
@@ -59992,7 +59829,7 @@ CMD:healup(playerid, params[])
 }
 CMD:getboombox(playerid, params[])
 {
-	if(PlayerData[playerid][pVIPPackage] < 3)
+	if(PlayerData[playerid][pDonator] < 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not {D909D9}Legendary VIP.");
 	}
@@ -60014,7 +59851,7 @@ CMD:getboombox(playerid, params[])
 
 CMD:vweapons(playerid, params[])
 {
-	if(PlayerData[playerid][pVIPPackage] < 3)
+	if(PlayerData[playerid][pDonator] < 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not {D909D9}Legendary VIP.");
 	}
@@ -61354,11 +61191,11 @@ CMD:setvip(playerid, params[])
 	}
 
 
-	PlayerData[targetid][pVIPPackage] = rank;
+	PlayerData[targetid][pDonator] = rank;
 	PlayerData[targetid][pVIPTime] = gettime() + (days * 86400);
 	PlayerData[targetid][pVIPCooldown] = 0;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = %i, viptime = %i, vipcooldown = 0, weed = %i, cocaine = %i, meth = %i, painkillers = %i, seeds = %i WHERE uid = %i", PlayerData[targetid][pVIPPackage], PlayerData[targetid][pVIPTime], PlayerData[targetid][pWeed], PlayerData[targetid][pCocaine], PlayerData[targetid][pMeth], PlayerData[targetid][pPainkillers], PlayerData[targetid][pSeeds], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = %i, viptime = %i, vipcooldown = 0, weed = %i, cocaine = %i, meth = %i, painkillers = %i, seeds = %i WHERE uid = %i", PlayerData[targetid][pDonator], PlayerData[targetid][pVIPTime], PlayerData[targetid][pWeed], PlayerData[targetid][pCocaine], PlayerData[targetid][pMeth], PlayerData[targetid][pPainkillers], PlayerData[targetid][pSeeds], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	if(days >= 30)
@@ -61398,16 +61235,16 @@ CMD:removevip(playerid, params[])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "That player hasn't logged in yet.");
 	}
-	if(!PlayerData[targetid][pVIPPackage])
+	if(!PlayerData[targetid][pDonator])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "That player doesn't have a VIP subscription which you can remove.");
 	}
 
 
 
-	Log_Write("log_vip", "%s (uid: %i) has removed %s's (uid: %i) %s VIP package.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], GetVIPRank(PlayerData[targetid][pVIPPackage]));
+	Log_Write("log_vip", "%s (uid: %i) has removed %s's (uid: %i) %s VIP package.", GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID], GetVIPRank(PlayerData[targetid][pDonator]));
 
-	PlayerData[targetid][pVIPPackage] = 0;
+	PlayerData[targetid][pDonator] = 0;
 	PlayerData[targetid][pVIPTime] = 0;
 	PlayerData[targetid][pVIPColor] = 0;
     PlayerData[targetid][pSecondJob] = JOB_NONE;
@@ -65927,7 +65764,7 @@ CMD:advertise(playerid, params[])
 CMD:ad(playerid, params[])
 {
     new businessid = GetInsideBusiness(playerid);
-	if((PlayerData[playerid][pVIPPackage] == 0) && (businessid == -1 || BusinessInfo[businessid][bType] != 5))
+	if((PlayerData[playerid][pDonator] == 0) && (businessid == -1 || BusinessInfo[businessid][bType] != 5))
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside of any advertisement business.");
 	}
@@ -66551,7 +66388,7 @@ CMD:join(playerid, params[])
 	    {
 	        if(PlayerData[playerid][pJob] != JOB_NONE)
 	        {
-	            if(PlayerData[playerid][pVIPPackage] >= 2)
+	            if(PlayerData[playerid][pDonator] >= 2)
 	        	{
 	        	    if(PlayerData[playerid][pSecondJob] != JOB_NONE)
 	        	    {
@@ -66593,12 +66430,12 @@ CMD:quitjob(playerid, params[])
 {
 	new slot;
 
-	if(PlayerData[playerid][pVIPPackage] >= 2 && sscanf(params, "i", slot))
+	if(PlayerData[playerid][pDonator] >= 2 && sscanf(params, "i", slot))
 	{
 	    return SendClientMessage(playerid, COLOR_SYNTAX, "USAGE: /quitjob [1/2]");
 	}
 
-	if((PlayerData[playerid][pVIPPackage] < 2) || (PlayerData[playerid][pVIPPackage] >= 2 && slot == 1))
+	if((PlayerData[playerid][pDonator] < 2) || (PlayerData[playerid][pDonator] >= 2 && slot == 1))
 	{
 	    if(PlayerData[playerid][pJob] == JOB_NONE)
 	    {
@@ -66612,7 +66449,7 @@ CMD:quitjob(playerid, params[])
 		PlayerData[playerid][pJob] = JOB_NONE;
 		RemovePlayerFromVehicle(playerid);
 	}
-	else if(slot == 2 && PlayerData[playerid][pVIPPackage] >= 2)
+	else if(slot == 2 && PlayerData[playerid][pDonator] >= 2)
 	{
 	    if(PlayerData[playerid][pSecondJob] == JOB_NONE)
 	    {
@@ -67218,7 +67055,7 @@ CMD:sellgun(playerid, params[])
 {
 	new targetid, weapon[10], price;
 
-    if(!PlayerHasJob(playerid, JOB_WEAPONDEALER) && PlayerData[playerid][pVIPPackage] < 3)
+    if(!PlayerHasJob(playerid, JOB_WEAPONDEALER) && PlayerData[playerid][pDonator] < 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you're not a Weapons Dealer.");
 	}
@@ -67244,8 +67081,8 @@ CMD:sellgun(playerid, params[])
 			SendClientMessage(playerid, COLOR_WHITE, "Level 3: Uzi [500], Tec9 [500], Rifle [1000]");
 		} if(GetJobLevel(playerid, JOB_WEAPONDEALER) >= 4) {
 			SendClientMessage(playerid, COLOR_WHITE, "Level 4: Ak47 [3500], M4 [4500]");
-		} if(GetJobLevel(playerid, JOB_WEAPONDEALER) >= 5 || PlayerData[playerid][pVIPPackage] >= 3) {
-		    if(PlayerData[playerid][pVIPPackage] >= 3) {
+		} if(GetJobLevel(playerid, JOB_WEAPONDEALER) >= 5 || PlayerData[playerid][pDonator] >= 3) {
+		    if(PlayerData[playerid][pDonator] >= 3) {
 		        SendClientMessage(playerid, COLOR_VIP, "(VIP){FFFFFF} Level 5: Spas12 [5000], Sniper [5000]");
 			} else {
 				SendClientMessage(playerid, COLOR_WHITE, "Level 5: Spas12 [7500], Sniper [7500]");
@@ -67823,12 +67660,12 @@ CMD:sellgun(playerid, params[])
 	{
 	    new cost;
 
-	    if(PlayerData[playerid][pVIPPackage] == 3)
+	    if(PlayerData[playerid][pDonator] == 3)
 			cost = 5000;
 		else
 	        cost = 7500;
 
-	    if(GetJobLevel(playerid, JOB_WEAPONDEALER) < 5 && PlayerData[playerid][pVIPPackage] < 3)
+	    if(GetJobLevel(playerid, JOB_WEAPONDEALER) < 5 && PlayerData[playerid][pDonator] < 3)
 	    {
 	        return SendClientMessage(playerid, COLOR_GREY, "Your skill level is not high enough to craft this weapon.");
 		}
@@ -67864,12 +67701,12 @@ CMD:sellgun(playerid, params[])
 	{
 	    new cost;
 
-	    if(PlayerData[playerid][pVIPPackage] == 3)
+	    if(PlayerData[playerid][pDonator] == 3)
 			cost = 5000;
 		else
 	        cost = 7500;
 
-	    if(GetJobLevel(playerid, JOB_WEAPONDEALER) < 5 && PlayerData[playerid][pVIPPackage] < 3)
+	    if(GetJobLevel(playerid, JOB_WEAPONDEALER) < 5 && PlayerData[playerid][pDonator] < 3)
 	    {
 	        return SendClientMessage(playerid, COLOR_GREY, "Your skill level is not high enough to craft this weapon.");
 		}
@@ -67956,7 +67793,7 @@ CMD:repair(playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid), Float:health;
 
-	if(!PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pVIPPackage] < 3)
+	if(!PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pDonator] < 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You must either be a mechanic, or a Legendary VIP to use this command.");
 	}
@@ -67990,9 +67827,9 @@ CMD:repair(playerid, params[])
 			PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 		}
 	}
-    else if(PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pVIPPackage] < 3)
+    else if(PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pDonator] < 3)
 	{
-		if(PlayerData[playerid][pVIPPackage] < 3 && PlayerData[playerid][pComponents] <= 0)
+		if(PlayerData[playerid][pDonator] < 3 && PlayerData[playerid][pComponents] <= 0)
 		{
 		    return SendClientMessage(playerid, COLOR_GREY, "You have no components left.");
 		}
@@ -68041,9 +67878,9 @@ CMD:repair(playerid, params[])
 			IncreaseJobSkill(playerid, JOB_MECHANIC);
 		}
 	}
- 	else if(PlayerData[playerid][pVIPPackage] == 3)
+ 	else if(PlayerData[playerid][pDonator] == 3)
 	{
-		if(PlayerData[playerid][pVIPPackage] < 3 && !PlayerData[playerid][pComponents])
+		if(PlayerData[playerid][pDonator] < 3 && !PlayerData[playerid][pComponents])
 		{
 		    return SendClientMessage(playerid, COLOR_GREY, "You have no components left.");
 		}
@@ -68137,11 +67974,11 @@ CMD:nos(playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 
-    if(!PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pVIPPackage] != 3)
+    if(!PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pDonator] != 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command unless you're a Mechanic.");
 	}
-	if(PlayerData[playerid][pVIPPackage] == 0 && !PlayerData[playerid][pComponents])
+	if(PlayerData[playerid][pDonator] == 0 && !PlayerData[playerid][pComponents])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You have no components left.");
 	}
@@ -68157,7 +67994,7 @@ CMD:nos(playerid, params[])
     }
 	if(GetVehicleComponentInSlot(GetPlayerVehicleID(playerid), GetVehicleComponentType(1010)) != 1010 && GetVehicleComponentInSlot(GetPlayerVehicleID(playerid), GetVehicleComponentType(1009)) != 1009 && GetVehicleComponentInSlot(GetPlayerVehicleID(playerid), GetVehicleComponentType(1008)) != 1008)
 	{
-		if(PlayerData[playerid][pVIPPackage] < 3)
+		if(PlayerData[playerid][pDonator] < 3)
 		{
 			PlayerData[playerid][pComponents]--;
 
@@ -68184,7 +68021,7 @@ CMD:hyd(playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 
-    if(!PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pVIPPackage] != 3)
+    if(!PlayerHasJob(playerid, JOB_MECHANIC) && PlayerData[playerid][pDonator] != 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command unless you're a Mechanic.");
 	}
@@ -68192,7 +68029,7 @@ CMD:hyd(playerid, params[])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You must be a skill level 2 mechanic to use this command.");
 	}
-	if(PlayerData[playerid][pVIPPackage] == 0 && !PlayerData[playerid][pComponents])
+	if(PlayerData[playerid][pDonator] == 0 && !PlayerData[playerid][pComponents])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You have no components left.");
 	}
@@ -68201,7 +68038,7 @@ CMD:hyd(playerid, params[])
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not inside of any vehicle.");
 	}
 
-	if(PlayerData[playerid][pVIPPackage] < 3)
+	if(PlayerData[playerid][pDonator] < 3)
 	{
 		PlayerData[playerid][pComponents]--;
 
@@ -69045,7 +68882,7 @@ CMD:otoggle(playerid, params[])
 	}
 	else if(!strcmp(params, "vip", true))
 	{
-	    if(!PlayerData[playerid][pVIPPackage])
+	    if(!PlayerData[playerid][pDonator])
 	    {
 	        return SendClientMessage(playerid, COLOR_GREY, "You are not a VIP member and therefore cannot toggle this feature.");
 		}
@@ -72137,7 +71974,7 @@ CMD:v(playerid, params[])
 }
 CMD:viplocker(playerid, params[])
 {
-	if(PlayerData[playerid][pVIPPackage] < 2)
+	if(PlayerData[playerid][pDonator] < 2)
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You need a donator package (Gold VIP+) to access this locker.");
 	}
@@ -72145,11 +71982,11 @@ CMD:viplocker(playerid, params[])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You are not in range of the VIP Lounge.");
 	}
- 	if(PlayerData[playerid][pVIPPackage] == 2)
+ 	if(PlayerData[playerid][pDonator] == 2)
 	{
 		Dialog_Show(playerid, DIALOG_BLACKMARKET1, DIALOG_STYLE_LIST, "Gold VIP Locker", "Katana\nDeagle\nMp5", "Select", "Cancel");
 	}
-	else if(PlayerData[playerid][pVIPPackage] == 3)
+	else if(PlayerData[playerid][pDonator] == 3)
 	{
 		Dialog_Show(playerid, DIALOG_BLACKMARKET2, DIALOG_STYLE_LIST, "Legendary VIP Locker", "Katana\nDeagle\nMp5\nRifle\nAk47\nM4", "Select", "Cancel");
 	}
@@ -72157,7 +71994,7 @@ CMD:viplocker(playerid, params[])
 }
 CMD:vip(playerid, params[])
 {
-	if(!PlayerData[playerid][pVIPPackage] && PlayerData[playerid][pAdmin] > 2)
+	if(!PlayerData[playerid][pDonator] && PlayerData[playerid][pAdmin] > 2)
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
@@ -72172,9 +72009,9 @@ CMD:vip(playerid, params[])
 
 	foreach(new i : Player)
 	{
-	    if(PlayerData[i][pVIPPackage] > 0 && !PlayerData[i][pToggleVIP] && PlayerData[i][pAdmin] > JUNIOR_ADMIN)
+	    if(PlayerData[i][pDonator] > 0 && !PlayerData[i][pToggleVIP] && PlayerData[i][pAdmin] > JUNIOR_ADMIN)
 	    {
-			SendClientMessageEx(i, COLOR_VIP, "* %s VIP %s: %s *", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetRPName(playerid), params);
+			SendClientMessageEx(i, COLOR_VIP, "* %s VIP %s: %s *", GetVIPRank(PlayerData[playerid][pDonator]), GetRPName(playerid), params);
 		}
 	}
 
@@ -72183,7 +72020,7 @@ CMD:vip(playerid, params[])
 
 CMD:vipcolor(playerid, params[])
 {
-    if(!PlayerData[playerid][pVIPPackage])
+    if(!PlayerData[playerid][pDonator])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
@@ -72206,7 +72043,7 @@ CMD:vipinvite(playerid, params[])
 {
 	new targetid;
 
-	if(!PlayerData[playerid][pVIPPackage])
+	if(!PlayerData[playerid][pDonator])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
@@ -72240,37 +72077,37 @@ CMD:vipinvite(playerid, params[])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "That player hasn't logged in yet.");
 	}
-	if(PlayerData[targetid][pVIPPackage])
+	if(PlayerData[targetid][pDonator])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "That player already has a VIP subscription.");
 	}
 
-	PlayerData[targetid][pVIPPackage] = PlayerData[playerid][pVIPPackage];
+	PlayerData[targetid][pDonator] = PlayerData[playerid][pDonator];
 	PlayerData[targetid][pVIPTime] = gettime() + 10800;
 	PlayerData[playerid][pVIPCooldown] = gettime() + 86400;
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = %i, viptime = %i WHERE uid = %i", PlayerData[targetid][pVIPPackage], PlayerData[targetid][pVIPTime], PlayerData[targetid][pID]);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vippackage = %i, viptime = %i WHERE uid = %i", PlayerData[targetid][pDonator], PlayerData[targetid][pVIPTime], PlayerData[targetid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
 	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET vipcooldown = %i WHERE uid = %i", PlayerData[playerid][pVIPCooldown], PlayerData[playerid][pID]);
 	mysql_tquery(connectionID, queryBuffer);
 
-	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has given you a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(playerid), GetVIPRank(PlayerData[targetid][pVIPPackage]));
-	SendClientMessageEx(playerid, COLOR_AQUA, "* You have given %s a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(targetid), GetVIPRank(PlayerData[targetid][pVIPPackage]));
+	SendClientMessageEx(targetid, COLOR_AQUA, "* %s has given you a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(playerid), GetVIPRank(PlayerData[targetid][pDonator]));
+	SendClientMessageEx(playerid, COLOR_AQUA, "* You have given %s a temporary three hour {D909D9}%s{33CCFF} VIP package.", GetRPName(targetid), GetVIPRank(PlayerData[targetid][pDonator]));
 
-	Log_Write("log_vip", "%s VIP %s (uid: %i) has given %s (uid: %i) a temporary three hour package.", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
+	Log_Write("log_vip", "%s VIP %s (uid: %i) has given %s (uid: %i) a temporary three hour package.", GetVIPRank(PlayerData[playerid][pDonator]), GetPlayerNameEx(playerid), PlayerData[playerid][pID], GetPlayerNameEx(targetid), PlayerData[targetid][pID]);
 	return 1;
 }
 
 CMD:vipinfo(playerid, params[])
 {
-	if(!PlayerData[playerid][pVIPPackage])
+	if(!PlayerData[playerid][pDonator])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
 
     SendClientMessageEx(playerid, COLOR_NAVYBLUE, "______ VIP Package ______");
-	SendClientMessageEx(playerid, COLOR_GREY2, "Your {D909D9}%s{C8C8C8} VIP subscription expires on %s.", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetDateFromTimestamp(PlayerData[playerid][pVIPTime], 4));
+	SendClientMessageEx(playerid, COLOR_GREY2, "Your {D909D9}%s{C8C8C8} VIP subscription expires on %s.", GetVIPRank(PlayerData[playerid][pDonator]), GetDateFromTimestamp(PlayerData[playerid][pVIPTime], 4));
 
 	if(PlayerData[playerid][pVIPCooldown] > gettime())
 	{
@@ -72294,7 +72131,7 @@ CMD:vipnumber(playerid, params[])
 {
 	new number;
 
-	if(!PlayerData[playerid][pVIPPackage])
+	if(!PlayerData[playerid][pDonator])
 	{
 		return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
@@ -72986,8 +72823,8 @@ CMD:g(playerid, params[])
 	else if(PlayerData[playerid][pFormerAdmin]) {
 	    string = "{FF69B5}Former Admin{FFA500}";
 	}
-	else if(PlayerData[playerid][pVIPPackage] > 0) {
-	    format(string, sizeof(string), "{D909D9}%s VIP{FFA500}", GetVIPRank(PlayerData[playerid][pVIPPackage]));
+	else if(PlayerData[playerid][pDonator] > 0) {
+	    format(string, sizeof(string), "{D909D9}%s VIP{FFA500}", GetVIPRank(PlayerData[playerid][pDonator]));
 	}
 	else if(PlayerData[playerid][pLevel] >= 3) {
 	    format(string, sizeof(string), "Level %i Player", PlayerData[playerid][pLevel]);
@@ -83192,7 +83029,7 @@ CMD:repaircar(playerid, params[])
 	{
     	return SendClientMessage(playerid, COLOR_GREY, "This command is restricted to a specific gang type.");
 	}
-	if(EntranceInfo[entranceid][eVIP] && PlayerData[playerid][pVIPPackage] < EntranceInfo[entranceid][eVIP])
+	if(EntranceInfo[entranceid][eVIP] && PlayerData[playerid][pDonator] < EntranceInfo[entranceid][eVIP])
 	{
     	return SendClientMessage(playerid, COLOR_GREY, "This command is restricted to a higher VIP level.");
 	}
@@ -83225,7 +83062,7 @@ CMD:offerduel(playerid, params[])
 	{
     	return SendClientMessage(playerid, COLOR_GREY, "This command is restricted to a specific gang type.");
 	}
-	if(EntranceInfo[entranceid][eVIP] && PlayerData[playerid][pVIPPackage] < EntranceInfo[entranceid][eVIP])
+	if(EntranceInfo[entranceid][eVIP] && PlayerData[playerid][pDonator] < EntranceInfo[entranceid][eVIP])
 	{
     	return SendClientMessage(playerid, COLOR_GREY, "This command is restricted to a higher VIP level.");
 	}
@@ -83405,7 +83242,7 @@ CMD:giveachievement(playerid, params[])
 
 CMD:vipmusic(playerid, params[])
 {
-	if(PlayerData[playerid][pVIPPackage] < 1)
+	if(PlayerData[playerid][pDonator] < 1)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You must be a donator to use this command!");
 	}
@@ -83426,7 +83263,7 @@ CMD:vipmusic(playerid, params[])
 			PlayAudioStreamForPlayer(i, url);
 		}
 	}
-	SendClientMessageToAllEx(COLOR_VIP, "VIP Music: %s VIP %s has started the global playback of %s from their music folder!", GetVIPRank(PlayerData[playerid][pVIPPackage]), GetRPName(playerid), params);
+	SendClientMessageToAllEx(COLOR_VIP, "VIP Music: %s VIP %s has started the global playback of %s from their music folder!", GetVIPRank(PlayerData[playerid][pDonator]), GetRPName(playerid), params);
     gLastMusic = gettime();
 	return 1;
 }
@@ -83557,7 +83394,7 @@ CMD:endalliance(playerid, params[])
 
 CMD:clothes(playerid, params[])
 {
-	if(PlayerData[playerid][pVIPPackage] < 1)
+	if(PlayerData[playerid][pDonator] < 1)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You can't use this command as you don't have a VIP subscription.");
 	}
@@ -83652,7 +83489,7 @@ CMD:viprimkit(playerid, params[])
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You are not driving any vehicle.");
 	}
-	if(PlayerData[playerid][pVIPPackage] < 3)
+	if(PlayerData[playerid][pDonator] < 3)
 	{
 	    return SendClientMessage(playerid, COLOR_GREY, "You must be a Legendary VIP to use this command.");
 	}
