@@ -1545,6 +1545,7 @@ new enabledNewbie = 1;
 new enabledGlobal = 1;
 new enabledReports = 1;
 new pTazerReplace[MAX_PLAYERS];
+new PlayerText:os_logo[MAX_PLAYERS][1];
 new PlayerText:playerfooter[MAX_PLAYERS];
 new Text:Textdraw2;
 new Text:Textdraw3;
@@ -3038,17 +3039,132 @@ enum pOnTruckJobInfo
 }
 new PlayerTruckJob[MAX_PLAYERS][pOnTruckJobInfo];
 
+new const customSkins[] = {
 
+25000,
+25001, 
+25002,
+25003,
+25005,
+25006, 
+25008, 
+25009,
+25011,
+25013,
+25014, 
+25015,
+25016,
+25020,
+25021,
+25023,
+25027, //"skin11.dff", //"skin11.txd");
+25028, //"skin12.dff", //"skin12.txd");
+25029, //"skin13.dff", //"skin13.txd");
+25030, //"skin14.dff", //"skin14.txd");
+25031, //"skin15.dff", //"skin15.txd");
+25032, //"skin16.dff", //"skin16.txd");
+25033, //"skin17.dff", //"skin17.txd");
+25034, //"skin18.dff", //"skin18.txd");
+25035, //"skin19.dff", //"skin19.txd");
+25036, //"skin110.dff", //"skin110.txd");
+25037, //"skin111.dff", //"skin111.txd");
+25038, //"skin112.dff", //"skin112.txd");
+25039, //"skin113.dff", //"skin113.txd");
+25040, //"skin114.dff", //"skin114.txd");
+25041, //"skin115.dff", //"skin115.txd");
+25042, //"skin116.dff", //"skin116.txd");
+25043, //"skin117.dff", //"skin117.txd");
+25044, //"skin118.dff", //"skin118.txd");
+25045, //"skin119.dff", //"skin119.txd");
+25046, //"skin120.dff", //"skin120.txd");
+25047, //"skin121.dff", //"skin121.txd");
+25048, //"skin122.dff", //"skin122.txd");
+25049, //"skin123.dff", //"skin123.txd");
+25050, //"skin124.dff", //"skin124.txd");
+25051, //"skin125.dff", //"skin125.txd");
+25052, //"skin126.dff", //"skin126.txd");
+25053, //"skin127.dff", //"skin127.txd");
+25054, //"skin128.dff", //"skin128.txd");
+25055, //"skin129.dff", //"skin129.txd");
+25056, //"skin130.dff", //"skin130.txd");
+25057, //"skin131.dff", //"skin131.txd");
+25058, //"skin132.dff", //"skin132.txd");
+25059, //"skin133.dff", //"skin133.txd");
+25060, //"skin134.dff", //"skin134.txd");
+25061, //"skin135.dff", //"skin135.txd");
+25062, //"skin136.dff", //"skin136.txd");
+25063, //"skin137.dff", //"skin137.txd");
+25076, //"skin150.dff", //"skin150.txd");
+25077, //"skin151.dff", //"skin151.txd");
+25078, //"skin152.dff", //"skin152.txd");
+25079, //"skin153.dff", //"skin153.txd");
+25080, //"skin154.dff", //"skin154.txd");
+25081, //"skin155.dff", //"skin155.txd");
+25082, //"skin156.dff", //"skin156.txd");
+25083, //"skin157.dff", //"skin157.txd");
+25084, //"skin158.dff", //"skin158.txd");
+25085, //"skin159.dff", //"skin159.txd");
+25086, //"skin160.dff", //"skin160.txd");
+25087, //"skin161.dff", //"skin161.txd");
+25088, //"skin162.dff", //"skin162.txd");
+25089, //"skin163.dff", //"skin163.txd");
+25090, //"skin164.dff", //"skin164.txd");
+25091, //"skin165.dff", //"skin165.txd");
+25092, //"skin166.dff", //"skin166.txd");
+25093, //"skin167.dff", //"skin167.txd");
+25094, //"skin168.dff", //"skin168.txd");
+25095, //"skin169.dff", //"skin169.txd");
+25096, //"skin170.dff", //"skin170.txd");
+25099, //"skin173.dff", //"skin173.txd");
+25101, //"skin175.dff", //"skin175.txd");
+25102, //"skin176.dff", //"skin176.txd");
+25103, //"skin177.dff", //"skin177.txd");
+25104, //"skin178.dff", //"skin178.txd");
+25105, //"skin179.dff", //"skin179.txd");
+25106, //"skin180.dff", //"skin180.txd");
+25107, //"skin181.dff", //"skin181.txd");
+25108, //"skin182.dff", //"skin182.txd");
+25109, //"skin183.dff", //"skin183.txd");
+25110, //"skin184.dff", //"skin184.txd");
+25116, //"skin190.dff", //"skin190.txd");
+25117, //"skin191.dff", //"skin191.txd");
+25120, //"skin194.dff", //"skin194.txd");
+25121, //"skin195.dff", //"skin195.txd");
+25122, //"skin196.dff", //"skin196.txd");
+25123, //"skin197.dff", //"skin197.txd");
+25124, //"skin198.dff", //"skin198.txd");
+25125, //"skin199.dff", //"skin199.txd");
+25126, //"skin1100.dff", //"skin1100.txd");
+25127, //"skin1101.dff", //"skin1101.txd");
+25128, //"skin1102.dff", //"skin1102.txd");
+25129, //"skin1103.dff", //"skin1103.txd");
+25130, //"skin1104.dff", //"skin1104.txd");
+25131, //"skin1105.dff", //"skin1105.txd");
+25132, //"skin1106.dff", //"skin1106.txd");
+25133, //"skin1107.dff", //"skin1107.txd");
+25134, //"skin1108.dff", //"skin1108.txd");
+25136, //"skin1110.dff", //"skin1110.txd");
+25137, //"skin1111.dff", //"skin1111.txd");
+25138, //"skin1112.dff", //"skin1112.txd");
+25139, //"skin1113.dff", //"skin1113.txd");
+25142, //"skin1116.dff", //"skin1116.txd");
+25143, //"skin1117.dff", //"skin1117.txd");
+25144, //"skin1118.dff", //"skin1118.txd");
+25145, //"skin1119.dff", //"skin1119.txd");
+25148, //"skin1122.dff", //"skin1122.txd");
+25149, //"skin1123.dff", //"skin1123.txd");
+25150, //"skin1124.dff", //"skin1124.txd");
+25151, //"skin1125.dff", //"skin1125.txd");
+25153, //"skin1127.dff", //"skin1127.txd");
+25154, //"skin1128.dff", //"skin1128.txd");
+25155, //"skin1129.dff", //"skin1129.txd");
+25156, //"skin1130.dff", //"skin1130.txd");
+25157, //"skin1131.dff", //"skin1131.txd");
+25160, //"skin1134.dff", //"skin1134.txd");
+25164 //"skin1138.dff", //"skin1138.txd");
+
+};
 new const clothesShopSkins[] = {
-	25001, 25002, 25004, 25005, 25006, 25007, 25008, 25010, 25011, 25013, 25014,
-	25015, 25016, 25017, 25018, 25019, 25020, 25024, 25025, 25026, 25027, 25028,
-	25035, 25036, 25037, 25038, 25039, 25057, 25059, 25060, 25061, 25062, 25063,
-	25064, 25065, 25066, 25067, 25068, 25069, 25070, 25071, 25072, 25075, 25076,
-	25077, 25093, 25094, 25095, 25096, 25099, 25100, 25108, 25116, 25117, 25118,
-	25119, 25120, 25121, 25122, 25123, 25124, 25125, 25126, 25127, 25128, 25129,
-	25130, 25131, 25132, 25133, 25135, 25145, 25148, 25149, 25153, 25164, 25163,
-	25003, 25022, 25033, 25034, 25056, 25058, 25101, 25102, 25103, 25104, 25105,
-	25106, 25107, 25111, 25112, 25113, 25115, 25134, 25136, 25160, 25161, 25162,
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 	20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
 	38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
@@ -8319,7 +8435,21 @@ Streamer_SetExtraFloat(objectid, type, Float:value)
 	setproperty(.id = objectid, .value = type, .string = string);
 	return 1;
 }
-
+Dialog:ClothesNew(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		if(listitem == 0)
+		{
+		    ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_CLOTHES, "Clothes Shop", customSkins, sizeof(customSkins));
+		}
+		else if(listitem == 1)
+		{
+		    ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_CLOTHES, "Clothes Shop", clothesShopSkins, sizeof(clothesShopSkins));
+		}
+	}
+	return 1;
+}
 Dialog:Clothing_MatColor1(playerid, response, listitem, inputtext[])
 {
 	if(!response) {
@@ -10303,6 +10433,7 @@ forward AnimationCameraView(playerid, viewid, bool:play);
 public AnimationCameraView(playerid, viewid,bool:play) {
 	if(play) {
 	    TogglePlayerSpectating(playerid, true);
+	    PlayerTextDrawShow(playerid, os_logo[playerid][0]);
 	    TextDrawShowForPlayer(playerid, welcomenew);
 		switch(viewid) {
 		    case 1: {
@@ -10367,6 +10498,7 @@ public AnimationCameraView(playerid, viewid,bool:play) {
 		TogglePlayerSpectating(playerid, false);
 		SetCameraBehindPlayer(playerid);
 		TextDrawHideForPlayer(playerid, welcomenew);
+		PlayerTextDrawHide(playerid, os_logo[playerid][0]);
 	}
 	return 1;
 }
@@ -10590,7 +10722,7 @@ stock CheckServerAd(szInput[]) {
 }
 
 //==============================================================================
-/*stock l_GetPlayerSkin(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
+stock l_GetPlayerSkin(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
 #if defined _ALS_GetPlayerSkin
     #undef GetPlayerSkin
 #else
@@ -10599,7 +10731,7 @@ stock CheckServerAd(szInput[]) {
 #define GetPlayerSkin l_GetPlayerSkin
 
 stock GetPlayerSkinScript(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
-*/
+
 
 stock IsARestricted(modelid) {
 	switch(modelid)
@@ -11758,6 +11890,14 @@ stock LoadGeneralTextdraws()
 }
 stock CreatePlayerTextDraws( playerid )
 {
+	os_logo[playerid][0] = CreatePlayerTextDraw(playerid, 209.444412, 72.866668, "mdl-2003:logo_osrp");
+	PlayerTextDrawTextSize(playerid, os_logo[playerid][0], 217.000000, 84.000000);
+	PlayerTextDrawAlignment(playerid, os_logo[playerid][0], 1);
+	PlayerTextDrawColor(playerid, os_logo[playerid][0], -1);
+	PlayerTextDrawSetShadow(playerid, os_logo[playerid][0], 0);
+	PlayerTextDrawBackgroundColor(playerid, os_logo[playerid][0], 255);
+	PlayerTextDrawFont(playerid, os_logo[playerid][0], 4);
+	PlayerTextDrawSetProportional(playerid, os_logo[playerid][0], 0);
 
 	PlayerData[playerid][pText][58] = CreatePlayerTextDraw(playerid, 484.000000, 123.000000, "Power");
 	PlayerTextDrawBackgroundColor(playerid, PlayerData[playerid][pText][58], 255);
@@ -14191,7 +14331,7 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	}
 
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
-    format(string, sizeof(string), "{B5B5B5}Statistics of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", name, GetDateStats());
+    format(string, sizeof(string), "{B5B5B5}Statistics of: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", name, GetDateStats());
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
 
 	format(string, sizeof(string), "Level: %i | Gender: %s | Age: %i | Cash: %s | Bank: %s | Hours: %s | Ph: %i | Channel: %i",
@@ -14244,7 +14384,7 @@ DisplayInventory(playerid, targetid = INVALID_PLAYER_ID)
 
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 
-	format(string, sizeof(string), "{B5B5B5}Inventory of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
+	format(string, sizeof(string), "{B5B5B5}Inventory of: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
 
 	format(string, sizeof(string), "Weed: %i/%ig | Cocaine: %i/%ig | Meth: %i/%ig | Painkillers: %i/%i | Seeds: %i/%i", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED),
@@ -36429,6 +36569,7 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 					}
 
 					SetScriptSkin(playerid, modelid);
+					SendClientMessageEx(playerid, -1, "%d", modelid);
 		        }
 			}
 	    }
@@ -41949,7 +42090,7 @@ Dialog:DIALOG_BUY(playerid, response, listitem, inputtext[])
 		    if(listitem == 0)
 			{
 				//ShowDialogToPlayer(playerid, DIALOG_BUYCLOTHES);
-				ShowPlayerSelectionMenu(playerid, MODEL_SELECTION_CLOTHES, "Clothes Shop", clothesShopSkins, sizeof(clothesShopSkins));
+				Dialog_Show(playerid, ClothesNew, DIALOG_STYLE_LIST, "Clothes Shop", "Custom Skins\nNormal Skins", "Select", "Close");
 			}
 			else
 			{
@@ -43905,7 +44046,7 @@ Dialog:DIALOG_FACTIONSKINS(playerid, response, listitem, inputtext[])
         else
         {
             PlayerData[playerid][pClothes] = PlayerData[playerid][pSkin];
-            PlayerData[playerid][pSkin] = GetPlayerSkin(playerid);
+            PlayerData[playerid][pSkin] = GetPlayerSkinScript(playerid);
             PlayerData[playerid][pSkinSelected] = -1;
 
             mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pClothes], PlayerData[playerid][pID]);
@@ -46407,7 +46548,7 @@ Dialog:DIALOG_GANGSKINS(playerid, response, listitem, inputtext[])
         {
             PlayerData[playerid][pSkinSelected] = -1;
 
-			SetScriptSkin(playerid, GetPlayerSkin(playerid));
+			SetScriptSkin(playerid, GetPlayerSkinScript(playerid));
             ShowActionBubble(playerid, "* %s changes their clothes.", GetRPName(playerid));
 		}
     }
@@ -84633,7 +84774,7 @@ stock mdc_SearchCitizen(playerid, name[]) {
 	user = GetPlayerID(name);
 	if(user != -1) {
 	    SetPVarString(playerid, "mdc_Citizen", name);
-	    mdc_ShowCitizen(playerid, GetPlayerNameEx(user), GetPlayerSkin(user), PlayerData[user][pAge], PlayerData[user][pGender], PlayerData[user][pCarLicense], PlayerData[user][pGunLicense],
+	    mdc_ShowCitizen(playerid, GetPlayerNameEx(user), GetPlayerSkinScript(user), PlayerData[user][pAge], PlayerData[user][pGender], PlayerData[user][pCarLicense], PlayerData[user][pGunLicense],
 						PlayerData[playerid][pJob], PlayerData[playerid][pPhone]);
 	} else {
 		new query[135];
