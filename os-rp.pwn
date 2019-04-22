@@ -8482,9 +8482,9 @@ stock SetToyColor(playerid, slot, layer, color)
 			ClothingInfo[playerid][slot][cMatColor1] = color;
 		}
 		else ClothingInfo[playerid][slot][cMatColor2] = color;
-		
+
 		RemovePlayerAttachedObject(playerid, slot);
-		
+
  		SetPlayerAttachedObject(playerid, slot, ClothingInfo[playerid][slot][cModel], ClothingInfo[playerid][slot][cBone],
 		ClothingInfo[playerid][slot][cPosX], ClothingInfo[playerid][slot][cPosY], ClothingInfo[playerid][slot][cPosZ],
 		ClothingInfo[playerid][slot][cRotX], ClothingInfo[playerid][slot][cRotY], ClothingInfo[playerid][slot][cRotZ],
@@ -10590,7 +10590,7 @@ stock CheckServerAd(szInput[]) {
 }
 
 //==============================================================================
-stock l_GetPlayerSkin(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
+/*stock l_GetPlayerSkin(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
 #if defined _ALS_GetPlayerSkin
     #undef GetPlayerSkin
 #else
@@ -10599,7 +10599,7 @@ stock l_GetPlayerSkin(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlay
 #define GetPlayerSkin l_GetPlayerSkin
 
 stock GetPlayerSkinScript(playerid) return (!GetPlayerCustomSkin(playerid) ? GetPlayerSkin(playerid) : GetPlayerCustomSkin(playerid));
-
+*/
 
 stock IsARestricted(modelid) {
 	switch(modelid)
@@ -13402,11 +13402,6 @@ CMD:testcolor(playerid, params[])
 	return 1;
 }
 
-stock testplate(vehicleid)
-{
-	mysql_tquery(connectionID, queryBuffer, "SELECT * FROM `vehicles` WHERE `plate` = 'None'", "UpdateVehiclePlate", "i", vehicleid);
-    //mysql_tquery(connectionID, queryBuffer, "UpdateVehiclePlate", "i", vehicleid);
-}
 
 SetPlayerCellphoneAction(playerid, enable)
 {
@@ -13782,48 +13777,6 @@ public OnPlayerListContacts(playerid)
 }
 
 
-func UpdateVehiclePlate(h)
-{
-	new tablice[ 20 ];
-    new rows = cache_get_row_count(connectionID);
-    if(rows)
-    {
-		if( 10 > h )
-		{
-			format( tablice, sizeof( tablice ), "000%d", h );
-			SetVehicleNumberPlate( h, tablice );
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET plate = 'LS-%s' WHERE id = %d", tablice, VehicleInfo[h][vID]);
-			mysql_tquery(connectionID, queryBuffer);
-		}
-		else if( 10 <= h && h < 100 )
-		{
-			format( tablice , sizeof( tablice ), "00%d", h );
-			SetVehicleNumberPlate( h, tablice );
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET plate = 'LS-%s' WHERE id = %d", tablice, VehicleInfo[h][vID]);
-			mysql_tquery(connectionID, queryBuffer);
-		}
-		else if( 100 <= h && h < 1000 )
-		{
-			format( tablice, sizeof( tablice ), "0%d", h );
-			SetVehicleNumberPlate( h, tablice );
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET plate = 'LS-%s' WHERE id = %d", tablice, VehicleInfo[h][vID]);
-			mysql_tquery(connectionID, queryBuffer);
-		}
-		else if( 1000 <= h && h < 2001 )
-		{
-			format( tablice, sizeof( tablice ), "%d", h );
-			SetVehicleNumberPlate( h, tablice );
-			mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET plate = 'LS-%s' WHERE id = %d", tablice, VehicleInfo[h][vID]);
-			mysql_tquery(connectionID, queryBuffer);
-		}
-		printf("Success");
-	}
-	else
-	{
-	    printf("Couldn't find any vehicle with 'None' plate");
-	}
-	return 1;
-}
 
 stock SaveImpoundPoint(id)
 {
@@ -14256,21 +14209,21 @@ DisplayStats(playerid, targetid = INVALID_PLAYER_ID)
 	format(string, sizeof(string), "{B5B5B5}Job: %s | Job 2: %s | Crimes Commited: %s | Times Arrested: %s | Wanted Level: %i | Insurance: %s",
 	job, secondjob, FormatNumber(PlayerData[playerid][pCrimes], 0), FormatNumber(PlayerData[playerid][pArrested], 0), PlayerData[playerid][pWantedLevel], insurance);
     SendClientMessage(targetid, COLOR_WHITE, string);
-    
+
     format(string, sizeof(string), "Faction: %s | Rank: %s | Division: %s | Gang: %s | Rank: %s | Crew: %s",
 	faction, facrank, division, gang, gangrank, gangcrew);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
-    format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Orë | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
+    format(string, sizeof(string), "{B5B5B5}Donator: %s {B5B5B5}| Double XP: %i Or? | Cookies: %s | Paycheck: %s | Playing Time: %i/60 min",
 	GetVIPRankEx(PlayerData[playerid][pVIPPackage]), PlayerData[playerid][pDoubleXP], FormatNumber(PlayerData[playerid][pCookies], 0), FormatNumber(PlayerData[playerid][pPaycheck]), PlayerData[playerid][pMinutes]);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "Weapon Restriction: %i hours | Married To: %s | DJ Rank: %d | Trucking XP: %d | Trucking Level: %d.",
-	PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);   
+	PlayerData[playerid][pWeaponRestricted], PlayerData[playerid][pMarriedName], PlayerData[playerid][pDJ], PlayerData[playerid][pTruckingXP], PlayerData[playerid][pTruckingLevel]);
     SendClientMessage(targetid, COLOR_WHITE, string);
 
     format(string, sizeof(string), "{B5B5B5}Warnings: %i | DM Warnings: %i/3 | Report Warnings: %i/3 | Jail Type: %s | Jail Time: %s sec",
-	PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0));   
+	PlayerData[playerid][pWarnings], PlayerData[playerid][pDMWarnings], PlayerData[playerid][pReportWarns], jailtype, FormatNumber(PlayerData[playerid][pJailTime], 0));
     SendClientMessage(targetid, COLOR_WHITE, string);
 
 	if(PlayerData[targetid][pAdmin] > 0)
@@ -14288,35 +14241,35 @@ DisplayInventory(playerid, targetid = INVALID_PLAYER_ID)
 {
     new string[800];
 	if(targetid == INVALID_PLAYER_ID) targetid = playerid;
-	
+
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 
 	format(string, sizeof(string), "{B5B5B5}Inventory of Charachter: {FFFFFF}%s {B5B5B5}| Time: {FFFFFF}%s", GetPlayerNameEx(playerid), GetDateStats());
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Weed: %i/%ig | Cocaine: %i/%ig | Meth: %i/%ig | Painkillers: %i/%i | Seeds: %i/%i", PlayerData[playerid][pWeed], GetPlayerCapacity(playerid, CAPACITY_WEED),
         PlayerData[playerid][pCocaine], GetPlayerCapacity(playerid, CAPACITY_COCAINE), PlayerData[playerid][pMeth], GetPlayerCapacity(playerid, CAPACITY_METH), PlayerData[playerid][pPainkillers], GetPlayerCapacity(playerid, CAPACITY_PAINKILLERS), PlayerData[playerid][pSeeds], GetPlayerCapacity(playerid, CAPACITY_SEEDS));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "{B5B5B5}Materials: %s/%s | Ephedrine: %i/%ig | Muriatic acid: %i/10 | Baking soda: %i/3", FormatNumber(PlayerData[playerid][pMaterials], 0), FormatNumber(GetPlayerCapacity(playerid, CAPACITY_MATERIALS), 0),
 		PlayerData[playerid][pEphedrine], GetPlayerCapacity(playerid, CAPACITY_EPHEDRINE), PlayerData[playerid][pMuriaticAcid], PlayerData[playerid][pBakingSoda]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Fishing rod: %s | Fish bait: %i/20 | Boombox: %s | MP3 player: %s | Phonebook: %s", (PlayerData[playerid][pFishingRod]) ? ("Yes") : ("No"), PlayerData[playerid][pFishingBait], (PlayerData[playerid][pBoombox]) ? ("Yes") : ("No"), (PlayerData[playerid][pMP3Player]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhonebook]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "{B5B5B5}Drivers license: %s | Components: %s | Cigars: %s | Spraycans: %i/20 | Bombs: %i/3", (PlayerData[playerid][pCarLicense]) ? ("Yes") : ("No"), FormatNumber(PlayerData[playerid][pComponents], 0), FormatNumber(PlayerData[playerid][pCigars], 0), PlayerData[playerid][pSpraycans], PlayerData[playerid][pBombs]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Walkie talkie: %s | Mobile phone: %s | First aid kits: %i/20 | Police scanner: %s", (PlayerData[playerid][pWalkieTalkie]) ? ("Yes") : ("No"), (PlayerData[playerid][pPhone]) ? ("Yes") : ("No"), PlayerData[playerid][pFirstAid], (PlayerData[playerid][pPoliceScanner]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "{B5B5B5}Gasoline: %i/20L | Bodykits: %i/10 | Rimkits: %i/5 | Rope: %i/10 | Watch: %s | GPS: %s", PlayerData[playerid][pGasCan], PlayerData[playerid][pBodykits], PlayerData[playerid][pRimkits], PlayerData[playerid][pRope], (PlayerData[playerid][pWatch]) ? ("Yes") : ("No"), (PlayerData[playerid][pGPS]) ? ("Yes") : ("No"));
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	format(string, sizeof(string), "Diamond: %s | Oil: %i/%iL | Skates: %s | Crowbar: %i/5", FormatNumber(PlayerData[playerid][pDiamonds], 0), PlayerData[playerid][pOil],  GetPlayerCapacity(playerid, CAPACITY_OIL), (PlayerData[playerid][pSkates]) ? ("Yes") : ("No"), PlayerData[playerid][pCrowbar]);
 	SendClientMessageEx(targetid, COLOR_WHITE, string);
-	
+
 	SendClientMessageEx(targetid, COLOR_DARKGREEN, "___________________________________________________________________________________");
 	return 1;
 }
@@ -22915,7 +22868,7 @@ ReloadVehicle(vehicleid)
 	        AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][vMods][i]);
 		}
 	}
-	SetVehicleNumberPlate(VehicleInfo[vehicleid][vID], VehicleInfo[vehicleid][vPlate]);
+    SetVehicleNumberPlate(vehicleid, VehicleInfo[vehicleid][vPlate]);
 	ResyncVehicle(VehicleInfo[vehicleid][vID]);
     LinkVehicleToInterior(vehicleid, VehicleInfo[vehicleid][vInterior]);
     SetVehicleVirtualWorld(vehicleid, VehicleInfo[vehicleid][vWorld]);
@@ -23710,9 +23663,9 @@ ReloadBusiness(businessid)
 
 		BusinessInfo[businessid][bText] = CreateDynamic3DTextLabel(string, COLOR_GREY1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ] + 0.4, 20.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, BusinessInfo[businessid][bOutsideVW], BusinessInfo[businessid][bOutsideInt], -1 , 10.0);
 	    BusinessInfo[businessid][bPickup] = CreateDynamicPickup(1272, 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-	    
+
 	    /*BusinessInfo[businessid][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(businessid), 1, BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt]);
-		
+
 		switch(BusinessInfo[businessid][bType])
 		{
 		    case BUSINESS_STORE: 		BusinessInfo[businessid][bMapIcon] = CreateDynamicMapIcon(BusinessInfo[businessid][bPosX], BusinessInfo[businessid][bPosY], BusinessInfo[businessid][bPosZ], 17, 0, .worldid = BusinessInfo[businessid][bOutsideVW], .interiorid = BusinessInfo[businessid][bOutsideInt], .style = MAPICON_GLOBAL);
@@ -26581,7 +26534,7 @@ public SecondTimer()
 							GetPlayerFacingAngle(i, a);
 						    strunpack(str, PlayerData[i][pGraffitiText]);
 		        	        format(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], 64, str);
-		        	        
+
 		        	        GraffitiData[PlayerData[i][pGraffiti]][graffitiPos][3] = a - 90.0;
 		        	        strreplace2(GraffitiData[PlayerData[i][pGraffiti]][graffitiText], "(n)", "\n");
                             GraffitiData[PlayerData[i][pGraffiti]][graffitiDefault] = 0;
@@ -27559,7 +27512,7 @@ public MinuteTimer()
 			}
 		}
 	 	AddToTaxVault(-budget);
-    
+
         for(new i = 0; i < MAX_POINTS; i ++)
 	    {
 	        if(PointInfo[i][pExists])
@@ -29046,6 +28999,7 @@ public OnPlayerSpawnVehicle(playerid, parked)
 			color2 = cache_get_field_content_int(0, "color2"),
 			vehicleid;
 
+
 		vehicleid = CreateVehicle(modelid, x, y, z, a, color1, color2, -1);
 
 		if(vehicleid != INVALID_VEHICLE_ID)
@@ -29053,6 +29007,7 @@ public OnPlayerSpawnVehicle(playerid, parked)
 		    ResetVehicle(vehicleid);
 
 		    cache_get_field_content(0, "owner", VehicleInfo[vehicleid][vOwner], connectionID, MAX_PLAYER_NAME);
+		    cache_get_field_content(0, "plate", VehicleInfo[vehicleid][vPlate], connectionID, 32);
 		    VehicleInfo[vehicleid][vID] = cache_get_field_content_int(0, "id");
 		    VehicleInfo[vehicleid][vOwnerID] = cache_get_field_content_int(0, "ownerid");
 		    VehicleInfo[vehicleid][vPrice] = cache_get_field_content_int(0, "price");
@@ -29122,8 +29077,9 @@ public OnPlayerSpawnVehicle(playerid, parked)
 				format(forsale, sizeof(forsale), "FOR SALE\n%s - %s\nPh: %i.", GetVehicleName(vehicleid), FormatNumber(VehicleInfo[vehicleid][vForSalePrice]), PlayerData[playerid][pPhone]);
                 VehicleInfo[vehicleid][vForSaleLabel] = CreateDynamic3DTextLabel(forsale, COLOR_GREY2, 0.0, 0.0, 0.0, 10.0, INVALID_PLAYER_ID, vehicleid, 1, -1, 0, -1, 30.0);
  			}
-
+            SetVehicleToRespawn(vehicleid);
 			ReloadVehicle(vehicleid);
+
 
 		    if(!parked)
 			{
@@ -30917,22 +30873,22 @@ public OnQueryFinished(threadid, extraid)
 						{
 							SendClientMessageEx(extraid, 0xE65A5AAA, "Admin Motd: %s", adminMOTD);
 						}
-					
+
 						if(!isnull(helperMOTD) && PlayerData[extraid][pHelper] > 0)
 						{
 							SendClientMessageEx(extraid, COLOR_AQUA, "Helper Motd: %s", helperMOTD);
 						}
-				
+
 						if(PlayerData[extraid][pFaction] >= 0 && strcmp(FactionInfo[PlayerData[extraid][pFaction]][fMOTD], "None", true) != 0)
 						{
 							SendClientMessageEx(extraid, COLOR_YELLOW, "Faction Motd: %s", FactionInfo[PlayerData[extraid][pFaction]][fMOTD]);
-						}	
+						}
 
 						if(PlayerData[extraid][pGang] >= 0 && strcmp(GangInfo[PlayerData[extraid][pGang]][gMOTD], "None", true) != 0)
 						{
 							SendClientMessageEx(extraid, COLOR_YELLOW, "Gang MOTD: %s", GangInfo[PlayerData[extraid][pGang]][gMOTD]);
 						}
-				
+
 						if(!isnull(gServerMOTD))
 						{
 							SendClientMessageEx(extraid, COLOR_WHITE, "Global Motd: %s", gServerMOTD);
@@ -30940,7 +30896,7 @@ public OnQueryFinished(threadid, extraid)
 
 					    format(string, sizeof(string), "~w~Welcome ~n~~y~   %s", GetPlayerNameEx(extraid));
         	        	GameTextForPlayer(extraid, string, 5000, 1);
-						
+
 					    /*if(PlayerData[extraid][pAdmin] && !PlayerData[extraid][pAdminHide])
 					    {
 					        SendAdminMessage(COLOR_LIGHTRED, "AdmCmd: %s %s has logged in.", GetAdmCmdRank(extraid), GetRPName(extraid));
@@ -32053,7 +32009,7 @@ public OnQueryFinished(threadid, extraid)
 				if(vehicleid != INVALID_VEHICLE_ID)
 				{
 				    ResetVehicle(vehicleid); // Forgot this!
-
+                    cache_get_field_content(0, "plate", VehicleInfo[vehicleid][vPlate], connectionID, 32);
 					VehicleInfo[vehicleid][vID] = cache_get_field_content_int(i, "id");
 					VehicleInfo[vehicleid][vGang] = cache_get_field_content_int(i, "gangid");
 					VehicleInfo[vehicleid][vFactionType] = cache_get_field_content_int(i, "factiontype");
@@ -32101,7 +32057,7 @@ public OnQueryFinished(threadid, extraid)
 					VehicleInfo[vehicleid][vTimer] = -1;
 
 					vehicleFuel[vehicleid] = 100;
-
+                    SetVehicleNumberPlate(vehicleid, VehicleInfo[vehicleid][vPlate]);
 					SetVehicleHealth(vehicleid, VehicleInfo[vehicleid][vHealth]);
 		        }
 			}
@@ -33891,7 +33847,7 @@ public OnPlayerConnect(playerid)
 	PlayerTextDrawBackgroundColor(playerid, SpeedoMeterTextDraw[playerid][35], 255);
 	PlayerTextDrawFont(playerid, SpeedoMeterTextDraw[playerid][35], 4);
 	PlayerTextDrawSetProportional(playerid, SpeedoMeterTextDraw[playerid][35], 0);
-	
+
 	SpeedoMeterTextDraw[playerid][36] = CreatePlayerTextDraw(playerid, 598.125000, 338.749847, "300 KIL");
 	PlayerTextDrawLetterSize(playerid, SpeedoMeterTextDraw[playerid][36], 0.219999, 1.600000);
 	PlayerTextDrawTextSize(playerid, SpeedoMeterTextDraw[playerid][36], 0.000000, 427.000000);
@@ -36483,7 +36439,7 @@ public OnPlayerSelectionMenuResponse(playerid, extraid, response, listitem, mode
 	            new houseid = GetInsideHouse(playerid);
 				if(houseid == -1)
 				    houseid = GetFurnitureHouse(playerid);
-				    
+
 	            if(houseid >= 0 && HasFurniturePerms(playerid, houseid))
 	            {
 		            PreviewFurniture(playerid, listitem + PlayerData[playerid][pPreviewIndex]);
@@ -38931,7 +38887,7 @@ Dialog:PhoneMusic(playerid, response, listitem, inputtext[])
 {
 	if(response)
 	{
-	
+
 	}
 	return 1;
 }
@@ -43949,7 +43905,7 @@ Dialog:DIALOG_FACTIONSKINS(playerid, response, listitem, inputtext[])
         else
         {
             PlayerData[playerid][pClothes] = PlayerData[playerid][pSkin];
-            PlayerData[playerid][pSkin] = GetPlayerSkinScript(playerid);
+            PlayerData[playerid][pSkin] = GetPlayerSkin(playerid);
             PlayerData[playerid][pSkinSelected] = -1;
 
             mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE "#TABLE_USERS" SET skin = %i, clothes = %i WHERE uid = %i", PlayerData[playerid][pSkin], PlayerData[playerid][pClothes], PlayerData[playerid][pID]);
@@ -46451,7 +46407,7 @@ Dialog:DIALOG_GANGSKINS(playerid, response, listitem, inputtext[])
         {
             PlayerData[playerid][pSkinSelected] = -1;
 
-			SetScriptSkin(playerid, GetPlayerSkinScript(playerid));
+			SetScriptSkin(playerid, GetPlayerSkin(playerid));
             ShowActionBubble(playerid, "* %s changes their clothes.", GetRPName(playerid));
 		}
     }
@@ -48893,7 +48849,7 @@ PrintNetWorthPlayer(playerid)
     {
         if(HouseInfo[i][hExists] && IsHouseOwner(playerid, i))
         {
-            SendClientMessageEx(playerid, COLOR_GREY2, "- Shtëpia: +{FF6347}%s", FormatNumber(pricehouse));
+            SendClientMessageEx(playerid, COLOR_GREY2, "- Sht?pia: +{FF6347}%s", FormatNumber(pricehouse));
             break;
 		}
 	}
@@ -48932,7 +48888,7 @@ PrintNetWorthPlayer(playerid)
 	}
 
 	SendClientMessage(playerid, COLOR_GREEN, "_______________________________");
-	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj është: %s", FormatNumber(total2));
+	SendClientMessageEx(playerid, COLOR_GREEN, "Pasuria totale e juaj ?sht?: %s", FormatNumber(total2));
 	return 1;
 }
 
@@ -51675,6 +51631,7 @@ CMD:enddoublexp(playerid, params[])
 	}
 	return 1;
 }
+
 CMD:help(playerid, params[])
 {
 	if(PlayerData[playerid][pAdmin] > 2)
@@ -56611,7 +56568,7 @@ CMD:setskin(playerid, params[])
 
     if(PlayerData[playerid][pAdmin] < 2)
 	{
-	    return SendClientMessage(playerid, COLOR_GREY, "Ti nuk je i autorizuar për të përdorur këtë komandë.");
+	    return SendClientMessage(playerid, COLOR_GREY, "Ti nuk je i autorizuar p?r t? p?rdorur k?t? komand?.");
 	}
 	if(sscanf(params, "ui", targetid, skinid))
 	{
@@ -56619,7 +56576,7 @@ CMD:setskin(playerid, params[])
 	}
 	if(!IsPlayerConnected(targetid))
 	{
-	    return SendClientMessage(playerid, COLOR_GREY, "Ai lojtar nuk është në server.");
+	    return SendClientMessage(playerid, COLOR_GREY, "Ai lojtar nuk ?sht? n? server.");
 	}
 	if(!(0 <= skinid <= 311) && !(25000 <= skinid <= 25165))
 	{
@@ -58362,7 +58319,7 @@ CMD:veh(playerid, params[])
 
 CMD:savevehicle(playerid, params[])
 {
-	new vehicleid, gangid, type, delay, vip, Float:x, Float:y, Float:z, Float:a;
+	new vehicleid, gangid, type, delay, vip, Float:x, Float:y, Float:z, Float:a, plate[32];
 
     if(PlayerData[playerid][pAdmin] < GENERAL_ADMIN)
 	{
@@ -58396,8 +58353,10 @@ CMD:savevehicle(playerid, params[])
 	GetVehiclePos(vehicleid, x, y, z);
 	GetVehicleZAngle(vehicleid, a);
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO vehicles (modelid, pos_x, pos_y, pos_z, pos_a, color1, color2, gangid, factiontype, vippackage, respawndelay, interior, world) VALUES(%i, '%f', '%f', '%f', '%f', %i, %i, %i, %i, %i, %i, %i, %i)",
-		GetVehicleModel(vehicleid), x, y, z, a, vehicleColors[vehicleid][0], vehicleColors[vehicleid][1], gangid, type, vip, delay, GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
+	format(plate, 32, "%c%c%c %i", Random('A', 'Z'), Random('A', 'Z'), Random('A', 'Z'), Random(100, 999));
+
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO vehicles (modelid, pos_x, pos_y, pos_z, pos_a, plate, color1, color2, gangid, factiontype, vippackage, respawndelay, interior, world) VALUES(%i, '%f', '%f', '%f', '%f', '%s', %i, %i, %i, %i, %i, %i, %i, %i)",
+		GetVehicleModel(vehicleid), x, y, z, a, plate, vehicleColors[vehicleid][0], vehicleColors[vehicleid][1], gangid, type, vip, delay, GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
 
 	mysql_tquery(connectionID, queryBuffer);
 	mysql_tquery(connectionID, "SELECT * FROM vehicles WHERE id = LAST_INSERT_ID()", "OnQueryFinished", "ii", THREAD_LOAD_VEHICLES, 0);
@@ -58499,11 +58458,11 @@ CMD:editvehicle(playerid, params[])
 
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE vehicles SET mileage = %.2f WHERE id = %i", VehicleInfo[vehicleid][vMileage], VehicleInfo[vehicleid][vID]);
 		mysql_tquery(connectionID, queryBuffer);
-		
+
 		if(value2 == 0)
 		    SendClientMessageEx(playerid, COLOR_AQUA, "** Ju keni ristartuar kilometrazhin e vetures %s (ID %i).", GetVehicleName(vehicleid), vehicleid);
 		else
-	    	SendClientMessageEx(playerid, COLOR_AQUA, "** Ju keni edituar kilometrazhin e vetures %s (ID %i) në (%i) KM.", GetVehicleName(vehicleid), vehicleid, value);
+	    	SendClientMessageEx(playerid, COLOR_AQUA, "** Ju keni edituar kilometrazhin e vetures %s (ID %i) n? (%i) KM.", GetVehicleName(vehicleid), vehicleid, value);
 	}
 
 	else if(!strcmp(option, "type", true))
@@ -58956,7 +58915,7 @@ CMD:vehicleinfo(playerid, params[])
 	}
 
 	SendClientMessageEx(playerid, COLOR_NAVYBLUE, "_______ %s Stats _______", GetVehicleName(vehicleid));
-	SendClientMessageEx(playerid, COLOR_GREY2, "Owner: %s - Value: %s - Tickets: %s - License Plate:", VehicleInfo[vehicleid][vOwner], FormatNumber(VehicleInfo[vehicleid][vPrice]), FormatNumber(VehicleInfo[vehicleid][vTickets]));
+	SendClientMessageEx(playerid, COLOR_GREY2, "Owner: %s - Value: %s - Tickets: %s - License Plate: %s", VehicleInfo[vehicleid][vOwner], FormatNumber(VehicleInfo[vehicleid][vPrice]), FormatNumber(VehicleInfo[vehicleid][vTickets]), VehicleInfo[vehicleid][vPlate]);
 	SendClientMessageEx(playerid, COLOR_GREY2, "Neon: %s - Trunk Level: %i/3 - Alarm Level: %i/3 - Health: %.1f - Fuel: %i/100", neon, VehicleInfo[vehicleid][vTrunk], VehicleInfo[vehicleid][vAlarm], health, vehicleFuel[vehicleid]);
 	SendClientMessageEx(playerid, COLOR_GREY2, "Gang: %s - Faction: %s - Rank: %i - Job Type: %s - Respawn Delay: %i seconds", gang, factionTypes[VehicleInfo[vehicleid][vFactionType]], VehicleInfo[vehicleid][vRank], GetJobName(VehicleInfo[vehicleid][vJob]), VehicleInfo[vehicleid][vRespawnDelay]);
 	return 1;
@@ -76529,7 +76488,7 @@ CMD:givepayday(playerid, params[])
 
 CMD:givepveh(playerid, params[])
 {
-	new model[20], modelid, targetid, color1, color2, Float:x, Float:y, Float:z, Float:a;
+	new model[20], modelid, targetid, color1, color2, Float:x, Float:y, Float:z, Float:a, plate[32];
 
 	if(PlayerData[playerid][pAdmin] < ASST_MANAGEMENT && !PlayerData[playerid][pDynamicAdmin])
 	{
@@ -76558,8 +76517,9 @@ CMD:givepveh(playerid, params[])
 
 	GetPlayerPos(targetid, x, y, z);
 	GetPlayerFacingAngle(targetid, a);
+	format(plate, 32, "%c%c%c %i", Random('A', 'Z'), Random('A', 'Z'), Random('A', 'Z'), Random(100, 999));
 
-	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO vehicles (ownerid, owner, modelid, pos_x, pos_y, pos_z, pos_a, color1, color2, carImpounded) VALUES(%i, '%s', %i, '%f', '%f', '%f', '%f', %i, %i, '0')", PlayerData[targetid][pID], GetPlayerNameEx(targetid), modelid, x + 2.0 * floatsin(-a, degrees), y + 2.0 * floatcos(-a, degrees), z, a, color1, color2);
+	mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO vehicles (ownerid, owner, modelid, pos_x, pos_y, pos_z, pos_a, plate, color1, color2, carImpounded) VALUES(%i, '%s', %i, '%f', '%f', '%f', '%f', '%s', %i, %i, '0')", PlayerData[targetid][pID], GetPlayerNameEx(targetid), modelid, x + 2.0 * floatsin(-a, degrees), y + 2.0 * floatcos(-a, degrees), z, a, mysql_escaped(plate), color1, color2);
 	mysql_tquery(connectionID, queryBuffer);
 
 	SendClientMessageEx(targetid, COLOR_AQUA, "%s has given you your own {00AA00}%s{33CCFF}. /carstorage to spawn it.", GetRPName(playerid), vehicleNames[modelid - 400]);
