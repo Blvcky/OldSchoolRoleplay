@@ -1520,6 +1520,15 @@ enum ARGBEnum
 	Name[24],
 	Hex
 }
+enum E_GRAFFITI_INFO
+{
+	Float:graffitiPosX,
+	Float:graffitiPosY,
+	Float:graffitiPosZ,
+	Float:graffitiRotX,
+	Float:graffitiRotY,
+	Float:graffitiRotZ,
+}
 
 // ---------------------------------------
 new connectionID;
@@ -1578,41 +1587,7 @@ new g_BoothObject[MAX_BOOTHS] = {-1, ...};
 new gWeights[MAX_PLAYERS][2];
 new ElevatorState,
 	ElevatorFloor;
-new ARGBColors[33][ARGBEnum] = {
-	{"None", 0},
-	{"{00FFFF}Aqua", ARGB_AQUA},
-	{"{7FFFD4}Aqua Marine", ARGB_AQUAMARINE},
-	{"{F5F5DC}Beige", ARGB_BEIGE},
-	{"{000000}Black", ARGB_BLACK},
-	{"{0000FF}Blue", ARGB_BLUE},
-	{"{8A2BE2}Blue Violet", ARGB_BLUEVIOLET},
-	{"{A52A2A}Brown", ARGB_BROWN},
-	{"{DC143C}Crimson", ARGB_CRIMSON},
-	{"{00FFFF}Cyan", ARGB_CYAN},
-	{"{00008B}Dark Blue", ARGB_DARKBLUE},
-	{"{8B0000}Dark Red", ARGB_DARKRED},
-	{"{9400D3}Dark Violet", ARGB_DARKVIOLET},
-	{"{FF1493}Deep Pink", ARGB_DEEPPINK},
-	{"{00BFFF}Sky Blue", ARGB_SKYBLUE},
-	{"{1E90FF}Dodger Blue", ARGB_DODGERBLUE},
-	{"{008000}Green", ARGB_GREEN},
-	{"{FF69B4}Hot Pink", ARGB_HOTPINK},
-	{"{4B0082}Indigo", ARGB_INDIGO},
-	{"{F0E68C}Khaki", ARGB_KHAKI},
-	{"{32CD32}Lime Green", ARGB_LIMEGREEN},
-	{"{FF00FF}Magenta", ARGB_MAGENTA},
-	{"{191970}Midnight Blue", ARGB_MIDNIGHTBLUE},
-	{"{000080}Navy", ARGB_NAVY},
-	{"{CD853F}Peru", ARGB_PERU},
-	{"{8B4513}Saddle Brown", ARGB_SADDLEBROWN},
-	{"{800080}Purple", ARGB_PURPLE},
-	{"{FF0000}Red", ARGB_RED},
-	{"{A0522D}Sienna", ARGB_SIENNA},
-	{"{C0C0C0}Silver", ARGB_SILVER},
-	{"{4682B4}Steel Blue", ARGB_STEELBLUE},
-	{"{FF6347}Tomato", ARGB_TOMATO},
-	{"{FFFF00}Yellow", ARGB_YELLOW}
-};
+
 new PlayerText:LoadingObjects0[MAX_PLAYERS];
 new PlayerText:LoadingObjects1[MAX_PLAYERS];
 new PlayerText:LoadingObjects2[MAX_PLAYERS];
@@ -1768,6 +1743,85 @@ new Text:td_mdc_Box = Text:INVALID_TEXT_DRAW,
 	CriminalRecordData[MAX_PLAYERS][MAX_CRIMINAL_RECORDS][CriminalRecordEnum];
 
 // ---------------------------------------
+new ARGBColors[33][ARGBEnum] = {
+	{"None", 0},
+	{"{00FFFF}Aqua", ARGB_AQUA},
+	{"{7FFFD4}Aqua Marine", ARGB_AQUAMARINE},
+	{"{F5F5DC}Beige", ARGB_BEIGE},
+	{"{000000}Black", ARGB_BLACK},
+	{"{0000FF}Blue", ARGB_BLUE},
+	{"{8A2BE2}Blue Violet", ARGB_BLUEVIOLET},
+	{"{A52A2A}Brown", ARGB_BROWN},
+	{"{DC143C}Crimson", ARGB_CRIMSON},
+	{"{00FFFF}Cyan", ARGB_CYAN},
+	{"{00008B}Dark Blue", ARGB_DARKBLUE},
+	{"{8B0000}Dark Red", ARGB_DARKRED},
+	{"{9400D3}Dark Violet", ARGB_DARKVIOLET},
+	{"{FF1493}Deep Pink", ARGB_DEEPPINK},
+	{"{00BFFF}Sky Blue", ARGB_SKYBLUE},
+	{"{1E90FF}Dodger Blue", ARGB_DODGERBLUE},
+	{"{008000}Green", ARGB_GREEN},
+	{"{FF69B4}Hot Pink", ARGB_HOTPINK},
+	{"{4B0082}Indigo", ARGB_INDIGO},
+	{"{F0E68C}Khaki", ARGB_KHAKI},
+	{"{32CD32}Lime Green", ARGB_LIMEGREEN},
+	{"{FF00FF}Magenta", ARGB_MAGENTA},
+	{"{191970}Midnight Blue", ARGB_MIDNIGHTBLUE},
+	{"{000080}Navy", ARGB_NAVY},
+	{"{CD853F}Peru", ARGB_PERU},
+	{"{8B4513}Saddle Brown", ARGB_SADDLEBROWN},
+	{"{800080}Purple", ARGB_PURPLE},
+	{"{FF0000}Red", ARGB_RED},
+	{"{A0522D}Sienna", ARGB_SIENNA},
+	{"{C0C0C0}Silver", ARGB_SILVER},
+	{"{4682B4}Steel Blue", ARGB_STEELBLUE},
+	{"{FF6347}Tomato", ARGB_TOMATO},
+	{"{FFFF00}Yellow", ARGB_YELLOW}
+};
+new g_aGraffitiData[][E_GRAFFITI_INFO] = {
+	{2081.867675, -1255.466430, 24.712007, -12.800003, 0.000000, 0.000000},
+	{2268.340332, -1031.824707, 53.437198, 0.000000, 0.000000, 135.800155},
+	{2652.655517, -1123.089355, 66.999664, 0.000000, 0.000000, 0.399999},
+	{2652.727294, -1268.601074, 50.095500, 0.000000, 0.000000, 0.000000},
+	{2441.024169, -1215.926757, 32.154163, 0.000000, 0.000000, -179.199768},
+	{2352.000488, -1262.450927, 22.958444, 0.000000, 0.000000, 0.000000},
+	{2195.268554, -1745.694580, 13.739686, 0.000000, 0.000000, -177.399734},
+	{1868.005493, -2038.964843, 15.976880, 0.000000, 0.000000, 179.700088},
+	{1832.987426, -2111.634033, 13.946876, 0.000000, 0.000000, 0.000000},
+	{1862.723510, -2095.458007, 13.890580, 0.000000, 0.000000, 89.700012},
+	{2097.205566, -1258.445434, 24.748823, -16.799999, 0.000000, 87.999984},
+	{2135.333984, -1820.317871, 13.748497, 0.000000, 0.000000, 0.000000},
+	{2171.669921, -1709.278564, 15.921793, -8.500000, 0.000000, 179.999969},
+	{2112.414794, -1500.848632, 11.099428, 0.000000, 0.000000, -109.899978},
+	{2129.287841, -1374.363769, 25.878126, 0.000000, 0.000000, 90.400009},
+	{2110.260253, -1352.890625, 25.076538, 9.399998, -0.699999, -179.799743},
+	{2052.904296, -1322.635498, 24.954380, 0.000000, 0.000000, 179.800018},
+	{2159.781494, -1693.122314, 16.025939, 0.000000, 0.000000, -179.099990},
+	{2146.816650, -1698.676025, 15.438446, 0.000000, 0.000000, 91.499877},
+	{2175.154052, -1732.381713, 14.535001, 0.000000, 0.000000, -178.500061},
+	{2231.739501, -1683.644775, 15.479531, 0.000000, 0.000000, -16.500001},
+	{2121.155029, -1594.672729, 15.621557, 0.000000, 0.000000, 86.900100},
+	{2123.272705, -1593.691284, 15.241566, 0.000000, 0.000000, -179.499893},
+	{2112.329345, -1632.425170, 13.739908, 0.000000, -3.200001, -89.700065},
+	{2081.344970, -1592.929809, 14.757192, 0.000000, 0.000000, 179.300003},
+	{2073.782470, -1597.242553, 14.414111, 0.000000, 0.000000, 90.300033},
+	{2031.132568, -1599.088867, 13.910934, 0.000000, 0.000000, -168.799987},
+	{1986.863281, -1598.860839, 13.900341, 0.000000, 0.000000, -135.000076},
+	{2478.406982, -1705.506347, 13.490673, 0.000000, 0.000000, 176.799804},
+	{2478.767578, -1688.184936, 13.487812, 0.000000, 0.000000, -98.600006},
+	{2520.675781, -1673.658447, 15.454930, 0.000000, 0.000000, 0.000000},
+	{2534.723388, -1665.125732, 15.735736, 0.000000, 0.000000, -178.699966},
+	{2431.231689, -1680.935424, 14.411346, 0.000000, 0.000000, -90.199958},
+	{2398.518066, -1693.246948, 13.891834, 0.000000, 0.000000, 87.599990},
+	{2377.614990, -1707.240112, 14.127936, 0.000000, 0.000000, 0.000000},
+	{2440.530517, -1997.948486, 14.406878, 0.000000, 0.000000, 89.199966}, // Willowfield red wall
+	{2459.481933, -1975.134521, 14.166885, 0.000000, 0.000000, 0.000000}, // Willowfield alley
+	{2459.608642, -2043.951049, 11.091508, 0.000000, 0.000000, 88.000068}, // Willowfield sewer
+	{1958.593139, -1742.345336, 13.856878, 0.000000, 0.000000, 90.700050}, // Idlegas [Artsy]
+	{1951.642700, -1682.986083, 13.822822, 0.000000, 0.000000, 0.000000}, // North of Idlegas [Artsy],
+	{1991.694580, -1683.518676, 13.636877, 0.000000, 0.000000, 178.599838}, // West 4-1-5 [Artsy],
+	{2135.621582, -1258.083496, 24.192192, 0.000000, 0.000000, 90.099929} // Jefferson Alley [Fireworks]
+};
 static FloorNames[21][] =
 {
 	"Ground Floor",
@@ -20111,6 +20165,10 @@ LoadObjects()
 }
 LoadPickupsAndText()
 {
+	for (new i = 0; i < sizeof(g_aGraffitiData); i++)
+	{ //18666
+		GraffitiData[i][graffitiObject] = CreateDynamicObject(18666, g_aGraffitiData[i][graffitiPosX], g_aGraffitiData[i][graffitiPosY], g_aGraffitiData[i][graffitiPosZ], g_aGraffitiData[i][graffitiRotX], g_aGraffitiData[i][graffitiRotY], g_aGraffitiData[i][graffitiRotZ], -1, 0, -1, 5000.0);
+	}
 	for(new i = 0; i < sizeof(g_RepairShops); i ++)
 	{
 		CreateDynamicPickup(1239, 1, g_RepairShops[i][0], g_RepairShops[i][1], g_RepairShops[i][2]);
@@ -23220,9 +23278,13 @@ stock IsSprayingInProgress(id)
 
 stock Graffiti_Nearest(playerid)
 {
-	for (new i = 0; i < MAX_GRAFFITI_POINTS; i ++) if (GraffitiData[i][graffitiExists] && IsPlayerInRangeOfPoint(playerid, 5.0, GraffitiData[i][graffitiPos][0], GraffitiData[i][graffitiPos][1], GraffitiData[i][graffitiPos][2]))
-	    return i;
-
+	for(new i = 0; i < sizeof(g_aGraffitiData); i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 4.0, g_aGraffitiData[i][graffitiPosX], g_aGraffitiData[i][graffitiPosY], g_aGraffitiData[i][graffitiPosZ]))
+		{
+			return i;
+		}
+	}
 	return -1;
 }
 stock GetPlayerFreeVehicleId(playerid)
@@ -49472,93 +49534,6 @@ CMD:deletepayphone(playerid, params[])
 	}
 	return 1;
 }
-CMD:creategangtag(playerid, params[])
-{
-	static
-	    id = -1,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:angle;
-
-    if(PlayerData[playerid][pAdmin] < HEAD_ADMIN)
-    {
-	    return SendClientMessage(playerid, COLOR_GREY, "You don't have permission to use this command.");
-	}
-	if(GetPlayerInterior(playerid) > 0 || GetPlayerVirtualWorld(playerid) > 0)
-	{
- 		return SendClientMessage(playerid, COLOR_GREY, "You can only create graffiti points outside interiors.");
-	}
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, angle);
-
-	id = Graffiti_Create(x, y, z, angle);
-
-	if(id == -1)
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "The server has reached the limit for graffiti points.");
-	}
-
-	EditDynamicObject(playerid, GraffitiData[id][graffitiObject]);
-
-	PlayerData[playerid][pEditGraffiti] = id;
-	SendClientMessageEx(playerid, COLOR_GREY, "You have successfully created graffiti ID: %d.", id);
-
-	return 1;
-}
-
-CMD:editgangtag(playerid, params[])
-{
-	static
-	    id = -1,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:angle;
-
-    if(PlayerData[playerid][pAdmin] < HEAD_ADMIN)
-    {
-	    return SendClientMessage(playerid, COLOR_GREY, "You don't have permission to use this command.");
-	}
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, angle);
-
-	id = Graffiti_Nearest(playerid);
-
-	if(id == -1)
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You are not in range of an Gang Spray Tag point.");
-	}
-
-	EditDynamicObject(playerid, GraffitiData[id][graffitiObject]);
-
-	PlayerData[playerid][pEditGraffiti] = id;
-	return 1;
-}
-CMD:destroygangtag(playerid, params[])
-{
-	static
-	    id = 0;
-
-    if(PlayerData[playerid][pAdmin] < HEAD_ADMIN)
-    {
-	    return SendClientMessage(playerid, COLOR_GREY, "You don't have permission to use this command.");
-	}
-	if(sscanf(params, "d", id))
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "/destroygraffiti [graffiti id]");
-	}
-
-	if((id < 0 || id >= MAX_GRAFFITI_POINTS) || !GraffitiData[id][graffitiExists])
-	{
-	    return SendClientMessage(playerid, COLOR_GREY, "You have specified an invalid graffiti ID.");
-	}
-	Graffiti_Delete(id);
-	SendClientMessageEx(playerid, COLOR_GREY, "You have successfully destroyed graffiti ID: %d.", id);
-	return 1;
-}
 
 CMD:gspray(playerid, params[])
 {
@@ -62108,7 +62083,11 @@ CMD:exit(playerid, params[])
 		PlayerData[playerid][pPaintballTeam] = -1;
 		GangZoneHideForPlayer(playerid, zone_paintball[0]);
 		GangZoneHideForPlayer(playerid, zone_paintball[1]);
-		SetPlayerToSpawn(playerid);
+		SetPlayerPos(playerid, PlayerData[playerid][pPosX], PlayerData[playerid][pPosY], PlayerData[playerid][pPosZ]);
+		SetPlayerFacingAngle(playerid, PlayerData[playerid][pPosA]);
+		SetPlayerInterior(playerid, PlayerData[playerid][pInterior]);
+ 		SetPlayerVirtualWorld(playerid, PlayerData[playerid][pWorld]);
+		SetPlayerWeapons(playerid);
 	}
 	else
 	{
