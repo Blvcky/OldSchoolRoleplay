@@ -18,6 +18,7 @@
 * SKY // https://forum.sa-mp.com/showthread.php?t=563442
 * regex // https://forum.sa-mp.com/showthread.php?t=247893
 * YSF // https://forum.sa-mp.com/showthread.php?t=513499
+* SAMP Team.
 
 Special thanks to all osrp contributors
 
