@@ -8,7 +8,8 @@
 
 
 
-#### plugins
+#### plugins 
+##### credits to the creators
 
 * pawncmd // https://forum.sa-mp.com/showthread.php?t=608474
 * sscanf  // https://forum.sa-mp.com/showthread.php?t=570927
