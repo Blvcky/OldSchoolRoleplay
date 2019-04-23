@@ -74,14 +74,6 @@
 //----------------------------------------
 #define INVALID_FLOOR           (-1)
 #include <vehicleFix>
-//----------------------------------------
-#define BODY_PART_CHEST (3)
-#define BODY_PART_GROIN (4)
-#define BODY_PART_LEFT_ARM (5)
-#define BODY_PART_RIGHT_ARM (6)
-#define BODY_PART_LEFT_LEG (7)
-#define BODY_PART_RIGHT_LEG (8)
-#define BODY_PART_HEAD (9)
 // ---------------------------------------
 enum
 {
@@ -1024,7 +1016,7 @@ enum impoundInfo
 	impoundInt,
 	Text3D: impoundTextID
 }
-new ImpoundPoints[MAX_IMPOUNDPOINTS][impoundInfo];
+
 enum eventEnum
 {
 	eReady,
@@ -1081,7 +1073,6 @@ enum graffitiData {
 	graffitiFont[50]
 };
 
-new GraffitiData[MAX_GRAFFITI_POINTS][graffitiData];
 
 enum hEnum
 {
@@ -1515,11 +1506,7 @@ enum {
 	RECORD_TICKET,
 	RECORD_CHARGE
 }
-enum ARGBEnum
-{
-	Name[24],
-	Hex
-}
+
 enum E_GRAFFITI_INFO
 {
 	Float:graffitiPosX,
@@ -1585,9 +1572,9 @@ new seatbelt[MAX_PLAYERS];
 new g_BoothUsed[MAX_BOOTHS];
 new g_BoothObject[MAX_BOOTHS] = {-1, ...};
 new gWeights[MAX_PLAYERS][2];
-new ElevatorState,
-	ElevatorFloor;
-
+new ElevatorState, ElevatorFloor;
+new ImpoundPoints[MAX_IMPOUNDPOINTS][impoundInfo];
+new GraffitiData[MAX_GRAFFITI_POINTS][graffitiData];
 new PlayerText:LoadingObjects0[MAX_PLAYERS];
 new PlayerText:LoadingObjects1[MAX_PLAYERS];
 new PlayerText:LoadingObjects2[MAX_PLAYERS];
@@ -1607,14 +1594,10 @@ new gCharity, gCharityHealth, gCharityArmor;
 new gPlayerRecord, gRecordDate[24], gServerMOTD[128], gTax, gVault, gNewsVault, gAnticheatBans;
 new adminMOTD[128], helperMOTD[128];
 new MaxCapCount[2] = {  2 , 1 }; // index: 0 = turfs, 1 = points
-new gacooldown;
-new gConnections, gTotalRegistered, gTotalKills, gTotalDeaths, gTotalHours;
+new gacooldown, gConnections, gTotalRegistered, gTotalKills, gTotalDeaths, gTotalHours;
 new gDoubleXP, gDisabledVPN = 1, antiNT = 1, gHReward;
-new gLastAd;
-new gLastMusic;
-new gGMX;
-new gAnticheat = 1;
-new gPaycheck;
+new gLastAd, gLastMusic, gGMX;
+new gAnticheat = 1, gPaycheck;
 new gVIPHealth, gVIPArmor;
 new gParachutes[2];
 new gSeedsStock = 200, gCocaineStock = 100, gEphedrineStock = 50;
@@ -1669,115 +1652,80 @@ new vehicleSiren[MAX_VEHICLES] = {INVALID_OBJECT_ID, ...};
 new vehicleStream[MAX_VEHICLES][128];
 new vehicleColors[MAX_VEHICLES][2];
 new totalDamages[MAX_PLAYERS];
-new ElevatorQueue[21],
-	FloorRequestedBy[21];
+new ElevatorQueue[21], FloorRequestedBy[21];
 new ElevatorBoostTimer;
 new bool:chattingWith[MAX_PLAYERS][MAX_PLAYERS char];
 new Text3D:vehicleCallsign[MAX_VEHICLES] = {Text3D:INVALID_3DTEXT_ID, ...};
 new PayCheckCode[MAX_PLAYERS];
 new PlayerText:SpeedoMeterTextDraw[MAX_PLAYERS][40];
-new Text:td_mdc_Box = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_HeaderBox = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_CitizenBox = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_DataBox = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_OptionsBox = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_HeaderText = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Exit = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Section[4] = {Text:INVALID_TEXT_DRAW, ...},
-	Text:td_mdc_SectionText[4] = {Text:INVALID_TEXT_DRAW, ...},
-	Text:td_mdc_SectionHeaderText = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Gender = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Job = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_DriveLic = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_GunLic = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_PhoneNumber = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Name = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_PropertiesArrow = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_VehiclesArrow = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Vehicles = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Properties = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Age = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_CriminalRecordArrow = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_CasesArrow = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_CriminalRecord = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Cases = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_Browse = Text:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_Skin = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_NameValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_AgeValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_GenderValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_JobValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_DriveLicValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_GunLicValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_PhoneNumberValue = PlayerText:INVALID_TEXT_DRAW,
-	Text:td_mdc_cr_Box[7] = {Text:INVALID_TEXT_DRAW, ...},
-	Text:td_mdc_cr_InnerBox[7] = {Text:INVALID_TEXT_DRAW, ...},
-	Text:td_mdc_cr_TypeTitle = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_cr_DescriptionTitle = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_cr_DateTitle = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_cr_Title = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_cr_ArrowUp = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_cr_ArrowDown = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_cr_Info[7] = {Text:INVALID_TEXT_DRAW, ...},
-	PlayerText:td_mdc_cr_Type[7] = {PlayerText:INVALID_TEXT_DRAW, ...},
-	PlayerText:td_mdc_cr_Description[7] = {PlayerText:INVALID_TEXT_DRAW, ...},
-	PlayerText:td_mdc_cr_Date[7] = {PlayerText:INVALID_TEXT_DRAW, ...},
-	Text:td_mdc_veh_Box = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_InnerBox = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_Model = Text:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_veh_ModelValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_veh_VehicleModel = PlayerText:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_Owner = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_Plate = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_Insurance = Text:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_veh_OwnerValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_veh_PlateValue = PlayerText:INVALID_TEXT_DRAW,
-	PlayerText:td_mdc_veh_InsuranceValue = PlayerText:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_ArrowRight = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_Next = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_Label = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_BoxNoEnt = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_InnerBoxNoEnt = Text:INVALID_TEXT_DRAW,
-	Text:td_mdc_veh_TextNoEnt = Text:INVALID_TEXT_DRAW,
-	Iterator:RecordIterator[MAX_PLAYERS]<MAX_CRIMINAL_RECORDS>,
-	CriminalRecordData[MAX_PLAYERS][MAX_CRIMINAL_RECORDS][CriminalRecordEnum];
+new Text:td_mdc_Box = Text:INVALID_TEXT_DRAW;
+new Text:td_mdc_HeaderBox = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_CitizenBox = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_DataBox = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_OptionsBox = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_HeaderText = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Exit = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Section[4] = {Text:INVALID_TEXT_DRAW, ...};
+new	Text:td_mdc_SectionText[4] = {Text:INVALID_TEXT_DRAW, ...};
+new	Text:td_mdc_SectionHeaderText = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Gender = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Job = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_DriveLic = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_GunLic = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_PhoneNumber = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Name = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_PropertiesArrow = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_VehiclesArrow = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Vehicles = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Properties = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Age = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_CriminalRecordArrow = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_CasesArrow = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_CriminalRecord = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Cases = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_Browse = Text:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_Skin = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_NameValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_AgeValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_GenderValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_JobValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_DriveLicValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_GunLicValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_PhoneNumberValue = PlayerText:INVALID_TEXT_DRAW;
+new	Text:td_mdc_cr_Box[7] = {Text:INVALID_TEXT_DRAW, ...};
+new	Text:td_mdc_cr_InnerBox[7] = {Text:INVALID_TEXT_DRAW, ...};
+new	Text:td_mdc_cr_TypeTitle = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_cr_DescriptionTitle = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_cr_DateTitle = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_cr_Title = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_cr_ArrowUp = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_cr_ArrowDown = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_cr_Info[7] = {Text:INVALID_TEXT_DRAW, ...};
+new	PlayerText:td_mdc_cr_Type[7] = {PlayerText:INVALID_TEXT_DRAW, ...};
+new	PlayerText:td_mdc_cr_Description[7] = {PlayerText:INVALID_TEXT_DRAW, ...};
+new	PlayerText:td_mdc_cr_Date[7] = {PlayerText:INVALID_TEXT_DRAW, ...};
+new	Text:td_mdc_veh_Box = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_InnerBox = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_Model = Text:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_veh_ModelValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_veh_VehicleModel = PlayerText:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_Owner = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_Plate = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_Insurance = Text:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_veh_OwnerValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_veh_PlateValue = PlayerText:INVALID_TEXT_DRAW;
+new	PlayerText:td_mdc_veh_InsuranceValue = PlayerText:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_ArrowRight = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_Next = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_Label = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_BoxNoEnt = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_InnerBoxNoEnt = Text:INVALID_TEXT_DRAW;
+new	Text:td_mdc_veh_TextNoEnt = Text:INVALID_TEXT_DRAW;
+new	Iterator:RecordIterator[MAX_PLAYERS]<MAX_CRIMINAL_RECORDS>;
+new	CriminalRecordData[MAX_PLAYERS][MAX_CRIMINAL_RECORDS][CriminalRecordEnum];
 
 // ---------------------------------------
-new ARGBColors[33][ARGBEnum] = {
-	{"None", 0},
-	{"{00FFFF}Aqua", ARGB_AQUA},
-	{"{7FFFD4}Aqua Marine", ARGB_AQUAMARINE},
-	{"{F5F5DC}Beige", ARGB_BEIGE},
-	{"{000000}Black", ARGB_BLACK},
-	{"{0000FF}Blue", ARGB_BLUE},
-	{"{8A2BE2}Blue Violet", ARGB_BLUEVIOLET},
-	{"{A52A2A}Brown", ARGB_BROWN},
-	{"{DC143C}Crimson", ARGB_CRIMSON},
-	{"{00FFFF}Cyan", ARGB_CYAN},
-	{"{00008B}Dark Blue", ARGB_DARKBLUE},
-	{"{8B0000}Dark Red", ARGB_DARKRED},
-	{"{9400D3}Dark Violet", ARGB_DARKVIOLET},
-	{"{FF1493}Deep Pink", ARGB_DEEPPINK},
-	{"{00BFFF}Sky Blue", ARGB_SKYBLUE},
-	{"{1E90FF}Dodger Blue", ARGB_DODGERBLUE},
-	{"{008000}Green", ARGB_GREEN},
-	{"{FF69B4}Hot Pink", ARGB_HOTPINK},
-	{"{4B0082}Indigo", ARGB_INDIGO},
-	{"{F0E68C}Khaki", ARGB_KHAKI},
-	{"{32CD32}Lime Green", ARGB_LIMEGREEN},
-	{"{FF00FF}Magenta", ARGB_MAGENTA},
-	{"{191970}Midnight Blue", ARGB_MIDNIGHTBLUE},
-	{"{000080}Navy", ARGB_NAVY},
-	{"{CD853F}Peru", ARGB_PERU},
-	{"{8B4513}Saddle Brown", ARGB_SADDLEBROWN},
-	{"{800080}Purple", ARGB_PURPLE},
-	{"{FF0000}Red", ARGB_RED},
-	{"{A0522D}Sienna", ARGB_SIENNA},
-	{"{C0C0C0}Silver", ARGB_SILVER},
-	{"{4682B4}Steel Blue", ARGB_STEELBLUE},
-	{"{FF6347}Tomato", ARGB_TOMATO},
-	{"{FFFF00}Yellow", ARGB_YELLOW}
-};
+
 new g_aGraffitiData[][E_GRAFFITI_INFO] = {
 	{2081.867675, -1255.466430, 24.712007, -12.800003, 0.000000, 0.000000},
 	{2268.340332, -1031.824707, 53.437198, 0.000000, 0.000000, 135.800155},
@@ -8399,33 +8347,7 @@ Dialog:ClothesNew(playerid, response, listitem, inputtext[])
 	}
 	return 1;
 }
-Dialog:Clothing_MatColor1(playerid, response, listitem, inputtext[])
-{
-	if(!response) {
-		DeletePVar(playerid, "ColorToy");
-		return 1;
-	}
 
-	SetPVarInt(playerid, "ColorToyL", listitem);
-	new diatxt[564];
-	for (new i=0; i < sizeof(ARGBColors); i++) {
-		format(diatxt, 564, "%s%s\n", diatxt, ARGBColors[i][Name]);
-	}
-	Dialog_Show(playerid, Clothing_MatColor2, DIALOG_STYLE_LIST, "Choose a color.", diatxt, "Select", "Close");
-	return 1;
-}
-Dialog:Clothing_MatColor2(playerid, response, listitem, inputtext[])
-{
-	if(!response) {
-		DeletePVar(playerid, "ColorToy");
-		DeletePVar(playerid, "ColorToyL");
-		return 1;
-	}
-	SetToyColor(playerid, GetPVarInt(playerid, "ColorToy"), GetPVarInt(playerid, "ColorToyL"), listitem);
-	DeletePVar(playerid, "ColorToy");
-	DeletePVar(playerid, "ColorToyL");
-	return 1;
-}
 stock CountPlayerHouses(playerid)
 {
 	new count = 0;
@@ -8562,34 +8484,6 @@ IsRepairShopInUse(id)
 	}
 
 	return 0;
-}
-stock SetToyColor(playerid, slot, layer, color)
-{
-	if(ClothingInfo[playerid][slot][cModel] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, slot))
-	{
-		if (layer == 0)
-		{
-			ClothingInfo[playerid][slot][cMatColor1] = color;
-		}
-		else ClothingInfo[playerid][slot][cMatColor2] = color;
-
-		RemovePlayerAttachedObject(playerid, slot);
-
- 		SetPlayerAttachedObject(playerid, slot, ClothingInfo[playerid][slot][cModel], ClothingInfo[playerid][slot][cBone],
-		ClothingInfo[playerid][slot][cPosX], ClothingInfo[playerid][slot][cPosY], ClothingInfo[playerid][slot][cPosZ],
-		ClothingInfo[playerid][slot][cRotX], ClothingInfo[playerid][slot][cRotY], ClothingInfo[playerid][slot][cRotZ],
-		ClothingInfo[playerid][slot][cScaleX], ClothingInfo[playerid][slot][cScaleY], ClothingInfo[playerid][slot][cScaleZ],
-		ARGBColors[ClothingInfo[playerid][slot][cMatColor1]][Hex], ARGBColors[ClothingInfo[playerid][slot][cMatColor2]][Hex]);
-		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "UPDATE clothing SET `matcolor1` = %d, `matcolor2` = %d WHERE id = %i", ClothingInfo[playerid][slot][cMatColor1], ClothingInfo[playerid][slot][cMatColor2], ClothingInfo[playerid][slot][cID]);
-		mysql_tquery(connectionID, queryBuffer);
-		printf(queryBuffer);
-
-
-		new string[74];
-		format(string, sizeof(string), "Toy color layer %i successfully changed to %s %d.", layer, ARGBColors[color][Name], slot);
-		SendClientMessage(playerid, COLOR_WHITE, string);
-    }
-	return 1;
 }
 
 Dialog:Graffiti_Type(playerid, response, listitem, inputtext[])
@@ -20996,7 +20890,7 @@ SetPlayerClothing(playerid)
 
 		    if(ClothingInfo[playerid][i][cAttachedIndex] >= 0)
 		    {
-		        SetPlayerAttachedObject(playerid, ClothingInfo[playerid][i][cAttachedIndex], ClothingInfo[playerid][i][cModel], ClothingInfo[playerid][i][cBone], ClothingInfo[playerid][i][cPosX], ClothingInfo[playerid][i][cPosY], ClothingInfo[playerid][i][cPosZ], ClothingInfo[playerid][i][cRotX], ClothingInfo[playerid][i][cRotY], ClothingInfo[playerid][i][cRotZ], ClothingInfo[playerid][i][cScaleX], ClothingInfo[playerid][i][cScaleY], ClothingInfo[playerid][i][cScaleZ], ARGBColors[ClothingInfo[playerid][i][cMatColor1]][Hex], ARGBColors[ClothingInfo[playerid][i][cMatColor2]][Hex]);
+		        SetPlayerAttachedObject(playerid, ClothingInfo[playerid][i][cAttachedIndex], ClothingInfo[playerid][i][cModel], ClothingInfo[playerid][i][cBone], ClothingInfo[playerid][i][cPosX], ClothingInfo[playerid][i][cPosY], ClothingInfo[playerid][i][cPosZ], ClothingInfo[playerid][i][cRotX], ClothingInfo[playerid][i][cRotY], ClothingInfo[playerid][i][cRotZ], ClothingInfo[playerid][i][cScaleX], ClothingInfo[playerid][i][cScaleY], ClothingInfo[playerid][i][cScaleZ]);
 			}
 			else
 			{
@@ -37201,40 +37095,40 @@ public UpdateBooth(playerid, id)
 	            ResetPlayerWeapons(playerid);
 
 				GivePlayerWeapon(playerid, 25, 15000);
-	            SendServerMessage(playerid, "You have advanced to the next level (1/5).");
+	            SendInfoMessage(playerid, "You have advanced to the next level (1/5).");
 	        }
 	        case 1:
 	        {
 	            ResetPlayerWeapons(playerid);
 
 				GivePlayerWeapon(playerid, 28, 15000);
-	            SendServerMessage(playerid, "You have advanced to the next level (2/5).");
+	            SendInfoMessage(playerid, "You have advanced to the next level (2/5).");
 	        }
 	        case 2:
 	        {
 	            ResetPlayerWeapons(playerid);
 
 				GivePlayerWeapon(playerid, 29, 15000);
-	            SendServerMessage(playerid, "You have advanced to the next level (3/5).");
+	            SendInfoMessage(playerid, "You have advanced to the next level (3/5).");
 	        }
 	        case 3:
 	        {
 	            ResetPlayerWeapons(playerid);
 
 				GivePlayerWeapon(playerid, 30, 15000);
-	            SendServerMessage(playerid, "You have advanced to the next level (4/5).");
+	            SendInfoMessage(playerid, "You have advanced to the next level (4/5).");
 	        }
 	        case 4:
 	        {
 	            ResetPlayerWeapons(playerid);
 
 				GivePlayerWeapon(playerid, 27, 15000);
-	            SendServerMessage(playerid, "You have advanced to the next level (5/5).");
+	            SendInfoMessage(playerid, "You have advanced to the next level (5/5).");
 	        }
 	        case 5:
 	        {
 	            Booth_Leave(playerid);
-	            SendServerMessage(playerid, "You have completed the shooting challenge!");
+	            SendInfoMessage(playerid, "You have completed the shooting challenge!");
 	        }
 	    }
 	}
@@ -49534,6 +49428,93 @@ CMD:deletepayphone(playerid, params[])
 	}
 	return 1;
 }
+CMD:creategangtag(playerid, params[])
+{
+	static
+	    id = -1,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:angle;
+
+    if(PlayerData[playerid][pAdmin] < HEAD_ADMIN)
+    {
+	    return SendClientMessage(playerid, COLOR_GREY, "You don't have permission to use this command.");
+	}
+	if(GetPlayerInterior(playerid) > 0 || GetPlayerVirtualWorld(playerid) > 0)
+	{
+ 		return SendClientMessage(playerid, COLOR_GREY, "You can only create graffiti points outside interiors.");
+	}
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, angle);
+
+	id = Graffiti_Create(x, y, z, angle);
+
+	if(id == -1)
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "The server has reached the limit for graffiti points.");
+	}
+
+	EditDynamicObject(playerid, GraffitiData[id][graffitiObject]);
+
+	PlayerData[playerid][pEditGraffiti] = id;
+	SendClientMessageEx(playerid, COLOR_GREY, "You have successfully created graffiti ID: %d.", id);
+
+	return 1;
+}
+
+CMD:editgangtag(playerid, params[])
+{
+	static
+	    id = -1,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:angle;
+
+    if(PlayerData[playerid][pAdmin] < HEAD_ADMIN)
+    {
+	    return SendClientMessage(playerid, COLOR_GREY, "You don't have permission to use this command.");
+	}
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, angle);
+
+	id = Graffiti_Nearest(playerid);
+
+	if(id == -1)
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "You are not in range of an Gang Spray Tag point.");
+	}
+
+	EditDynamicObject(playerid, GraffitiData[id][graffitiObject]);
+
+	PlayerData[playerid][pEditGraffiti] = id;
+	return 1;
+}
+CMD:destroygangtag(playerid, params[])
+{
+	static
+	    id = 0;
+
+    if(PlayerData[playerid][pAdmin] < HEAD_ADMIN)
+    {
+	    return SendClientMessage(playerid, COLOR_GREY, "You don't have permission to use this command.");
+	}
+	if(sscanf(params, "d", id))
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "/destroygraffiti [graffiti id]");
+	}
+
+	if((id < 0 || id >= MAX_GRAFFITI_POINTS) || !GraffitiData[id][graffitiExists])
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "You have specified an invalid graffiti ID.");
+	}
+	Graffiti_Delete(id);
+	SendClientMessageEx(playerid, COLOR_GREY, "You have successfully destroyed graffiti ID: %d.", id);
+	return 1;
+}
 
 CMD:gspray(playerid, params[])
 {
@@ -51225,7 +51206,7 @@ CMD:createimpound(playerid, params[])
 	if (id == -1)
 	    return SendErrorMessage(playerid, "The server has reached the limit for impound lots.");
 
-	SendServerMessage(playerid, "You have successfully created impound lot ID: %d.", id);
+	SendInfoMessage(playerid, "You have successfully created impound lot ID: %d.", id);
 	return 1;
 }
 
@@ -51244,7 +51225,7 @@ CMD:destroyimpound(playerid, params[])
 	    return SendErrorMessage(playerid, "You have specified an invalid impound lot ID.");
 
 	Impound_Delete(id);
-	SendServerMessage(playerid, "You have successfully destroyed impound lot ID: %d.", id);
+	SendInfoMessage(playerid, "You have successfully destroyed impound lot ID: %d.", id);
 	return 1;
 }
 CMD:impound(playerid, params[])
@@ -84595,7 +84576,7 @@ stock mdc_SearchCitizen(playerid, name[]) {
 	} else {
 		new query[135];
 		format(query, sizeof(query), "SELECT `skin`, `age`, `gender`, `carlicense`, `gunlicense`, `job`, `phone` FROM `users` WHERE `username` = '%s';", name);
-		mysql_new_query(connectionID, query, true, "mdc_SearchCitizenResult", "ds", playerid, name);
+		mysql_tquery(connectionID, query, "mdc_SearchCitizenResult", "ds", playerid, name);
 	}
 }
 
@@ -84666,7 +84647,7 @@ stock mdc_ShowCitizen(playerid, name[], skin, age, sex, driveLic, weaponLic, job
 stock mdc_ShowCriminalRecord(playerid, name[]) {
 	new query[130];
 	format(query, sizeof(query), "SELECT `officer`, `time`, `date`, `amount`, `reason`, `paid` FROM `tickets` WHERE `player` = '%s';", name);
-	mysql_new_query(connectionID, query, true, "mdc_FetchTickets", "ds", playerid, name);
+	mysql_tquery(connectionID, query, "mdc_FetchTickets", "ds", playerid, name);
 }
 
 stock mdc_ShowCriminalRecordDetails(playerid, idx) {
@@ -84719,7 +84700,7 @@ stock mdc_ResetCriminalRecordData(playerid) {
 stock mdc_ShowVehicles(playerid, name[]) {
 	new query[140];
 	format(query, sizeof(query), "SELECT `modelid`, `color1`, `color2`, `plate` FROM `vehicles` WHERE `owner` = '%s';", name);
-	mysql_new_query(connectionID, query, true, "mdc_FetchVehicle", "ds", playerid, name);
+	mysql_tquery(connectionID, query, "mdc_FetchVehicle", "ds", playerid, name);
 }
 
 stock mdc_ShowVehicle(playerid, owner[], model, color1, color2, plate[], bool:nextBtn = false) {
@@ -84832,7 +84813,7 @@ public mdc_FetchTickets(playerid, name[]) {
 
 	new query[130];
 	format(query, sizeof(query), "SELECT `officer`, `time`, `date`, `served`, `crime` FROM `criminals` WHERE `player` = '%s';", name);
-	mysql_new_query(connectionID, query, true, "mdc_FetchCharges", "ds", playerid, name);
+	mysql_tquery(connectionID, query, "mdc_FetchCharges", "ds", playerid, name);
 }
 
 forward mdc_FetchCharges(playerid, name[]);
