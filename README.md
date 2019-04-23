@@ -5,7 +5,6 @@
 * Danny - development
 * Mmilot - development
 * Emmet - development
-* Shady - development
 
 
 
