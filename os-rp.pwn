@@ -1592,6 +1592,7 @@ new Text:Damage[MAX_PLAYERS];
 new gHour, gWorldTime, gWeather = 13;
 new gCharity, gCharityHealth, gCharityArmor;
 new gPlayerRecord, gRecordDate[24], gServerMOTD[128], gTax, gVault, gNewsVault, gAnticheatBans;
+new Float:WeaponDamages[47];
 new adminMOTD[128], helperMOTD[128];
 new MaxCapCount[2] = {  2 , 1 }; // index: 0 = turfs, 1 = points
 new gacooldown, gConnections, gTotalRegistered, gTotalKills, gTotalDeaths, gTotalHours;
@@ -8332,6 +8333,63 @@ Streamer_SetExtraFloat(objectid, type, Float:value)
 	setproperty(.id = objectid, .value = type, .string = string);
 	return 1;
 }
+Dialog:WeaponDamages(playerid, response, listitem, inputtext[])
+{
+	if (response)
+	{
+	    new count;
+
+	    for(new i = 0; i < sizeof(WeaponDamages); i ++)
+		{
+		    if(IsValidDamageWeapon(i))
+		    {
+				if(count++ == listitem)
+				{
+				    PlayerData[playerid][pSelected] = i;
+	    			return Dialog_Show(playerid, SetDamage, DIALOG_STYLE_INPUT, "{FFFFFF}Set Damage", "Please enter the weapon damage to set for %s (use 0 for default).", "Submit", "Back", GetWeaponNameEx(PlayerData[playerid][pSelected]));
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+Dialog:SetDamage(playerid, response, listitem, inputtext[])
+{
+	if (response)
+	{
+	    new Float:damage;
+
+	    if (sscanf(inputtext, "f", damage))
+	    {
+	        return Dialog_Show(playerid, SetDamage, DIALOG_STYLE_INPUT, "{FFFFFF}Set Damage", "Please enter the weapon damage to set for %s (use 0 for default).", "Submit", "Back", GetWeaponNameEx(PlayerData[playerid][pSelected]));
+		}
+		else if (damage < 0.0 || damage > 100.0)
+		{
+		    return Dialog_Show(playerid, SetDamage, DIALOG_STYLE_INPUT, "{FFFFFF}Set Damage", "The specified damage can't be below 0 or above 100.\n\nPlease enter the weapon damage to set for %s (use 0 for default).", "Submit", "Back", GetWeaponNameEx(PlayerData[playerid][pSelected]));
+		}
+		else
+		{
+		    new weaponid = PlayerData[playerid][pSelected];
+
+		    SetWeaponDamage(weaponid, damage);
+
+		    if (damage == 0.0)
+		    {
+		    	SendAdminMessage(COLOR_ADM, "Admin: %s has set the damage for %s to default.", GetRPName(playerid), GetWeaponNameEx(weaponid));
+			}
+			else
+			{
+			    SendAdminMessage(COLOR_ADM, "Admin: %s has set the damage for %s to %.1f.", GetRPName(playerid), GetWeaponNameEx(weaponid), damage);
+			}
+		}
+	}
+	else
+	{
+	    ShowWeaponDamageEditMenu(playerid);
+	}
+	return 1;
+}
 Dialog:ClothesNew(playerid, response, listitem, inputtext[])
 {
 	if(response)
@@ -8440,6 +8498,76 @@ stock ReturnDamagesAdmin(damaged, playerid)
 	}
 
 	return true;
+}
+ProcessDamage(playerid, weaponid)
+{
+	new
+	    Float:damage = WeaponDamages[weaponid],
+		Float:health,
+		Float:armor;
+
+	if (damage != 0.0)
+	{
+	    GetPlayerHealth(playerid, health);
+	    GetPlayerArmour(playerid, armor);
+
+	    if (armor >= damage) {
+		    armor -= damage;
+		} else if (armor < damage) {
+		    health -= (damage - armor), armor = 0;
+		} else if (health >= damage) {
+		    health -= damage;
+		} else {
+		    health = 0;
+		}
+
+		SetPlayerHealth(playerid, health);
+		SetPlayerArmour(playerid, armor);
+	}
+}
+IsValidDamageWeapon(weaponid)
+{
+	if(!(0 <= weaponid <= 46))
+		return false;
+
+    switch(weaponid)
+	{
+        case 0, 19..21, WEAPON_DILDO..WEAPON_FLOWER, WEAPON_GRENADE..WEAPON_MOLTOV, WEAPON_ROCKETLAUNCHER..WEAPON_MINIGUN, WEAPON_SATCHEL..WEAPON_PARACHUTE:
+            return false;
+	}
+
+	return true;
+}
+
+ShowWeaponDamageEditMenu(playerid)
+{
+	static
+	    string[512];
+
+	string = "Weapon\tDamage";
+
+	for(new i = 0; i < sizeof(WeaponDamages); i ++)
+	{
+	    if(IsValidDamageWeapon(i))
+	    {
+		    if (WeaponDamages[i] != 0.0)
+				format(string, sizeof(string), "%s\n%s\t%.1f%c", string, GetWeaponNameEx(i), WeaponDamages[i], '%');
+			else
+		    	format(string, sizeof(string), "%s\n%s\tDefault", string, GetWeaponNameEx(i));
+		}
+	}
+
+	Dialog_Show(playerid, WeaponDamages, DIALOG_STYLE_TABLIST_HEADERS, "{FFFFFF}Select Weapon", string, "Change", "Cancel");
+}
+
+SetWeaponDamage(weaponid, Float:damage) // Edited by Grime (09-27-2017)
+{
+	if(IsValidDamageWeapon(weaponid))
+	{
+		format(queryBuffer, sizeof(queryBuffer), "INSERT INTO rp_gundamages (Weapon, Damage) VALUES(%i, %.4f) ON DUPLICATE KEY UPDATE Damage = %.4f", weaponid, damage, damage);
+		mysql_tquery(connectionID, queryBuffer);
+		WeaponDamages[weaponid] = damage;
+	}
 }
 
 stock AddDamages(playerid, issuerid, weaponid, bodypart, Float:amount)
@@ -12943,6 +13071,7 @@ SetAttachedObject(playerid, modelid, bone, Float:x = 0.0, Float:y = 0.0, Float:z
 
 	return -1;
 }
+
 stock strreplace2(string[], const search[], const replacement[], bool:ignorecase = false, pos = 0, limit = -1, maxlength = sizeof(string)) {
 		// No need to do anything if the limit is 0.
 		if (limit == 0)
@@ -32701,6 +32830,7 @@ public OnGameModeInit()
 		mysql_tquery(connectionID, "SELECT * FROM `gunracks`", "Rack_Load", "");
 		mysql_tquery(connectionID, "SELECT * FROM rp_dealercars", "OnLoadDealershipCars");
 		mysql_tquery(connectionID, "SELECT * FROM rp_payphones", "OnLoadPayphones");
+		mysql_tquery(connectionID, "SELECT * FROM rp_gundamages", "OnLoadGunDamages");
 	    mysql_tquery(connectionID, "UPDATE "#TABLE_USERS" SET vippackage = 0, viptime = 0 WHERE viptime < UNIX_TIMESTAMP()", "OnQueryFinished", "ii", THREAD_REMOVE_VIP, 0);
 		print("Saving server information on mysql...");
 		SaveMysqlInformation();
@@ -35904,36 +36034,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 
 	if(damagedid != INVALID_PLAYER_ID && IsPlayerConnected(damagedid))
 	{
-		switch(weaponid)
-		{
-			case 1: amount = 10;
-			case 3: amount = 11;
-			case 4: amount = 11;
-			case 5: amount = 10;
-			case 6: amount = 11;
-			case 7: amount = 11;
-			case 8: amount = 20;
-			case 10 .. 15: amount = 5;
-			case 22: amount = 12;
-			case 23: amount = 13;
-			case 24: amount = 30;
-			case 25: amount = 40;
-			case 27: amount = 65;
-			case 28: amount = 14;
-			case 29: amount = 16;
-			case 30: amount = 17;
-			case 31: amount = 18;
-			case 32: amount = 14;
-			case 33: amount = 60;
-			case 34: amount = 100;
-		}
-		switch(bodypart)
-		{
-			case BODY_PART_HEAD: amount = amount * 1.5;
-			case BODY_PART_LEFT_LEG, BODY_PART_RIGHT_LEG: amount = amount * 0.8;
-		}
-		AddDamages(damagedid, playerid, weaponid, bodypart, amount);
-
+        AddDamages(playerid, damagedid, weaponid, bodypart, amount);
 		mysql_format(connectionID, queryBuffer, sizeof(queryBuffer), "INSERT INTO shots VALUES(null, %i, %i, %i, %i, '%s', '0.0', '0.0', '0.0', %i)", playerid, weaponid, BULLET_HIT_TYPE_PLAYER, damagedid, GetPlayerNameEx(damagedid), gettime());
 		mysql_tquery(connectionID, queryBuffer);
 	}
@@ -35966,11 +36067,31 @@ public OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 			KillTimer(PlayerData[playerid][pDamageTimer]);
 			PlayerData[playerid][pDamageTimer] = SetTimerEx("DestroyDamageTD", 1500, false, "i", playerid);
 		}
-	}
+		if (IsValidDamageWeapon(weaponid) && WeaponDamages[weaponid] != 0.0 && PlayerData[issuerid][pTazer] == 0) {
+		    ProcessDamage(playerid, weaponid);
+		}
 
+	}
 	return 1;
 }
+forward OnLoadGunDamages();
+public OnLoadGunDamages()
+{
+	new
+		rows = cache_get_row_count(connectionID),
+		weaponid
+	;
 
+    for (new i = 0; i < rows; i ++)
+	{
+	    weaponid = cache_get_field_content_int(i, "Weapon");
+
+		if (IsValidDamageWeapon(weaponid))
+		{
+		    WeaponDamages[weaponid] = cache_get_field_content_float(i, "Damage");
+		}
+	}
+}
 public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
 {
 	if(RobberyInfo[rPlanning] && objectid == RobberyInfo[rObjects][1])
@@ -36670,11 +36791,13 @@ public OnPlayerUpdate(playerid) // every second <3 ty KYE!!
 
 	if(GetPlayerWeapon(playerid) > 1 && PlayerData[playerid][pInjured])
 	{
-		format(string, sizeof(string), "(( Has been injured %d times, /damages %d for more information. ))", totalDamages[playerid], playerid);
-		SetPlayerChatBubble(playerid, string, COLOR_ADM, 30.0, 2000);
 		SetPlayerArmedWeapon(playerid, 0);
 	}
-
+	if(PlayerData[playerid][pInjured])
+	{
+		format(string, sizeof(string), "(( Has been injured %d times, /damages %d for more information. ))", totalDamages[playerid], playerid);
+		SetPlayerChatBubble(playerid, string, COLOR_ADM, 30.0, 2000);
+	}
 	if(!drunkLevel)
 	{
 	    SetPlayerDrunkLevel(playerid, 1000);
@@ -49369,7 +49492,18 @@ CMD:gotopayphone(playerid, params[])
 	}
 	return 1;
 }
-
+CMD:setdamages(playerid, params[])
+{
+    if (PlayerData[playerid][pAdmin] < 10)
+	{
+		return SendErrorMessage(playerid, "You are not privileged to use this command.");
+	}
+	else
+	{
+	    ShowWeaponDamageEditMenu(playerid);
+	}
+	return 1;
+}
 CMD:editpayphone(playerid, params[])
 {
 	new id;
@@ -54584,7 +54718,7 @@ CMD:adminhelp(playerid, params[])
 	}
 	if(PlayerData[playerid][pAdmin] >= MANAGEMENT)
 	{
-		SendClientMessage(playerid, COLOR_VIP, "MANAGEMENT:{DDDDDD} /serversetting, /adminstrike, /doublexp, /enddoublexp");
+		SendClientMessage(playerid, COLOR_VIP, "MANAGEMENT:{DDDDDD} /serversetting, /setdamages, /adminstrike, /doublexp, /enddoublexp");
 	}
 
 	return 1;
